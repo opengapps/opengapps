@@ -17,3 +17,14 @@ To update at a later moment your sources again with the latest revision:
 git pull
 git submodule foreach git pull origin master
 ```
+
+To build PA GApps for all platforms and all android releases:
+```
+make
+```
+To build PA GApps for a specific android release on a specific platform,
+define both the platform and the API level of that release, seperated by a dash.
+A (most widely used) example:
+```
+make arm-22
+```
