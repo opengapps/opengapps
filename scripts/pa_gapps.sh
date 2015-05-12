@@ -33,7 +33,7 @@ elif [ "$API" = "21" ]; then
 elif [ "$API" = "22" ]; then
 	PLATFORM="5.1"
 else
-	echo "Unknown API version! Aborting..."
+	echo "ERROR: Unknown API version! Aborting..."
 	exit 1
 fi
 
@@ -67,11 +67,30 @@ buildfile() {
 buildapp() {
 	#package $1
 	#targetlocation $2
+	#we don't run getapi here, as long as GMSCore still calls the subfunctions individually
 	buildapk $1 $2
 	buildlib $1 $2
 }
+getapi() {
+#loop over all source-instances and find the highest available acceptable api level
+	if ! stat --printf='' $SOURCE/$ARCH/*app/$1 2>/dev/null
+		then
+		echo "ERROR: No APK sources found for package $1 on $ARCH"
+		exit 1
+	fi
+	for sourceapk in `find $SOURCE/$ARCH/*app/$1 -iname '*' | sort -r | grep .apk`; do
+		api=$(basename $(dirname $sourceapk))
+		if [ "$api" -le "$API" ]
+			then
+			break
+		fi
+		echo "ERROR: No APK found compatible with API level $API for package $1 on $ARCH, lowest found: $api"
+		exit 1
+	done
+	#we will use $sourceapk as returnvalue
+}
 buildapk() {
-	source=`find $SOURCE/$ARCH/*app/$1 -iname '*' | sort -r | head -1`
+	getapi $1
 	targetdir=$build$2
 	targetapk="$targetdir/$(basename $targetdir).apk"
 	if [ -f "$targetapk" ]
@@ -79,16 +98,16 @@ buildapk() {
 		rm "$targetapk"
 	fi
 	install -d $targetdir
-	zip -q -U $source -O "$targetapk" --exclude lib* ##not sure
+	zip -q -U $sourceapk -O "$targetapk" --exclude lib* ##not sure
 }
 buildlib() {
-	source=`find $SOURCE/$ARCH/*app/$1 -iname '*' | sort -r | head -1`
+	getapi $1
 	targetdir=$build$2
 	targetapk="$targetdir/$(basename $targetdir).apk"
-	if [ "x`unzip -qql $source lib* | head -n1 | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
+	if [ "x`unzip -qql $sourceapk lib* | head -n1 | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
 		then
 		install -d $targetdir/lib/arm
-		unzip -q -j -o $source -d $targetdir/lib/arm lib*
+		unzip -q -j -o $sourceapk -d $targetdir/lib/arm lib*
 	fi
 }
 
@@ -167,4 +186,4 @@ for f in `find $build -name '*.apk'`; do
         zipalign 4 $f.orig $f
         rm $f.orig
 done
-
+echo "SUCCESS: Built PA GApps with API $API level for $ARCH "
