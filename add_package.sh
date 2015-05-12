@@ -11,7 +11,7 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-sources="../sources"
+sources="sources"
 
 if { [ "x$1" != "xarm" ] && [ "x$1" != "xarm64" ] && [ "x$1" != "xx86" ]; } || [ "x$2" = "x" ]; then
 	echo "Usage: $0 (arm|arm64|x86) apks_to_add.apk [...]"
@@ -19,20 +19,43 @@ if { [ "x$1" != "xarm" ] && [ "x$1" != "xarm64" ] && [ "x$1" != "xx86" ]; } || [
 fi
 
 command -v aapt v >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
+#aapt can be found in phablet-tools on Ubuntu
 command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }
 #coreutils also contains the basename command
 
 addapk() {
-	name=`aapt dump badging $1 | grep 'application-label:' | awk -F: 'match($0,":"){ print substr($0,RSTART+1)}' | tr -d "'"`
-	package=`aapt dump badging $1 | grep package | awk '{print $2}' | sed s/name=//g | sed s/\'//g`
-	versionname=`aapt dump badging $1 | grep 'versionName=' | awk -F: 'match($0,"versionName="){ print substr($0,RSTART+12,length($0)-1)}' | tr -d "'"`
-	versioncode=`aapt dump badging $1 | sed '/^package/ !d' | sed 's/.*versionCode=.\([0-9]*\).*/\1/g'`
-	sdkversion=`aapt dump badging $1 | grep 'sdkVersion:' | awk -F: 'match($0,":"){ print substr($0,RSTART+1)}' | tr -d "'"`
+	name=`aapt dump badging $1 | grep "application-label:" |sed 's/application-label://g' |tr -d "/'"`
+	package=`aapt dump badging $1 | grep package | awk '{print $2}' | sed s/name=//g | sed s/\'//g | awk '{print tolower($0)}'`
+	versionname=`aapt dump badging $1 | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'"`
+	versioncode=`aapt dump badging $1 | grep "versionCode=" |awk '{print $3}' |tr -d "/versionCode='"`
+	sdkversion=`aapt dump badging $1 | grep "sdkVersion:" |tr -d "/sdkVersion:'"`
 	echo "Importing "$name
 	echo "Package "$package" | VersionName "$versionname" | VersionCode "$versioncode" | API level "$sdkversion
 
-	#targetlocation: sources/platform/package/sdkversion/versioncode.apk
-	target="$sources/$architecture/$package/$sdkversion/"
+	if [ "$package" = "com.google.android.backuptransport" ] \
+	|| [ "$package" = "com.google.android.feedback" ] \
+	|| [ "$package" = "com.google.android.gms" ] \
+	|| [ "$package" = "com.google.android.gsf" ] \
+	|| [ "$package" = "com.google.android.gsf.login" ] \
+	|| [ "$package" = "com.google.android.onetimeinitializer" ] \
+	|| [ "$package" = "com.google.android.partnersetup" ] \
+	|| [ "$package" = "com.google.android.setupwizard" ] \
+	; then
+		type="priv-app"
+	else
+		type="app"
+	fi
+
+	#Keep track of specific version of the special DPI packages
+	if [ "$package" = "com.google.android.gms" ] \
+	|| [ "$package" = "com.google.android.play.games" ] \
+	; then
+		package="$package."`echo $versioncode | tail -c -2`
+	fi
+	
+
+	#targetlocation: sources/platform/type/package/sdkversion/versioncode.apk
+	target="$sources/$architecture/$type/$package/$sdkversion/"
 	install -d $target
 	if stat --printf='' $target* 2>/dev/null
 	then

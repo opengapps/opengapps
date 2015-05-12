@@ -25,9 +25,9 @@ define make-gapps
 #We first define 'all' so that this is the primary make target
 all:: $1
 
-#With this you can always call e.g. 'make arm-22' just to make only the arm packages
-#execute the build scripts with the platform and api as parameter, ensure minimum api
-#for the platform that is selected
+#With this you can always call e.g. 'make arm-22' just to make only the arm packages for 5.1
+#It will execute the build script with the platform and api as parameter,
+#meanwhile ensuring the minimum api for the platform that is selected
 $1:	
 	$(platform = $(firstword $(subst -, ,$1)))
 	$(api = $(word 2, $(subst -, ,$1)))
