@@ -12,7 +12,6 @@
 /system/app/GoogleContactsSyncAdapter
 /system/app/GoogleEars
 /system/app/GoogleEarth
-/system/app/GoogleHome
 /system/app/GoogleTTS
 /system/app/LatinImeGoogle
 /system/app/Maps
@@ -26,7 +25,6 @@
 /system/app/PrebuiltKeep
 /system/app/PrebuiltNewsWeather
 /system/app/Street
-/system/app/SunBeam
 /system/app/talkback
 /system/app/Videos
 /system/app/YouTube
@@ -44,6 +42,7 @@
 /system/lib/libfacelock_jni.so
 /system/priv-app/GoogleBackupTransport
 /system/priv-app/GoogleFeedback
+/system/priv-app/GoogleHome
 /system/priv-app/GoogleLoginService
 /system/priv-app/GoogleOneTimeInitializer
 /system/priv-app/GooglePartnerSetup
