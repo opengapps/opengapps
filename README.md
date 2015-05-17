@@ -10,7 +10,7 @@ git clone git@github.com:pagapps/pagapps.git
 Then sync the submodules to get the original APK sources as provided by Google.
 You can also use this command to update at a later moment the sources to the most recent version
 ```
-download_sources.sh
+./download_sources.sh
 ```
 
 To build PA GApps for all platforms and all android releases:
@@ -25,7 +25,7 @@ make arm-22
 ```
 One can update the sources used with the command:
 ```
-add_sourceapp.sh /path/to/the/file/you/want/to/add.apk [/even/more/files.apk...]
+./add_sourceapp.sh /path/to/the/file/you/want/to/add.apk [/even/more/files.apk...]
 ```
 For contributors, these can be uploaded, by browsing to one of the sources-subdirectories and pushing it to the repository.
 ```
