@@ -114,6 +114,8 @@ buildlib() {
 	fi
 }
 
+#THE NEXT CHAPTER WE WILL LATER SPLIT OUT PER DIFFERENT TYPE OF PACKAGE
+
 #####---------FIRST THE SPECIAL CASES---------
 #GMSCore
 buildapk "com.google.android.gms.0" "GMSCore/0/priv-app/PrebuiltGmsCore"
@@ -270,7 +272,7 @@ core=`du -s "$build"Core | cut -f 1`
 keybdlib=`du -s "$build"Optional/keybd_lib | cut -f 1`
 echo "core_size="$core"; keybd_lib_size="$keybdlib";">> "$build"installer.data
 
-cat >>"$build"installer.data <<EOF
+tee >>"$build"installer.data <<'EOF'
 
 # Buffer of extra system space to require for GApps install (9216=9MB)
 # This will allow for some ROM size expansion when GApps are restored
