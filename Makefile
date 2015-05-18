@@ -18,6 +18,7 @@ PLATFORMS := arm arm64 x86
 LOWESTAPI_arm := 19
 LOWESTAPI_arm64 := 21
 LOWESTAPI_x86 := 19
+BUILDDIR := $(TOP)/build
 OUTDIR := $(TOPDIR)/out
 LOG_BUILD := /tmp/gapps_log
 
@@ -41,6 +42,6 @@ endef
 $(foreach platform,$(PLATFORMS),$(foreach api,$(API_LEVELS),$(eval $(call make-gapps,$(platform)-$(api)))))
 
 distclean :
-	@rm -fr $(OUTDIR)
-	@echo "$(tput setaf 2)Output removed! Ready for a clean build$(tput sgr 0)"
+	@rm -fr $(BUILDDIR)
+	@echo "$(tput setaf 2)Build directory removed! Ready for a clean build$(tput sgr 0)"
 
