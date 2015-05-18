@@ -67,7 +67,7 @@ buildfile() {
 	#buildfile needs slashes when used, unlike the buildapp
 	targetdir=$build$2
 	install -d $targetdir
-	if [ -f "$SOURCE/$ARCH/$1" ]
+	if [ -e "$SOURCE/$ARCH/$1" ] #check if directory or file exists
 	then
 		copy "$SOURCE/$ARCH/$1" $targetdir #if we have a file specific to this architecture
 	else
@@ -133,8 +133,8 @@ buildlib() {
 	targetapk="$targetdir/$(basename $targetdir).apk"
 	if [ "x`unzip -qql $sourceapk lib* | head -n1 | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
 		then
-		install -d $targetdir/lib/arm
-		unzip -q -j -o $sourceapk -d $targetdir/lib/arm lib*
+		install -d $targetdir/lib/$ARCH
+		unzip -q -j -o $sourceapk -d $targetdir/lib/$ARCH lib*
 	fi
 }
 
@@ -272,7 +272,7 @@ echo '# ________________________________________________________________________
 pkg_names="pico nano micro mini full stock";
 
 # Installer Name (32 chars Total, excluding "")
-installer_name="PA Google Stock GApps "'$PLATFORM'" - ";
+installer_name="PA Google Stock GApps '$PLATFORM' - ";
 
 req_android_version="'$PLATFORM'";
 keybd_lib_filename1="libjni_latinimegoogle.so";
@@ -301,6 +301,9 @@ core=`du -s "$build"Core | cut -f 1`
 keybdlib=`du -s "$build"Optional/keybd_lib | cut -f 1`
 echo "core_size="$core"; keybd_lib_size="$keybdlib";">> "$build"installer.data
 
+#The part below still has to be made more dynamic, like the 'stock' type
+#We can include again the gms_base type
+#We whould replace 'arm' with the $ARCH type
 tee >>"$build"installer.data <<'EOF'
 
 # Buffer of extra system space to require for GApps install (9216=9MB)
