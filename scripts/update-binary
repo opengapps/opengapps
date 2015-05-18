@@ -362,10 +362,14 @@ case $density in
 esac;
 
 case $density in
-    160) gms=0;; # should be 2  remove in pico(uni)
-    240) gms=4;; #              remove in pico(uni)
-    320) gms=6;; #              remove in pico(uni)
-    480) gms=8;; #              remove in pico(uni)
+    160) gms=0   # should be 2  remove in pico(uni)
+         play=2;;
+    240) gms=4   #              remove in pico(uni)
+         play=4;;
+    320) gms=6   #              remove in pico(uni)
+         play=6;;
+    480) gms=8   #              remove in pico(uni)
+         play=8;;
       *) gms=0;;
 esac;
 
@@ -692,6 +696,7 @@ log "Remove Stock/AOSP Launcher" $remove_launcher;
 log "Remove Stock/AOSP MMS App" $remove_mms;
 log "Remove Stock/AOSP Pico TTS" $remove_picotts;
 log "Installing Play Services variation" "$gms)";
+log "Installing Play Games variation" "$play)";
 # _____________________________________________________________________________________________________________________
 #                                                  Perform space calculations
 ui_print "- Performing system space calculations";
@@ -699,7 +704,7 @@ ui_print " ";
 
 # Perform calculations of device specific applications
 eval "gms_size=\$gms_${gms}_size"; # Determine size of GMSCore
-eval "playgames_size=\$pg_${gms}_size"; # Determine size of PlayGames
+eval "playgames_size=\$pg_${play}_size"; # Determine size of PlayGames
 
 # Determine final size of Core Apps
 if ( ! contains "$gapps_list" "keyboardgoogle" ); then
@@ -859,7 +864,8 @@ folder_extract GMSCore $gms; # Install Google Play Services apk
 
 # Install PlayGames if it's in $gapps_list
 if ( contains "$gapps_list" "playgames" ); then
-    folder_extract PlayGames $gms; # Install Google PlayGames
+    folder_extract PlayGames common; # Install Google PlayGames libs
+    folder_extract PlayGames $play; # Install Google PlayGames apk
     gapps_list=${gapps_list/playgames}; # remove PlayGames from gapps list since it's now installed
 fi;
 

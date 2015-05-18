@@ -51,13 +51,13 @@ command -v zipalign >/dev/null 2>&1 || { echo "zipalign is required but it's not
 
 copy() {
 	if [ -d "$1" ]
-		then
+	then
 		for f in $1/*; do
 			copy $f "$2/$(basename $f)"
 		done
 	fi
 	if [ -f "$1" ]
-		then
+	then
   		install -D -p $1 $2
 	fi
 }
@@ -65,26 +65,48 @@ buildfile() {
 	#buildfile needs slashes when used, unlike the buildapp
 	targetdir=$build$2
 	install -d $targetdir
-	copy "$SOURCE/$ARCH/$1" $targetdir
+	if [ -f "$SOURCE/$ARCH/$1" ]
+	then
+		copy "$SOURCE/$ARCH/$1" $targetdir #if we have a file specific to this architecture
+	else
+		copy "$SOURCE/all/$1" $targetdir #use common file
+	fi
 }
 buildapp() {
 	#package $1
 	#targetlocation $2
-	#we don't run getapi here, as long as GMSCore still calls the subfunctions individually
+	#unfortunately no getapi here, as long as GMSCore and PlayGames call the subfunctions individually
 	buildapk $1 $2
 	buildlib $1 $2
 }
 getapi() {
-#loop over all source-instances and find the highest available acceptable api level
-	if ! stat --printf='' $SOURCE/$ARCH/*app/$1 2>/dev/null
-		then
-		echo "ERROR: No APK sources found for package $1 on $ARCH"
+	#loop over all source-instances and find the highest available acceptable api level
+	sourcearch=""
+	sourceall=""
+	if stat --printf='' $SOURCE/$ARCH/*app/$1 2>/dev/null
+	then
+		sourcearch="find $SOURCE/$ARCH/*app/$1 -iname '*.apk'"
+		sourceall=" & " #glue
+	fi
+	if stat --printf='' $SOURCE/all/*app/$1 2>/dev/null
+	then
+		sourceall="$sourceall""find $SOURCE/all/*app/$1 -iname '*.apk'"
+	else
+		sourceall="" #undo glue
+	fi
+	if [ "$sourcearch" = "" ] && [ "$sourceall" = "" ]
+	then
+		echo "ERROR: Package $1 has neither an APK source on $ARCH as all"
 		exit 1
 	fi
-	for sourceapk in `find $SOURCE/$ARCH/*app/$1 -iname '*' | sort -r | grep .apk`; do
+	#sed copies filename to the beginning, to compare version, and later we remove it with cut
+	for sourceapk in `{ eval "$sourcearch$sourceall"; }\
+			| sed 's!.*/\(.*\)!\1/&!'\
+			| sort -r -t/ -k1,1\
+			| cut -d/ -f2-`; do
 		api=$(basename $(dirname $sourceapk))
 		if [ "$api" -le "$API" ]
-			then
+		then
 			break
 		fi
 		echo "ERROR: No APK found compatible with API level $API for package $1 on $ARCH, lowest found: $api"
@@ -119,16 +141,19 @@ buildlib() {
 #####---------FIRST THE SPECIAL CASES---------
 #GMSCore
 buildapk "com.google.android.gms.0" "GMSCore/0/priv-app/PrebuiltGmsCore"
+#buildapk "com.google.android.gms.2" "GMSCore/4/priv-app/PrebuiltGmsCore" #not available
 buildapk "com.google.android.gms.4" "GMSCore/4/priv-app/PrebuiltGmsCore"
 buildapk "com.google.android.gms.6" "GMSCore/6/priv-app/PrebuiltGmsCore"
 buildapk "com.google.android.gms.8" "GMSCore/8/priv-app/PrebuiltGmsCore"
 buildlib "com.google.android.gms.0" "GMSCore/common/priv-app/PrebuiltGmsCore"
 
 #PlayGames
-buildapp "com.google.android.play.games.0" "PlayGames/0/app/PlayGames"
-buildapp "com.google.android.play.games.4" "PlayGames/4/app/PlayGames"
-buildapp "com.google.android.play.games.6" "PlayGames/6/app/PlayGames"
-buildapp "com.google.android.play.games.8" "PlayGames/8/app/PlayGames"
+buildapk "com.google.android.play.games.0" "PlayGames/0/app/PlayGames"
+buildapk "com.google.android.play.games.2" "PlayGames/2/app/PlayGames"
+buildapk "com.google.android.play.games.4" "PlayGames/4/app/PlayGames"
+buildapk "com.google.android.play.games.6" "PlayGames/6/app/PlayGames"
+buildapk "com.google.android.play.games.8" "PlayGames/8/app/PlayGames"
+buildlib "com.google.android.play.games.0" "PlayGames/common/app/PlayGames"
 
 #Keyboard Lib
 buildfile "lib/libjni_latinimegoogle.so" "Optional/keybd_lib/lib/"
@@ -254,6 +279,7 @@ FaceLock_lib_filename="libfacelock_jni.so";
 
 # Google Play Services version sizes' >> "$build"installer.data
 gms0=`du -s "$build"GMSCore/0 | cut -f 1`
+#missing gms2
 gms4=`du -s "$build"GMSCore/4 | cut -f 1`
 gms6=`du -s "$build"GMSCore/6 | cut -f 1`
 gms8=`du -s "$build"GMSCore/8 | cut -f 1`
@@ -262,10 +288,11 @@ echo "gms_0_size="`expr $gms0 + $gmscommon`"; gms_4_size="`expr $gms4 + $gmscomm
 
 # Google Play Games version sizes" >> "$build"installer.data
 pg0=`du -s "$build"PlayGames/0 | cut -f 1`
+pg2=`du -s "$build"PlayGames/0 | cut -f 1`
 pg4=`du -s "$build"PlayGames/4 | cut -f 1`
 pg6=`du -s "$build"PlayGames/6 | cut -f 1`
 pg8=`du -s "$build"PlayGames/8 | cut -f 1`
-echo "pg_0_size="$pg0"; pg_4_size="$pg4"; pg_6_size="$pg6"; pg_8_size="$pg8";
+echo "pg_0_size="$pg0"; pg_2_size="$pg2"; pg_4_size="$pg4"; pg_6_size="$pg6"; pg_8_size="$pg8";
 
 # Core & Optional Apps size" >> "$build"installer.data
 core=`du -s "$build"Core | cut -f 1`
