@@ -77,11 +77,11 @@ buildfile() {
 buildapp() {
 	#package $1
 	#targetlocation $2
-	#unfortunately no getapi here, as long as GMSCore and PlayGames call the subfunctions individually
+	#unfortunately no getsourceforapi here, as long as GMSCore and PlayGames call the subfunctions individually
 	buildapk $1 $2
 	buildlib $1 $2
 }
-getapi() {
+getsourceforapi() {
 	#loop over all source-instances and find the highest available acceptable api level
 	sourcearch=""
 	sourceall=""
@@ -117,24 +117,39 @@ getapi() {
 	#we will use $sourceapk as returnvalue
 }
 buildapk() {
-	getapi $1
+	getsourceforapi $1
 	targetdir=$build$2
-	targetapk="$targetdir/$(basename $targetdir).apk"
-	if [ -f "$targetapk" ]
-		then
+	if [ "$API" = "19" ]; then ##We will do this as long as we support KitKat
+		targetapk="$targetdir.apk"
+		install -D $sourceapk $targetapk #inefficient, we will overwrite this, just to make the higher directories
 		rm "$targetapk"
+		zip -q -U "$sourceapk" -O "$targetapk" --exclude lib*
+	else ##This is Lollipop, much more nice :-)
+		targetapk="$targetdir/$(basename $targetdir).apk"
+		if [ -f "$targetapk" ]
+			then
+			rm "$targetapk"
+		fi
+		install -d "$targetdir"
+		zip -q -U "$sourceapk" -O "$targetapk" --exclude lib*
 	fi
-	install -d $targetdir
-	zip -q -U $sourceapk -O "$targetapk" --exclude lib* ##not sure
 }
 buildlib() {
-	getapi $1
+	getsourceforapi $1
 	targetdir=$build$2
-	targetapk="$targetdir/$(basename $targetdir).apk"
-	if [ "x`unzip -qql $sourceapk lib* | head -n1 | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
-		then
-		install -d $targetdir/lib/$ARCH
-		unzip -q -j -o $sourceapk -d $targetdir/lib/$ARCH lib*
+	if [ "$API" = "19" ]; then ##We will do this as long as we support KitKat
+		targetdir=$(dirname $(dirname $targetdir))
+		if [ "x`unzip -qql "$sourceapk" lib* | head -n1 | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
+			then
+			install -d "$targetdir/lib"
+			unzip -q -j -o "$sourceapk" -d "$targetdir/lib" lib*
+		fi
+	else ##This is Lollipop, much more nice :-)
+		if [ "x`unzip -qql "$sourceapk" lib* | head -n1 | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
+			then
+			install -d "$targetdir/lib/$ARCH"
+			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$ARCH" lib*
+		fi
 	fi
 }
 
