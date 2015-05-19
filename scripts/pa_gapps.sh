@@ -134,6 +134,7 @@ buildapk() {
 		zip -q -U "$sourceapk" -O "$targetapk" --exclude lib*
 	fi
 }
+#We need to filter on WHICH lib to extract, since now multiple architectures can be in one apk
 buildlib() {
 	getsourceforapi $1
 	targetdir=$build$2
@@ -158,7 +159,7 @@ buildlib() {
 #####---------FIRST THE SPECIAL CASES---------
 #GMSCore
 buildapk "com.google.android.gms.0" "GMSCore/0/priv-app/PrebuiltGmsCore"
-#buildapk "com.google.android.gms.2" "GMSCore/4/priv-app/PrebuiltGmsCore" #not available
+buildapk "com.google.android.gms.2" "GMSCore/2/priv-app/PrebuiltGmsCore"
 buildapk "com.google.android.gms.4" "GMSCore/4/priv-app/PrebuiltGmsCore"
 buildapk "com.google.android.gms.6" "GMSCore/6/priv-app/PrebuiltGmsCore"
 buildapk "com.google.android.gms.8" "GMSCore/8/priv-app/PrebuiltGmsCore"
@@ -296,16 +297,16 @@ FaceLock_lib_filename="libfacelock_jni.so";
 
 # Google Play Services version sizes' >> "$build"installer.data
 gms0=`du -s "$build"GMSCore/0 | cut -f 1`
-#missing gms2
+gms2=`du -s "$build"GMSCore/2 | cut -f 1`
 gms4=`du -s "$build"GMSCore/4 | cut -f 1`
 gms6=`du -s "$build"GMSCore/6 | cut -f 1`
 gms8=`du -s "$build"GMSCore/8 | cut -f 1`
 gmscommon=`du -s "$build"GMSCore/common | cut -f 1`
-echo "gms_0_size="`expr $gms0 + $gmscommon`"; gms_4_size="`expr $gms4 + $gmscommon`"; gms_6_size="`expr $gms6 + $gmscommon`"; gms_8_size="`expr $gms8 + $gmscommon`";
+echo "gms_0_size="`expr $gms0 + $gmscommon`"; gms_2_size="`expr $gms2 + $gmscommon`"; gms_4_size="`expr $gms4 + $gmscommon`"; gms_6_size="`expr $gms6 + $gmscommon`"; gms_8_size="`expr $gms8 + $gmscommon`";
 
 # Google Play Games version sizes" >> "$build"installer.data
 pg0=`du -s "$build"PlayGames/0 | cut -f 1`
-pg2=`du -s "$build"PlayGames/0 | cut -f 1`
+pg2=`du -s "$build"PlayGames/2 | cut -f 1`
 pg4=`du -s "$build"PlayGames/4 | cut -f 1`
 pg6=`du -s "$build"PlayGames/6 | cut -f 1`
 pg8=`du -s "$build"PlayGames/8 | cut -f 1`

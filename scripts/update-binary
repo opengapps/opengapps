@@ -362,7 +362,7 @@ case $density in
 esac;
 
 case $density in
-    160) gms=0   # should be 2  remove in pico(uni)
+    160) gms=2   #              remove in pico(uni)
          play=2;;
     240) gms=4   #              remove in pico(uni)
          play=4;;
