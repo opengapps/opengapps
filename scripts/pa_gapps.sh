@@ -85,6 +85,7 @@ getsourceforapi() {
 	#loop over all source-instances and find the highest available acceptable api level
 	sourcearch=""
 	sourceall=""
+	sourceapk=""
 	if stat --printf='' $SOURCE/$ARCH/*app/$1 2>/dev/null
 	then
 		sourcearch="find $SOURCE/$ARCH/*app/$1 -iname '*.apk'"
@@ -102,18 +103,22 @@ getsourceforapi() {
 		exit 1
 	fi
 	#sed copies filename to the beginning, to compare version, and later we remove it with cut
-	for sourceapk in `{ eval "$sourcearch$sourceall"; }\
+	for foundapk in `{ eval "$sourcearch$sourceall"; }\
 			| sed 's!.*/\(.*\)!\1/&!'\
 			| sort -r -t/ -k1,1\
 			| cut -d/ -f2-`; do
-		api=$(basename $(dirname $sourceapk))
+		api=$(basename $(dirname "$foundapk"))
 		if [ "$api" -le "$API" ]
 		then
+			sourceapk=$foundapk
 			break
 		fi
+	done
+	if [ "$sourceapk" = "" ]
+	then
 		echo "ERROR: No APK found compatible with API level $API for package $1 on $ARCH, lowest found: $api"
 		exit 1
-	done
+	fi
 	#we will use $sourceapk as returnvalue
 }
 buildapk() {
@@ -706,7 +711,7 @@ then
 fi
 
 cd $SCRIPTS
-./signapk.sh sign $unsignedzip $signedzip
+./signapk.sh -q sign $unsignedzip $signedzip
 if [ $? -eq 0 ]; then #if signing did succeed
     rm $unsignedzip
 else
