@@ -12,7 +12,7 @@
 #
 TOPDIR := .
 BUILD_SYSTEM := $(TOPDIR)/scripts
-BUILD_GAPPS := $(BUILD_SYSTEM)/pa_gapps.sh
+BUILD_GAPPS := $(BUILD_SYSTEM)/build_gapps.sh
 API_LEVELS := 19 21 22
 PLATFORMS := arm arm64 x86
 LOWESTAPI_arm := 19
