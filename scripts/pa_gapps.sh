@@ -139,22 +139,33 @@ buildapk() {
 		zip -q -U "$sourceapk" -O "$targetapk" --exclude lib*
 	fi
 }
-#We need to filter on WHICH lib to extract, since now multiple architectures can be in one apk
 buildlib() {
 	getsourceforapi $1
 	targetdir=$build$2
+	libsearchpath="lib/*" #default that should never happen: all libs
+	if [ "$ARCH" = "arm" ]; then
+		libsearchpath="lib/armeabi*/*" #mind the wildcard
+	elif [ "$ARCH" = "arm64" ]; then
+		libsearchpath="lib/arm64*/*" #mind the wildcard
+	elif [ "$ARCH" = "x86" ]; then
+		libsearchpath="lib/x86/*"
+	elif [ "$ARCH" = "x86_64" ]; then
+		libsearchpath="lib/x86_64/*"
+	elif [ "$ARCH" = "mips" ]; then
+		libsearchpath="lib/mips/*"
+	fi
 	if [ "$API" = "19" ]; then ##We will do this as long as we support KitKat
 		targetdir=$(dirname $(dirname $targetdir))
-		if [ "x`unzip -qql "$sourceapk" lib* | head -n1 | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
+		if [ "x`unzip -qql "$sourceapk" $libsearchpath | head -n1 | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
 			then
 			install -d "$targetdir/lib"
-			unzip -q -j -o "$sourceapk" -d "$targetdir/lib" lib*
+			unzip -q -j -o "$sourceapk" -d "$targetdir/lib" $libsearchpath
 		fi
 	else ##This is Lollipop, much more nice :-)
-		if [ "x`unzip -qql "$sourceapk" lib* | head -n1 | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
+		if [ "x`unzip -qql "$sourceapk" $libsearchpath | head -n1 | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
 			then
 			install -d "$targetdir/lib/$ARCH"
-			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$ARCH" lib*
+			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$ARCH" $libsearchpath
 		fi
 	fi
 }

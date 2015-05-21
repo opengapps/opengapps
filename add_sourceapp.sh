@@ -20,7 +20,7 @@ command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not insta
 
 getarchitectures() {
 	architectures=""
-	native=`aapt dump badging "$1" | grep "native-code:" |sed 's/native-code://g' | tr -d " '"`
+	native=`aapt dump badging "$1" | grep "native-code:" |sed 's/native-code://g' | tr -d "'"`
 	if [ "$native" = "" ]
 	then
 		echo "No native-code specification defined"
