@@ -19,12 +19,15 @@ alignbuild() {
 	done
 }
 
-addpackagescript() {
+addpackagescripts() {
 	install -d "$build"META-INF/com/google/android
 	echo "# Dummy file; update-binary is a shell script.">"$build"META-INF/com/google/android/updater-script
 	copy "$SCRIPTS/update-binary" "$build"META-INF/com/google/android/
+	makegappsremovetxt
+	makegprop
+	makesizesprop
+	makeinstallerdata
 	copy "$SCRIPTS/bkup_tail.sh" $build
-	copy "$SCRIPTS/gapps-remove.txt" $build
 }
 
 createzip() {

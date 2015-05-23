@@ -18,6 +18,14 @@ ro.addon.pa_type=stock
 ro.addon.pa_version="$DATE"
 # end addon properties" > "$build"g.prop
 }
+makegappsremovetxt(){
+corepath="$BUILD/$ARCH/$API/Core/"
+gappspath="$BUILD/$ARCH/$API/GApps/"
+gmscorepath="$BUILD/$ARCH/$API/GMSCore/"
+playgamespath="$BUILD/$ARCH/$API/PlayGames/"
+find "$corepath" "$gappspath" "$gmscorepath" "$playgamespath" -mindepth 3 -maxdepth 3 -printf "%P\n" -name "*" | grep -v "etc/" | sed 's#^[^/]*#/system#' | sort | uniq > "$build"gapps-remove.txt
+find "$corepath" "$gappspath" "$gmscorepath" "$playgamespath" -mindepth 4 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^[^/]*#/system#' | sort | uniq >> "$build"gapps-remove.txt
+}
 makesizesprop(){
 echo "books_size="`du -s --apparent-size "$build"GApps/books | cut -f 1` > "$build"sizes.prop
 echo "calendargoogle_size="`du -s --apparent-size "$build"GApps/calendargoogle | cut -f 1` >> "$build"sizes.prop

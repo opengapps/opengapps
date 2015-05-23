@@ -57,9 +57,6 @@ command -v zipalign >/dev/null 2>&1 || { echo "zipalign is required but it's not
 . "$SCRIPTS/inc.packagetarget.sh"
 buildtarget
 alignbuild
-makegprop
-makesizesprop
-makeinstallerdata
-addpackagescript
+addpackagescripts
 createzip
 signzip
