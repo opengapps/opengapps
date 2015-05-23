@@ -84,9 +84,13 @@ gms4=`du -s "$build"GMSCore/4 | cut -f 1`
 gms6=`du -s "$build"GMSCore/6 | cut -f 1`
 gms8=`du -s "$build"GMSCore/8 | cut -f 1`
 gmscommon=`du -s "$build"GMSCore/common | cut -f 1`
-echo "gms_0_size="`expr $gms0 + $gmscommon`"; gms_2_size="`expr $gms2 + $gmscommon`"; gms_4_size="`expr $gms4 + $gmscommon`"; gms_6_size="`expr $gms6 + $gmscommon`"; gms_8_size="`expr $gms8 + $gmscommon`";
+printf "gms_0_size="`expr $gms0 + $gmscommon`"; " >> "$build"installer.data
+printf "gms_2_size="`expr $gms2 + $gmscommon`"; " >> "$build"installer.data
+printf "gms_4_size="`expr $gms4 + $gmscommon`"; " >> "$build"installer.data
+printf "gms_6_size="`expr $gms6 + $gmscommon`"; " >> "$build"installer.data
+printf "gms_8_size="`expr $gms8 + $gmscommon`"; " >> "$build"installer.data
 
-# Google Play Games version sizes" >> "$build"installer.data
+echo "\n\n# Google Play Games version sizes" >> "$build"installer.data
 pg0=`du -s "$build"PlayGames/0 | cut -f 1`
 pg2=`du -s "$build"PlayGames/2 | cut -f 1`
 pg4=`du -s "$build"PlayGames/4 | cut -f 1`
