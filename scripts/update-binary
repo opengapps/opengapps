@@ -376,11 +376,6 @@ esac;
 # Set density to unknown if it's still empty
 test -z $density && density=unknown;
 
-# Remove any files from gapps-list.txt that should not be processed for automatic removal
-for bypass_file in $removal_bypass_list; do
-    sed -i "\:${bypass_file}:d" $gapps_removal_list;
-done;
-
 # Is this a 'Clean' or 'Dirty' install
 if ( clean_inst ); then
     install_type="Clean[Data Wiped]";
