@@ -1,12 +1,16 @@
 [submodule "sources/arm64"]
 	path = sources/arm64
-	url = git@github.com:pagapps/arm64.git.master
+	url = git@github.com:pagapps/arm64.git
+	branch = master
 [submodule "sources/arm"]
 	path = sources/arm
-	url = git@github.com:pagapps/arm.git.master
+	url = git@github.com:pagapps/arm.git
+	branch = master
 [submodule "sources/x86"]
 	path = sources/x86
-	url = git@github.com:pagapps/x86.git.master
+	url = git@github.com:pagapps/x86.git
+	branch = master
 [submodule "sources/all"]
 	path = sources/all
-	url = git@github.com:pagapps/all.git.master
+	url = git@github.com:pagapps/all.git
+	branch = master
