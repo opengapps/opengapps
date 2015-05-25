@@ -25,6 +25,7 @@ BUILD=$TOP/build
 OUT=$TOP/out
 SOURCE=$TOP/sources
 SCRIPTS=$TOP/scripts
+DENSITIES="2 4 6 8" #don't add 0
 
 #Calculate platform version
 if [ "$API" = "19" ]; then
@@ -41,7 +42,7 @@ fi
 build="$BUILD/$ARCH/$API/"
 unsignedzip="$BUILD/$ARCH/$API.zip"
 signedzip="$OUT/pa_gapps-$ARCH-$PLATFORM-$DATE.zip"
-install -d $build
+install -d "$build"
 
 #####---------CHECK FOR EXISTANCE OF SOME BINARIES---------
 command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }

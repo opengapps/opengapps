@@ -14,22 +14,39 @@
 
 #THE NEXT CHAPTER WE WILL LATER SPLIT OUT PER DIFFERENT TYPE OF PACKAGE
 buildtarget() {
+clean
 #####---------FIRST THE SPECIAL CASES---------
 #GMSCore
+getversion "com.google.android.gms.0" #universal DPI version is our benchmark
+gmsversion="$getversion"
+gmstargets=""
+for v in $DENSITIES; do
+	if comparebaseversion "$gmsversion" "com.google.android.gms.$v"
+	then
+		gmstargets="$gmstargets $v"
+		#the value of $sourceapk has been changed for us by calling the comparebaseversion
+		buildapk "com.google.android.gms.$v" "GMSCore/$v/priv-app/PrebuiltGmsCore"
+	fi
+done
 buildapk "com.google.android.gms.0" "GMSCore/0/priv-app/PrebuiltGmsCore"
-buildapk "com.google.android.gms.2" "GMSCore/2/priv-app/PrebuiltGmsCore"
-buildapk "com.google.android.gms.4" "GMSCore/4/priv-app/PrebuiltGmsCore"
-buildapk "com.google.android.gms.6" "GMSCore/6/priv-app/PrebuiltGmsCore"
-buildapk "com.google.android.gms.8" "GMSCore/8/priv-app/PrebuiltGmsCore"
 buildlib "com.google.android.gms.0" "GMSCore/common/priv-app/PrebuiltGmsCore"
+echo "Found Google Play Services variants:$gmstargets of universal version $gmsversion"
 
 #PlayGames
+getversion "com.google.android.play.games.0" #universal DPI version is our benchmark
+pgversion=$getversion
+pgtargets=""
+for v in $DENSITIES; do
+	if comparebaseversion $pgversion "com.google.android.play.games.$v"
+	then
+		pgtargets="$pgtargets $v"
+		#the value of $sourceapk has been changed for us by calling the comparebaseversion
+		buildapk "com.google.android.play.games.$v" "PlayGames/$v/app/PlayGames"
+	fi
+done
 buildapk "com.google.android.play.games.0" "PlayGames/0/app/PlayGames"
-buildapk "com.google.android.play.games.2" "PlayGames/2/app/PlayGames"
-buildapk "com.google.android.play.games.4" "PlayGames/4/app/PlayGames"
-buildapk "com.google.android.play.games.6" "PlayGames/6/app/PlayGames"
-buildapk "com.google.android.play.games.8" "PlayGames/8/app/PlayGames"
 buildlib "com.google.android.play.games.0" "PlayGames/common/app/PlayGames"
+echo "Found Google Play Games variants:$pgtargets of universal version $pgversion"
 
 #Keyboard Lib
 buildfile "lib/libjni_latinimegoogle.so" "Optional/keybd_lib/lib/"
