@@ -42,7 +42,7 @@ buildfile() {
 buildapp() {
 	#package $1
 	#targetlocation $2
-	if getsourceforapi() $1
+	if getsourceforapi $1
 	then
 		buildapk "$1" "$2"
 		buildlib "$1" "$2"
