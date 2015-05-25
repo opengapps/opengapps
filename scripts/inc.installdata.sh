@@ -91,7 +91,7 @@ for t in $pgtargets; do
 	printf "pg_"$t"_size="`expr $pgt + $pgcommon`"; " >> "$build"installer.data
 done
 
-"# Core & Optional Apps size" >> "$build"installer.data
+echo "# Core & Optional Apps size" >> "$build"installer.data
 core=`du -s "$build"Core | cut -f 1`
 keybdlib=`du -s "$build"Optional/keybd_lib | cut -f 1`
 echo "core_size="$core"; keybd_lib_size="$keybdlib";">> "$build"installer.data
