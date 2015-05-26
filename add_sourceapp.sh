@@ -26,7 +26,7 @@ getarchitectures() {
 		echo "No native-code specification defined"
 		#Some packages don't have native-code specified, but are still depending on it.
 		#So an extra check is necessary before declaring it suitable for all platforms
-		libfiles=`unzip -qql "$1" lib* | tr -s ' ' | cut -d' ' -f5-`
+		libfiles=`unzip -qql "$1" lib* | tr -s ' ' | cut -d ' ' -f5-`
 		for lib in $libfiles
 		do
 			#this gives all files found in the lib-folder(s), check their paths for which architectures' libs are included
@@ -59,7 +59,7 @@ installapk() {
 	install -d "$target"
 	if stat --printf='' "$target"* 2>/dev/null
 	then
-		existing=`find "$target"* | sort -r | head -1` 
+		existing=`find "$target"* | sort -r | cut -c1-` 
 		echo "Existing version $existing"
 		existingversion=`basename -s.apk "$existing"`
 		if [ "$versioncode" -gt "$existingversion" ]; then
@@ -104,7 +104,7 @@ addapk() {
 	if [ "$package" = "com.google.android.gms" ] \
 	|| [ "$package" = "com.google.android.play.games" ] \
 	; then
-		package="$package.`echo $versioncode| tail -c -2`"
+		package="$package.`echo $versioncode| rev | cut -c 1 | rev`"
 	fi
 	
 	getarchitectures "$file"

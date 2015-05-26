@@ -126,13 +126,13 @@ buildlib() {
 	fi
 	if [ "$API" = "19" ]; then ##We will do this as long as we support KitKat
 		targetdir=$(dirname $(dirname "$targetdir"))
-		if [ "x`unzip -qql "$sourceapk" $libsearchpath | head -n1 | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
+		if [ "x`unzip -qql "$sourceapk" $libsearchpath | cut -c1- | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
 			then
 			install -d "$targetdir/lib"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib" $libsearchpath
 		fi
 	else ##This is Lollipop, much more nice :-)
-		if [ "x`unzip -qql "$sourceapk" $libsearchpath | head -n1 | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
+		if [ "x`unzip -qql "$sourceapk" $libsearchpath | cut -c1- | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
 			then
 			install -d "$targetdir/lib/$ARCH"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$ARCH" $libsearchpath
