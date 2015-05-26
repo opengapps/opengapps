@@ -152,13 +152,12 @@ done
 #arm:
 #	armeabi - ARMv5TE based CPU with software floating point operations;
 #	armeabi-v7a - ARMv7 based devices with hardware FPU instructions
-#	armeabi-v6 with VFP - tuned for ARMv6 processors having VFP;
 #arm64:
 #	arm64-v8a - ARMv8 AArch64 instruction set - only for NDK r10 and newer
 #x86:
 #	x86 - IA-32 instruction set
 #
 #unsupported at the moment:
-#x86_64 - Intel64 instruction set (r1) - only for NDK r10 and newer
+#x86-64 - Intel64 instruction set (r1) - only for NDK r10 and newer
 #mips - MIPS32 instruction set
 #mips64 - MIPS64 instruction set (r6) - only for NDK r10 and newer

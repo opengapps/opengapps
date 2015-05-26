@@ -117,10 +117,12 @@ buildlib() {
 		libsearchpath="lib/arm64*/*" #mind the wildcard
 	elif [ "$ARCH" = "x86" ]; then
 		libsearchpath="lib/x86/*"
-	elif [ "$ARCH" = "x86_64" ]; then
-		libsearchpath="lib/x86_64/*"
+	elif [ "$ARCH" = "x86-64" ]; then
+		libsearchpath="lib/x86-64/*"
 	elif [ "$ARCH" = "mips" ]; then
 		libsearchpath="lib/mips/*"
+	elif [ "$ARCH" = "mips64" ]; then
+		libsearchpath="lib/mips64/*"
 	fi
 	if [ "$API" = "19" ]; then ##We will do this as long as we support KitKat
 		targetdir=$(dirname $(dirname "$targetdir"))
