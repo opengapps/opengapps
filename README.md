@@ -27,9 +27,11 @@ One can update the sources used with the command:
 ```
 ./add_sourceapp.sh /path/to/the/file/you/want/to/add.apk [/even/more/files.apk...]
 ```
-For contributors, these can be uploaded, by browsing to one of the sources-subdirectories and pushing it to the repository.
+Be careful! If add_sourceapp finds multiple architectures in the native code, it expects it to be a 'universal' package. This not always true with 64-bit packages though!
+For contributors, updated sources can be uploaded by browsing to one of the sources-subdirectories and pushing it to the repository:
 ```
 cd sources/architecture
-git commit -a
+git add *
+git commit
 git push
 ```
