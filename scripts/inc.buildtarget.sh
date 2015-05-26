@@ -57,7 +57,9 @@ buildapp "com.google.android.syncadapters.contacts" "Core/required/app/GoogleCon
 buildapp "com.google.android.backuptransport" "Core/required/priv-app/GoogleBackupTransport"
 buildapp "com.google.android.feedback" "Core/required/priv-app/GoogleFeedback"
 buildapp "com.google.android.gsf" "Core/required/priv-app/GoogleServicesFramework"
-buildapp "com.google.android.gsf.login" "Core/required/priv-app/GoogleLoginService"
+if [ "$API" -gt "19" ]; then
+	buildapp "com.google.android.gsf.login" "Core/required/priv-app/GoogleLoginService"
+fi
 buildapp "com.google.android.onetimeinitializer" "Core/required/priv-app/GoogleOneTimeInitializer"
 buildapp "com.google.android.partnersetup" "Core/required/priv-app/GooglePartnerSetup"
 buildapp "com.google.android.setupwizard" "Core/required/priv-app/SetupWizard"
