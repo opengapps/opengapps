@@ -99,7 +99,7 @@ echo "core_size="$core"; keybd_lib_size="$keybdlib";">> "$build"installer.data
 #The part below still has to be made more dynamic, like the 'stock' type
 #We can include again the gms_base type
 #We whould replace 'arm' with the $ARCH type
-tee >>"$build"installer.data <<'EOFILE'
+tee -a "$build"installer.data > /dev/null <<'EOFILE'
 
 # Buffer of extra system space to require for GApps install (9216=9MB)
 # This will allow for some ROM size expansion when GApps are restored
@@ -463,7 +463,7 @@ EOFILE
 }
 
 makeupdatebinary(){
-tee >>"$build"META-INF/com/google/android/update-binary <<'EOFILE'
+tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 #!/sbin/sh
 #This file is part of The PA GApps script of @mfonville.
 #
@@ -853,7 +853,7 @@ for d in $DENSITIES; do
 	fi
 done
 
-tee >>"$build"META-INF/com/google/android/update-binary <<'EOFILE'
+tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
       *) gms=0
          play=0;;
 esac;
