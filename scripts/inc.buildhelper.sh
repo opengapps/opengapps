@@ -47,6 +47,7 @@ buildapp() {
 		buildapk "$1" "$2"
 		buildlib "$1" "$2"
 	else
+		echo "ERROR: Failed to build package $1 on $ARCH"
 		exit 1
 	fi
 }
@@ -68,8 +69,7 @@ getsourceforapi() {
 	fi
 	if [ "$sourcearch" = "" ] && [ "$sourceall" = "" ]
 	then
-		echo "ERROR: Package $1 has neither an APK source in $ARCH as in all"
-		return 1 #error
+		return 1 #package is not there, error!?
 	fi
 	#sed copies filename to the beginning, to compare version, and later we remove it with cut
 	for foundapk in `{ eval "$sourcearch$sourceall"; }\
@@ -85,7 +85,7 @@ getsourceforapi() {
 	done
 	if [ "$sourceapk" = "" ]
 	then
-		echo "ERROR: No APK found compatible with API level $API for package $1 on $ARCH, lowest found: $api"
+		echo "WARNING: No APK found compatible with API level $API for package $1 on $ARCH, lowest found: $api"
 		return 1 #error
 	fi
 	#$sourceapk has the useful returnvalue
@@ -144,16 +144,21 @@ getversion(){
 	then
 		getversion=`aapt dump badging "$sourceapk" | grep "versionCode=" |awk '{print $3}' |tr -d "/versionCode='"`
 	else
-		exit 1
+		return 1
 	fi
+	return 0
 }
 comparebaseversion(){
 	#returns true if both versions are equal
 	#versionnumber to compare with is in $1
 	#packageID to compare with is in $2
 	baseversion1=`echo "$1" | sed 's/.$//'`
-	getversion "$2" #we rely on the fact that this method calls getsourceforapi and changes $sourceapk for us
-	baseversion2=`echo "$getversion" | sed 's/.$//'`
-	test "$baseversion1" = "$baseversion2"
-	return $?  #ugly, but I fail to get it more nice than this :-/
+	if getversion "$2" #we rely on the fact that this method calls getsourceforapi and changes $sourceapk for us
+	then
+		baseversion2=`echo "$getversion" | sed 's/.$//'`
+		test "$baseversion1" = "$baseversion2"
+		return $?  #ugly, but I fail to get it more nice than this :-/
+	else
+		return 1 #the package does not even exist
+	fi
 }

@@ -102,6 +102,7 @@ addapk() {
 
 	#Keep track of specific version of the special DPI packages
 	if [ "$package" = "com.google.android.gms" ] \
+	|| [ "$package" = "com.google.android.apps.messaging" ] \
 	|| [ "$package" = "com.google.android.play.games" ] \
 	; then
 		package="$package.`echo $versioncode| rev | cut -c 1 | rev`"

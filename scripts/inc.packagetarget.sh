@@ -36,7 +36,7 @@ createzip() {
 		rm "$unsignedzip"
 	fi
 	cd "$build"
-	zip -q -r -D -X -9 "$unsignedzip" Core GApps GMSCore Optional PlayGames META-INF bkup_tail.sh g.prop gapps-remove.txt installer.data sizes.prop
+	zip -q -r -D -X -9 "$unsignedzip" Core GApps GMSCore Messenger Optional PlayGames META-INF bkup_tail.sh g.prop gapps-remove.txt installer.data sizes.prop
 	cd "$TOP"
 }
 

@@ -32,6 +32,22 @@ buildapk "com.google.android.gms.0" "GMSCore/0/priv-app/PrebuiltGmsCore"
 buildlib "com.google.android.gms.0" "GMSCore/common/priv-app/PrebuiltGmsCore"
 echo "Found Google Play Services variants:$gmstargets of universal version $gmsversion"
 
+#Messenger
+getversion "com.google.android.apps.messaging.0" #universal DPI version is our benchmark
+msgversion=$getversion
+msgtargets=""
+for v in $DENSITIES; do
+	if comparebaseversion $msgversion "com.google.android.apps.messaging.$v"
+	then
+		msgtargets="$msgtargets $v"
+		#the value of $sourceapk has been changed for us by calling the comparebaseversion
+		buildapk "com.google.android.apps.messaging.$v" "Messenger/$v/app/PrebuiltBugle"
+	fi
+done
+buildapk "com.google.android.apps.messaging.0" "Messenger/0/app/PrebuiltBugle"
+buildlib "com.google.android.apps.messaging.0" "Messenger/common/app/PrebuiltBugle"
+echo "Found Google Messenger variants:$msgtargets of universal version $msgversion"
+
 #PlayGames
 getversion "com.google.android.play.games.0" #universal DPI version is our benchmark
 pgversion=$getversion
@@ -90,7 +106,6 @@ buildapp "com.google.android.talk" "GApps/hangouts/priv-app/Hangouts"
 buildapp "com.google.android.keep" "GApps/keep/app/PrebuiltKeep"
 buildapp "com.google.android.inputmethod.latin" "GApps/keyboardgoogle/app/LatinImeGoogle"
 buildapp "com.google.android.apps.maps" "GApps/maps/app/Maps"
-buildapp "com.google.android.apps.messaging" "GApps/messenger/app/PrebuiltBugle"
 buildapp "com.google.android.videos" "GApps/movies/app/Videos"
 buildapp "com.google.android.music" "GApps/music/app/Music2"
 buildapp "com.google.android.apps.magazines" "GApps/newsstand/app/Newsstand"

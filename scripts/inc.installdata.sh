@@ -47,7 +47,6 @@ echo "hangouts_size="`du -s --apparent-size "$build"GApps/hangouts | cut -f 1` >
 echo "keep_size="`du -s --apparent-size "$build"GApps/keep | cut -f 1` >> "$build"sizes.prop
 echo "keyboardgoogle_size="`du -s --apparent-size "$build"GApps/keyboardgoogle | cut -f 1` >> "$build"sizes.prop
 echo "maps_size="`du -s --apparent-size "$build"GApps/maps | cut -f 1` >> "$build"sizes.prop
-echo "messenger_size="`du -s --apparent-size "$build"GApps/messenger | cut -f 1` >> "$build"sizes.prop
 echo "movies_size="`du -s --apparent-size "$build"GApps/movies | cut -f 1` >> "$build"sizes.prop
 echo "music_size="`du -s --apparent-size "$build"GApps/music | cut -f 1` >> "$build"sizes.prop
 echo "newsstand_size="`du -s --apparent-size "$build"GApps/newsstand | cut -f 1` >> "$build"sizes.prop
@@ -82,6 +81,13 @@ gmscommon=`du -s "$build"GMSCore/common | cut -f 1`
 for t in $gmstargets; do
 	gmst=`du -s "$build"GMSCore/$t | cut -f 1`
 	printf "gms_"$t"_size="`expr $gmst + $gmscommon`"; " >> "$build"installer.data
+done
+
+echo "\n\n# Google Messenger version sizes" >> "$build"installer.data
+msgcommon=`du -s "$build"Messenger/common | cut -f 1`
+for t in $msgtargets; do
+	msgt=`du -s "$build"Messenger/$t | cut -f 1`
+	printf "msg_"$t"_size="`expr $msgt + $msgcommon`"; " >> "$build"installer.data
 done
 
 echo "\n\n# Google Play Games version sizes" >> "$build"installer.data
@@ -189,6 +195,7 @@ cmeleven
 cmfilemanager
 cmupdater
 cmwallpapers
+dashclock
 exchangestock
 fmradio
 galaxy
@@ -254,6 +261,10 @@ priv-app/CMUpdater
 
 cmwallpapers_list="
 app/CMWallpapers
+";
+
+dashclock_list="
+app/DashClock
 ";
 
 email_list="
@@ -432,7 +443,7 @@ obsolete_list="
 #obsolete_list="${obsolete_list}
 #";
 
-# Old gaddon.d backup scripts as we'll be replacing with updated version during install
+# Old addon.d backup scripts as we'll be replacing with updated version during install
 oldscript_list="
 /system/etc/g.prop
 /system/addon.d/70-gapps.sh
@@ -844,6 +855,13 @@ for d in $DENSITIES; do
 	else
 		echo "gms=0">> "$build"META-INF/com/google/android/update-binary
 	fi
+	echo "$msgtargets" | grep -q "$d"
+	if [ $? -eq 0 ]
+	then
+		echo "         msg=$d;;">> "$build"META-INF/com/google/android/update-binary
+	else
+		echo "         msg=0;;">> "$build"META-INF/com/google/android/update-binary
+	fi
 	echo "$pgtargets" | grep -q "$d"
 	if [ $? -eq 0 ]
 	then
@@ -1181,7 +1199,8 @@ log "Remove Stock/AOSP Launcher" $remove_launcher;
 log "Remove Stock/AOSP MMS App" $remove_mms;
 log "Remove Stock/AOSP Pico TTS" $remove_picotts;
 log "Installing Play Services variation" "$gms)";
-log "Installing Play Games variation" "$play)";
+log "Installing Play Games variation" "$pg)";
+log "Installing Messenger variation" "$msg)";
 # _____________________________________________________________________________________________________________________
 #                                                  Perform space calculations
 ui_print "- Performing system space calculations";
@@ -1189,7 +1208,8 @@ ui_print " ";
 
 # Perform calculations of device specific applications
 eval "gms_size=\$gms_${gms}_size"; # Determine size of GMSCore
-eval "playgames_size=\$pg_${play}_size"; # Determine size of PlayGames
+eval "messenger_size=\$msg_${msg}_size"; # Determine size of Messenger
+eval "playgames_size=\$pg_${pg}_size"; # Determine size of PlayGames
 
 # Determine final size of Core Apps
 if ( ! contains "$gapps_list" "keyboardgoogle" ); then
@@ -1350,8 +1370,14 @@ folder_extract GMSCore $gms; # Install Google Play Services apk
 # Install PlayGames if it's in $gapps_list
 if ( contains "$gapps_list" "playgames" ); then
     folder_extract PlayGames common; # Install Google PlayGames libs
-    folder_extract PlayGames $play; # Install Google PlayGames apk
+    folder_extract PlayGames $pg; # Install Google PlayGames apk
     gapps_list=${gapps_list/playgames}; # remove PlayGames from gapps list since it's now installed
+fi;
+# Install Messenger if it's in $gapps_list
+if ( contains "$gapps_list" "messenger" ); then
+    folder_extract Messenger $msg; # Install Google Messenger apk
+    folder_extract Messenger common; # Install Google Messenger libs
+    gapps_list=${gapps_list/messenger}; # Remove Messenger from gapps list since it's now installed
 fi;
 
 # Progress Bar increment calculations for GApps Install process
