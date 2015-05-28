@@ -1,6 +1,6 @@
-#This file is part of The PA GApps script of @mfonville.
+#This file is part of The Open GApps script of @mfonville.
 #
-#    The PA GApps scripts are free software: you can redistribute it and/or modify
+#    The Open GApps scripts are free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
@@ -14,8 +14,8 @@ makegprop(){
 echo "# begin addon properties
 ro.addon.type=gapps
 ro.addon.platform="$(echo "$PLATFORM" | tr -d ".")"
-ro.addon.pa_type=stock
-ro.addon.pa_version="$DATE"
+ro.addon.open_type=stock
+ro.addon.open_version="$DATE"
 # end addon properties" > "$build"g.prop
 }
 makegappsremovetxt(){
@@ -61,7 +61,7 @@ echo "wallet_size="`du -s --apparent-size "$build"GApps/wallet | cut -f 1` >> "$
 echo "youtube_size="`du -s --apparent-size "$build"GApps/youtube | cut -f 1` >> "$build"sizes.prop
 }
 makeinstallerdata(){
-echo "# Installation Data for PA Lollipop GApps Installer by @mfonville based on the work of @TKruzze
+echo "# Installation Data for Open GApps Installer by @mfonville based on the work of @TKruzze
 # Last Updated: "$DATE > "$build"installer.data
 echo '# _____________________________________________________________________________________________________________________
 #                                             Define Current Package Variables
@@ -69,7 +69,7 @@ echo '# ________________________________________________________________________
 pkg_names="pico nano micro mini full stock";
 
 # Installer Name (32 chars Total, excluding "")
-installer_name="PA Google Stock GApps '$PLATFORM' - ";
+installer_name="Open GApps Stock '$PLATFORM' - ";
 
 req_android_version="'$PLATFORM'";
 keybd_lib_filename1="libjni_latinimegoogle.so";
@@ -118,7 +118,7 @@ removal_bypass_list="
 # Define exit codes (returned upon exit due to an error)
 E_ROMVER=20; # Wrong ROM version
 E_NOSPACE=70; # Insufficient Space Available in System Partition
-E_NONPA=40; # NON-PA GApps Currently Installed
+E_NONOPEN=40; # NON-Open GApps Currently Installed
 E_64BIT=64 ; # 64-bit Device Detected
 #_________________________________________________________________________________________________________________
 #                                             GApps List (Applications user can Select/Deselect)
@@ -456,7 +456,7 @@ oldscript_list="
 remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript_list}";
 # _____________________________________________________________________________________________________________________
 #                                             Installer Error Messages
-64bit_compat_msg="INSTALLATION FAILURE: PA GApps are not compatible with 64-bit devices. You will\nneed to find a 64-bit compatible GApps package that will worok with your device.\n";
+64bit_compat_msg="INSTALLATION FAILURE: Open GApps are not compatible with 64-bit devices. You will\nneed to find a 64-bit compatible GApps package that will worok with your device.\n";
 camera_sys_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera\ncan only be installed during a Clean Install or as an update to an existing\nGApps Installation.\n";
 camera_compat_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera is\nNOT compatible with your device if installed in the system partition. Try\ninstalling from the Play Store instead.\n";
 faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";
@@ -465,20 +465,20 @@ keyboard_sys_msg="WARNING: Google Keyboard has/will not be installed as requeste
 nokeyboard_msg="NOTE: The Stock/AOSP keyboard was NOT removed as requested to ensure your device\nwas not accidentally left with no keyboard installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
 nolauncher_msg="NOTE: The Stock/AOSP Launcher was NOT removed as requested to ensure your device\nwas not accidentally left with no Launcher. If this was your intention, you can\nadd 'Override' to your gapps-config to override this protection.\n";
 nomms_msg="NOTE: The Stock/AOSP MMS app was NOT removed as requested to ensure your device\nwas not accidentally left with no way to receive text messages. If this WAS\nintentional, add 'Override' to your gapps-config to override this protection.\n";
-non_pa_gapps_msg="INSTALLATION FAILURE: PA GApps can only be installed on top of an existing\nPA GApps installation. Since you are currently using another GApps package, you\nwill need to wipe (format) your system partition before installing PA GApps.\n";
+non_open_gapps_msg="INSTALLATION FAILURE: Open GApps can only be installed on top of an existing\nOpen GApps installation. Since you are currently using another GApps package, you\nwill need to wipe (format) your system partition before installing Open GApps.\n";
 rom_version_msg="INSTALLATION FAILURE: This GApps package can only be installed on a $req_android_version.x ROM.\n";
 simulation_msg="TEST INSTALL: This was only a simulated install. NO CHANGES WERE MADE TO YOUR\nDEVICE. To complete the installation remove 'Test' from your gapps-config.\n";
 system_space_msg="INSTALLATION FAILURE: Your device does not have sufficient space available in\nthe system partition to install this GApps package as currently configured.\nYou will need to switch to a smaller GApps package or use gapps-config to\nreduce the installed size.\n";
-del_conflict_msg="!!! WARNING !!! - Duplicate files were noted between your ROM and this GApps\npackage. The duplicate files are shown in the log portion below. Please report\nthis information to the PA GApps developers on GitHub or XDA Forums.\n";
+del_conflict_msg="!!! WARNING !!! - Duplicate files were noted between your ROM and this GApps\npackage. The duplicate files are shown in the log portion below. Please report\nthis information to the Open GApps developers on GitHub or XDA Forums.\n";
 EOFILE
 }
 
 makeupdatebinary(){
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 #!/sbin/sh
-#This file is part of The PA GApps script of @mfonville.
+#This file is part of The Open GApps script of @mfonville.
 #
-#    The PA GApps scripts are free software: you can redistribute it and/or modify
+#    The Open GApps scripts are free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
@@ -488,7 +488,7 @@ tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-# PA GApps 2.0a Shell Script Installer
+# Open GApps Shell Script Installer
 # Created by @mfonville, based on the work of @TKruzze and @osm0sis
 #
 unzip -o "$3" installer.data sizes.prop g.prop gapps-remove.txt bkup_tail.sh -d /tmp;
@@ -510,7 +510,7 @@ conflicts_log=/tmp/conflicts.log;
 rec_cache_log=/cache/recovery/log;
 rec_tmp_log=/tmp/recovery.log;
 
-log_close="# End PA GApps Install Log\n";
+log_close="# End Open GApps Install Log\n";
 
 reclaimed_gapps_space_kb=0;
 reclaimed_removal_space_kb=0;
@@ -573,14 +573,14 @@ exxit() {
         fi;
         ls -alZR /system > /tmp/logs/System_Files_After.txt;
         df -k > /tmp/logs/Device_Space_After.txt;
-        cp -f "$log_folder/pa_gapps_log.txt" /tmp/logs;
+        cp -f "$log_folder/open_gapps_log.txt" /tmp/logs;
         cp -f $b_prop /tmp/logs;
         cp -f /system/addon.d/70-gapps.sh /tmp/logs;
         cp -f $gapps_removal_list "/tmp/logs/gapps-remove(revised).txt";
         cp -f $rec_cache_log /tmp/logs/Recovery_cache.log;
         cp -f $rec_tmp_log /tmp/logs/Recovery_tmp.log;
         cd /tmp/logs;
-        tar -cz -f "$log_folder/pa_gapps_debug_logs.tar.gz" *;
+        tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" *;
         cd /;
     fi;
     rm -rf /tmp/*;
@@ -664,7 +664,7 @@ quit() {
     # Copy logs to proper folder (Same as gapps-config or same as Zip)
     ui_print "- Copying Log to $log_folder";
     ui_print " ";
-    cp -f $g_log "$log_folder/pa_gapps_log.txt";
+    cp -f $g_log "$log_folder/open_gapps_log.txt";
     rm -f $g_log;
     set_progress 0.97;
 }
@@ -700,18 +700,18 @@ ui_print() {
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Pre-Install Info
 # Get GApps Version and GApps Type from g.prop extracted at top of script
-gapps_version=$(file_getprop /tmp/g.prop ro.addon.pa_version);
-gapps_type=$(file_getprop /tmp/g.prop ro.addon.pa_type);
+gapps_version=$(file_getprop /tmp/g.prop ro.addon.open_version);
+gapps_type=$(file_getprop /tmp/g.prop ro.addon.open_type);
 # _____________________________________________________________________________________________________________________
 #                                                  Begin GApps Installation
 ui_print " ";
-ui_print "#########################################";
-ui_print " ___   _      ___    _                   ";
-ui_print "| _ \ /_\    / __|  /_\   _ __  _ __  ___";
-ui_print "|  _// _ \  | (_ | / _ \ | '_ \| '_ \(_-<";
-ui_print "|_| /_/ \_\  \___|/_/ \_\| .__/| .__//__/";
-ui_print "                         |_|   |_|       ";
-ui_print "#########################################";
+ui_print "################################################";
+ui_print "  ____                  ________               ";
+ui_print " / __ \___  ___ ___    / ___/ _ | ___  ___  ___";
+ui_print "/ /_/ / _ \/ -_) _ \  / (_ / __ |/ _ \/ _ \(_-<";
+ui_print "\____/ .__/\__/_//_/  \___/_/ |_/ .__/ .__/___/";
+ui_print "    /_/                        /_/  /_/        ";
+ui_print "################################################";
 ui_print " ";
 ui_print "$installer_name$gapps_version";
 ui_print " ";
@@ -725,7 +725,7 @@ busybox mount -o rw,remount /system;
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
 # Locate gapps-config (if used)
-for i in "$zip_folder/.gapps-config" "$zip_folder/gapps-config.txt" /sdcard/PA-GApps/.gapps-config /sdcard/PA-GApps/gapps-config.txt "$zip_folder/.gapps-config.txt" /sdcard/PA-GApps/.gapps-config.txt; do
+for i in "$zip_folder/.gapps-config" "$zip_folder/gapps-config.txt" /sdcard/Open-GApps/.gapps-config /sdcard/Open-GApps/gapps-config.txt "$zip_folder/.gapps-config.txt" /sdcard/Open-GApps/.gapps-config.txt; do
     if [ -r "$i" ]; then
         g_conf="$i";
         break;
@@ -781,7 +781,7 @@ for field in ro.modversion ro.build.version.incremental; do
     rom_version="non-standard build.prop";
 done;
 
-echo "# Begin PA GApps Install Log" > $g_log;
+echo "# Begin Open GApps Install Log" > $g_log;
 echo -------------------------------------------------------------------------------- >> $g_log;
 log "ROM Android Version" $rom_android_version;
 
@@ -801,14 +801,14 @@ fi;
 if echo "$(file_getprop $b_prop ro.product.cpu.abilist64)" | grep -qi "arm64"; then
     ui_print "***** Incompatible Device Detected *****";
     ui_print " ";
-    ui_print "PA GApps can ONLY be installed on 32-bit";
+    ui_print "Open GApps can ONLY be installed on 32-bit";
     ui_print "devices. Your device has been detected";
     ui_print "as a 64-bit device. You will need to";
     ui_print "find a 64-bit compatible GApps package.";
     ui_print " ";
     ui_print "******* GApps Installation failed *******";
     ui_print " ";
-    install_note="${install_note}64bit_compat_msg"$'\n'; # make note that PA GApps are not 64-bit compatible
+    install_note="${install_note}64bit_compat_msg"$'\n'; # make note that Open GApps are not 64-bit compatible
     abort $E_64BIT;
 fi;
 
@@ -937,38 +937,38 @@ log "Google Camera Installed¹" "$cameragoogle_inst";
 log "Google Keyboard Installed¹" "$keyboardgoogle_inst";
 log "FaceUnlock Compatible" "$faceunlock_compat";
 log "Google Camera Compatible" "$cameragoogle_compat";
-log_close="                  ¹ Previously installed with PA GApps\n$log_close";
+log_close="                  ¹ Previously installed with Open GApps\n$log_close";
 
 # Determine if a GApps package is installed and
-# the version, type, and whether it's a PA GApps package
+# the version, type, and whether it's a Open GApps package
 if [ -e /system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk -a -e /system/priv-app/GoogleLoginService/GoogleLoginService.apk ]; then
-    if [ -n "$(grep ro.addon.pa_version $g_prop)" ]; then
-        log "Current GApps Version" "$(file_getprop $g_prop ro.addon.pa_version)";
-        if [ -n "$(grep ro.addon.pa_type $g_prop)" ]; then
-            log "Current PA GApps Package" "$(file_getprop $g_prop ro.addon.pa_type)";
+    if [ -n "$(grep ro.addon.open_version $g_prop)" ]; then
+        log "Current GApps Version" "$(file_getprop $g_prop ro.addon.open_version)";
+        if [ -n "$(grep ro.addon.open_type $g_prop)" ]; then
+            log "Current Open GApps Package" "$(file_getprop $g_prop ro.addon.open_type)";
         else
-            log "Current PA GApps Package" "Unknown";
+            log "Current Open GApps Package" "Unknown";
         fi;
     else
-        log "Current GApps Version" "NON PA GApps Currently Installed (FAILURE)";
+        log "Current GApps Version" "NON Open GApps Currently Installed (FAILURE)";
         ui_print "* Incompatible GApps Currently Installed *";
         ui_print " ";
-        ui_print "PA GApps can ONLY be installed on top of";
-        ui_print "an existing installation of PA GApps. You";
+        ui_print "Open GApps can ONLY be installed on top of";
+        ui_print "an existing installation of Open GApps. You";
         ui_print "must wipe (format) your system partition";
-        ui_print "BEFORE installing any PA GApps package.";
+        ui_print "BEFORE installing any Open GApps package.";
         ui_print " ";
         ui_print "See FAQ #6 in XDA thread for more details";
         ui_print " ";
         ui_print "******* GApps Installation failed *******";
         ui_print " ";
-        install_note="${install_note}non_pa_gapps_msg"$'\n'; # make note that currently installed GApps are non-PA
-        abort $E_NONPA;
+        install_note="${install_note}non_open_gapps_msg"$'\n'; # make note that currently installed GApps are non-Open
+        abort $E_NONOPEN;
     fi;
 else
     # User does NOT have a GApps package installed on their device
     log "Current GApps Version" "NO GApps Installed";
-    log "Current PA GApps Package" "NO GApps Installed";
+    log "Current Open GApps Package" "NO GApps Installed";
 
     # Use the opportunity of No GApps installed to check for potential ROM conflicts when deleting existing GApps files
     while read gapps_file; do
@@ -985,7 +985,7 @@ for pkg in $pkg_names; do
     all_gapps_list=${all_gapps_list}${addto}; # Look for method to combine this with line above
     if ( grep -qi "${pkg}gapps" "$g_conf" ); then # user has selected a 'preset' install
         gapps_type=$pkg;
-        sed -i "/ro.addon.pa_type/c\ro.addon.pa_type=$pkg" /tmp/g.prop; # modify g.prop to new package type
+        sed -i "/ro.addon.open_type/c\ro.addon.open_type=$pkg" /tmp/g.prop; # modify g.prop to new package type
         break;
     fi;
 done;
@@ -1235,7 +1235,7 @@ reclaimed_gapps_space_kb=$(du -ck `complete_gapps_list` | tail -n1 | awk '{ prin
 set_progress 0.05;
 reclaimed_removal_space_kb=$(du -ck `obsolete_gapps_list` | tail -n1 | awk '{ print $1 }');
 
-# Add information to calc.log that will later be added to pa_gapps.log to assist user with app removals
+# Add information to calc.log that will later be added to open_gapps.log to assist user with app removals
 post_install_size_kb=$((free_system_size_kb + reclaimed_gapps_space_kb)); # Add opening calculations
 echo -------------------------------------------------- > $calc_log;
 printf "%7s | %18s |   %7s | %7s\n" "TYPE " "DESCRIPTION   " "SIZE" "  TOTAL" >> $calc_log;
@@ -1301,9 +1301,9 @@ if [ "$post_install_size_kb" -lt 0 ]; then
     # We don't have enough system space to install everything user requested
     ui_print "Insufficient storage space available in";
     ui_print "System partition. You may want to use a";
-    ui_print "smaller PA GApps package or consider";
+    ui_print "smaller Open GApps package or consider";
     ui_print "removing some apps using gapps-config.";
-    ui_print "See:'$log_folder/pa_gapps_log.txt'";
+    ui_print "See:'$log_folder/open_gapps_log.txt'";
     ui_print "for complete details and information.";
     ui_print " ";
     install_note="${install_note}system_space_msg"$'\n'; # make note that there is insufficient space in system to install

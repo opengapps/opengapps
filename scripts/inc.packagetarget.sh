@@ -1,6 +1,6 @@
-#This file is part of The PA GApps script of @mfonville.
+#This file is part of The Open GApps script of @mfonville.
 #
-#    The PA GApps scripts are free software: you can redistribute it and/or modify
+#    The Open GApps scripts are free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
@@ -57,5 +57,5 @@ signzip() {
 		exit 1
 	fi
 	cd "$TOP"
-	echo "SUCCESS: Built PA GApps with API $API level for $ARCH as $signedzip"
+	echo "SUCCESS: Built Open GApps with API $API level for $ARCH as $signedzip"
 }

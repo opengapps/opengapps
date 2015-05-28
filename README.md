@@ -1,9 +1,9 @@
 Getting Started
 ---------------
 
-To get started with building PA Gapps, you'll need to get the git sources:
+To get started with building Open GApps, you'll need to get the git sources:
 
-To initialize your local repository using the PA Gapps trees, use a command like:
+To initialize your local repository using the Open GApps trees, use a command like:
 ```
 git clone git@github.com:pagapps/pagapps.git
 ```
@@ -13,11 +13,11 @@ You can also use this command to update at a later moment the sources to the mos
 ./download_sources.sh
 ```
 
-To build PA GApps for all platforms and all android releases:
+To build Open GApps for all platforms and all android releases:
 ```
 make
 ```
-To build PA GApps for a specific android release on a specific platform,
+To build Open GApps for a specific android release on a specific platform,
 define both the platform and the API level of that release, seperated by a dash.
 A (most widely used) example:
 ```

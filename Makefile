@@ -1,6 +1,6 @@
-#This file is part of The PA GApps script of @mfonville.
+#This file is part of The Open GApps script of @mfonville.
 #
-#    The PA GApps scripts are free software: you can redistribute it and/or modify
+#    The Open GApps scripts are free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
@@ -33,7 +33,7 @@ $1:
 	$(platform = $(firstword $(subst -, ,$1)))
 	$(api = $(word 2, $(subst -, ,$1)))
 	@if [ "$(api)" -ge "$(LOWESTAPI_$(platform))" ] ; then\
-		echo "Generating PA GApps package for $(platform) with API level $(api)...";\
+		echo "Generating Open GApps package for $(platform) with API level $(api)...";\
 		$(BUILD_GAPPS) $(platform) $(api) 2>&1 | tee $(LOG_BUILD);\
 		echo "--------------------------------------------------------------------";\
 	fi
