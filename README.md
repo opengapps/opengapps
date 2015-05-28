@@ -5,7 +5,7 @@ To get started with building Open GApps, you'll need to get the git sources:
 
 To initialize your local repository using the Open GApps trees, use a command like:
 ```
-git clone git@github.com:pagapps/pagapps.git
+git clone git@github.com:opengapps/opengapps.git
 ```
 Then sync the submodules to get the original APK sources as provided by Google.
 You can also use this command to update at a later moment the sources to the most recent version
