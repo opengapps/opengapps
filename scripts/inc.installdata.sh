@@ -22,9 +22,10 @@ makegappsremovetxt(){
 corepath="$BUILD/$ARCH/$API/Core/"
 gappspath="$BUILD/$ARCH/$API/GApps/"
 gmscorepath="$BUILD/$ARCH/$API/GMSCore/"
+messengerpath="$BUILD/$ARCH/$API/Messenger/"
 playgamespath="$BUILD/$ARCH/$API/PlayGames/"
-find "$corepath" "$gappspath" "$gmscorepath" "$playgamespath" -mindepth 3 -maxdepth 3 -printf "%P\n" -name "*" | grep -v "etc/" | sed 's#^[^/]*#/system#' | sort | uniq > "$build"gapps-remove.txt
-find "$corepath" "$gappspath" "$gmscorepath" "$playgamespath" -mindepth 4 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^[^/]*#/system#' | sort | uniq >> "$build"gapps-remove.txt
+find "$corepath" "$gappspath" "$gmscorepath" "$messengerpath" "$playgamespath" -mindepth 3 -maxdepth 3 -printf "%P\n" -name "*" | grep -v "etc/" | sed 's#^[^/]*#/system#' | sort | uniq > "$build"gapps-remove.txt
+find "$corepath" "$gappspath" "$gmscorepath" "$messengerpath" "$playgamespath" -mindepth 4 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^[^/]*#/system#' | sort | uniq >> "$build"gapps-remove.txt
 }
 makesizesprop(){
 echo "books_size="`du -s --apparent-size "$build"GApps/books | cut -f 1` > "$build"sizes.prop
@@ -858,9 +859,9 @@ for d in $DENSITIES; do
 	echo "$msgtargets" | grep -q "$d"
 	if [ $? -eq 0 ]
 	then
-		echo "         msg=$d;;">> "$build"META-INF/com/google/android/update-binary
+		echo "         msg=$d">> "$build"META-INF/com/google/android/update-binary
 	else
-		echo "         msg=0;;">> "$build"META-INF/com/google/android/update-binary
+		echo "         msg=0">> "$build"META-INF/com/google/android/update-binary
 	fi
 	echo "$pgtargets" | grep -q "$d"
 	if [ $? -eq 0 ]
