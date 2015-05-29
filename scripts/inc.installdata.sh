@@ -866,15 +866,16 @@ for d in $DENSITIES; do
 	echo "$pgtargets" | grep -q "$d"
 	if [ $? -eq 0 ]
 	then
-		echo "         play=$d;;">> "$build"META-INF/com/google/android/update-binary
+		echo "         pg=$d;;">> "$build"META-INF/com/google/android/update-binary
 	else
-		echo "         play=0;;">> "$build"META-INF/com/google/android/update-binary
+		echo "         pg=0;;">> "$build"META-INF/com/google/android/update-binary
 	fi
 done
 
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
       *) gms=0
-         play=0;;
+         msg=0;;
+         pg=0;;
 esac;
 
 # Set density to unknown if it's still empty
