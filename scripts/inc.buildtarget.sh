@@ -98,6 +98,7 @@ buildfile "lib/libfacelock_jni.so" "GApps/faceunlock/lib/"
 buildfile "vendor/pittpatt/" "GApps/faceunlock/vendor/pittpatt/"
 buildapp "com.android.facelock" "GApps/faceunlock/app/FaceLock/"
 #End of FaceLock
+buildapp "com.google.android.apps.fitness" "GApps/fitness/app/FitnessPrebuilt"
 buildapp "com.google.android.gm" "GApps/gmail/app/PrebuiltGmail"
 buildapp "com.google.android.launcher" "GApps/googlenow/priv-app/GoogleHome" #moves in android M to /app/
 buildapp "com.google.android.apps.photos" "GApps/photos/app/Photos"
