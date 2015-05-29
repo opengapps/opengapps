@@ -121,5 +121,6 @@ buildfile "usr/srec/" "GApps/speech/usr/srec/"
 buildapp "com.google.android.street" "GApps/street/app/Street"
 buildapp "com.google.android.marvin.talkback" "GApps/talkback/app/talkback"
 buildapp "com.google.android.apps.walletnfcrel" "GApps/wallet/priv-app/Wallet"
+buildapp "com.google.android.webview" "GApps/webview/app/Webview"
 buildapp "com.google.android.youtube" "GApps/youtube/app/YouTube"
 }

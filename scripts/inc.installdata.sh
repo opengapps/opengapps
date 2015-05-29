@@ -61,6 +61,7 @@ echo "speech_size="`du -s --apparent-size "$build"GApps/speech | cut -f 1` >> "$
 echo "street_size="`du -s --apparent-size "$build"GApps/street | cut -f 1` >> "$build"sizes.prop
 echo "talkback_size="`du -s --apparent-size "$build"GApps/talkback | cut -f 1` >> "$build"sizes.prop
 echo "wallet_size="`du -s --apparent-size "$build"GApps/wallet | cut -f 1` >> "$build"sizes.prop
+echo "webview_size="`du -s --apparent-size "$build"GApps/webview | cut -f 1` >> "$build"sizes.prop
 echo "youtube_size="`du -s --apparent-size "$build"GApps/youtube | cut -f 1` >> "$build"sizes.prop
 }
 makeinstallerdata(){
@@ -129,8 +130,6 @@ E_64BIT=64 ; # 64-bit Device Detected
 stock_gapps_list="
 cameragoogle
 keyboardgoogle
-sheets
-slides
 ";
 
 full_gapps_list="
@@ -149,8 +148,11 @@ music
 newsstand
 newswidget
 playgames
+sheets
+slides
 talkback
 wallet
+webview
 ";
 
 mini_gapps_list="
@@ -878,7 +880,7 @@ done
 
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
       *) gms=0
-         msg=0;;
+         msg=0
          pg=0;;
 esac;
 
