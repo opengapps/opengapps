@@ -13,9 +13,9 @@
 makegprop(){
 echo "# begin addon properties
 ro.addon.type=gapps
-ro.addon.platform="$(echo "$PLATFORM" | tr -d ".")"
+ro.addon.platform=$PLATFORM
 ro.addon.open_type=stock
-ro.addon.open_version="$DATE"
+ro.addon.open_version=$DATE
 # end addon properties" > "$build"g.prop
 }
 makegappsremovetxt(){
