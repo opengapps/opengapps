@@ -99,7 +99,8 @@ buildfile "vendor/pittpatt/" "GApps/faceunlock/vendor/pittpatt/"
 buildapp "com.android.facelock" "GApps/faceunlock/app/FaceLock/"
 #End of FaceLock
 buildapp "com.google.android.gm" "GApps/gmail/app/PrebuiltGmail"
-buildapp "com.google.android.launcher" "GApps/googlenow/priv-app/GoogleHome"
+buildapp "com.google.android.launcher" "GApps/googlenow/priv-app/GoogleHome" #moves in android M to /app/
+buildapp "com.google.android.apps.photos" "GApps/photos/app/Photos"
 buildapp "com.google.android.apps.plus" "GApps/googleplus/app/PlusOne"
 buildapp "com.google.android.tts" "GApps/googletts/app/GoogleTTS"
 buildapp "com.google.android.talk" "GApps/hangouts/priv-app/Hangouts"

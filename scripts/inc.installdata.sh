@@ -52,6 +52,7 @@ echo "movies_size="`du -s --apparent-size "$build"GApps/movies | cut -f 1` >> "$
 echo "music_size="`du -s --apparent-size "$build"GApps/music | cut -f 1` >> "$build"sizes.prop
 echo "newsstand_size="`du -s --apparent-size "$build"GApps/newsstand | cut -f 1` >> "$build"sizes.prop
 echo "newswidget_size="`du -s --apparent-size "$build"GApps/newswidget | cut -f 1` >> "$build"sizes.prop
+echo "photos_size="`du -s --apparent-size "$build"GApps/photos | cut -f 1` >> "$build"sizes.prop
 echo "search_size="`du -s --apparent-size "$build"GApps/search | cut -f 1` >> "$build"sizes.prop
 echo "sheets_size="`du -s --apparent-size "$build"GApps/sheets | cut -f 1` >> "$build"sizes.prop
 echo "slides_size="`du -s --apparent-size "$build"GApps/slides | cut -f 1` >> "$build"sizes.prop
@@ -154,6 +155,7 @@ mini_gapps_list="
 googleplus
 hangouts
 maps
+photos
 street
 youtube
 ";
@@ -1077,8 +1079,8 @@ if ( ! contains "$gapps_list" "gmail" ) && ( ! grep -qi "email" "$g_conf" ); the
     remove_email=false[default];
 fi;
 
-# If we're NOT installing googleplus make certain 'gallery' is NOT in $aosp_remove_list UNLESS 'gallery' is in $g_conf
-if ( ! contains "$gapps_list" "googleplus" ) && ( ! grep -qi "gallery" "$g_conf" ); then
+# If we're NOT installing photos make certain 'gallery' is NOT in $aosp_remove_list UNLESS 'gallery' is in $g_conf
+if ( ! contains "$gapps_list" "photos" ) && ( ! grep -qi "gallery" "$g_conf" ); then
     aosp_remove_list=${aosp_remove_list/gallery};
     remove_gallery=false[default];
 fi;
