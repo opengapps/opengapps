@@ -478,7 +478,7 @@ non_open_gapps_msg="INSTALLATION FAILURE: Open GApps can only be installed on to
 rom_version_msg="INSTALLATION FAILURE: This GApps package can only be installed on a $req_android_version.x ROM.\n";
 simulation_msg="TEST INSTALL: This was only a simulated install. NO CHANGES WERE MADE TO YOUR\nDEVICE. To complete the installation remove 'Test' from your gapps-config.\n";
 system_space_msg="INSTALLATION FAILURE: Your device does not have sufficient space available in\nthe system partition to install this GApps package as currently configured.\nYou will need to switch to a smaller GApps package or use gapps-config to\nreduce the installed size.\n";
-del_conflict_msg="!!! WARNING !!! - Duplicate files were noted between your ROM and this GApps\npackage. The duplicate files are shown in the log portion below. Please report\nthis information to the Open GApps developers on GitHub or XDA Forums.\n";
+del_conflict_msg="!!! WARNING !!! - Duplicate files were found between your ROM and this GApps\npackage. This is likely due to your ROM's dev including Google proprietary\nfiles in the ROM. The duplicate files are shown in the log portion below.\n";
 EOFILE
 }
 
@@ -967,8 +967,6 @@ if [ -e /system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk -a 
         ui_print "an existing installation of Open GApps. You";
         ui_print "must wipe (format) your system partition";
         ui_print "BEFORE installing any Open GApps package.";
-        ui_print " ";
-        ui_print "See FAQ #6 in XDA thread for more details";
         ui_print " ";
         ui_print "******* GApps Installation failed *******";
         ui_print " ";
