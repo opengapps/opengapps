@@ -20,6 +20,9 @@ clean
 getversion "com.google.android.gms.0" #universal DPI version is our benchmark
 gmsversion="$getversion"
 gmstargets=""
+#$sourceapk is because of getversion still there for the 0 variant
+buildapk "com.google.android.gms.0" "GMSCore/0/priv-app/PrebuiltGmsCore"
+buildlib "com.google.android.gms.0" "GMSCore/common/priv-app/PrebuiltGmsCore"
 for v in $DENSITIES; do
 	if comparebaseversion "$gmsversion" "com.google.android.gms.$v"
 	then
@@ -28,14 +31,15 @@ for v in $DENSITIES; do
 		buildapk "com.google.android.gms.$v" "GMSCore/$v/priv-app/PrebuiltGmsCore"
 	fi
 done
-buildapk "com.google.android.gms.0" "GMSCore/0/priv-app/PrebuiltGmsCore"
-buildlib "com.google.android.gms.0" "GMSCore/common/priv-app/PrebuiltGmsCore"
-echo "Found Google Play Services variants:$gmstargets of universal version $gmsversion"
 
+echo "Found Google Play Services variants:$gmstargets of universal version $gmsversion"
 #Messenger
 getversion "com.google.android.apps.messaging.0" #universal DPI version is our benchmark
 msgversion=$getversion
 msgtargets=""
+#$sourceapk is because of getversion still there for the 0 variant
+buildapk "com.google.android.apps.messaging.0" "Messenger/0/app/PrebuiltBugle"
+buildlib "com.google.android.apps.messaging.0" "Messenger/common/app/PrebuiltBugle"
 for v in $DENSITIES; do
 	if comparebaseversion $msgversion "com.google.android.apps.messaging.$v"
 	then
@@ -44,14 +48,15 @@ for v in $DENSITIES; do
 		buildapk "com.google.android.apps.messaging.$v" "Messenger/$v/app/PrebuiltBugle"
 	fi
 done
-buildapk "com.google.android.apps.messaging.0" "Messenger/0/app/PrebuiltBugle"
-buildlib "com.google.android.apps.messaging.0" "Messenger/common/app/PrebuiltBugle"
 echo "Found Google Messenger variants:$msgtargets of universal version $msgversion"
 
 #PlayGames
 getversion "com.google.android.play.games.0" #universal DPI version is our benchmark
 pgversion=$getversion
 pgtargets=""
+#$sourceapk is because of getversion still there for the 0 variant
+buildapk "com.google.android.play.games.0" "PlayGames/0/app/PlayGames"
+buildlib "com.google.android.play.games.0" "PlayGames/common/app/PlayGames"
 for v in $DENSITIES; do
 	if comparebaseversion $pgversion "com.google.android.play.games.$v"
 	then
@@ -60,8 +65,6 @@ for v in $DENSITIES; do
 		buildapk "com.google.android.play.games.$v" "PlayGames/$v/app/PlayGames"
 	fi
 done
-buildapk "com.google.android.play.games.0" "PlayGames/0/app/PlayGames"
-buildlib "com.google.android.play.games.0" "PlayGames/common/app/PlayGames"
 echo "Found Google Play Games variants:$pgtargets of universal version $pgversion"
 
 #Keyboard Lib
