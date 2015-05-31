@@ -26,6 +26,53 @@ OUT=$TOP/out
 SOURCE=$TOP/sources
 SCRIPTS=$TOP/scripts
 DENSITIES="2 4 6 8" #don't add 0
+VARIANTS="stock full micro mini nano pico" #keep in order from large to small
+
+STOCK="cameragoogle
+keyboardgoogle"
+
+FULL="books
+chrome
+cloudprint
+docs
+drive
+ears
+earth
+fitness
+keep
+messenger
+movies
+music
+newsstand
+newswidget
+playgames
+sheets
+slides
+talkback
+wallet"
+if [ "$API" -gt "19" ]; then
+	FULL="$FULL
+webview"
+fi
+
+MINI="googleplus
+hangouts
+maps
+photos
+street
+youtube"
+
+MICRO="calendargoogle
+exchangegoogle
+faceunlock
+gmail
+googlenow
+googletts"
+
+NANO="search
+speech"
+
+PICO=""
 
 #Calculate platform version
 if [ "$API" = "19" ]; then
@@ -40,8 +87,6 @@ else
 fi
 
 build="$BUILD/$ARCH/$API/"
-unsignedzip="$BUILD/$ARCH/$API.zip"
-signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$DATE.zip"
 install -d "$build"
 
 #####---------CHECK FOR EXISTANCE OF SOME BINARIES---------
@@ -58,6 +103,12 @@ command -v zipalign >/dev/null 2>&1 || { echo "zipalign is required but it's not
 . "$SCRIPTS/inc.packagetarget.sh"
 buildtarget
 alignbuild
-addpackagescripts
-createzip
-signzip
+commonscripts
+#The first variant we build is stock, which supports all smaller variants
+SUPPORTEDVARIANTS="$VARIANTS"
+for VARIANT in $VARIANTS; do
+	variantscripts
+	createzip
+	#smaller variants can't build larger variants
+	SUPPORTEDVARIANTS=$(echo $SUPPORTEDVARIANTS | sed "s/$VARIANT//g")
+done

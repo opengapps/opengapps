@@ -19,25 +19,52 @@ alignbuild() {
 	done
 }
 
-addpackagescripts() {
+commonscripts() {
 	install -d "$build"META-INF/com/google/android
 	echo "# Dummy file; update-binary is a shell script.">"$build"META-INF/com/google/android/updater-script
-	makeupdatebinary
-	makegappsremovetxt
-	makegprop
 	makesizesprop
-	makeinstallerdata
+	makegappsremovetxt
 	copy "$SCRIPTS/bkup_tail.sh" "$build"
 }
 
+variantscripts() {
+	makeupdatebinary
+	makegprop
+	makeinstallerdata
+}
+
 createzip() {
+	unsignedzip="$BUILD/$ARCH/$API.zip"
+	signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.zip"
+
+	case "$VARIANT" in
+		stock)	getzipfolders "$STOCK $FULL $MINI $MICRO $NANO $PICO";;
+		full)	getzipfolders "$FULL $MINI $MICRO $NANO $PICO";;
+		mini)	getzipfolders "$MINI $MICRO $NANO $PICO";;
+		micro)	getzipfolders "$MICRO $NANO $PICO";;
+		nano)	getzipfolders "$NANO $PICO";;
+		pico)	getzipfolders "$PICO";;
+	esac
+
 	if [ -f "$unsignedzip" ]
 	then
 		rm "$unsignedzip"
 	fi
 	cd "$build"
-	zip -q -r -D -X -9 "$unsignedzip" Core GApps GMSCore Messenger Optional PlayGames META-INF bkup_tail.sh g.prop gapps-remove.txt installer.data sizes.prop
+	zip -q -r -D -X -9 "$unsignedzip" $zipfolders 
 	cd "$TOP"
+	signzip
+}
+
+getzipfolders() {
+	zipfolders="Core GMSCore Optional META-INF bkup_tail.sh g.prop gapps-remove.txt installer.data sizes.prop"
+	for app in $1; do
+		case "$app" in
+		messenger)	zipfolders="$zipfolders Messenger";;
+		playgames)	zipfolders="$zipfolders PlayGames";;
+		*)		zipfolders="$zipfolders GApps/$app";;
+		esac
+	done
 }
 
 signzip() {	
@@ -57,5 +84,5 @@ signzip() {
 		exit 1
 	fi
 	cd "$TOP"
-	echo "SUCCESS: Built Open GApps with API $API level for $ARCH as $signedzip"
+	echo "SUCCESS: Built Open GApps variation $VARIANT with API $API level for $ARCH as $signedzip"
 }

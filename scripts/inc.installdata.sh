@@ -14,7 +14,7 @@ makegprop(){
 echo "# begin addon properties
 ro.addon.type=gapps
 ro.addon.platform=$PLATFORM
-ro.addon.open_type=stock
+ro.addon.open_type=$VARIANT
 ro.addon.open_version=$DATE
 # end addon properties" > "$build"g.prop
 }
@@ -72,12 +72,12 @@ echo "# Installation Data for Open GApps Installer by @mfonville based on the wo
 echo '# _____________________________________________________________________________________________________________________
 #                                             Define Current Package Variables
 # List of GApps packages that can be installed with this installer
-pkg_names="pico nano micro mini full stock";
+pkg_names="'"$SUPPORTEDVARIANTS"'";
 
 # Installer Name (32 chars Total, excluding "")
-installer_name="Open GApps Stock '$PLATFORM' - ";
+installer_name="Open GApps '"$VARIANT"' '"$PLATFORM"' - ";
 
-req_android_version="'$PLATFORM'";
+req_android_version="'"$PLATFORM"'";
 keybd_lib_filename1="libjni_latinimegoogle.so";
 keybd_lib_filename2="libjni_latinime.so";
 FaceLock_lib_filename="libfacelock_jni.so";
@@ -129,59 +129,31 @@ E_64BIT=64 ; # 64-bit Device Detected
 #_________________________________________________________________________________________________________________
 #                                             GApps List (Applications user can Select/Deselect)
 # calsync will be added to GApps Install List as needed during script execution
-stock_gapps_list="
-cameragoogle
-keyboardgoogle
+EOFILE
+echo 'stock_gapps_list="
+'"$STOCK"'
 ";
 
 full_gapps_list="
-books
-chrome
-cloudprint
-docs
-drive
-ears
-earth
-fitness
-keep
-messenger
-movies
-music
-newsstand
-newswidget
-playgames
-sheets
-slides
-talkback
-wallet
-webview
+'"$FULL"'
 ";
 
 mini_gapps_list="
-googleplus
-hangouts
-maps
-photos
-street
-youtube
+'"$MINI"'
 ";
 
 micro_gapps_list="
-calendargoogle
-exchangegoogle
-faceunlock
-gmail
-googlenow
-googletts
+'"$MICRO"'
 ";
 
 nano_gapps_list="
-search
-speech
+'"$NANO"'
 ";
 
 pico_gapps_list="
-";
+'"$PICO"'
+";' >> "$build"installer.data
+tee -a "$build"installer.data > /dev/null <<'EOFILE'
 # _____________________________________________________________________________________________________________________
 #                                             Default Stock/AOSP Removal List (Stock GApps Only)
 default_aosp_remove_list="

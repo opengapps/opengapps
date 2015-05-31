@@ -10,9 +10,6 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-
-
-#THE NEXT CHAPTER WE WILL LATER SPLIT OUT PER DIFFERENT TYPE OF PACKAGE
 buildtarget() {
 clean
 #####---------FIRST THE SPECIAL CASES---------
