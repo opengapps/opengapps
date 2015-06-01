@@ -174,6 +174,7 @@ cmaudiofx
 cmaccount
 cmeleven
 cmfilemanager
+cmsetupwizard
 cmupdater
 cmwallpapers
 dashclock
@@ -238,6 +239,10 @@ app/CMFileManager
 
 cmupdater_list="
 priv-app/CMUpdater
+";
+
+cmsetupwizard_list="
+app/CyanogenSetupWizard
 ";
 
 cmwallpapers_list="
