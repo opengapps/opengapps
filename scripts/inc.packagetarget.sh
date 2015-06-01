@@ -51,10 +51,10 @@ aromaupdatebinary() {
 }
 
 createzip() {
-	if [ "x$1" = "x" ]; then VARIANTZIPNAME="$VARIANT"
-	else VARIANTZIPNAME="$1"; fi #allows for an override
+	if [ "x$1" = "x" ]; then VARIANTNAME="$VARIANT"
+	else VARIANTNAME="$1"; fi #allows for an override
 	unsignedzip="$BUILD/$ARCH/$API.zip"
-	signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANTZIPNAME-$DATE.zip"
+	signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANTNAME-$DATE.zip"
 
 	case "$VARIANT" in
 		stock)	getzipfolders "$STOCK $FULL $MINI $MICRO $NANO $PICO";;
@@ -103,5 +103,5 @@ signzip() {
 		exit 1
 	fi
 	cd "$TOP"
-	echo "SUCCESS: Built Open GApps variation $VARIANT with API $API level for $ARCH as $signedzip"
+	echo "SUCCESS: Built Open GApps variation $VARIANTNAME with API $API level for $ARCH as $signedzip"
 }
