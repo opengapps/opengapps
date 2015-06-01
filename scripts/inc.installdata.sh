@@ -67,7 +67,20 @@ fi
 echo "youtube_size="`du -s --apparent-size "$build"GApps/youtube | cut -f 1` >> "$build"sizes.prop
 }
 makeinstallerdata(){
-echo "# Installation Data for Open GApps Installer by @mfonville based on the work of @TKruzze
+echo "#This file is part of The Open GApps script of @mfonville.
+#
+#    The Open GApps scripts are free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    These scripts are distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+# This Installation Data file for Open GApps Installer is derived from the work of @TKruzze,
+# TKruzze's original work is used with permission, under the license that it may be re-used to continue the GApps package.
 # Last Updated: "$DATE > "$build"installer.data
 echo '# _____________________________________________________________________________________________________________________
 #                                             Define Current Package Variables
@@ -474,8 +487,8 @@ tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-# Open GApps Shell Script Installer
-# Created by @mfonville, based on the work of @TKruzze and @osm0sis
+# This Open GApps Shell Script Installer file for Open GApps Installer is derived from the work of @TKruzze and @osm0sis,
+# Their original work is used with permission, under the license that it may be re-used to continue the GApps package.
 #
 unzip -o "$3" installer.data sizes.prop g.prop gapps-remove.txt bkup_tail.sh -d /tmp;
 . /tmp/installer.data;
