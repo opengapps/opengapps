@@ -33,9 +33,28 @@ variantscripts() {
 	makeinstallerdata
 }
 
+aromascripts() {
+	aromaupdatebinary
+	install -d "$build"META-INF/com/google/android/aroma
+	copy "$SCRIPTS/aroma-resources/fonts" "$build"META-INF/com/google/android/aroma/fonts
+	copy "$SCRIPTS/aroma-resources/icons" "$build"META-INF/com/google/android/aroma/icons
+	copy "$SCRIPTS/aroma-resources/langs" "$build"META-INF/com/google/android/aroma/langs
+	copy "$SCRIPTS/aroma-resources/scripts" "$build"META-INF/com/google/android/aroma/scripts
+	copy "$SCRIPTS/aroma-resources/themes" "$build"META-INF/com/google/android/aroma/themes
+	copy "$SCRIPTS/aroma-resources/ttf" "$build"META-INF/com/google/android/aroma/ttf
+	copy "$SCRIPTS/aroma-resources/open.png" "$build"META-INF/com/google/android/aroma
+}
+
+aromaupdatebinary() {
+	mv "$build"META-INF/com/google/android/update-binary "$build"META-INF/com/google/android/update-binary-installer
+	copy "$SCRIPTS/aroma-resources/update-binary" "$build"META-INF/com/google/android/update-binary
+}
+
 createzip() {
+	if [ "x$1" = "x" ]; then VARIANTZIPNAME="$VARIANT"
+	else VARIANTZIPNAME="$1"; fi #allows for an override
 	unsignedzip="$BUILD/$ARCH/$API.zip"
-	signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.zip"
+	signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANTZIPNAME-$DATE.zip"
 
 	case "$VARIANT" in
 		stock)	getzipfolders "$STOCK $FULL $MINI $MICRO $NANO $PICO";;

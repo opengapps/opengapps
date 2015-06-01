@@ -27,6 +27,7 @@ SOURCE=$TOP/sources
 SCRIPTS=$TOP/scripts
 DENSITIES="2 4 6 8" #don't add 0
 VARIANTS="stock full micro mini nano pico" #keep in order from large to small
+AROMAVARIANTS="stock" #add 'stock' or keep empty to not build aroma
 
 STOCK="cameragoogle
 keyboardgoogle"
@@ -99,6 +100,7 @@ command -v zipalign >/dev/null 2>&1 || { echo "zipalign is required but it's not
 
 . "$SCRIPTS/inc.buildhelper.sh"
 . "$SCRIPTS/inc.buildtarget.sh"
+. "$SCRIPTS/inc.aromadata.sh"
 . "$SCRIPTS/inc.installdata.sh"
 . "$SCRIPTS/inc.packagetarget.sh"
 buildtarget
@@ -109,6 +111,17 @@ SUPPORTEDVARIANTS="$VARIANTS"
 for VARIANT in $VARIANTS; do
 	variantscripts
 	createzip
+	#smaller variants can't build larger variants
+	SUPPORTEDVARIANTS=$(echo $SUPPORTEDVARIANTS | sed "s/$VARIANT//g")
+done
+
+#ONLY BUILD AROMA AFTER NORMAL VARIANTS, the build-tree will be heavily modified
+SUPPORTEDVARIANTS="$VARIANTS" #notice that aroma can build all 'normal' variants
+for AROMA in $AROMAVARIANTS; do
+	VARIANT="$AROMA"
+	variantscripts
+	aromascripts
+	createzip "aroma"
 	#smaller variants can't build larger variants
 	SUPPORTEDVARIANTS=$(echo $SUPPORTEDVARIANTS | sed "s/$VARIANT//g")
 done

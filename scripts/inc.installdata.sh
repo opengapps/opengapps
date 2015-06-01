@@ -711,7 +711,7 @@ busybox mount -o rw,remount /system;
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
 # Locate gapps-config (if used)
-for i in "$zip_folder/.gapps-config" "$zip_folder/gapps-config.txt" /sdcard/Open-GApps/.gapps-config /sdcard/Open-GApps/gapps-config.txt "$zip_folder/.gapps-config.txt" /sdcard/Open-GApps/.gapps-config.txt; do
+for i in "/tmp/aroma/.gapps-config" "$zip_folder/.gapps-config" "$zip_folder/gapps-config.txt" /sdcard/Open-GApps/.gapps-config /sdcard/Open-GApps/gapps-config.txt "$zip_folder/.gapps-config.txt" /sdcard/Open-GApps/.gapps-config.txt; do
     if [ -r "$i" ]; then
         g_conf="$i";
         break;
