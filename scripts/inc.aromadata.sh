@@ -10,7 +10,8 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-tee -a "$build"META-INF/com/google/android/aroma-config > /dev/null <<'EOFILE'
+makearomaconfig(){
+tee "$build"META-INF/com/google/android/aroma-config > /dev/null <<'EOFILE'
 #This file is part of The Open GApps script of @raulx222.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
@@ -901,3 +902,4 @@ then
 	reboot("onfinish");
 endif;
 EOFILE
+}

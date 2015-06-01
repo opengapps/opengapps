@@ -35,7 +35,8 @@ variantscripts() {
 
 aromascripts() {
 	aromaupdatebinary
-	install -d "$build"META-INF/com/google/android/aroma
+	makearomaconfig
+	install -d "$build"META-INF/com/google/android/aroma #not necessary, but is safe
 	copy "$SCRIPTS/aroma-resources/fonts" "$build"META-INF/com/google/android/aroma/fonts
 	copy "$SCRIPTS/aroma-resources/icons" "$build"META-INF/com/google/android/aroma/icons
 	copy "$SCRIPTS/aroma-resources/langs" "$build"META-INF/com/google/android/aroma/langs
