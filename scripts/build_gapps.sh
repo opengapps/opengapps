@@ -18,13 +18,13 @@ if { [ "x$1" != "xarm" ] && [ "x$1" != "xarm64" ] && [ "x$1" != "xx86" ]; } || [
 	exit 1
 fi
 DATE=$(date +"%Y%m%d")
-TOP=$(realpath .)
-ARCH=$1
-API=$2
-BUILD=$TOP/build
-OUT=$TOP/out
-SOURCE=$TOP/sources
-SCRIPTS=$TOP/scripts
+TOP="$(realpath .)"
+ARCH="$1"
+API="$2"
+BUILD="$TOP/build"
+OUT="$TOP/out"
+SOURCE="$TOP/sources"
+SCRIPTS="$TOP/scripts"
 DENSITIES="2 4 6 8" #don't add 0
 VARIANTS="stock full micro mini nano pico" #keep in order from large to small
 AROMAVARIANTS="stock" #add 'stock' or keep empty to not build aroma
