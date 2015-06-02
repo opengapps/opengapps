@@ -847,21 +847,21 @@ for d in $DENSITIES; do
 		x=160 #resolution 8 for 480 is weird
 	fi
 	printf "    "`expr 40 \* $d + $x`") ">> "$build"META-INF/com/google/android/update-binary
-	echo "$gmstargets" | grep -q "$d"
+	echo "$GMSCore" | grep -q "$d"
 	if [ $? -eq 0 ]
 	then
 		echo "gms=$d">> "$build"META-INF/com/google/android/update-binary
 	else
 		echo "gms=0">> "$build"META-INF/com/google/android/update-binary
 	fi
-	echo "$msgtargets" | grep -q "$d"
+	echo "$Messenger" | grep -q "$d"
 	if [ $? -eq 0 ]
 	then
 		echo "         msg=$d">> "$build"META-INF/com/google/android/update-binary
 	else
 		echo "         msg=0">> "$build"META-INF/com/google/android/update-binary
 	fi
-	echo "$pgtargets" | grep -q "$d"
+	echo "$PlayGames" | grep -q "$d"
 	if [ $? -eq 0 ]
 	then
 		echo "         pg=$d;;">> "$build"META-INF/com/google/android/update-binary

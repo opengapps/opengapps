@@ -51,6 +51,32 @@ buildapp() {
 		exit 1
 	fi
 }
+builddpiapp(){
+	#package $1
+	#targettoplocation $2, is also used as variablename's identifier (for installdata.sh)
+	#targetsublocation $3
+	if getversion "$1.0" #universal DPI version is our benchmark
+	then
+		dpiversion="$getversion"
+		dpitargets=""
+		#$sourceapk is because of getversion still the one of the '0' variant
+		buildapk "$1.0" "$2/0/$3"
+		buildlib "$1.0" "$2/common/$3"
+		for v in $DENSITIES; do
+			if comparebaseversion "$dpiversion" "$1.$v"
+			then
+				dpitargets="$dpitargets $v"
+				#the value of $sourceapk has been changed for us by calling the comparebaseversion
+				buildapk "$1.$v" "$2/$v/$3"
+			fi
+		done
+		echo "Found $1 variants:$dpitargets of universal version $dpiversion"
+		eval "$2=\$dpitargets" #store the found dpi versions in ${TOPLOCATION}
+	else
+			echo "ERROR: Failed to build package $1 on $ARCH"
+			exit 1
+	fi
+}
 getsourceforapi() {
 	#loop over all source-instances and find the highest available acceptable api level
 	sourcearch=""
