@@ -17,14 +17,8 @@ if [ $? -eq 1 ]; then
 	echo "ERROR during git execution, aborted!"
 	exit 1
 fi
-git submodule update --init
+git submodule update --init ---remote
 if [ $? -eq 1 ]; then
 	echo "ERROR during git execution, aborted!"
         exit 1
 fi
-git submodule update --remote
-if [ $? -eq 1 ]; then
-        echo "ERROR during git execution, aborted!"
-        exit 1
-fi
-
