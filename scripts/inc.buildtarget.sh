@@ -14,55 +14,70 @@ buildtarget() {
 clean
 #####---------FIRST THE SPECIAL CASES---------
 #GMSCore
-getversion "com.google.android.gms.0" #universal DPI version is our benchmark
-gmsversion="$getversion"
-gmstargets=""
-#$sourceapk is because of getversion still there for the 0 variant
-buildapk "com.google.android.gms.0" "GMSCore/0/priv-app/PrebuiltGmsCore"
-buildlib "com.google.android.gms.0" "GMSCore/common/priv-app/PrebuiltGmsCore"
-for v in $DENSITIES; do
-	if comparebaseversion "$gmsversion" "com.google.android.gms.$v"
-	then
-		gmstargets="$gmstargets $v"
-		#the value of $sourceapk has been changed for us by calling the comparebaseversion
-		buildapk "com.google.android.gms.$v" "GMSCore/$v/priv-app/PrebuiltGmsCore"
-	fi
-done
+if getversion "com.google.android.gms.0" #universal DPI version is our benchmark
+then
+	gmsversion="$getversion"
+	gmstargets=""
+	#$sourceapk is because of getversion still there for the 0 variant
+	buildapk "com.google.android.gms.0" "GMSCore/0/priv-app/PrebuiltGmsCore"
+	buildlib "com.google.android.gms.0" "GMSCore/common/priv-app/PrebuiltGmsCore"
+	for v in $DENSITIES; do
+		if comparebaseversion "$gmsversion" "com.google.android.gms.$v"
+		then
+			gmstargets="$gmstargets $v"
+			#the value of $sourceapk has been changed for us by calling the comparebaseversion
+			buildapk "com.google.android.gms.$v" "GMSCore/$v/priv-app/PrebuiltGmsCore"
+		fi
+	done
+	echo "Found Google Play Services variants:$gmstargets of universal version $gmsversion"
+else
+		echo "ERROR: Failed to build package com.google.android.gms on $ARCH"
+		exit 1
+fi
 
-echo "Found Google Play Services variants:$gmstargets of universal version $gmsversion"
 #Messenger
-getversion "com.google.android.apps.messaging.0" #universal DPI version is our benchmark
-msgversion=$getversion
-msgtargets=""
-#$sourceapk is because of getversion still there for the 0 variant
-buildapk "com.google.android.apps.messaging.0" "Messenger/0/app/PrebuiltBugle"
-buildlib "com.google.android.apps.messaging.0" "Messenger/common/app/PrebuiltBugle"
-for v in $DENSITIES; do
-	if comparebaseversion $msgversion "com.google.android.apps.messaging.$v"
-	then
-		msgtargets="$msgtargets $v"
-		#the value of $sourceapk has been changed for us by calling the comparebaseversion
-		buildapk "com.google.android.apps.messaging.$v" "Messenger/$v/app/PrebuiltBugle"
-	fi
-done
-echo "Found Google Messenger variants:$msgtargets of universal version $msgversion"
+if getversion "com.google.android.apps.messaging.0" #universal DPI version is our benchmark
+then
+	msgversion=$getversion
+	msgtargets=""
+	#$sourceapk is because of getversion still there for the 0 variant
+	buildapk "com.google.android.apps.messaging.0" "Messenger/0/app/PrebuiltBugle"
+	buildlib "com.google.android.apps.messaging.0" "Messenger/common/app/PrebuiltBugle"
+	for v in $DENSITIES; do
+		if comparebaseversion $msgversion "com.google.android.apps.messaging.$v"
+		then
+			msgtargets="$msgtargets $v"
+			#the value of $sourceapk has been changed for us by calling the comparebaseversion
+			buildapk "com.google.android.apps.messaging.$v" "Messenger/$v/app/PrebuiltBugle"
+		fi
+	done
+	echo "Found Google Messenger variants:$msgtargets of universal version $msgversion"
+else
+		echo "ERROR: Failed to build package com.google.android.apps.messaging on $ARCH"
+		exit 1
+fi
 
 #PlayGames
-getversion "com.google.android.play.games.0" #universal DPI version is our benchmark
-pgversion=$getversion
-pgtargets=""
-#$sourceapk is because of getversion still there for the 0 variant
-buildapk "com.google.android.play.games.0" "PlayGames/0/app/PlayGames"
-buildlib "com.google.android.play.games.0" "PlayGames/common/app/PlayGames"
-for v in $DENSITIES; do
-	if comparebaseversion $pgversion "com.google.android.play.games.$v"
-	then
-		pgtargets="$pgtargets $v"
-		#the value of $sourceapk has been changed for us by calling the comparebaseversion
-		buildapk "com.google.android.play.games.$v" "PlayGames/$v/app/PlayGames"
-	fi
-done
-echo "Found Google Play Games variants:$pgtargets of universal version $pgversion"
+if getversion "com.google.android.play.games.0" #universal DPI version is our benchmark
+then
+	pgversion=$getversion
+	pgtargets=""
+	#$sourceapk is because of getversion still there for the 0 variant
+	buildapk "com.google.android.play.games.0" "PlayGames/0/app/PlayGames"
+	buildlib "com.google.android.play.games.0" "PlayGames/common/app/PlayGames"
+	for v in $DENSITIES; do
+		if comparebaseversion $pgversion "com.google.android.play.games.$v"
+		then
+			pgtargets="$pgtargets $v"
+			#the value of $sourceapk has been changed for us by calling the comparebaseversion
+			buildapk "com.google.android.play.games.$v" "PlayGames/$v/app/PlayGames"
+		fi
+	done
+	echo "Found Google Play Games variants:$pgtargets of universal version $pgversion"
+else
+		echo "ERROR: Failed to build package com.google.android.play.games on $ARCH"
+		exit 1
+fi
 
 #Keyboard Lib
 buildfile "lib/libjni_latinimegoogle.so" "Optional/keybd_lib/lib/"
