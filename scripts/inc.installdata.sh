@@ -1405,22 +1405,6 @@ if ( contains "$gapps_list" "messenger" ); then
     gapps_list=${gapps_list/messenger}; # Remove Messenger from gapps list since it's now installed
 fi;
 
-# Install Webview if it's in $gapps_list and supported by the OS
-if ( contains "$gapps_list" "webview" ); then
-    #Hackish code, checks if ROM is CM12.1 from certain date or newer, that supports Google Webview
-    modversion=$(file_getprop $b_prop ro.modversion)
-    modversionsplit=`echo $modversion | tr "-" " " | tr -d "."`
-    cmversion=`echo "$modversionsplit" | awk '{print $1;}'`
-    cmdate=`echo "$modversionsplit" | awk '{print $2;}'`
-    if [ "$cmversion" -ge "121" ] && [ "$cmdate" -ge "20150523" ]
-    then
-        folder_extract GApps webview;
-	aosp_remove_list="${aosp_remove_list}webviewstock"$'\n'; #Remove build-in webview
-    fi
-	log "ROM Does not support Google Webview" "Google Webview Not Installed";
-        gapps_list=${gapps_list/webview}; # Remove Webview from gapps list since it's now installed
-fi;
-
 # Progress Bar increment calculations for GApps Install process
 set_progress 0.30;
 gapps_count=$(echo "${gapps_list}" | wc -w); # Count number of GApps left to be installed
