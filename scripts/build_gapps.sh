@@ -73,7 +73,7 @@ googletts"
 NANO="search
 speech"
 
-PICO=""
+PICO="calsync"
 
 #Calculate platform version
 if [ "$API" = "19" ]; then
