@@ -176,6 +176,7 @@ gallery
 launcher
 mms
 picotts
+webviewstock
 ";
 # _____________________________________________________________________________________________________________________
 #                                             Optional Stock/AOSP/ROM Removal List
@@ -378,6 +379,12 @@ priv-app/ThemesProvider
 
 visualizationwallpapers_list="
 app/VisualizationWallpapers
+";
+
+#Hidden, is not one of the normal options, but used in the script
+webviewstock_list="
+app/webview
+priv-app/webview
 ";
 
 whisperpush_list="
@@ -1018,6 +1025,7 @@ if [ $gapps_type = "stock" ]; then
     remove_launcher=true[default];
     remove_mms=true[default];
     remove_picotts=true[default];
+    remove_webviewstock=true[default];
 else
     # Do not perform any default removals - but make them optional
     optional_aosp_remove_list=${default_aosp_remove_list}${optional_aosp_remove_list};
@@ -1028,11 +1036,12 @@ else
     remove_launcher=false[default];
     remove_mms=false[default];
     remove_picotts=false[default];
+    remove_webviewstock=false[default];
 fi;
 
 # Prepare list of AOSP/ROM files that will be deleted using gapps-config
-# Since Stock GApps has default removal of Browser, Launcher, MMS, and PicoTTS
-# we will look for +Browser, +Launcher, +MMS, and +PicoTTS to override
+# Since Stock GApps has default removal of Browser, Launcher, MMS, PicoTTS and Webview
+# we will look for +Browser, +Launcher, +MMS, +PicoTTS and +WebViewStock to override
 set_progress 0.03;
 if [ "$g_conf" ]; then
     for default_name in $default_aosp_remove_list; do
@@ -1176,6 +1185,23 @@ if ( contains "$gapps_list" "exchangegoogle" ) && ( ! contains "$aosp_remove_lis
     aosp_remove_list="${aosp_remove_list}exchangestock"$'\n';
 fi;
 
+# Hackish code, checks if ROM is CM12.1 from 23th of May or newer, that supports Google Webview, otherwise does not allow the install
+modversion=$(file_getprop $b_prop ro.modversion)
+modversionsplit=`echo $modversion | tr "-" " " | tr -d "."`
+cmversion=`echo "$modversionsplit" | awk '{print $1;}'`
+cmdate=`echo "$modversionsplit" | awk '{print $2;}'`
+if [ "$cmversion" -ge "121" ] && [ "$cmdate" -ge "20150523" ]; then
+    log "ROM Does support Google Webview" "";
+else
+    log "ROM Does NOT support Google Webview" "";
+    gapps_list=${gapps_list/webview}; # we must DISALLOW webview from being installed
+fi
+# If we're NOT installing webview make certain 'webviewstock' is NOT in $aosp_remove_list
+if ( ! contains "$gapps_list" "webview" ); then
+    aosp_remove_list=${aosp_remove_list/webviewstock};
+    remove_webviewstock=false[default];
+fi;
+
 # Read in gapps removal list from file
 full_removal_list=$(cat $gapps_removal_list);
 
@@ -1196,6 +1222,7 @@ log "Remove Stock/AOSP Gallery" $remove_gallery;
 log "Remove Stock/AOSP Launcher" $remove_launcher;
 log "Remove Stock/AOSP MMS App" $remove_mms;
 log "Remove Stock/AOSP Pico TTS" $remove_picotts;
+log "Remove Stock/AOSP Stock WebView" $remove_webview;
 log "Installing Play Services variation" "$gms)";
 log "Installing Play Games variation" "$pg)";
 log "Installing Messenger variation" "$msg)";
@@ -1376,6 +1403,22 @@ if ( contains "$gapps_list" "messenger" ); then
     folder_extract Messenger $msg; # Install Google Messenger apk
     folder_extract Messenger common; # Install Google Messenger libs
     gapps_list=${gapps_list/messenger}; # Remove Messenger from gapps list since it's now installed
+fi;
+
+# Install Webview if it's in $gapps_list and supported by the OS
+if ( contains "$gapps_list" "webview" ); then
+    #Hackish code, checks if ROM is CM12.1 from certain date or newer, that supports Google Webview
+    modversion=$(file_getprop $b_prop ro.modversion)
+    modversionsplit=`echo $modversion | tr "-" " " | tr -d "."`
+    cmversion=`echo "$modversionsplit" | awk '{print $1;}'`
+    cmdate=`echo "$modversionsplit" | awk '{print $2;}'`
+    if [ "$cmversion" -ge "121" ] && [ "$cmdate" -ge "20150523" ]
+    then
+        folder_extract GApps webview;
+	aosp_remove_list="${aosp_remove_list}webviewstock"$'\n'; #Remove build-in webview
+    fi
+	log "ROM Does not support Google Webview" "Google Webview Not Installed";
+        gapps_list=${gapps_list/webview}; # Remove Webview from gapps list since it's now installed
 fi;
 
 # Progress Bar increment calculations for GApps Install process
