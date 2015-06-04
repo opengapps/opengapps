@@ -85,7 +85,7 @@ echo "#This file is part of The Open GApps script of @mfonville.
 echo '# _____________________________________________________________________________________________________________________
 #                                             Define Current Package Variables
 # List of GApps packages that can be installed with this installer
-pkg_names="'"$SUPPORTEDVARIANTS"'";
+pkg_names="'"`printf "$SUPPORTEDVARIANTS " | tac -s' ' -`"'";
 
 # Installer Name (32 chars Total, excluding "")
 installer_name="Open GApps '"$VARIANT"' '"$PLATFORM"' - ";
