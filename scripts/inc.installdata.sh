@@ -1186,11 +1186,11 @@ if ( contains "$gapps_list" "exchangegoogle" ) && ( ! contains "$aosp_remove_lis
 fi;
 
 # Hackish code, checks if ROM is CM12.1 from 23th of May or newer, that supports Google Webview, otherwise does not allow the install
-modversion=$(file_getprop $b_prop ro.modversion)
-modversionsplit=`echo $modversion | tr "-" " " | tr -d "."`
-cmversion=`echo "$modversionsplit" | awk '{print $1;}'`
-cmdate=`echo "$modversionsplit" | awk '{print $2;}'`
-if [ "$cmversion" -ge "121" ] && [ "$cmdate" -ge "20150523" ]; then
+rocmversion=$(file_getprop $b_prop ro.cm.version)
+rocmversionsplit=`echo $rocmversion | tr "-" " " | tr -d "."`
+cmversion=`echo "$rocmversionsplit" | awk '{print $1;}'`
+cmdate=`echo "$rocmversionsplit" | awk '{print $2;}'`
+if [ "0$cmversion" -ge "121" ] && [ "0$cmdate" -ge "20150523" ]; then
     log "ROM Does support Google Webview" "";
 else
     log "ROM Does NOT support Google Webview" "";
