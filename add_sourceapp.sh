@@ -48,7 +48,7 @@ getarchitectures() {
 			architectures="$architectures$arch "
 		done
 	fi
-	echo "Supported architecture(s): $architectures"
+	echo "Native code for architecture(s): $architectures"
 }
 
 installapk() {
@@ -92,8 +92,8 @@ addapk() {
 	|| [ "$package" = "com.google.android.launcher" ] \
 	|| [ "$package" = "com.google.android.onetimeinitializer" ] \
 	|| [ "$package" = "com.google.android.partnersetup" ] \
-	|| [ "$package" = "com.google.android.setupwizard" ] \
-	; then
+	|| [ "$package" = "com.google.android.setupwizard" ]
+	then
 		type="priv-app"
 	else
 		type="app"
@@ -102,27 +102,35 @@ addapk() {
 	#Keep track of specific version of the special DPI packages
 	if [ "$package" = "com.google.android.gms" ] \
 	|| [ "$package" = "com.google.android.apps.messaging" ] \
-	|| [ "$package" = "com.google.android.play.games" ] \
-	; then
+	|| [ "$package" = "com.google.android.play.games" ]
+	then
 		package="$package.`echo $versioncode| rev | cut -c 1 | rev`"
 	fi
 	
 	getarchitectures "$file"
 	#We manually check for each of our set of supported architectures
-	echo "$architectures" | grep -q "armeabi" #no space, all armearbi types are valid
-	if [ $? -eq 0 ]
-	then
-		installapk "arm"
-	fi
+	#We assume NO universal packages for 32vs64 bit, so start with the 'highest' architectures first, if it matches one of those, we will NOT add it to a lower architecture
 	echo "$architectures" | grep -q "arm64-v8a "
 	if [ $? -eq 0 ]
 	then
 		installapk "arm64"
+	else
+		echo "$architectures" | grep -q "armeabi" #no space, all armearbi types are valid
+		if [ $? -eq 0 ]
+		then
+			installapk "arm"
+		fi
 	fi
-	echo "$architectures" | grep -q "x86 "
+	echo "$architectures" | grep -q "x86-64 "
 	if [ $? -eq 0 ]
 	then
-		installapk "x86"
+		. #installapk "x86-64" #does not yet exist
+	else
+		echo "$architectures" | grep -q "x86 "
+		if [ $? -eq 0 ]
+		then
+			installapk "x86"
+		fi
 	fi
 	echo "$architectures" | grep -q "all" #no space (single entry)
 	if [ $? -eq 0 ]
