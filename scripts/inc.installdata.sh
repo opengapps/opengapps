@@ -97,21 +97,21 @@ FaceLock_lib_filename="libfacelock_jni.so";
 
 # Google Play Services version sizes' >> "$build"installer.data
 gmscommon=`du -s "$build"GMSCore/common | cut -f 1`
-for t in $gmstargets; do
+for t in $GMSCore; do
 	gmst=`du -s "$build"GMSCore/$t | cut -f 1`
 	printf "gms_"$t"_size="`expr $gmst + $gmscommon`"; " >> "$build"installer.data
 done
 
 echo "\n\n# Google Messenger version sizes" >> "$build"installer.data
 msgcommon=`du -s "$build"Messenger/common | cut -f 1`
-for t in $msgtargets; do
+for t in $Messenger; do
 	msgt=`du -s "$build"Messenger/$t | cut -f 1`
 	printf "msg_"$t"_size="`expr $msgt + $msgcommon`"; " >> "$build"installer.data
 done
 
 echo "\n\n# Google Play Games version sizes" >> "$build"installer.data
 pgcommon=`du -s "$build"PlayGames/common | cut -f 1`
-for t in $pgtargets; do
+for t in $PlayGames; do
 	pgt=`du -s "$build"PlayGames/$t | cut -f 1`
 	printf "pg_"$t"_size="`expr $pgt + $pgcommon`"; " >> "$build"installer.data
 done
