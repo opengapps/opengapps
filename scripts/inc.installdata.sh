@@ -1040,7 +1040,7 @@ else
 fi;
 
 # Prepare list of AOSP/ROM files that will be deleted using gapps-config
-# Since Stock GApps has default removal of Browser, Launcher, MMS, PicoTTS and Webview
+# Since Stock GApps has default removal of Browser, Launcher, MMS, PicoTTS and WebviewStock
 # we will look for +Browser, +Launcher, +MMS, +PicoTTS and +WebViewStock to override
 set_progress 0.03;
 if [ "$g_conf" ]; then
