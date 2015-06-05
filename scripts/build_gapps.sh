@@ -26,7 +26,7 @@ OUT="$TOP/out"
 SOURCE="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 DENSITIES="2 4 6 8" #don't add 0
-VARIANTS="stock full micro mini nano pico" #keep in order from large to small
+VARIANTS="stock full mini micro nano pico" #keep in order from large to small
 AROMAVARIANTS="stock" #add 'stock' or keep empty to not build aroma
 
 STOCK="cameragoogle
