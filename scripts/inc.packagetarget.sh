@@ -47,6 +47,10 @@ aromascripts() {
 }
 
 aromaupdatebinary() {
+	if [ -f "$build"META-INF/com/google/android/update-binary-installer ]
+	then
+		rm "$build"META-INF/com/google/android/update-binary-installer
+	fi
 	mv "$build"META-INF/com/google/android/update-binary "$build"META-INF/com/google/android/update-binary-installer
 	copy "$SCRIPTS/aroma-resources/update-binary" "$build"META-INF/com/google/android/update-binary
 }

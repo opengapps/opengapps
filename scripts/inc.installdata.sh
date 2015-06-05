@@ -480,7 +480,7 @@ EOFILE
 }
 
 makeupdatebinary(){
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+tee "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 #!/sbin/sh
 #This file is part of The Open GApps script of @mfonville.
 #
