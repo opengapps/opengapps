@@ -1,9 +1,12 @@
-Getting Started
+Getting the latest Open GApps
 ---------------
+The latest version of pre-built Open GApps can be found at https://github.com/opengapps/opengapps/releases
 
-To get started with building Open GApps, you'll need to get the git sources:
+Build your own Open GApps
+---------------
+If you want to build your own version of Open GApps, you'll need to get the git sources:
 
-To initialize your local repository using the Open GApps trees, use a command like:
+To initialize your local repository using the Open GApps source tree, use a command like:
 ```
 git clone git@github.com:opengapps/opengapps.git
 ```
@@ -27,7 +30,6 @@ One can update the sources used with the command:
 ```
 ./add_sourceapp.sh /path/to/the/file/you/want/to/add.apk [/even/more/files.apk...]
 ```
-Be careful! If add_sourceapp finds multiple architectures in the native code, it expects it to be a 'universal' package. This not always true with 64-bit packages though!
 For contributors, updated sources can be uploaded by browsing to one of the sources-subdirectories and pushing it to the repository:
 ```
 cd sources/architecture
