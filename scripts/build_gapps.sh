@@ -67,11 +67,8 @@ MICRO="calendargoogle
 exchangegoogle
 gmail
 googlenow
-googletts"
-if [ "$API" -gt "19" ]; then
-	MICRO="$MICRO
+googletts
 faceunlock"
-fi
 
 NANO="search
 speech"

@@ -44,11 +44,9 @@ buildapp "com.google.android.ears" "GApps/ears/app/GoogleEars"
 buildapp "com.google.earth" "GApps/earth/app/GoogleEarth"
 buildapp "com.google.android.gm.exchange" "GApps/exchangegoogle/app/PrebuiltExchange3Google"
 #FaceLock with libs
-if [ "$API" -gt "19" ]; then
-	buildfile "lib/libfacelock_jni.so" "GApps/faceunlock/lib/"
-	buildfile "vendor/pittpatt/" "GApps/faceunlock/vendor/pittpatt/"
-	buildapp "com.android.facelock" "GApps/faceunlock/app/FaceLock/"
-fi
+buildfile "lib/libfacelock_jni.so" "GApps/faceunlock/lib/"
+buildfile "vendor/pittpatt/" "GApps/faceunlock/vendor/pittpatt/"
+buildapp "com.android.facelock" "GApps/faceunlock/app/FaceLock/"
 #End of FaceLock
 buildapp "com.google.android.apps.fitness" "GApps/fitness/app/FitnessPrebuilt"
 buildapp "com.google.android.gm" "GApps/gmail/app/PrebuiltGmail"
