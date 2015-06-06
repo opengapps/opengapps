@@ -65,15 +65,29 @@ youtube"
 
 MICRO="calendargoogle
 exchangegoogle
-faceunlock
 gmail
 googlenow
 googletts"
+if [ "$API" -gt "19" ]; then
+	MICRO="$MICRO
+faceunlock"
+fi
 
 NANO="search
 speech"
 
 PICO="calsync"
+
+STOCKREMOVE="browser
+email
+gallery
+launcher
+mms
+picotts"
+if [ "$API" -gt "19" ]; then
+	STOCKREMOVE="$STOCKREMOVE
+webviewstock"
+fi
 
 #Calculate platform version
 if [ "$API" = "19" ]; then

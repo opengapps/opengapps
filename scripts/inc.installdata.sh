@@ -39,7 +39,9 @@ echo "drive_size="`du -s --apparent-size "$build"GApps/drive | cut -f 1` >> "$bu
 echo "ears_size="`du -s --apparent-size "$build"GApps/ears | cut -f 1` >> "$build"sizes.prop
 echo "earth_size="`du -s --apparent-size "$build"GApps/earth | cut -f 1` >> "$build"sizes.prop
 echo "exchangegoogle_size="`du -s --apparent-size "$build"GApps/exchangegoogle | cut -f 1` >> "$build"sizes.prop
-echo "faceunlock_size="`du -s --apparent-size "$build"GApps/faceunlock | cut -f 1` >> "$build"sizes.prop
+if [ "$API" -gt "19" ]; then
+	echo "faceunlock_size="`du -s --apparent-size "$build"GApps/faceunlock | cut -f 1` >> "$build"sizes.prop
+fi
 echo "fitness_size="`du -s --apparent-size "$build"GApps/fitness | cut -f 1` >> "$build"sizes.prop
 echo "gmail_size="`du -s --apparent-size "$build"GApps/gmail | cut -f 1` >> "$build"sizes.prop
 echo "googlenow_size="`du -s --apparent-size "$build"GApps/googlenow | cut -f 1` >> "$build"sizes.prop
@@ -67,6 +69,22 @@ fi
 echo "youtube_size="`du -s --apparent-size "$build"GApps/youtube | cut -f 1` >> "$build"sizes.prop
 }
 makeinstallerdata(){
+if [ "$API" -le "19" ]; then
+	REMOVALSUFFIX=".apk"
+	REMOVALBYPASS="
+/system/lib/libjni_eglfence.so		
+/system/lib/libjni_filtershow_filters.so		
+/system/lib/libjni_latinime.so		
+/system/lib/libjni_tinyplanet.so		
+/system/lib/libjpeg.so		
+/system/lib/libWVphoneAPI.so		
+/system/priv-app/CalendarProvider.apk"
+else
+	REMOVALSUFFIX=""
+	REMOVALBYPASS=""
+fi
+
+
 echo "#This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
@@ -124,14 +142,14 @@ echo "core_size="$core"; keybd_lib_size="$keybdlib";">> "$build"installer.data
 #The part below still has to be made more dynamic, like the 'stock' type
 #We can include again the gms_base type
 #We whould replace 'arm' with the $ARCH type
-tee -a "$build"installer.data > /dev/null <<'EOFILE'
+echo '
 
 # Buffer of extra system space to require for GApps install (9216=9MB)
 # This will allow for some ROM size expansion when GApps are restored
 buffer_size_kb=9216; small_buffer_size=2048;
 
-# List of GApps files that should NOT be automatically removed as they are also included in (many) ROM's
-removal_bypass_list="
+# List of GApps files that should NOT be automatically removed as they are also included in (many) ROMs
+removal_bypass_list="'"$REMOVALBYPASS"'
 ";
 
 # Define exit codes (returned upon exit due to an error)
@@ -141,8 +159,8 @@ E_NONOPEN=40; # NON-Open GApps Currently Installed
 E_64BIT=64 ; # 64-bit Device Detected
 #_________________________________________________________________________________________________________________
 #                                             GApps List (Applications user can Select/Deselect)
-# calsync will be added to GApps Install List as needed during script execution
-EOFILE
+# calsync will be added to GApps Install List as needed during script execution' >> "$build"installer.data
+
 echo 'stock_gapps_list="
 '"$STOCK"'
 ";
@@ -166,19 +184,12 @@ nano_gapps_list="
 pico_gapps_list="
 '"$PICO"'
 ";' >> "$build"installer.data
-tee -a "$build"installer.data > /dev/null <<'EOFILE'
-# _____________________________________________________________________________________________________________________
+echo '# _____________________________________________________________________________________________________________________
 #                                             Default Stock/AOSP Removal List (Stock GApps Only)
 default_aosp_remove_list="
-browser
-email
-gallery
-launcher
-mms
-picotts
-webviewstock
-";
-# _____________________________________________________________________________________________________________________
+'"$STOCKREMOVE"'
+";' >> "$build"installer.data
+echo '# _____________________________________________________________________________________________________________________
 #                                             Optional Stock/AOSP/ROM Removal List
 optional_aosp_remove_list="
 basicdreams
@@ -214,225 +225,225 @@ whisperpush
 # _____________________________________________________________________________________________________________________
 #                                             Stock/AOSP/ROM File Removal Lists
 browser_list="
-app/Browser
+app/Browser'"$REMOVALSUFFIX"'
 ";
 
 basicdreams_list="
-app/BasicDreams
+app/BasicDreams'"$REMOVALSUFFIX"'
 ";
 
 # Must be used when GoogleCalendar is installed
 calendarstock_list="
-app/Calendar
-priv-app/Calendar
+app/Calendar'"$REMOVALSUFFIX"'
+priv-app/Calendar'"$REMOVALSUFFIX"'
 ";
 
 # Must be used when GoogleCamera is installed
 camerastock_list="
-app/Camera
-app/Camera2
-priv-app/Camera
-priv-app/Camera2
+app/Camera'"$REMOVALSUFFIX"'
+app/Camera2'"$REMOVALSUFFIX"'
+priv-app/Camera'"$REMOVALSUFFIX"'
+priv-app/Camera2'"$REMOVALSUFFIX"'
 ";
 
 cmaccount_list="
-priv-app/CMAccount
+priv-app/CMAccount'"$REMOVALSUFFIX"'
 ";
 
 cmaudiofx_list="
-priv-app/AudioFX
+priv-app/AudioFX'"$REMOVALSUFFIX"'
 ";
 
 cmeleven_list="
-app/Eleven
+app/Eleven'"$REMOVALSUFFIX"'
 ";
 
 cmfilemanager_list="
-app/CMFileManager
+app/CMFileManager'"$REMOVALSUFFIX"'
 ";
 
 cmupdater_list="
-priv-app/CMUpdater
+priv-app/CMUpdater'"$REMOVALSUFFIX"'
 ";
 
 cmsetupwizard_list="
-app/CyanogenSetupWizard
+app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
 ";
 
 cmwallpapers_list="
-app/CMWallpapers
+app/CMWallpapers'"$REMOVALSUFFIX"'
 ";
 
 dashclock_list="
-app/DashClock
+app/DashClock'"$REMOVALSUFFIX"'
 ";
 
 email_list="
-app/Email
+app/Email'"$REMOVALSUFFIX"'
 ";
 
 exchangestock_list="
-app/Exchange2
-priv-app/Exchange2
+app/Exchange2'"$REMOVALSUFFIX"'
+priv-app/Exchange2'"$REMOVALSUFFIX"'
 ";
 
 fmradio_list="
-app/FM2
-app/FMRecord
+app/FM2'"$REMOVALSUFFIX"'
+app/FMRecord'"$REMOVALSUFFIX"'
 ";
 
 galaxy_list="
-app/Galaxy4
+app/Galaxy4'"$REMOVALSUFFIX"'
 ";
 
 gallery_list="
-app/Gallery
-priv-app/Gallery
-app/Gallery2
-priv-app/Gallery2
+app/Gallery'"$REMOVALSUFFIX"'
+priv-app/Gallery'"$REMOVALSUFFIX"'
+app/Gallery2'"$REMOVALSUFFIX"'
+priv-app/Gallery2'"$REMOVALSUFFIX"'
 ";
 
 holospiral_list="
-app/HoloSpiralWallpaper
+app/HoloSpiralWallpaper'"$REMOVALSUFFIX"'
 ";
 
 # Must be used when GoogleKeyboard is installed
 keyboardstock_list="
-app/LatinIME
+app/LatinIME'"$REMOVALSUFFIX"'
 ";
 
 launcher_list="
-app/CMHome
-app/CustomLauncher3
-app/Launcher2
-app/Launcher3
-app/LiquidLauncher
-app/Paclauncher
-app/SlimLauncher
-app/Trebuchet
-priv-app/CMHome
-priv-app/CustomLauncher3
-priv-app/Launcher2
-priv-app/Launcher3
-priv-app/LiquidLauncher
-priv-app/Paclauncher
-priv-app/SlimLauncher
-priv-app/Trebuchet
+app/CMHome'"$REMOVALSUFFIX"'
+app/CustomLauncher3'"$REMOVALSUFFIX"'
+app/Launcher2'"$REMOVALSUFFIX"'
+app/Launcher3'"$REMOVALSUFFIX"'
+app/LiquidLauncher'"$REMOVALSUFFIX"'
+app/Paclauncher'"$REMOVALSUFFIX"'
+app/SlimLauncher'"$REMOVALSUFFIX"'
+app/Trebuchet'"$REMOVALSUFFIX"'
+priv-app/CMHome'"$REMOVALSUFFIX"'
+priv-app/CustomLauncher3'"$REMOVALSUFFIX"'
+priv-app/Launcher2'"$REMOVALSUFFIX"'
+priv-app/Launcher3'"$REMOVALSUFFIX"'
+priv-app/LiquidLauncher'"$REMOVALSUFFIX"'
+priv-app/Paclauncher'"$REMOVALSUFFIX"'
+priv-app/SlimLauncher'"$REMOVALSUFFIX"'
+priv-app/Trebuchet'"$REMOVALSUFFIX"'
 ";
 
 livewallpapers_list="
-app/LiveWallpapers
+app/LiveWallpapers'"$REMOVALSUFFIX"'
 ";
 
 lockclock_list="
-app/LockClock
+app/LockClock'"$REMOVALSUFFIX"'
 ";
 
 mms_list="
-priv-app/Mms
+priv-app/Mms'"$REMOVALSUFFIX"'
 ";
 
 noisefield_list="
-app/NoiseField
+app/NoiseField'"$REMOVALSUFFIX"'
 ";
 
 phasebeam_list="
-app/PhaseBeam
+app/PhaseBeam'"$REMOVALSUFFIX"'
 ";
 
 photophase_list="
-app/PhotoPhase
+app/PhotoPhase'"$REMOVALSUFFIX"'
 ";
 
 phototable_list="
-app/PhotoTable
+app/PhotoTable'"$REMOVALSUFFIX"'
 ";
 
 picotts_list="
-app/PicoTts
-priv-app/PicoTts
+app/PicoTts'"$REMOVALSUFFIX"'
+priv-app/PicoTts'"$REMOVALSUFFIX"'
 lib/libttscompat.so
 lib/libttspico.so
 tts
 ";
 
 simtoolkit_list="
-app/Stk
+app/Stk'"$REMOVALSUFFIX"'
 ";
 
 studio_list="
-app/VideoEditor
+app/VideoEditor'"$REMOVALSUFFIX"'
 ";
 
 sykopath_list="
-app/Layers
+app/Layers'"$REMOVALSUFFIX"'
 ";
 
 terminal_list="
-app/Terminal
+app/Terminal'"$REMOVALSUFFIX"'
 ";
 
 themes_list="
-priv-app/ThemeChooser
-priv-app/ThemesProvider
+priv-app/ThemeChooser'"$REMOVALSUFFIX"'
+priv-app/ThemesProvider'"$REMOVALSUFFIX"'
 ";
 
 visualizationwallpapers_list="
-app/VisualizationWallpapers
+app/VisualizationWallpapers'"$REMOVALSUFFIX"'
 ";
 
 #Hidden, is not one of the normal options, but used in the script
 webviewstock_list="
-app/webview
-priv-app/webview
+app/webview'"$REMOVALSUFFIX"'
+priv-app/webview'"$REMOVALSUFFIX"'
 ";
 
 whisperpush_list="
-app/WhisperPush
-";
-# _____________________________________________________________________________________________________________________
+app/WhisperPush'"$REMOVALSUFFIX"'
+";' >> "$build"installer.data
+echo '# _____________________________________________________________________________________________________________________
 #                                             Permanently Removed Folders
-# Pieces that may be left over from AIO ROM's that can/will interfere with these GApps
+# Pieces that may be left over from AIO ROMs that can/will interfere with these GApps
 other_list="
-/system/app/BrowserProviderProxy
-/system/app/Gmail
-/system/app/GoogleCalendar
-/system/app/GoogleCloudPrint
-/system/app/GoogleHangouts
-/system/app/GoogleKeep
-/system/app/GoogleLatinIme
-/system/app/GooglePlus
-/system/app/PartnerBookmarksProvider
-/system/app/QuickSearchBox
-/system/app/Vending
-/system/priv-app/GmsCore
-/system/priv-app/GoogleNow
-/system/priv-app/GoogleSearch
-/system/priv-app/GoogleHangouts
-/system/priv-app/OneTimeInitializer
-/system/priv-app/Provision
-/system/priv-app/QuickSearchBox
-/system/priv-app/Vending
+/system/app/BrowserProviderProxy'"$REMOVALSUFFIX"'
+/system/app/Gmail'"$REMOVALSUFFIX"'
+/system/app/GoogleCalendar'"$REMOVALSUFFIX"'
+/system/app/GoogleCloudPrint'"$REMOVALSUFFIX"'
+/system/app/GoogleHangouts'"$REMOVALSUFFIX"'
+/system/app/GoogleKeep'"$REMOVALSUFFIX"'
+/system/app/GoogleLatinIme'"$REMOVALSUFFIX"'
+/system/app/GooglePlus'"$REMOVALSUFFIX"'
+/system/app/PartnerBookmarksProvider'"$REMOVALSUFFIX"'
+/system/app/QuickSearchBox'"$REMOVALSUFFIX"'
+/system/app/Vending'"$REMOVALSUFFIX"'
+/system/priv-app/GmsCore'"$REMOVALSUFFIX"'
+/system/priv-app/GoogleNow'"$REMOVALSUFFIX"'
+/system/priv-app/GoogleSearch'"$REMOVALSUFFIX"'
+/system/priv-app/GoogleHangouts'"$REMOVALSUFFIX"'
+/system/priv-app/OneTimeInitializer'"$REMOVALSUFFIX"'
+/system/priv-app/Provision'"$REMOVALSUFFIX"'
+/system/priv-app/QuickSearchBox'"$REMOVALSUFFIX"'
+/system/priv-app/Vending'"$REMOVALSUFFIX"'
 ";
 
-# Apps from 'app' that need to be installed in 'priv-app'
+# Apps from app that need to be installed in priv-app
 privapp_list="
-/system/app/GoogleBackupTransport
-/system/app/GoogleFeedback
-/system/app/GoogleLoginService
-/system/app/GoogleOneTimeInitializer
-/system/app/GooglePartnerSetup
-/system/app/GoogleServicesFramework
-/system/app/Hangouts
-/system/app/OneTimeInitializer
-/system/app/Phonesky
-/system/app/PrebuiltGmsCore
-/system/app/SetupWizard
-/system/app/Velvet
-/system/app/Wallet
+/system/app/GoogleBackupTransport'"$REMOVALSUFFIX"'
+/system/app/GoogleFeedback'"$REMOVALSUFFIX"'
+/system/app/GoogleHome'"$REMOVALSUFFIX"'
+/system/app/GoogleLoginService'"$REMOVALSUFFIX"'
+/system/app/GoogleOneTimeInitializer'"$REMOVALSUFFIX"'
+/system/app/GooglePartnerSetup'"$REMOVALSUFFIX"'
+/system/app/GoogleServicesFramework'"$REMOVALSUFFIX"'
+/system/app/Hangouts'"$REMOVALSUFFIX"'
+/system/app/Phonesky'"$REMOVALSUFFIX"'
+/system/app/PrebuiltGmsCore'"$REMOVALSUFFIX"'
+/system/app/SetupWizard'"$REMOVALSUFFIX"'
+/system/app/Velvet'"$REMOVALSUFFIX"'
+/system/app/Wallet'"$REMOVALSUFFIX"'
 ";
 
-# Stock/AOSP Keyboard lib (and symlink) that are always removed since they're always replaced 
+# Stock/AOSP Keyboard lib (and symlink) that are always removed since they are always replaced 
 reqd_list="
 /system/lib/libjni_latinime.so
 /system/lib/libjni_latinimegoogle.so
@@ -449,15 +460,12 @@ obsolete_list="
 #obsolete_list="${obsolete_list}
 #";
 
-# Old addon.d backup scripts as we'll be replacing with updated version during install
+# Old addon.d backup scripts as we will be replacing with updated version during install
 oldscript_list="
 /system/etc/g.prop
 /system/addon.d/70-gapps.sh
-/system/addon.d/71-faceunlock.sh
-/system/addon.d/72-keyboards.sh
-/system/addon.d/74-googlecamera.sh
-/system/addon.d/78-chromebrowser.sh
-";
+";' >> "$build"installer.data
+tee -a "$build"installer.data > /dev/null <<'EOFILE'
 
 remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript_list}";
 # _____________________________________________________________________________________________________________________
