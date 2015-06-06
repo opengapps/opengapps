@@ -476,6 +476,7 @@ camera_compat_msg="WARNING: Google Camera has/will not be installed as requested
 faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";
 googlenow_msg="WARNING: Google Now Launcher has/will not be installed as requested. Google \nSearch must be added to the GApps installation if you want to install the Google\nNow Launcher.\n";
 keyboard_sys_msg="WARNING: Google Keyboard has/will not be installed as requested. Google Keyboard\ncan only be installed during a Clean Install or as an update to an existing\nGApps Installation.\n";
+webview_compat_msg="WARNING: Google Webview has/will not be installed as requested. Google Webview\nis NOT compatible with your ROM when installed.\n";
 nokeyboard_msg="NOTE: The Stock/AOSP keyboard was NOT removed as requested to ensure your device\nwas not accidentally left with no keyboard installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
 nolauncher_msg="NOTE: The Stock/AOSP Launcher was NOT removed as requested to ensure your device\nwas not accidentally left with no Launcher. If this was your intention, you can\nadd 'Override' to your gapps-config to override this protection.\n";
 nomms_msg="NOTE: The Stock/AOSP MMS app was NOT removed as requested to ensure your device\nwas not accidentally left with no way to receive text messages. If this WAS\nintentional, add 'Override' to your gapps-config to override this protection.\n";
@@ -936,6 +937,16 @@ case $device_name in
     *) cameragoogle_compat=true;;
 esac;
 
+# Hackish code, checks if ROM is CM12.1 from 23th of May or newer, that supports Google Webview, otherwise does not allow the install
+romversion=`echo $(file_getprop $b_prop ro.cm.version) | tr "-" " " | tr -d "."`
+cmversion=`echo "$rocmversion" | awk '{print $1;}'`
+cmdate=`echo "$rocmversion" | awk '{print $2;}'`
+if [ "0$cmversion" -ge "121" ] && [ "0$cmdate" -ge "20150523" ]; then
+    webviewgoogle_compat=true
+else
+    webviewgoogle_compat=false
+fi
+
 log "ROM ID" "$(file_getprop $b_prop ro.build.display.id)";
 log "ROM Version" "$rom_version";
 log "Device Recovery" "$recovery";
@@ -952,6 +963,7 @@ log "Google Camera Installed¹" "$cameragoogle_inst";
 log "Google Keyboard Installed¹" "$keyboardgoogle_inst";
 log "FaceUnlock Compatible" "$faceunlock_compat";
 log "Google Camera Compatible" "$cameragoogle_compat";
+log "Google Webview Compatible" "$webviewgoogle_compat";
 log_close="                  ¹ Previously installed with Open GApps\n$log_close";
 
 # Determine if a GApps package is installed and
@@ -1193,17 +1205,12 @@ if ( contains "$gapps_list" "exchangegoogle" ) && ( ! contains "$aosp_remove_lis
     aosp_remove_list="${aosp_remove_list}exchangestock"$'\n';
 fi;
 
-# Hackish code, checks if ROM is CM12.1 from 23th of May or newer, that supports Google Webview, otherwise does not allow the install
-rocmversion=$(file_getprop $b_prop ro.cm.version)
-rocmversionsplit=`echo $rocmversion | tr "-" " " | tr -d "."`
-cmversion=`echo "$rocmversionsplit" | awk '{print $1;}'`
-cmdate=`echo "$rocmversionsplit" | awk '{print $2;}'`
-if [ "0$cmversion" -ge "121" ] && [ "0$cmdate" -ge "20150523" ]; then
-    log "ROM Does support Google Webview" "";
-else
-    log "ROM Does NOT support Google Webview" "";
+# Verify ROM is Google Webview compatible BEFORE we allow it in $gapps_list
+if ( contains "$gapps_list" "webview" ) && [ $webviewgoogle_compat = "false" ]; then
     gapps_list=${gapps_list/webview}; # we must DISALLOW webview from being installed
-fi
+    install_note="${install_note}webview_compat_msg"$'\n'; # make note that Google Webview will NOT be installed as user requested
+fi;
+
 # If we're NOT installing webview make certain 'webviewstock' is NOT in $aosp_remove_list
 if ( ! contains "$gapps_list" "webview" ); then
     aosp_remove_list=${aosp_remove_list/webviewstock};
