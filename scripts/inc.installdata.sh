@@ -99,6 +99,8 @@ echo "#This file is part of The Open GApps script of @mfonville.
 #
 # This Installation Data file for Open GApps Installer is derived from the work of @TKruzze,
 # TKruzze's original work is used with permission, under the license that it may be re-used to continue the GApps package.
+# This Installation Data file for Open GApps Installer includes code derived from the TK GApps of @TKruzze and @osm0sis,
+# The TK GApps are available under the GPLv3 from http://forum.xda-developers.com/android/software/tk-gapps-t3116347
 # Last Updated: "$DATE > "$build"installer.data
 echo '# _____________________________________________________________________________________________________________________
 #                                             Define Current Package Variables
@@ -454,7 +456,7 @@ reqd_list="
 # Remove talkback from priv-app since it was moved to app in 5.1
 obsolete_list="
 /system/priv-app/talkback
-#";
+";
 
 # Obsolete files from xxxx
 #obsolete_list="${obsolete_list}
@@ -470,7 +472,7 @@ tee -a "$build"installer.data > /dev/null <<'EOFILE'
 remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript_list}";
 # _____________________________________________________________________________________________________________________
 #                                             Installer Error Messages
-64bit_compat_msg="INSTALLATION FAILURE: Open GApps are not compatible with 64-bit devices. You will\nneed to find a 64-bit compatible GApps package that will worok with your device.\n";
+64bit_compat_msg="INSTALLATION FAILURE: Open GApps are not compatible with 64-bit devices. You will\nneed to find a 64-bit compatible GApps package that will work with your device.\n";
 camera_sys_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera\ncan only be installed during a Clean Install or as an update to an existing\nGApps Installation.\n";
 camera_compat_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera is\nNOT compatible with your device if installed in the system partition. Try\ninstalling from the Play Store instead.\n";
 faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";
@@ -484,6 +486,8 @@ non_open_gapps_msg="INSTALLATION FAILURE: Open GApps can only be installed on to
 rom_version_msg="INSTALLATION FAILURE: This GApps package can only be installed on a $req_android_version.x ROM.\n";
 simulation_msg="TEST INSTALL: This was only a simulated install. NO CHANGES WERE MADE TO YOUR\nDEVICE. To complete the installation remove 'Test' from your gapps-config.\n";
 system_space_msg="INSTALLATION FAILURE: Your device does not have sufficient space available in\nthe system partition to install this GApps package as currently configured.\nYou will need to switch to a smaller GApps package or use gapps-config to\nreduce the installed size.\n";
+user_multiplefound_msg="NOTE: All User Application Removals included in gapps-config were unable to be\nprocessed as requested because multiple versions of the app were found on your\ndevice. See the log portion below for the name(s) of the application(s).\n";
+user_notfound_msg="NOTE: All User Application Removals included in gapps-config were unable to be\nremoved as requested because the files were not found on your device. See the\nlog portion below for the name(s) of the application(s).\n";
 del_conflict_msg="!!! WARNING !!! - Duplicate files were found between your ROM and this GApps\npackage. This is likely due to your ROM's dev including Google proprietary\nfiles in the ROM. The duplicate files are shown in the log portion below.\n";
 EOFILE
 }
@@ -505,6 +509,8 @@ tee "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 #
 # This Open GApps Shell Script Installer file for Open GApps Installer is derived from the work of @TKruzze and @osm0sis,
 # Their original work is used with permission, under the license that it may be re-used to continue the GApps package.
+# This Open GApps Shell Script Installer includes code derived from the TK GApps of @TKruzze and @osm0sis,
+# The TK GApps are available under the GPLv3 from http://forum.xda-developers.com/android/software/tk-gapps-t3116347
 #
 unzip -o "$3" installer.data sizes.prop g.prop gapps-remove.txt bkup_tail.sh -d /tmp;
 . /tmp/installer.data;
@@ -524,6 +530,8 @@ calc_log=/tmp/calc.log;
 conflicts_log=/tmp/conflicts.log;
 rec_cache_log=/cache/recovery/log;
 rec_tmp_log=/tmp/recovery.log;
+user_remove_notfound_log=/tmp/user_remove_notfound.log;
+user_remove_multiplefound_log=/tmp/user_remove_multiplefound.log;
 
 log_close="# End Open GApps Install Log\n";
 
@@ -591,7 +599,7 @@ exxit() {
         cp -f "$log_folder/open_gapps_log.txt" /tmp/logs;
         cp -f $b_prop /tmp/logs;
         cp -f /system/addon.d/70-gapps.sh /tmp/logs;
-        cp -f $gapps_removal_list "/tmp/logs/gapps-remove(revised).txt";
+        cp -f $gapps_removal_list "/tmp/logs/gapps-remove_revised.txt";
         cp -f $rec_cache_log /tmp/logs/Recovery_cache.log;
         cp -f $rec_tmp_log /tmp/logs/Recovery_tmp.log;
         cd /tmp/logs;
@@ -624,11 +632,11 @@ log() {
 }
 
 log_add() {
-    printf "%7s | %18s | + %7d | %7d\n" "$1" "$2" "$3" "$4">> $calc_log;
+    printf "%7s | %25s | + %7d | %7d\n" "$1" "$2" "$3" "$4">> $calc_log;
 }
 
 log_sub() {
-    printf "%7s | %18s | - %7d | %7d\n" "$1" "$2" "$3" "$4">> $calc_log;
+    printf "%7s | %25s | - %7d | %7d\n" "$1" "$2" "$3" "$4">> $calc_log;
 }
 
 obsolete_gapps_list() {
@@ -649,6 +657,23 @@ quit() {
         echo -e "$error_msg" >> $g_log;
     done;
 
+    # Add User App Removals NotFound Log if it exists
+    if [ -r $user_remove_notfound_log ]; then
+        echo -e "$user_notfound_msg" >> $g_log;
+        echo "# Begin User App Removals NOT Found (from gapps-config)" >> $g_log;
+        cat $user_remove_notfound_log >> $g_log;
+        rm -f $user_remove_notfound_log;
+        echo -e "# End User App Removals NOT Found (from gapps-config)\n" >> $g_log;
+    fi;
+    # Add User App Removals MultipleFound Log if it exists
+    if [ -r $user_remove_multiplefound_log ]; then
+        echo -e "$user_multiplefound_msg" >> $g_log;
+        echo "# Begin User App Removals MULTIPLE Found (from gapps-config)" >> $g_log;
+        cat $user_remove_multiplefound_log >> $g_log;
+        rm -f $user_remove_multiplefound_log;
+        echo -e "# End User App Removals MULTIPLE Found (from gapps-config)\n" >> $g_log;
+    fi;
+
     # Add Duplicate Files Log if it exists
     if [ -r $conflicts_log ]; then
         echo -e "$del_conflict_msg" >> $g_log;
@@ -664,6 +689,13 @@ quit() {
         cat $calc_log >> $g_log;
         rm -f $calc_log;
         echo -e "\n# End GApps Size Calculations" >> $g_log;
+    fi;
+
+    # Add list of Raw User Application Removals back to end of processed gapps-config for display in gapps log
+    if [ -n "$user_remove_list" ]; then
+        for user_remove_app_raw in $user_remove_list; do
+            echo "(${user_remove_app_raw})" >> $g_conf;
+        done;
     fi;
 
     set_progress 0.96;
@@ -749,9 +781,13 @@ done;
 if [ "$g_conf" ]; then
     config_file="$g_conf";
     log_folder="$(dirname "$g_conf")";
-    sed -e 's|#.*||g' -e 's/\r//g' -e '/^$/d'  "$g_conf" > /tmp/proc_gconf;
     g_conf_orig=$g_conf;
+    # Create processed gapps-config with user comments stripped and user app removals removed and stored in variable for processing later
     g_conf=/tmp/proc_gconf;
+    sed -e 's|#.*||g' -e 's/\r//g' -e '/^$/d'  "$g_conf_orig" > $g_conf; # Strip user comments from gapps-config
+    user_remove_list=`awk -F "[()]" '{ for (i=2; i<NF; i+=2) print $i }' $g_conf`; # Get users list of apk's to remove from gapps-config
+    sed -i s/'([^)]*)'/''/g $g_conf; # Remove all instances of user app removals (stuff between parentheses)
+    sed -i '/^$/d' $g_conf; # Remove all empty lines for cleaner appearance
 else
     config_file="Not Used";
     log_folder="$zip_folder";
@@ -843,13 +879,13 @@ density=$(getprop ro.sf.lcd_density);
 
 # If the density returned by getprop is empty or non-standard - read from default.prop instead
 case $density in
-    160|240|320|480) ;;
+    160|240|320|480|560) ;;
     *) density=$(file_getprop /default.prop ro.sf.lcd_density);;
 esac;
 
 # If the density from default.prop is still empty or non-standard - read from build.prop instead
 case $density in
-    160|240|320|480) ;;
+    160|240|320|480|560) ;;
     *) density=$(file_getprop $b_prop ro.sf.lcd_density);;
 esac;
 
@@ -1039,39 +1075,33 @@ fi;
 
 # Configure default removal of Stock/AOSP apps - if we're installing Stock GApps
 if [ $gapps_type = "stock" ]; then
-    remove_browser=true[default];
-    remove_email=true[default];
-    remove_gallery=true[default];
-    remove_launcher=true[default];
-    remove_mms=true[default];
-    remove_picotts=true[default];
-    remove_webviewstock=true[default];
+    for default_name in $default_aosp_remove_list; do
+        eval "remove_${default_name}=true[default]";
+    done;
 else
     # Do not perform any default removals - but make them optional
-    optional_aosp_remove_list=${default_aosp_remove_list}${optional_aosp_remove_list};
-    unset default_aosp_remove_list;
-    remove_browser=false[default];
-    remove_email=false[default];
-    remove_gallery=false[default];
-    remove_launcher=false[default];
-    remove_mms=false[default];
-    remove_picotts=false[default];
-    remove_webviewstock=false[default];
+    for default_name in $default_aosp_remove_list; do
+        eval "remove_${default_name}=false[default]";
+    done;
 fi;
 
 # Prepare list of AOSP/ROM files that will be deleted using gapps-config
-# Since Stock GApps has default removal of Browser, Launcher, MMS, PicoTTS and WebviewStock
-# we will look for +Browser, +Launcher, +MMS, +PicoTTS and +WebViewStock to override
+# We will look for +Browser, +Email, +Gallery, +Launcher, +MMS, +PicoTTS and +WebViewStock to prevent their removal
 set_progress 0.03;
 if [ "$g_conf" ]; then
     for default_name in $default_aosp_remove_list; do
         if ( grep -qi "+$default_name" "$g_conf" ); then
-            eval "remove_${default_name}=false";
+            eval "remove_${default_name}=false[gapps-config]";
+        elif [ $gapps_type = "stock" ]; then
+            aosp_remove_list="$aosp_remove_list$default_name"$'\n';
+            if ( grep -qi "$default_name" "$g_conf" ); then
+                eval "remove_${default_name}=true[gapps-config]";
+            fi;
         else
             if ( grep -qi "$default_name" "$g_conf" ); then
-                eval "remove_${default_name}=true";
+                eval "remove_${default_name}=true[gapps-config]";
+                aosp_remove_list="$aosp_remove_list$default_name"$'\n';
             fi;
-            aosp_remove_list="$aosp_remove_list$default_name"$'\n';
         fi;
     done;
     # Check gapps-config for other optional AOSP/ROM files that will be deleted
@@ -1122,6 +1152,7 @@ fi;
 # If we're NOT installing hangouts or messenger and mms is in $aosp_remove_list then user must override removal protection
 if ( ! contains "$gapps_list" "hangouts" ) && ( ! contains "$gapps_list" "messenger" ) && ( contains "$aosp_remove_list" "mms" ) && ( ! grep -qi "override" "$g_conf" ); then
     aosp_remove_list=${aosp_remove_list/mms}; # we'll prevent mms from being removed so user isn't left with no way to receive text messages
+    remove_mms=false[NO_Override];
     install_note="${install_note}nomms_msg"$'\n'; # make note that MMS can't be removed unless user Overrides
 fi;
 
@@ -1146,6 +1177,7 @@ fi;
 # If we're NOT installing googlenow and launcher is in $aosp_remove_list then user must override removal protection
 if ( ! contains "$gapps_list" "googlenow" ) && ( contains "$aosp_remove_list" "launcher" ) && ( ! grep -qi "override" "$g_conf" ); then
     aosp_remove_list=${aosp_remove_list/launcher}; # we'll prevent launcher from being removed so user isn't left with no Launcher
+    remove_launcher=false[NO_Override];
     install_note="${install_note}nolauncher_msg"$'\n'; # make note that Launcher can't be removed unless user Overrides
 fi;
 
@@ -1217,6 +1249,38 @@ if ( ! contains "$gapps_list" "webview" ); then
     remove_webviewstock=false[default];
 fi;
 
+# Process User Application Removals for calculations and subsequent removal
+if [ -n "$user_remove_list" ]; then
+    for remove_apk in $user_remove_list; do 
+        testapk=$( echo "$remove_apk" | tr '[:upper:]'  '[:lower:]' )
+        # Add apk extension if user didn't include it
+        case $testapk in
+          *".apk" ) ;;
+          * )       testapk="${testapk}.apk" ;;
+        esac;
+        # Check all files and folders in /system/app /system/priv-app for the apk
+        for folder in /system/app /system/priv-app; do
+            file_count=0; # Reset Counter
+            file_count=$(find $folder -iname $testapk | wc -l);
+            case $file_count in
+                0)  continue;;
+EOFILE
+if [ "$API" -le "19" ]; then
+	echo '                1)  app_folder="$(`find $folder -type f -iname $testapk`)"; # Determine file name since we found only 1 instance' >> "$build"installer.data
+else
+	echo '                1)  app_folder="$(dirname `find $folder -type f -iname $testapk`)"; # Determine folder name since we found only 1 instance' >> "$build"installer.data
+fi
+tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+                    user_remove_folder_list="${user_remove_folder_list}$app_folder"$'\n'; # Add 'found' app's folder to user_remove_folder_list
+                    break;;
+                *)  echo "$remove_apk" >> $user_remove_multiplefound_log; # Add app to user_remove_multiplefound_log since we found more than 1 instance
+                    break;;
+            esac;
+        done;
+        if [ $file_count -eq 0 ]; then echo "$remove_apk" >> $user_remove_notfound_log; fi; # Add 'not found' app to user_remove_notfound_log
+    done;
+fi;
+
 # Read in gapps removal list from file
 full_removal_list=$(cat $gapps_removal_list);
 
@@ -1224,8 +1288,9 @@ full_removal_list=$(cat $gapps_removal_list);
 set_progress 0.04;
 gapps_list=$(echo "${gapps_list}" | sort | sed '/^$/d'); # sort GApps list & remove empty lines
 aosp_remove_list=$(echo "${aosp_remove_list}" | sort | sed '/^$/d'); # sort AOSP Remove list & remove empty lines
-full_removal_list=$(echo "${full_removal_list}" | sed '/^$/d'); # Remove empty lines from  FINAL GApps Removal list
+full_removal_list=$(echo "${full_removal_list}" | sed '/^$/d'); # Remove empty lines from FINAL GApps Removal list
 remove_list=$(echo "${remove_list}" | sed '/^$/d'); # Remove empty lines from remove_list
+user_remove_folder_list=$(echo "${user_remove_folder_list}" | sed '/^$/d'); # Remove empty lines from User Application Removal list
 
 log "Installing GApps Version" $gapps_version;
 log "Installing GApps Type" $gapps_type;
@@ -1277,12 +1342,12 @@ reclaimed_removal_space_kb=$(du -ck `obsolete_gapps_list` | tail -n1 | awk '{ pr
 
 # Add information to calc.log that will later be added to open_gapps.log to assist user with app removals
 post_install_size_kb=$((free_system_size_kb + reclaimed_gapps_space_kb)); # Add opening calculations
-echo -------------------------------------------------- > $calc_log;
-printf "%7s | %18s |   %7s | %7s\n" "TYPE " "DESCRIPTION   " "SIZE" "  TOTAL" >> $calc_log;
-printf "%7s | %18s |   %7d | %7d\n" "" "Current Free Space" $free_system_size_kb $free_system_size_kb >> $calc_log;
-printf "%7s | %18s | + %7d | %7d\n" "Remove" "Existing GApps" $reclaimed_gapps_space_kb $post_install_size_kb >> $calc_log;
+echo --------------------------------------------------------- > $calc_log;
+printf "%7s | %25s |   %7s | %7s\n" "TYPE " "DESCRIPTION       " "SIZE" "  TOTAL" >> $calc_log;
+printf "%7s | %25s |   %7d | %7d\n" "" "Current Free Space" $free_system_size_kb $free_system_size_kb >> $calc_log;
+printf "%7s | %25s | + %7d | %7d\n" "Remove" "Existing GApps" $reclaimed_gapps_space_kb $post_install_size_kb >> $calc_log;
 post_install_size_kb=$((post_install_size_kb + reclaimed_removal_space_kb)); # Add reclaimed_removal_space_kb
-printf "%7s | %18s | + %7d | %7d\n" "Remove" "Obsolete Files" $reclaimed_removal_space_kb $post_install_size_kb >> $calc_log;
+printf "%7s | %25s | + %7d | %7d\n" "Remove" "Obsolete Files" $reclaimed_removal_space_kb $post_install_size_kb >> $calc_log;
 
 # Perform calculations of AOSP/ROM files that will be deleted
 set_progress 0.07;
@@ -1297,6 +1362,15 @@ for aosp_name in $aosp_remove_list; do
         fi;
     done;
     log_add "Remove" "$aosp_name" $aosp_size_kb $post_install_size_kb;
+done;
+
+# Perform calculations of User App Removals that will be deleted
+for remove_folder in $user_remove_folder_list; do
+	if [ -e $remove_folder ]; then
+		folder_size_kb=$(du -ck $remove_folder | tail -n1 | awk '{ print $1 }');
+		post_install_size_kb=$((post_install_size_kb + folder_size_kb));
+		log_add "Remove" "$(basename $remove_folder)°" $folder_size_kb $post_install_size_kb;
+	fi;
 done;
 
 # Perform calculations of GApps files that will be installed
@@ -1320,21 +1394,24 @@ fi;
 
 post_install_size_kb=$((post_install_size_kb - buffer_size_kb));
 log_sub "" "Buffer Space²" $buffer_size_kb $post_install_size_kb;
-echo -------------------------------------------------- >> $calc_log;
+echo --------------------------------------------------------- >> $calc_log;
 
 if [ "$post_install_size_kb" -ge 0 ]; then
-    printf "%40s | %7d\n" "  Post Install Free Space" $post_install_size_kb >> $calc_log;
+    printf "%47s | %7d\n" "  Post Install Free Space" $post_install_size_kb >> $calc_log;
     log "Post Install Free Space (KB)" "$post_install_size_kb       << See Calculations Below";
 else
     additional_size_kb=$((post_install_size_kb * -1));
-    printf "%40s | %7d\n" "Additional Space Required" $additional_size_kb >> $calc_log;
+    printf "%47s | %7d\n" "Additional Space Required" $additional_size_kb >> $calc_log;
     log "Additional Space Required (KB)" "$additional_size_kb       << See Calculations Below";
 fi;
 
 # Finish up Calculation Log
-echo -------------------------------------------------- >> $calc_log;
-echo "          ² Required (ALWAYS Installed)" >> $calc_log;
-echo "          ³ Optional (may be removed)" >> $calc_log;
+echo --------------------------------------------------------- >> $calc_log;
+if [ -n "$user_remove_folder_list" ]; then
+    echo "              ° User Requested Removal" >> $calc_log;
+fi;
+echo "              ² Required (ALWAYS Installed)" >> $calc_log;
+echo "             ³ Optional (may be removed)" >> $calc_log;
 
 # Check whether there's enough free space to complete this installation
 if [ "$post_install_size_kb" -lt 0 ]; then
@@ -1378,6 +1455,13 @@ for aosp_name in $aosp_remove_list; do
         rm -rf /system/$file_name;
         sed -i "\:# Remove Stock/AOSP apps (from GApps Installer):a \    rm -rf /system/$file_name" $bkup_tail;
     done;
+done;
+
+# Perform User App Removals and add Removals to addon.d script
+user_remove_folder_list=$(echo "${user_remove_folder_list}" | sort -r); # reverse sort list for more readable output
+for user_app in $user_remove_folder_list; do
+    rm -rf $user_app;
+    sed -i "\:# Remove 'user requested' apps (from gapps-config):a \    rm -rf $user_app" $bkup_tail;
 done;
 
 # Remove any empty folders we may have created during the removal process
