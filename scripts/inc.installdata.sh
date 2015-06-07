@@ -1266,9 +1266,9 @@ if [ -n "$user_remove_list" ]; then
                 0)  continue;;
 EOFILE
 if [ "$API" -le "19" ]; then
-	echo '                1)  app_folder="$(`find $folder -type f -iname $testapk`)"; # Determine file name since we found only 1 instance' >> "$build"installer.data
+	echo '                1)  app_folder="$(`find $folder -type f -iname $testapk`)"; # Determine file name since we found only 1 instance' >> "$build"META-INF/com/google/android/update-binary
 else
-	echo '                1)  app_folder="$(dirname `find $folder -type f -iname $testapk`)"; # Determine folder name since we found only 1 instance' >> "$build"installer.data
+	echo '                1)  app_folder="$(dirname `find $folder -type f -iname $testapk`)"; # Determine folder name since we found only 1 instance' >> "$build"META-INF/com/google/android/update-binary
 fi
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
                     user_remove_folder_list="${user_remove_folder_list}$app_folder"$'\n'; # Add 'found' app's folder to user_remove_folder_list
@@ -1411,7 +1411,7 @@ if [ -n "$user_remove_folder_list" ]; then
     echo "              ° User Requested Removal" >> $calc_log;
 fi;
 echo "              ² Required (ALWAYS Installed)" >> $calc_log;
-echo "             ³ Optional (may be removed)" >> $calc_log;
+echo "              ³ Optional (may be removed)" >> $calc_log;
 
 # Check whether there's enough free space to complete this installation
 if [ "$post_install_size_kb" -lt 0 ]; then
