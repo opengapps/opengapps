@@ -116,6 +116,7 @@ command -v zipalign >/dev/null 2>&1 || { echo "zipalign is required but it's not
 . "$SCRIPTS/inc.aromadata.sh"
 . "$SCRIPTS/inc.installdata.sh"
 . "$SCRIPTS/inc.packagetarget.sh"
+. "$SCRIPTS/inc.updatebinary.sh"
 buildtarget
 alignbuild
 commonscripts
