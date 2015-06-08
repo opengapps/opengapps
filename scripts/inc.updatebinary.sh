@@ -480,10 +480,10 @@ case $device_name in
 esac;
 
 # Hackish code, checks if ROM is CM12.1 from 23th of May or newer, that supports Google Webview, otherwise does not allow the install
-romversion=`echo $(file_getprop $b_prop ro.cm.version) | tr "-" " " | tr -d "."`
+rocmversion=`echo $(file_getprop $b_prop ro.cm.version) | tr "-" " " | tr -d "."`
 cmversion=`echo "$rocmversion" | awk '{print $1;}'`
 cmdate=`echo "$rocmversion" | awk '{print $2;}'`
-if [ "0$cmversion" -ge "121" ] && [ "0$cmdate" -ge "20150523" ]; then
+if [ "0$cmversion" -ge "121" ] && [ "0$cmdate" -ge "020150523" ]; then
     webviewgoogle_compat=true
 else
     webviewgoogle_compat=false
