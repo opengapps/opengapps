@@ -16,8 +16,10 @@ clean
 builddpiapp "com.google.android.gms" "GMSCore" "priv-app/PrebuiltGmsCore"
 builddpiapp "com.google.android.apps.messaging" "Messenger" "app/PrebuiltBugle"
 builddpiapp "com.google.android.play.games" "PlayGames" "app/PlayGames"
-#Keyboard Lib
-buildfile "lib/libjni_latinimegoogle.so" "Optional/keybd_lib/lib/"
+if [ "$API" -gt "19" ]; then
+	#Keyboard Lib
+	buildfile "lib/libjni_latinimegoogle.so" "Optional/keybd_lib/lib/"
+fi
 #####---------CORE APPLICATIONS---------
 buildfile "etc/" "Core/required/etc/"
 buildfile "framework" "Core/required/framework/"

@@ -81,7 +81,10 @@ createzip() {
 }
 
 getzipfolders() {
-	zipfolders="Core GMSCore Optional META-INF bkup_tail.sh g.prop gapps-remove.txt installer.data sizes.prop"
+	zipfolders="Core GMSCore META-INF bkup_tail.sh g.prop gapps-remove.txt installer.data sizes.prop"
+	if [ "$API" -gt "19" ]; then
+		zipfolders="$zipfolders Optional"
+	fi
 	for app in $1; do
 		case "$app" in
 		messenger)	zipfolders="$zipfolders Messenger";;

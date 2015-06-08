@@ -822,10 +822,15 @@ eval "gms_size=\$gms_${gms}_size"; # Determine size of GMSCore
 eval "messenger_size=\$msg_${msg}_size"; # Determine size of Messenger
 eval "playgames_size=\$pg_${pg}_size"; # Determine size of PlayGames
 
-# Determine final size of Core Apps
+EOFILE
+if [ "$API" -gt "19" ]; then
+	echo '# Determine final size of Core Apps
 if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     core_size=$((core_size + keybd_lib_size)); # Add Keyboard Lib size to core
-fi;
+
+fi;' >> "$build"META-INF/com/google/android/update-binary
+fi
+tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 
 # Read and save system partition size details
 df=$(busybox df -k /system | tail -n 1);
@@ -980,18 +985,23 @@ ui_print "- Installing updated GApps";
 ui_print " ";
 set_progress 0.15;
 folder_extract Core required; # Install Core GApps
-if ( ! contains "$gapps_list" "keyboardgoogle" ); then
+EOFILE
+if [ "$API" -gt "19" ]; then
+	echo 'if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     folder_extract Optional keybd_lib; # Install Keyboard lib to add swipe capabilities to AOSP Keyboard
-    mkdir -p /system/app/LatinIME/lib/arm;
     ln -sf /system/lib/$keybd_lib_filename1 /system/lib/$keybd_lib_filename2; # create required symlink
+    mkdir -p /system/app/LatinIME/lib/arm;
     ln -sf /system/lib/$keybd_lib_filename1 /system/app/LatinIME/lib/arm/$keybd_lib_filename1; # create required symlink
     ln -sf /system/lib/$keybd_lib_filename1 /system/app/LatinIME/lib/arm/$keybd_lib_filename2; # create required symlink
+
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/lib/$keybd_lib_filename1 /system/app/LatinIME/lib/arm/$keybd_lib_filename2" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/lib/$keybd_lib_filename1 /system/app/LatinIME/lib/arm/$keybd_lib_filename1" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/lib/$keybd_lib_filename1 /system/lib/$keybd_lib_filename2" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/LatinIME/lib/arm" $bkup_tail;
-fi;
+fi;' >> "$build"META-INF/com/google/android/update-binary
+fi
+tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 set_progress 0.20;
 folder_extract GMSCore common; # Install Google Play Services libs
 set_progress 0.25;

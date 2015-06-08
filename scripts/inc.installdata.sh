@@ -110,10 +110,13 @@ pkg_names="'"`printf "$SUPPORTEDVARIANTS " | tac -s' ' -`"'";
 # Installer Name (32 chars Total, excluding "")
 installer_name="Open GApps '"$VARIANT"' '"$PLATFORM"' - ";
 
-req_android_version="'"$PLATFORM"'";
-keybd_lib_filename1="libjni_latinimegoogle.so";
-keybd_lib_filename2="libjni_latinime.so";
-FaceLock_lib_filename="libfacelock_jni.so";
+req_android_version="'"$PLATFORM"'";' >> "$build"installer.data
+if [ "$API" -gt "19" ]; then
+	echo 'keybd_lib_filename1="libjni_latinimegoogle.so";
+keybd_lib_filename2="libjni_latinime.so";' >> "$build"installer.data
+fi
+
+echo 'FaceLock_lib_filename="libfacelock_jni.so";
 
 # Google Play Services version sizes' >> "$build"installer.data
 gmscommon=`du -s "$build"GMSCore/common | cut -f 1`
@@ -138,10 +141,13 @@ done
 
 echo "\n\n# Core & Optional Apps size" >> "$build"installer.data
 core=`du -s "$build"Core | cut -f 1`
-keybdlib=`du -s "$build"Optional/keybd_lib | cut -f 1`
-echo "core_size="$core"; keybd_lib_size="$keybdlib";">> "$build"installer.data
+printf "core_size="$core";">> "$build"installer.data
+if [ "$API" -gt "19" ]; then
+	keybdlib=`du -s "$build"Optional/keybd_lib | cut -f 1`
+	printf " keybd_lib_size="$keybdlib";">> "$build"installer.data
+fi
 
-#The part below still has to be made more dynamic, like the 'stock' type
+#The part below still has to be made more dynamic
 #We can include again the gms_base type
 #We whould replace 'arm' with the $ARCH type
 echo '
@@ -394,10 +400,8 @@ visualizationwallpapers_list="
 app/VisualizationWallpapers'"$REMOVALSUFFIX"'
 ";
 
-#Hidden, is not one of the normal options, but used in the script
 webviewstock_list="
 app/webview'"$REMOVALSUFFIX"'
-priv-app/webview'"$REMOVALSUFFIX"'
 ";
 
 whisperpush_list="
