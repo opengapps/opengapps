@@ -809,9 +809,9 @@ log "Remove Stock/AOSP Launcher" $remove_launcher;
 log "Remove Stock/AOSP MMS App" $remove_mms;
 log "Remove Stock/AOSP Pico TTS" $remove_picotts;
 log "Remove Stock/AOSP Stock WebView" $remove_webviewstock;
-log "Installing Play Services variation" "$gms)";
-log "Installing Play Games variation" "$pg)";
-log "Installing Messenger variation" "$msg)";
+log "Installing Play Services DPI variation" "$gms";
+log "Installing Play Games DPI variation" "$pg";
+log "Installing Messenger DPI variation" "$msg";
 # _____________________________________________________________________________________________________________________
 #                                                  Perform space calculations
 ui_print "- Performing system space calculations";
