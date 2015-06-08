@@ -450,12 +450,14 @@ privapp_list="
 ";
 
 # Stock/AOSP Keyboard lib (and symlink) that are always removed since they are always replaced 
-reqd_list="
-/system/lib/libjni_latinime.so
+reqd_list="' >> "$build"installer.data
+if [ "$API" -gt "19" ]; then
+echo '/system/lib/libjni_latinime.so
 /system/lib/libjni_latinimegoogle.so
 /system/app/LatinIME/lib/arm/libjni_latinime.so
-/system/app/LatinIME/lib/arm/libjni_latinimegoogle.so
-";
+/system/app/LatinIME/lib/arm/libjni_latinimegoogle.so' >> "$build"installer.data
+fi
+echo '";
 
 # Remove talkback from priv-app since it was moved to app in 5.1
 obsolete_list="
