@@ -119,7 +119,7 @@ getsourceforapi() {
 }
 buildapk() {
 	targetdir=$build$2
-	if [ "$API" = "19" ]; then ##We will do this as long as we support KitKat
+	if [ "$API" -le "19" ]; then ##We will do this as long as we support KitKat
 		targetapk="$targetdir.apk"
 		install -D "$sourceapk" "$targetapk" #inefficient, we will write this file, just to make the higher directories
 		rm "$targetapk"
