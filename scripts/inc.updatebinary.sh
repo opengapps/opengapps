@@ -466,7 +466,7 @@ else
 fi;
 
 # Is device FaceUnlock compatible
-if ( ! grep -qE "Victory|herring|sun4i" /proc/cpuinfo ) && [ -e /system/etc/permissions/android.hardware.camera.front.xml ]; then
+if { ( grep -q "android.hardware.camera.front" /system/etc/permissions/android.hardware.camera.xml ) || [ -e /system/etc/permissions/android.hardware.camera.front.xml ]; } && ( ! grep -qE "Victory|herring|sun4i" /proc/cpuinfo ); then
     faceunlock_compat=true;
 else
     faceunlock_compat=false;
