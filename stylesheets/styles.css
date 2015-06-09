@@ -45,6 +45,15 @@ a small {
   display:block;
 }
 
+a strong {
+  color:#39c;
+  font-weight:700;
+}
+
+a h1 {
+  color:#39c;
+}
+
 .wrapper {
   width:860px;
   margin:0 auto;

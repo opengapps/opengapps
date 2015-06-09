@@ -1,95 +1,162 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>The Open GApps Project</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-light.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
+    <head>
+        <meta charset="utf-8">
+        <meta content="chrome=1" http-equiv="X-UA-Compatible">
+        <title>
+            The Open GApps Project
+        </title>
+        <link href="stylesheets/styles.css" rel="stylesheet">
+        <link href="stylesheets/github-light.css" rel="stylesheet">
+        <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport"><!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Open GApps</h1>
-        <p>Main repository for Open GApps</p>
-
-        <ul>
-          <li><a href="https://github.com/opengapps/opengapps/releases">Download latest <strong>Releases</strong></a></li>
-          <li><a href="https://github.com/opengapps/opengapps">Develop on <strong>GitHub</strong></a></li>
-          <li><a href="http://forum.xda-developers.com/android/software/Open-GApps-for-Android-5.1-5.0-4.4">Discuss on <strong>XDA Forum</strong></a></li>
-        </ul>
-        <a class="pushbullet-subscribe-widget" data-channel="opengappsreleases" data-widget="button" data-size="small"></a>
-        <script type="text/javascript">(function(){var a=document.createElement('script');a.type='text/javascript';a.async=true;a.src='https://widget.pushbullet.com/embed.js';var b=document.getElementsByTagName('script')[0];b.parentNode.insertBefore(a,b);})();</script>
-        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-          <input type="hidden" name="cmd" value="_s-xclick">
-          <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
-          <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-          <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-        </form>
-      </header>
-      <section>
+    </head>
+    <body>
+        <div class="wrapper">
+            <header>
+                <h1>
+                    Open GApps Project
+                </h1><br>
+                <ul>
+                    <li>
+                        <a href="https://github.com/opengapps/opengapps/releases">Download all <strong>Releases</strong></a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/opengapps/opengapps">Develop on <strong>GitHub</strong></a>
+                    </li>
+                    <li>
+                        <a href="http://forum.xda-developers.com/android/software/Open-GApps-for-Android-5.1-5.0-4.4">Discuss on <strong>XDA Forum</strong></a>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                            <input name="cmd" type="hidden" value="_s-xclick"> <input name="encrypted" type="hidden" value="-----BEGIN PKCS7-----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-----END PKCS7-----"> <a href='#' onclick='this.parentNode.submit(); return false;'>Support by <strong>Donations</strong></a>
+                        </form>
+                    </li>
+                    <li>
+                        <a href="https://github.com/opengapps/opengapps/wiki">Guide on <strong>Wiki</strong></a>
+                    </li>
+                    <li>
+                        <a href="javascript:window.open('https://www.pushbullet.com/channel-popup?tag=opengappsreleases',document.body.clientHeight,'toolbar=no,status=no,menubar=no,width=700,height=600,top='+screen.height/2-300+',left='+screen.width/2-350)">Follow on <strong>Pushbullet</strong></a>
+                    </li>
+                </ul><br>
+                <form action="#" id="DownloadForm" name="DownloadForm">
+                    <em>Select below to download a latest release of:</em>
+                    <h2><div id="my-github-latestprerelease"></div></h2>
+                    <table>
+                        <tr>
+                            <td>
+                                <strong>Platform</strong>:
+                            </td>
+                            <td>
+                                <strong>Android</strong>:
+                            </td>
+                            <td>
+                                <a href="https://github.com/opengapps/opengapps/wiki/Package-Comparison"><strong>Variant</strong></a>:
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input checked name="arch" type="radio" value="arm">arm
+                            </td>
+                            <td>
+                                <input name="api" type="radio" value="4.4">4.4
+                            </td>
+                            <td>
+                                <input name="variant" type="radio" value="aroma">aroma
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input disabled name="arch" type="radio" value="arm64"><em>arm64</em>
+                            </td>
+                            <td>
+                                <input name="api" type="radio" value="5.0">5.0
+                            </td>
+                            <td>
+                                <input checked name="variant" type="radio" value="stock">stock
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input disabled name="arch" type="radio" value="x86"><em>x86</em>
+                            </td>
+                            <td>
+                                <input checked name="api" type="radio" value="5.1">5.1
+                            </td>
+                            <td>
+                                <input name="variant" type="radio" value="mini">mini
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" rowspan="3" style="text-align:center;">
+                                <a href="javascript:%20this.downloadSubmit()">
+                                <h1>
+                                        Download!
+                                </h1></a>
+                            </td>
+                            <td>
+                                <input name="variant" type="radio" value="micro">micro
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input name="variant" type="radio" value="nano">nano
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input name="variant" type="radio" value="pico">pico
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </header>
+            <section>
                 <h2>
-<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>About Open GApps</h2>
-
-<p>Open GApps is a Google Apps package completely developed by writing buildscripts which allow for the automated creation of new up-to-date packages automatically.
-The development process is completely open-source and the goal is to have multiple contributors involved, to secure and reinforce the sustainability of Open GApps development.
-Builds are generated every (European) night automatically (if there are any changes) and uploaded to the GitHub Releases page.</p>
-
-<p>The latest downloads can be found at the <a href="https://github.com/opengapps/opengapps/releases">GitHub Releases page</a></p>
-
-        <h2>
-<a id="build-yourself" class="anchor" href="#build-yourself" aria-hidden="true"><span class="octicon octicon-link"></span></a>Build your own Open GApps</h2>
-
-If you want to build your own version of Open GApps, you'll need to get the git sources:</p>
-
-<p>To initialize your local repository using the Open GApps source tree, use a command like:</p>
-
-<pre><code>git clone git@github.com:opengapps/opengapps.git
-</code></pre>
-
-<p>Then sync the submodules to get the original APK sources as provided by Google.
-You can also use this command to update at a later moment the sources to the most recent version</p>
-
-<pre><code>./download_sources.sh
-</code></pre>
-
-<p>To build Open GApps for all platforms and all android releases:</p>
-
-<pre><code>make
-</code></pre>
-
-<p>To build Open GApps for a specific android release on a specific platform,
-define both the platform and the API level of that release, seperated by a dash.
-A (most widely used) example:</p>
-
-<pre><code>make arm-22
-</code></pre>
-
-<p>One can update the sources used with the command:</p>
-
-<pre><code>./add_sourceapp.sh /path/to/the/file/you/want/to/add.apk [/even/more/files.apk...]
-</code></pre>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/opengapps">opengapps</a></p>
-      </footer>
-    </div>
+                    <a class="anchor" href="#introduction" id="introduction"><span class="octicon octicon-link"></span></a>About Open GApps
+                </h2>
+                <p>
+                    Open GApps is a Google Apps package completely developed by writing buildscripts which allow for the automated creation of new up-to-date packages automatically. The development process is completely open-source and the goal is to have multiple contributors involved, to secure and reinforce the sustainability of Open GApps development. Builds are generated every (European) night automatically (if there are any changes) and uploaded to the GitHub Releases page.
+                </p>
+                <p>
+                    The latest download can be chosen at the left side of this page, or alternatively you can see all (archived) downloads at the <a href="https://github.com/opengapps/opengapps/releases">GitHub Releases page</a>
+                </p>
+                <p>
+                    Currently only arm-platform is available. Arm64 and x86 downloads are still in development. The support for Android 5.1 is stable, but <span style="color: red">5.0 and 4.4 are known to still have issues</span>.
+                </p>
+            </section>
+            <footer>
+                <p>
+                    Copyright © <script type="text/javascript">var d = new Date();document.write(d.getFullYear())</script><a href="https://github.com/opengapps">The Open GApps Team</a>
+                </p>
+            </footer>
+        </div>
+    <script src="javascripts/jquery-2.1.4.js"></script>
+    <script src="javascripts/git.js" type="text/javascript"></script>
     <script src="javascripts/scale.fix.js"></script>
-              <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-63785067-1");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
+    <script type="text/javascript">
+        function downloadSubmit () {
+            var arch = this.DownloadForm.arch.value;
+            var api = this.DownloadForm.api.value;
+            var variant = this.DownloadForm.variant.value;
+            var date = this.DownloadForm.date.value;
+            window.location = "https://github.com/opengapps/opengapps/releases/download/"+date+"/open_gapps-"+arch+"-"+api+"-"+variant+"-"+date+".zip";
+        }
 
-  </body>
+        $(function() {
+            $("#my-github-latestprerelease").loadLatestPreRelease("opengapps","opengapps");
+        });
+
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+
+        try {
+            var pageTracker = _gat._getTracker("UA-63785067-1");
+            pageTracker._trackPageview();
+        } catch(err) {}
+        </script>
+    </body>
 </html>
