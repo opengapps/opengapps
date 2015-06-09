@@ -48,7 +48,7 @@ buildapp "com.google.android.gm.exchange" "GApps/exchangegoogle/app/PrebuiltExch
 #FaceLock with libs
 buildfile "lib/libfacelock_jni.so" "GApps/faceunlock/lib/"
 buildfile "vendor/pittpatt/" "GApps/faceunlock/vendor/pittpatt/"
-buildapp "com.android.facelock" "GApps/faceunlock/app/FaceLock/"
+buildapp "com.android.facelock" "GApps/faceunlock/app/FaceLock"
 #End of FaceLock
 buildapp "com.google.android.apps.fitness" "GApps/fitness/app/FitnessPrebuilt"
 buildapp "com.google.android.gm" "GApps/gmail/app/PrebuiltGmail"

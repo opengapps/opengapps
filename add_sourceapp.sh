@@ -25,12 +25,11 @@ getarchitectures() {
 		echo "No native-code specification defined"
 		#Some packages don't have native-code specified, but are still depending on it.
 		#So an extra check is necessary before declaring it suitable for all platforms
-		libfiles=`unzip -qql "$1" lib* | tr -s ' ' | cut -d ' ' -f5-`
+		libfiles=`unzip -qql "$1" lib\* | tr -s ' ' | cut -d ' ' -f5-`
 		for lib in $libfiles
 		do
 			#this gives all files found in the lib-folder(s), check their paths for which architectures' libs are included
-			IFS='/'
-			arch="`echo $lib | awk '{print $2}'`"
+			arch="`echo $lib | awk 'BEGIN { FS = "/" } ; {print $2}'`"
 			echo "$architectures" | grep -q "$arch"
 			if [ $? -eq 1 ] #only add if this architecture is not yet in the list
 			then
