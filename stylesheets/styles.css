@@ -210,7 +210,7 @@ footer {
   }
 
   section {
-    border:1px solid #e5e5e5;
+    border-bottom:1px solid #e5e5e5;
     border-width:1px 0;
     padding:20px 0;
     margin:0 0 20px;
@@ -221,7 +221,6 @@ footer {
   }
 
   header ul {
-    position:absolute;
     right:50px;
     top:52px;
   }
@@ -250,9 +249,6 @@ footer {
     padding:15px;
   }
 
-  header ul {
-    display:none;
-  }
 }
 
 @media print {
