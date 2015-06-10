@@ -1022,7 +1022,8 @@ fi;
 
 EOFILE
 if [ "$API" -le "19" ]; then
-	echo '# Handle broken lib configuration on KitKat by putting Hangouts on /data/
+tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+# Handle broken lib configuration on KitKat by putting Hangouts on /data/
 if ( contains "$gapps_list" "hangouts" ); then
     unzip -o "$ZIP" "GApps/hangouts/*" -d /tmp;
     bkup_list=$'\n'"$(find /tmp/GApps/hangouts -type f | cut -d/ -f5-)${bkup_list}";
@@ -1058,10 +1059,10 @@ if ( contains "$gapps_list" "youtube" ); then
     rm -rf "/tmp/GApps";
     gapps_list=${gapps_list/youtube};
 fi;
-' >> "$build"META-INF/com/google/android/update-binary
+
+EOFILE
 fi
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
-
 # Progress Bar increment calculations for GApps Install process
 set_progress 0.30;
 gapps_count=$(echo "${gapps_list}" | wc -w); # Count number of GApps left to be installed
