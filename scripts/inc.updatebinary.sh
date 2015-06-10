@@ -1020,6 +1020,48 @@ if ( contains "$gapps_list" "messenger" ); then
     gapps_list=${gapps_list/messenger}; # Remove Messenger from gapps list since it's now installed
 fi;
 
+EOFILE
+if [ "$API" -le "19" ]; then
+	echo '# Handle broken lib configuration on KitKat by putting Hangouts on /data/
+if ( contains "$gapps_list" "hangouts" ); then
+    unzip -o "$ZIP" "GApps/hangouts/*" -d /tmp;
+    bkup_list=$'\n'"$(find /tmp/GApps/hangouts -type f | cut -d/ -f5-)${bkup_list}";
+    cp -f "/tmp/GApps/hangouts/priv-app/Hangouts.apk" /data/app/com.google.android.talk.apk;
+    cp -rf "/tmp/GApps/hangouts/lib/." /data/app-lib/com.google.android.talk-1/;
+    rm -rf "/tmp/GApps";
+    gapps_list=${gapps_list/hangouts};
+fi;
+# Handle broken lib configuration on KitKat by putting Google+ on /data/
+if ( contains "$gapps_list" "googleplus" ); then
+    unzip -o "$ZIP" "GApps/googleplus/*" -d /tmp;
+    bkup_list=$'\n'"$(find /tmp/GApps/googleplus -type f | cut -d/ -f5-)${bkup_list}";
+    cp -f "/tmp/GApps/googleplus/app/PlusOne.apk" /data/app/com.google.android.apps.plus.apk;
+    cp -rf "/tmp/GApps/googleplus/lib/." /data/app-lib/com.google.android.apps.plus-1/;
+    rm -rf "/tmp/GApps";
+    gapps_list=${gapps_list/googleplus};
+fi;
+# Handle broken lib configuration on KitKat by putting Photos on /data/
+if ( contains "$gapps_list" "photos" ); then
+    unzip -o "$ZIP" "GApps/photos/*" -d /tmp;
+    bkup_list=$'\n'"$(find /tmp/GApps/photos -type f | cut -d/ -f5-)${bkup_list}";
+    cp -f "/tmp/GApps/photos/app/Photos.apk" /data/app/com.google.android.apps.photos.apk;
+    cp -rf "/tmp/GApps/photos/lib/." /data/app-lib/com.google.android.apps.photos-1/;
+    rm -rf "/tmp/GApps";
+    gapps_list=${gapps_list/photos};
+fi;
+# Handle broken lib configuration on KitKat by putting YouTube on /data/
+if ( contains "$gapps_list" "youtube" ); then
+    unzip -o "$ZIP" "GApps/youtube/*" -d /tmp;
+    bkup_list=$'\n'"$(find /tmp/GApps/youtube -type f | cut -d/ -f5-)${bkup_list}";
+    cp -f "/tmp/GApps/youtube/app/YouTube.apk" /data/app/com.google.android.youtube.apk;
+    cp -rf "/tmp/GApps/youtube/lib/." /data/app-lib/com.google.android.youtube-1/;
+    rm -rf "/tmp/GApps";
+    gapps_list=${gapps_list/youtube};
+fi;
+' >> "$build"META-INF/com/google/android/update-binary
+fi
+tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+
 # Progress Bar increment calculations for GApps Install process
 set_progress 0.30;
 gapps_count=$(echo "${gapps_list}" | wc -w); # Count number of GApps left to be installed
