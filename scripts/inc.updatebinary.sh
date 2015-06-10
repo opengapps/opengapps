@@ -1028,7 +1028,7 @@ if ( contains "$gapps_list" "hangouts" ); then
     unzip -o "$ZIP" "GApps/hangouts/*" -d /tmp;
     bkup_list=$'\n'"$(find /tmp/GApps/hangouts -type f | cut -d/ -f5-)${bkup_list}";
     cp -f "/tmp/GApps/hangouts/priv-app/Hangouts.apk" /data/app/com.google.android.talk.apk;
-    cp -rf "/tmp/GApps/hangouts/lib/." /data/app-lib/com.google.android.talk-1/;
+    cp -rf "/tmp/GApps/hangouts/lib/." /data/app-lib/com.google.android.talk/;
     rm -rf "/tmp/GApps";
     gapps_list=${gapps_list/hangouts};
 fi;
@@ -1037,7 +1037,7 @@ if ( contains "$gapps_list" "googleplus" ); then
     unzip -o "$ZIP" "GApps/googleplus/*" -d /tmp;
     bkup_list=$'\n'"$(find /tmp/GApps/googleplus -type f | cut -d/ -f5-)${bkup_list}";
     cp -f "/tmp/GApps/googleplus/app/PlusOne.apk" /data/app/com.google.android.apps.plus.apk;
-    cp -rf "/tmp/GApps/googleplus/lib/." /data/app-lib/com.google.android.apps.plus-1/;
+    cp -rf "/tmp/GApps/googleplus/lib/." /data/app-lib/com.google.android.apps.plus/;
     rm -rf "/tmp/GApps";
     gapps_list=${gapps_list/googleplus};
 fi;
@@ -1046,7 +1046,7 @@ if ( contains "$gapps_list" "photos" ); then
     unzip -o "$ZIP" "GApps/photos/*" -d /tmp;
     bkup_list=$'\n'"$(find /tmp/GApps/photos -type f | cut -d/ -f5-)${bkup_list}";
     cp -f "/tmp/GApps/photos/app/Photos.apk" /data/app/com.google.android.apps.photos.apk;
-    cp -rf "/tmp/GApps/photos/lib/." /data/app-lib/com.google.android.apps.photos-1/;
+    cp -rf "/tmp/GApps/photos/lib/." /data/app-lib/com.google.android.apps.photos/;
     rm -rf "/tmp/GApps";
     gapps_list=${gapps_list/photos};
 fi;
@@ -1055,7 +1055,7 @@ if ( contains "$gapps_list" "youtube" ); then
     unzip -o "$ZIP" "GApps/youtube/*" -d /tmp;
     bkup_list=$'\n'"$(find /tmp/GApps/youtube -type f | cut -d/ -f5-)${bkup_list}";
     cp -f "/tmp/GApps/youtube/app/YouTube.apk" /data/app/com.google.android.youtube.apk;
-    cp -rf "/tmp/GApps/youtube/lib/." /data/app-lib/com.google.android.youtube-1/;
+    cp -rf "/tmp/GApps/youtube/lib/." /data/app-lib/com.google.android.youtube/;
     rm -rf "/tmp/GApps";
     gapps_list=${gapps_list/youtube};
 fi;
