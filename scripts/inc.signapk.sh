@@ -278,8 +278,8 @@ if [ "x$1" = "xsign" ]; then
   $PRINTF "$sf"|$OPENSSL smime -sign -inkey "$TMPPKEY" -signer "$CERT" -binary -outform DER -noattr > "${TMPDIR}/META-INF/CERT.RSA";  ordie "" 4
   cd "${TMPDIR}"
   ENVKLUDGE="$ZIP"; unset ZIP # thanks new-version-of-infozip =[
-  dprint $ENVKLUDGE "$TARGET" META-INF/MANIFEST.MF META-INF/CERT.SF META-INF/CERT.RSA
-  $ENVKLUDGE "$TARGET" META-INF/MANIFEST.MF META-INF/CERT.SF META-INF/CERT.RSA;  ordie "" 5
+  dprint $ENVKLUDGE $QZIP "$TARGET" META-INF/MANIFEST.MF META-INF/CERT.SF META-INF/CERT.RSA
+  $ENVKLUDGE $QZIP "$TARGET" META-INF/MANIFEST.MF META-INF/CERT.SF META-INF/CERT.RSA;  ordie "" 5
   cd - > /dev/null
   rm -rf "${TMPDIR}"
 
