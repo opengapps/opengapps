@@ -114,7 +114,8 @@ if [ "$API" -gt "19" ]; then
 keybd_lib_filename2="libjni_latinime.so";' >> "$build"installer.data
 fi
 
-echo 'FaceLock_lib_filename="libfacelock_jni.so";
+echo 'FaceLock_lib_filename1="libfacelock_jni.so";
+FaceLock_lib_filename2="libfilterpack_facedetect.so";
 
 # Google Play Services version sizes' >> "$build"installer.data
 gmscommon=`du -s "$build"GMSCore/common | cut -f 1`

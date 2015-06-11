@@ -1082,7 +1082,8 @@ done;
 # Create FaceLock lib symlink if FaceLock was installed
 if ( contains "$gapps_list" "faceunlock" ); then
     mkdir -p /system/app/FaceLock/lib/arm;
-    ln -sf /system/lib/$FaceLock_lib_filename /system/app/FaceLock/lib/arm/$FaceLock_lib_filename; # create required symlink
+    ln -sf /system/lib/$FaceLock_lib_filename1 /system/app/FaceLock/lib/arm/$FaceLock_lib_filename1; # create required symlink
+    ln -sf /system/lib/$FaceLock_lib_filename2 /system/app/FaceLock/lib/arm/$FaceLock_lib_filename2; # create required symlink
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/lib/$FaceLock_lib_filename /system/app/FaceLock/lib/arm/$FaceLock_lib_filename" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/FaceLock/lib/arm" $bkup_tail;
