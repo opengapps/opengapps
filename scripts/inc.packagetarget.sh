@@ -75,6 +75,7 @@ createzip() {
 		rm "$unsignedzip"
 	fi
 	cd "$build"
+	echo "Compressing and signing $signedzip..."
 	zip -q -r -D -X -9 "$unsignedzip" $zipfolders 
 	cd "$TOP"
 	signzip

@@ -46,6 +46,7 @@ buildapp() {
 	then
 		buildapk "$1" "$2"
 		buildlib "$1" "$2"
+		echo "Built $1 version "$(basename -s .apk "$sourceapk")
 	else
 		echo "ERROR: Failed to build package $1 on $ARCH"
 		exit 1
@@ -70,7 +71,7 @@ builddpiapp(){
 				buildapk "$1.$v" "$2/$v/$3"
 			fi
 		done
-		echo "Found $1 variants:$dpitargets of universal version $dpiversion"
+		echo "Built $1 with extra DPI variants:$dpitargets of universal version $dpiversion"
 		eval "$2=\$dpitargets" #store the found dpi versions in ${TOPLOCATION}
 	else
 			echo "ERROR: Failed to build package $1 on $ARCH"
