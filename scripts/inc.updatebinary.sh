@@ -1023,6 +1023,8 @@ fi;
 EOFILE
 if [ "$API" -le "19" ]; then
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+install -d /data/app/
+install -d /data/app-lib/
 # Handle broken lib configuration on KitKat by putting Hangouts on /data/
 if ( contains "$gapps_list" "hangouts" ); then
     unzip -o "$ZIP" "GApps/hangouts/*" -d /tmp;
