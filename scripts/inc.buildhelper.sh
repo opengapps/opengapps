@@ -124,7 +124,7 @@ buildapk() {
 		targetapk="$targetdir.apk"
 		install -D "$sourceapk" "$targetapk" #inefficient, we will write this file, just to make the higher directories
 		rm "$targetapk"
-		zip -q -U "$sourceapk" -O "$targetapk" --exclude lib*
+		zip -q -U "$sourceapk" -O "$targetapk" --exclude "lib*"
 	else ##This is Lollipop, much more nice :-)
 		targetapk="$targetdir/$(basename $targetdir).apk"
 		if [ -f "$targetapk" ]
@@ -132,7 +132,7 @@ buildapk() {
 			rm "$targetapk"
 		fi
 		install -d "$targetdir"
-		zip -q -U "$sourceapk" -O "$targetapk" --exclude lib*
+		zip -q -U "$sourceapk" -O "$targetapk" --exclude "lib*"
 	fi
 }
 buildlib() {
@@ -156,13 +156,13 @@ buildlib() {
 		if [ "x`unzip -qql "$sourceapk" $libsearchpath | cut -c1- | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
 			then
 			install -d "$targetdir/lib"
-			unzip -q -j -o "$sourceapk" -d "$targetdir/lib" $libsearchpath
+			unzip -q -j -o "$sourceapk" -d "$targetdir/lib" "$libsearchpath"
 		fi
 	else ##This is Lollipop, much more nice :-)
 		if [ "x`unzip -qql "$sourceapk" $libsearchpath | cut -c1- | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
 			then
 			install -d "$targetdir/lib/$ARCH"
-			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$ARCH" $libsearchpath
+			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$ARCH" "$libsearchpath"
 		fi
 	fi
 }

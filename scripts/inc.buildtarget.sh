@@ -47,6 +47,7 @@ buildapp "com.google.earth" "GApps/earth/app/GoogleEarth"
 buildapp "com.google.android.gm.exchange" "GApps/exchangegoogle/app/PrebuiltExchange3Google"
 #FaceLock with libs
 buildfile "lib/libfacelock_jni.so" "GApps/faceunlock/lib/"
+buildfile "lib/libfilterpack_facedetect.so" "GApps/faceunlock/lib/"
 buildfile "vendor/pittpatt/" "GApps/faceunlock/vendor/pittpatt/"
 buildapp "com.android.facelock" "GApps/faceunlock/app/FaceLock"
 #End of FaceLock

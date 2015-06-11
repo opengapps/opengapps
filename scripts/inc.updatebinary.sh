@@ -1079,9 +1079,7 @@ for gapp_name in $gapps_list; do
     set_progress 0.$prog_bar;
 done;
 
-EOFILE
-if [ "$API" -gt "19" ]; then
-	echo '# Create FaceLock lib symlink if FaceLock was installed
+# Create FaceLock lib symlink if FaceLock was installed
 if ( contains "$gapps_list" "faceunlock" ); then
     mkdir -p /system/app/FaceLock/lib/arm;
     ln -sf /system/lib/$FaceLock_lib_filename /system/app/FaceLock/lib/arm/$FaceLock_lib_filename; # create required symlink
@@ -1089,9 +1087,7 @@ if ( contains "$gapps_list" "faceunlock" ); then
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/lib/$FaceLock_lib_filename /system/app/FaceLock/lib/arm/$FaceLock_lib_filename" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/FaceLock/lib/arm" $bkup_tail;
 fi;
-' >> "$build"META-INF/com/google/android/update-binary
-fi
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+
 # Copy g.prop over to /system/etc
 cp -f /tmp/g.prop $g_prop;
 # _____________________________________________________________________________________________________________________
