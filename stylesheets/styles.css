@@ -1,10 +1,13 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
+@import url(http://fonts.googleapis.com/css?family=Roboto:700italic,100italic);
 
 body {
-  padding:50px;
   font:14px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color:#777;
+  background-color: #009688;
+  color:#000;
   font-weight:300;
+  margin: 0px;
+  margin-top: 10px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -107,7 +110,6 @@ img {
 header {
   width:270px;
   float:left;
-  position:fixed;
 }
 
 header ul {
@@ -187,8 +189,6 @@ hr {
 
 footer {
   width:270px;
-  float:left;
-  position:fixed;
   bottom:50px;
 }
 
@@ -244,17 +244,38 @@ footer {
   }
 }
 
-@media print, screen and (max-width: 480px) {
-  body {
-    padding:15px;
-  }
-
-}
-
 @media print {
   body {
     padding:0.4in;
     font-size:12pt;
     color:#444;
   }
+}
+
+#logo {
+  margin:0 auto;
+  text-align:center;
+  overflow:hidden;
+  cursor: default;
+}
+
+.container{
+  padding:50px;
+  background-color: #FFF;
+  box-shadow: 0 7px 10px -5px #888888 inset;
+}
+
+#open{
+  font-family: Roboto, sans-serif;
+  color: #FFF;
+  font-size: 100px;
+}
+#gapps{
+  font-family: Roboto, sans-serif;
+  color: #FFF;
+  font-size: 47px;
+  position: relative;
+  top: -50px;
+  left: 30px;
+  opacity: 0.7;
 }
