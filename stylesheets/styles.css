@@ -36,25 +36,25 @@ h3, h4, h5, h6 {
 }
 
 a {
-  color:#39c;
+  color:#009688;
   font-weight:400;
   text-decoration:none;
 }
 
 a small {
   font-size:11px;
-  color:#777;
+  color:#009688;
   margin-top:-0.6em;
   display:block;
 }
 
 a strong {
-  color:#39c;
+  color:#009688;
   font-weight:700;
 }
 
 a h1 {
-  color:#39c;
+  color:#009688;
 }
 
 .wrapper {
@@ -118,16 +118,16 @@ header ul {
 
   padding:0;
 
-  background: #eee;
-  background: -moz-linear-gradient(top, #f8f8f8 0%, #dddddd 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8f8f8), color-stop(100%,#dddddd));
-  background: -webkit-linear-gradient(top, #f8f8f8 0%,#dddddd 100%);
-  background: -o-linear-gradient(top, #f8f8f8 0%,#dddddd 100%);
-  background: -ms-linear-gradient(top, #f8f8f8 0%,#dddddd 100%);
-  background: linear-gradient(top, #f8f8f8 0%,#dddddd 100%);
+  background: #E0F2F1;
+  background: -moz-linear-gradient(top, #E0F2F1 0%, #B2DFDB 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#E0F2F1), color-stop(100%,#B2DFDB));
+  background: -webkit-linear-gradient(top, #E0F2F1 0%,#B2DFDB 100%);
+  background: -o-linear-gradient(top, #E0F2F1 0%,#B2DFDB 100%);
+  background: -ms-linear-gradient(top, #E0F2F1 0%,#B2DFDB 100%);
+  background: linear-gradient(top, #E0F2F1 0%,#B2DFDB 100%);
 
   border-radius:5px;
-  border:1px solid #d2d2d2;
+  border:1px solid #009688;
   box-shadow:inset #fff 0 1px 0, inset rgba(0,0,0,0.03) 0 -1px 0;
   width:270px;
 }
@@ -135,14 +135,14 @@ header ul {
 header li {
   width:89px;
   float:left;
-  border-right:1px solid #d2d2d2;
+  border-right:1px solid #009688;
   height:40px;
 }
 
 header ul a {
   line-height:1;
   font-size:11px;
-  color:#999;
+  color:#004D40;
   display:block;
   text-align:center;
   padding-top:6px;
@@ -270,6 +270,7 @@ footer {
   color: #FFF;
   font-size: 100px;
 }
+
 #gapps{
   font-family: Roboto, sans-serif;
   color: #FFF;
@@ -278,4 +279,26 @@ footer {
   top: -50px;
   left: 30px;
   opacity: 0.7;
+}
+
+#download{
+  font-size:26px;
+  font-weight:bold;
+
+  background: #E0F2F1;
+  background: -moz-linear-gradient(top, #E0F2F1 0%, #B2DFDB 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#E0F2F1), color-stop(100%,#B2DFDB));
+  background: -webkit-linear-gradient(top, #E0F2F1 0%,#B2DFDB 100%);
+  background: -o-linear-gradient(top, #E0F2F1 0%,#B2DFDB 100%);
+  background: -ms-linear-gradient(top, #E0F2F1 0%,#B2DFDB 100%);
+  background: linear-gradient(top, #E0F2F1 0%,#B2DFDB 100%);
+
+  border-radius:5px;
+  border:1px solid #009688;
+  box-shadow:inset #fff 0 1px 0, inset rgba(0,0,0,0.03) 0 -1px 0;
+
+  color:#222;
+  display:block;
+  text-align:center;
+
 }
