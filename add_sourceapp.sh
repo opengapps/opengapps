@@ -120,10 +120,10 @@ addapk() {
 			installapk "arm"
 		fi
 	fi
-	echo "$architectures" | grep -q "x86-64 "
+	echo "$architectures" | grep -q "x86_64 "
 	if [ $? -eq 0 ]
 	then
-		. #installapk "x86-64" #does not yet exist
+		installapk "x86_64"
 	else
 		echo "$architectures" | grep -q "x86 "
 		if [ $? -eq 0 ]
@@ -160,11 +160,12 @@ done
 #	armeabi - ARMv5TE based CPU with software floating point operations;
 #	armeabi-v7a - ARMv7 based devices with hardware FPU instructions
 #arm64:
-#	arm64-v8a - ARMv8 AArch64 instruction set - only for NDK r10 and newer
+#	arm64-v8a - ARMv8 AArch64 instruction set
 #x86:
 #	x86 - IA-32 instruction set
+#x86_64:
+#	x86_64 - Intel64 instruction set
 #
 #unsupported at the moment:
-#x86-64 - Intel64 instruction set (r1) - only for NDK r10 and newer
 #mips - MIPS32 instruction set
-#mips64 - MIPS64 instruction set (r6) - only for NDK r10 and newer
+#mips64 - MIPS64 instruction set
