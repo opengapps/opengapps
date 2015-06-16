@@ -11,7 +11,9 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-sources="sources"
+TOP="$(realpath .)"
+SOURCES="$TOP/sources"
+LOWESTAPI="19"
 command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }
 #coreutils also contains the basename command
@@ -53,7 +55,7 @@ getarchitectures() {
 installapk() {
 	architecture="$1"
 	#targetlocation: sources/platform/type/package/sdkversion/versioncode.apk
-	target="$sources/$architecture/$type/$package/$sdkversion/"
+	target="$SOURCES/$architecture/$type/$package/$sdkversion/"
 	install -d "$target"
 	if stat --printf='' "$target"* 2>/dev/null
 	then
@@ -70,6 +72,18 @@ installapk() {
 	else
 		install -D "$apk" "$target$versioncode.apk"
 		echo "SUCCESS: Added $target$versioncode.apk"
+	fi
+
+	if [ "$sdkversion" -le "$LOWESTAPI" ];then
+		max=`expr $sdkversion - 1`
+		for i in `seq 1 "$max"`
+		do
+			remove="$SOURCES/$architecture/$type/$package/$i/"
+			if [ -e "$remove" ];then
+				rm -rf "$remove"
+				echo "Cleaned up old API: $remove"
+			fi
+		done
 	fi
 }
 
