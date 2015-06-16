@@ -192,7 +192,7 @@ buildlib() {
 		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ "x`unzip -qql "$sourceapk" $libfallbacksearchpath | cut -c1- | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
 		then
 			install -d "$targetdir/lib/$FALLBACKARCH"
-			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$FALLBACKARCH" "$libsearchpath"
+			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$FALLBACKARCH" "$libfallbacksearchpath"
 		fi
 	fi
 }
