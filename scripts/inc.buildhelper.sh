@@ -159,29 +159,40 @@ buildlib() {
 	libsearchpath="lib/*" #default that should never happen: all libs
 	if [ "$SOURCEARCH" = "arm" ]; then
 		libsearchpath="lib/armeabi*/*" #mind the wildcard
+		libfallbacksearchpath=""
 	elif [ "$SOURCEARCH" = "arm64" ]; then
 		libsearchpath="lib/arm64*/*" #mind the wildcard
+		libfallbacksearchpath="lib/armeabi*/*" #mind the wildcard
 	elif [ "$SOURCEARCH" = "x86" ]; then
 		libsearchpath="lib/x86/*"
+		libfallbacksearchpath=""
 	elif [ "$SOURCEARCH" = "x86_64" ]; then
 		libsearchpath="lib/x86_64/*"
+		libfallbacksearchpath="lib/x86/*"
 	elif [ "$SOURCEARCH" = "mips" ]; then
 		libsearchpath="lib/mips/*"
+		libfallbacksearchpath=""
 	elif [ "$SOURCEARCH" = "mips64" ]; then
 		libsearchpath="lib/mips64/*"
+		libfallbacksearchpath="lib/mips/*"
 	fi
 	if [ "$API" = "19" ]; then ##We will do this as long as we support KitKat
 		targetdir=$(dirname $(dirname "$targetdir"))
 		if [ "x`unzip -qql "$sourceapk" $libsearchpath | cut -c1- | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
-			then
+		then
 			install -d "$targetdir/lib"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib" "$libsearchpath"
 		fi
 	else ##This is Lollipop, much more nice :-)
 		if [ "x`unzip -qql "$sourceapk" $libsearchpath | cut -c1- | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
-			then
+		then
 			install -d "$targetdir/lib/$SOURCEARCH"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$SOURCEARCH" "$libsearchpath"
+		fi
+		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ "x`unzip -qql "$sourceapk" $libfallbacksearchpath | cut -c1- | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
+		then
+			install -d "$targetdir/lib/$FALLBACKARCH"
+			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$FALLBACKARCH" "$libsearchpath"
 		fi
 	fi
 }
