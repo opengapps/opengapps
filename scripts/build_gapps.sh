@@ -23,7 +23,7 @@ ARCH="$1"
 API="$2"
 BUILD="$TOP/build"
 OUT="$TOP/out"
-SOURCE="$TOP/sources"
+SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 DENSITIES="2 4 6 8" #don't add 0
 VARIANTS="stock full mini micro nano pico" #keep in order from large to small
@@ -31,6 +31,13 @@ if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then
 	AROMAVARIANTS="stock" #add 'stock' to build aroma for ARM platforms
 else
 	AROMAVARIANTS="" #keep empty to skip building of aroma
+fi
+if [ "$ARCH" = "arm64" ]; then
+	FALLBACKARCH="arm"
+elif [ "$ARCH" = "x86_64" ]; then
+	FALLBACKARCH="x86"
+else
+	FALLBACKARCH=""
 fi
 
 STOCK="cameragoogle

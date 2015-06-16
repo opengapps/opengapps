@@ -32,71 +32,90 @@ buildfile() {
 	#buildfile needs slashes when used, unlike the buildapp
 	targetdir="$build$2"
 	install -d "$targetdir"
-	if [ -e "$SOURCE/$ARCH/$1" ] #check if directory or file exists
+	if [ -e "$SOURCES/$ARCH/$1" ] #check if directory or file exists
 	then
-		copy "$SOURCE/$ARCH/$1" "$targetdir" #if we have a file specific to this architecture
+		copy "$SOURCES/$ARCH/$1" "$targetdir" #if we have a file specific to this architecture
 	else
-		copy "$SOURCE/all/$1" "$targetdir" #use architecure independent file
+		copy "$SOURCES/all/$1" "$targetdir" #use architecure independent file
 	fi
 }
 buildapp() {
-	#package $1
-	#targetlocation $2
-	if getsourceforapi $1
+	package="$1"
+	targetlocation="$2"
+	if [ "x$3" = "x" ]; then SOURCEARCH="$ARCH"
+	else SOURCEARCH="$3"; fi #allows for an override
+
+	if getsourceforapi $package
 	then
-		buildapk "$1" "$2"
-		buildlib "$1" "$2"
-		echo "Built $1 version "$(basename -s .apk "$sourceapk")
+		buildapk "$package" "$targetlocation"
+		buildlib "$package" "$targetlocation"
+		echo "Built $package version "$(basename -s .apk "$sourceapk")
 	else
-		echo "ERROR: Failed to build package $1 on $ARCH"
-		exit 1
+		if [ "$SOURCEARCH" != "$FALLBACKARCH" ]
+		then
+			echo "WARNING: Falling back from $ARCH to $FALLBACKARCH for package $package"
+			buildapp "$package" "$targetlocation" "$FALLBACKARCH"
+		else
+			echo "ERROR: Failed to build package $package on $ARCH"
+			exit 1
+		fi
 	fi
 }
 builddpiapp(){
-	#package $1
-	#targettoplocation $2, is also used as variablename's identifier (for installdata.sh)
-	#targetsublocation $3
-	if getversion "$1.0" #universal DPI version is our benchmark
+	package="$1"
+	targettoplocation="$2" # is also used as variablename's identifier (for installdata.sh)
+	targetsublocation="$3"
+	if [ "x$4" = "x" ]; then SOURCEARCH="$ARCH"
+	else SOURCEARCH="$4"; fi #allows for an override
+
+	if getversion "$package.0" #universal DPI version is our benchmark
 	then
 		dpiversion="$getversion"
 		dpitargets=""
 		#$sourceapk is because of getversion still the one of the '0' variant
-		buildapk "$1.0" "$2/0/$3"
-		buildlib "$1.0" "$2/common/$3"
+		buildapk "$package.0" "$targettoplocation/0/$targetsublocation"
+		buildlib "$package.0" "$targettoplocation/common/$targetsublocation"
 		for v in $DENSITIES; do
-			if comparebaseversion "$dpiversion" "$1.$v"
+			if comparebaseversion "$dpiversion" "$package.$v"
 			then
 				dpitargets="$dpitargets $v"
 				#the value of $sourceapk has been changed for us by calling the comparebaseversion
-				buildapk "$1.$v" "$2/$v/$3"
+				buildapk "$package.$v" "$targettoplocation/$v/$targetsublocation"
 			fi
 		done
-		echo "Built $1 with extra DPI variants:$dpitargets of universal version $dpiversion"
-		eval "$2=\$dpitargets" #store the found dpi versions in ${TOPLOCATION}
+		echo "Built $package with extra DPI variants:$dpitargets of universal version $dpiversion"
+		eval "$targettoplocation=\$dpitargets" #store the found dpi versions in ${targettoplocation
 	else
-			echo "ERROR: Failed to build package $1 on $ARCH"
+		if [ "$SOURCEARCH" != "$FALLBACKARCH" ]
+		then
+			echo "WARNING: Falling back from $ARCH to $FALLBACKARCH for package $package"
+			builddpiapp "$package" "$targettoplocation" "$targetsublocation" "$FALLBACKARCH"
+		else
+			echo "ERROR: No fallback available. Failed to build package $package on $ARCH"
 			exit 1
+		fi
 	fi
 }
 getsourceforapi() {
+	appname="$1"
 	#loop over all source-instances and find the highest available acceptable api level
 	sourcearch=""
 	sourceall=""
 	sourceapk=""
-	if stat --printf='' "$SOURCE/$ARCH/"*"app/$1" 2>/dev/null
+	if stat --printf='' "$SOURCES/$SOURCEARCH/"*"app/$appname" 2>/dev/null
 	then
-		sourcearch="find $SOURCE/$ARCH/*app/$1 -iname '*.apk'"
+		sourcearch="find $SOURCES/$SOURCEARCH/*app/$appname -iname '*.apk'"
 		sourceall=" & " #glue
 	fi
-	if stat --printf='' "$SOURCE/all/"*"app/$1" 2>/dev/null
+	if stat --printf='' "$SOURCES/all/"*"app/$appname" 2>/dev/null
 	then
-		sourceall="$sourceall""find $SOURCE/all/*app/$1 -iname '*.apk'"
+		sourceall="$sourceall""find $SOURCES/all/*app/$appname -iname '*.apk'"
 	else
 		sourceall="" #undo glue
 	fi
 	if [ "$sourcearch" = "" ] && [ "$sourceall" = "" ]
 	then
-		return 1 #package is not there, error!?
+		return 1 #appname is not there, error!?
 	fi
 	#sed copies filename to the beginning, to compare version, and later we remove it with cut
 	for foundapk in `{ eval "$sourcearch$sourceall"; }\
@@ -112,7 +131,7 @@ getsourceforapi() {
 	done
 	if [ "$sourceapk" = "" ]
 	then
-		echo "WARNING: No APK found compatible with API level $API for package $1 on $ARCH, lowest found: $api"
+		echo "WARNING: No APK found compatible with API level $API for package $appname on $SOURCEARCH, lowest found: $api"
 		return 1 #error
 	fi
 	#$sourceapk has the useful returnvalue
@@ -138,17 +157,17 @@ buildapk() {
 buildlib() {
 	targetdir=$build$2
 	libsearchpath="lib/*" #default that should never happen: all libs
-	if [ "$ARCH" = "arm" ]; then
+	if [ "$SOURCEARCH" = "arm" ]; then
 		libsearchpath="lib/armeabi*/*" #mind the wildcard
-	elif [ "$ARCH" = "arm64" ]; then
+	elif [ "$SOURCEARCH" = "arm64" ]; then
 		libsearchpath="lib/arm64*/*" #mind the wildcard
-	elif [ "$ARCH" = "x86" ]; then
+	elif [ "$SOURCEARCH" = "x86" ]; then
 		libsearchpath="lib/x86/*"
-	elif [ "$ARCH" = "x86-64" ]; then
-		libsearchpath="lib/x86-64/*"
-	elif [ "$ARCH" = "mips" ]; then
+	elif [ "$SOURCEARCH" = "x86_64" ]; then
+		libsearchpath="lib/x86_64/*"
+	elif [ "$SOURCEARCH" = "mips" ]; then
 		libsearchpath="lib/mips/*"
-	elif [ "$ARCH" = "mips64" ]; then
+	elif [ "$SOURCEARCH" = "mips64" ]; then
 		libsearchpath="lib/mips64/*"
 	fi
 	if [ "$API" = "19" ]; then ##We will do this as long as we support KitKat
@@ -161,8 +180,8 @@ buildlib() {
 	else ##This is Lollipop, much more nice :-)
 		if [ "x`unzip -qql "$sourceapk" $libsearchpath | cut -c1- | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
 			then
-			install -d "$targetdir/lib/$ARCH"
-			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$ARCH" "$libsearchpath"
+			install -d "$targetdir/lib/$SOURCEARCH"
+			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$SOURCEARCH" "$libsearchpath"
 		fi
 	fi
 }
