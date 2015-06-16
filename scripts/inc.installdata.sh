@@ -163,7 +163,7 @@ removal_bypass_list="'"$REMOVALBYPASS"'
 E_ROMVER=20; # Wrong ROM version
 E_NOSPACE=70; # Insufficient Space Available in System Partition
 E_NONOPEN=40; # NON-Open GApps Currently Installed
-E_64BIT=64 ; # 64-bit Device Detected
+E_ARCH=64 ; # Wrong rchitecture Detected
 #_________________________________________________________________________________________________________________
 #                                             GApps List (Applications user can Select/Deselect)
 # calsync will be added to GApps Install List as needed during script execution' >> "$build"installer.data
@@ -477,7 +477,7 @@ tee -a "$build"installer.data > /dev/null <<'EOFILE'
 remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript_list}";
 # _____________________________________________________________________________________________________________________
 #                                             Installer Error Messages
-arm64_compat_msg_msg="INSTALLATION FAILURE: Open GApps are not compatible with 64-bit devices. You will\nneed to find a 64-bit compatible GApps package that will work with your device.\n";
+arch_compat_msg="INSTALLATION FAILURE: This Open GApps package cannot be installed on this\ndevice's architecture. Please download the correct version for your device.\n";
 camera_sys_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera\ncan only be installed during a Clean Install or as an update to an existing\nGApps Installation.\n";
 camera_compat_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera is\nNOT compatible with your device if installed in the system partition. Try\ninstalling from the Play Store instead.\n";
 faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";

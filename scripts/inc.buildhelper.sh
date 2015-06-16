@@ -51,7 +51,7 @@ buildapp() {
 		buildlib "$package" "$targetlocation"
 		echo "Built $package version "$(basename -s .apk "$sourceapk")
 	else
-		if [ "$SOURCEARCH" != "$FALLBACKARCH" ]
+		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ "$FALLBACKARCH" != "" ]
 		then
 			echo "WARNING: Falling back from $ARCH to $FALLBACKARCH for package $package"
 			buildapp "$package" "$targetlocation" "$FALLBACKARCH"
@@ -86,7 +86,7 @@ builddpiapp(){
 		echo "Built $package with extra DPI variants:$dpitargets of universal version $dpiversion"
 		eval "$targettoplocation=\$dpitargets" #store the found dpi versions in ${targettoplocation
 	else
-		if [ "$SOURCEARCH" != "$FALLBACKARCH" ]
+		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ "$FALLBACKARCH" != "" ]
 		then
 			echo "WARNING: Falling back from $ARCH to $FALLBACKARCH for package $package"
 			builddpiapp "$package" "$targettoplocation" "$targetsublocation" "$FALLBACKARCH"
@@ -189,7 +189,7 @@ buildlib() {
 			install -d "$targetdir/lib/$SOURCEARCH"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$SOURCEARCH" "$libsearchpath"
 		fi
-		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ "x`unzip -qql "$sourceapk" $libfallbacksearchpath | cut -c1- | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
+		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ "$FALLBACKARCH" != "" ] && [ "x`unzip -qql "$sourceapk" $libfallbacksearchpath | cut -c1- | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
 		then
 			install -d "$targetdir/lib/$FALLBACKARCH"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$FALLBACKARCH" "$libfallbacksearchpath"

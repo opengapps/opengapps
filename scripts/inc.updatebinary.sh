@@ -354,19 +354,31 @@ if [ ! ${rom_android_version:0:3} == $req_android_version ]; then
     abort $E_ROMVER;
 fi;
 
-# Check to make certain that user is not using a 64-bit device
-if echo "$(file_getprop $b_prop ro.product.cpu.abilist64)" | grep -qi "arm64"; then
+# Check to make certain that user device matches the architecture
+EOFILE
+devarch=$(file_getprop $b_prop ro.product.cpu.abi)
+printf 'if echo "$devarch" | grep -qi "'>> "$build"META-INF/com/google/android/update-binary
+case "$ARCH" in
+	arm)	printf "armeabi">> "$build"META-INF/com/google/android/update-binary;;
+	arm64)	printf "arm64">> "$build"META-INF/com/google/android/update-binary;;
+	x86)	printf "x86">> "$build"META-INF/com/google/android/update-binary;;
+	x86_64)	printf "x86_64">> "$build"META-INF/com/google/android/update-binary;;
+esac
+tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+"; then
+    log "Device Architecture:" "$devarch";
+else
     ui_print "***** Incompatible Device Detected *****";
     ui_print " ";
-    ui_print "Open GApps can ONLY be installed on 32-bit";
-    ui_print "devices. Your device has been detected";
-    ui_print "as a 64-bit device. You will need to";
-    ui_print "find a 64-bit compatible GApps package.";
+    ui_print "This Open GApps package cannot be";
+    ui_print "installed on this device's architecture.";
+    ui_print "Please download the correct version for";
+    ui_print "your device: $devarch";
     ui_print " ";
     ui_print "******* GApps Installation failed *******";
     ui_print " ";
-    install_note="${install_note}arm64_compat_msg"$'\n'; # make note that Open GApps are not 64-bit compatible
-    abort $E_64BIT;
+    install_note="${install_note}arch_compat_msg"$'\n'; # make note that Open GApps are not compatible with architecture
+    abort $E_ARCH;
 fi;
 
 # Determine Recovery Type and Version
@@ -487,8 +499,8 @@ esac;
 
 # Hackish code, checks if ROM is CM12.1 from 23th of May or newer, that supports Google Webview, otherwise does not allow the install
 rocmversion=`echo $(file_getprop $b_prop ro.cm.version) | tr "-" " " | tr -d "."`
-cmversion=`echo "$rocmversion" | awk '{print $1;}'`
-cmdate=`echo "$rocmversion" | awk '{print $2;}'`
+cmversion=`echo "$rocmversion" | awk '{print $1}'`
+cmdate=`echo "$rocmversion" | awk '{print $2}'`
 if [ "0$cmversion" -ge "121" ] && [ "0$cmdate" -ge "020150523" ]; then
     webviewgoogle_compat=true
 else
