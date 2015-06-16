@@ -69,35 +69,45 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <input checked name="arch" type="radio" value="arm">arm
+                                    <input checked id="arm" name="arch" type="radio" value="arm">arm
                                 </td>
                                 <td>
-                                    <input name="api" type="radio" value="4.4"><a href="https://github.com/opengapps/opengapps/wiki/Notes-about-Open-GApps-for-Android-4.4">4.4</a>
+                                    <input id="4.4" name="api" type="radio" value="4.4"><a href="https://github.com/opengapps/opengapps/wiki/Notes-about-Open-GApps-for-Android-4.4">4.4</a>
                                 </td>
                                 <td>
-                                    <input name="variant" type="radio" value="aroma">aroma
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input disabled name="arch" type="radio" value="arm64"><em>arm64</em>
-                                </td>
-                                <td>
-                                    <input name="api" type="radio" value="5.0">5.0
-                                </td>
-                                <td>
-                                    <input checked name="variant" type="radio" value="stock">stock
+                                    <input id="aroma" name="variant" type="radio" value="aroma">aroma
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <input disabled name="arch" type="radio" value="x86"><em>x86</em>
+                                    <input disabled id="arm64" name="arch" type="radio" value="arm64"><em>arm64</em>
                                 </td>
                                 <td>
-                                    <input checked name="api" type="radio" value="5.1">5.1
+                                    <input id="5.0" name="api" type="radio" value="5.0">5.0
                                 </td>
                                 <td>
-                                    <input name="variant" type="radio" value="full">full
+                                    <input checked id="stock" name="variant" type="radio" value="stock">stock
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input disabled id="x86" name="arch" type="radio" value="x86"><em>x86</em>
+                                </td>
+                                <td>
+                                    <input checked id="5.1" name="api" type="radio" value="5.1">5.1
+                                </td>
+                                <td>
+                                    <input id="full" name="variant" type="radio" value="full">full
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input disabled id="x86_64" name="arch" type="radio" value="x86_64"><em>x86_64</em>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                    <input id="mini" name="variant" type="radio" value="mini">mini
                                 </td>
                             </tr>
                             <tr>
@@ -108,22 +118,17 @@
                                     </div></a>
                                 </td>
                                 <td>
-                                    <input name="variant" type="radio" value="mini">mini
+                                    <input id="micro" name="variant" type="radio" value="micro">micro
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <input name="variant" type="radio" value="micro">micro
+                                    <input id="nano" name="variant" type="radio" value="nano">nano
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <input name="variant" type="radio" value="nano">nano
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input name="variant" type="radio" value="pico">pico
+                                    <input id="pico" name="variant" type="radio" value="pico">pico
                                     </td>
                             </tr>
                         </table>
@@ -157,7 +162,7 @@
                         Builds are generated every (European) night automatically (if there are any changes) and uploaded to the GitHub Releases page.
                     </p>
                     <p>
-                        Currently only arm-platform is available. Arm64 and x86 downloads are still in development.
+                        Currently only arm-platform is available. Arm64, x86 and x86_64 are still in development.
                     </p>
                 </section>
                 <footer>
@@ -200,6 +205,46 @@
 
         $(function() {
             $("#my-github-latestprerelease").loadLatestPreRelease("opengapps","opengapps");
+        });
+
+        var archs = ["arm", "arm64", "x86", "x86_64"];
+        var apis = ["4.4", "5.0", "5.1"];
+        var arm_api = ["4.4", "5.0", "5.1"];
+        var arm64_api = ["5.0", "5.1"];
+        var x86_api = ["4.4", "5.0", "5.1"];
+        var x86_64_api = ["5.0", "5.1"];
+        var variants = ["aroma", "stock", "full", "mini", "micro", "nano", "pico"];
+
+        $("input:radio").change(function(){
+            var arch = $("input:radio[name='arch']:checked").attr("value");
+            var api = $("input:radio[name='api']:checked").attr("value");
+            if (!$("input:radio[name='arch']:checked").val()){
+                for (i = 0; i < variants.length; i++) {
+                    $("input:radio[id='"+apis[i]+"']").attr("disabled",true);
+                    $("input:radio[id='"+apis[i]+"']").attr("checked",false);
+                }
+            }else{
+                for (i = 0; i < apis.length; i++) {
+                    $("input:radio[id='"+apis[i]+"']").attr("disabled",true);
+                }
+                var archapis=eval(arch+"_api");
+                for (i = 0; i < archapis.length; i++) {
+                    $("input:radio[id='"+archapis[i]+"']").attr("disabled",false);
+                }
+                if ($.inArray(api, archapis) == -1){
+                    $("input:radio[value='"+api+"']").attr("checked",false);
+                }
+            }
+            if (!$("input:radio[name='api']:checked").val()){
+                for (i = 0; i < variants.length; i++) {
+                    $("input:radio[id='"+variants[i]+"']").attr("disabled",true);
+                    $("input:radio[id='"+variants[i]+"']").attr("checked",false);
+                }
+            }else{
+                for (i = 0; i < variants.length; i++) {
+                    $("input:radio[id='"+variants[i]+"']").attr("disabled",false);
+                }
+            }
         });
 
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
