@@ -140,6 +140,4 @@ for AROMA in $AROMAVARIANTS; do
 	variantscripts
 	aromascripts
 	createzip "aroma"
-	#smaller variants can't build larger variants
-	SUPPORTEDVARIANTS=$(echo $SUPPORTEDVARIANTS | sed "s/$VARIANT//g")
 done
