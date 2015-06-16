@@ -209,15 +209,20 @@
 
         var archs = ["arm", "arm64", "x86", "x86_64"];
         var apis = ["4.4", "5.0", "5.1"];
-        var arm_api = ["4.4", "5.0", "5.1"];
-        var arm64_api = ["5.0", "5.1"];
-        var x86_api = ["4.4", "5.0", "5.1"];
-        var x86_64_api = ["5.0", "5.1"];
+        var arm_apis = ["4.4", "5.0", "5.1"];
+        var arm64_apis = ["5.0", "5.1"];
+        var x86_apis = ["4.4", "5.0", "5.1"];
+        var x86_64_apis = ["5.0", "5.1"];
         var variants = ["aroma", "stock", "full", "mini", "micro", "nano", "pico"];
+        var arm_variants = ["aroma", "stock", "full", "mini", "micro", "nano", "pico"];
+        var arm64_variants = ["aroma", "stock", "full", "mini", "micro", "nano", "pico"];
+        var x86_variants = ["stock", "full", "mini", "micro", "nano", "pico"];
+        var x86_64_variants = ["stock", "full", "mini", "micro", "nano", "pico"];
 
         $("input:radio").change(function(){
             var arch = $("input:radio[name='arch']:checked").attr("value");
             var api = $("input:radio[name='api']:checked").attr("value");
+            var variant = $("input:radio[name='variant']:checked").attr("value");
             if (!$("input:radio[name='arch']:checked").val()){
                 for (i = 0; i < variants.length; i++) {
                     $("input:radio[id='"+apis[i]+"']").attr("disabled",true);
@@ -227,7 +232,7 @@
                 for (i = 0; i < apis.length; i++) {
                     $("input:radio[id='"+apis[i]+"']").attr("disabled",true);
                 }
-                var archapis=eval(arch+"_api");
+                var archapis=eval(arch+"_apis");
                 for (i = 0; i < archapis.length; i++) {
                     $("input:radio[id='"+archapis[i]+"']").attr("disabled",false);
                 }
@@ -242,7 +247,14 @@
                 }
             }else{
                 for (i = 0; i < variants.length; i++) {
-                    $("input:radio[id='"+variants[i]+"']").attr("disabled",false);
+                    $("input:radio[id='"+variants[i]+"']").attr("disabled",true);
+                }
+                var archvariants=eval(arch+"_variants");
+                for (i = 0; i < archvariants.length; i++) {
+                    $("input:radio[id='"+archvariants[i]+"']").attr("disabled",false);
+                }
+                if ($.inArray(variant, archvariants) == -1){
+                    $("input:radio[value='"+variant+"']").attr("checked",false);
                 }
             }
         });
