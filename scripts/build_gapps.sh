@@ -27,7 +27,11 @@ SOURCE="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 DENSITIES="2 4 6 8" #don't add 0
 VARIANTS="stock full mini micro nano pico" #keep in order from large to small
-AROMAVARIANTS="stock" #add 'stock' or keep empty to not build aroma
+if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then
+	AROMAVARIANTS="stock" #add 'stock' to build aroma for ARM platforms
+else
+	AROMAVARIANTS="" #keep empty to skip building of aroma
+fi
 
 STOCK="cameragoogle
 keyboardgoogle"
