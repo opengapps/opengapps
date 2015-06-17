@@ -357,16 +357,16 @@ fi;
 # Check to make certain that user device matches the architecture
 device_architecture=$(file_getprop $b_prop ro.product.cpu.abilist)
 EOFILE
-printf 'if echo "$device_architecture" | grep -qi "'>> "$build"META-INF/com/google/android/update-binary
+printf 'if (echo "$device_architecture" | '>> "$build"META-INF/com/google/android/update-binary
 case "$ARCH" in
-	arm)	printf 'armeabi" | grep -qiv "arm64'>> "$build"META-INF/com/google/android/update-binary;;
-	arm64)	printf 'arm64'>> "$build"META-INF/com/google/android/update-binary;;
-	x86)	printf 'x86 | grep -qiv "x86_64"'>> "$build"META-INF/com/google/android/update-binary;;
-	x86_64)	printf 'x86_64'>> "$build"META-INF/com/google/android/update-binary;;
+	arm)	printf 'grep -i "armeabi" | grep -qiv "arm64"'>> "$build"META-INF/com/google/android/update-binary;;
+	arm64)	printf 'grep -qi "arm64"'>> "$build"META-INF/com/google/android/update-binary;;
+	x86)	printf 'grep -i "x86" | grep -qiv "x86_64"'>> "$build"META-INF/com/google/android/update-binary;;
+	x86_64)	printf 'grep -qi "x86_64"'>> "$build"META-INF/com/google/android/update-binary;;
 esac
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
-"; then
-    log "Device Architecture Compatible:" "$devarch";
+); then
+    log "Device Architecture Compatible:" "$device_architecture";
 else
     ui_print "***** Incompatible Device Detected *****";
     ui_print " ";
