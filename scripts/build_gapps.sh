@@ -37,7 +37,7 @@ if [ "$ARCH" = "arm64" ]; then
 elif [ "$ARCH" = "x86_64" ]; then
 	FALLBACKARCH="x86"
 else
-	FALLBACKARCH=""
+	FALLBACKARCH="$ARCH"
 fi
 
 STOCK="cameragoogle

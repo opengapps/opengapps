@@ -355,25 +355,25 @@ if [ ! ${rom_android_version:0:3} == $req_android_version ]; then
 fi;
 
 # Check to make certain that user device matches the architecture
+device_architecture=$(file_getprop $b_prop ro.product.cpu.abilist)
 EOFILE
-devarch=$(file_getprop $b_prop ro.product.cpu.abi)
-printf 'if echo "$devarch" | grep -qi "'>> "$build"META-INF/com/google/android/update-binary
+printf 'if echo "$device_architecture" | grep -qi "'>> "$build"META-INF/com/google/android/update-binary
 case "$ARCH" in
-	arm)	printf "armeabi">> "$build"META-INF/com/google/android/update-binary;;
-	arm64)	printf "arm64">> "$build"META-INF/com/google/android/update-binary;;
-	x86)	printf "x86">> "$build"META-INF/com/google/android/update-binary;;
-	x86_64)	printf "x86_64">> "$build"META-INF/com/google/android/update-binary;;
+	arm)	printf 'armeabi" | grep -qiv "arm64'>> "$build"META-INF/com/google/android/update-binary;;
+	arm64)	printf 'arm64'>> "$build"META-INF/com/google/android/update-binary;;
+	x86)	printf 'x86 | grep -qiv "x86_64"'>> "$build"META-INF/com/google/android/update-binary;;
+	x86_64)	printf 'x86_64'>> "$build"META-INF/com/google/android/update-binary;;
 esac
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 "; then
-    log "Device Architecture:" "$devarch";
+    log "Device Architecture Compatible:" "$devarch";
 else
     ui_print "***** Incompatible Device Detected *****";
     ui_print " ";
     ui_print "This Open GApps package cannot be";
     ui_print "installed on this device's architecture.";
     ui_print "Please download the correct version for";
-    ui_print "your device: $devarch";
+    ui_print "your device: $device_architecture";
     ui_print " ";
     ui_print "******* GApps Installation failed *******";
     ui_print " ";
@@ -513,7 +513,7 @@ log "Device Recovery" "$recovery";
 log "Device Name" "$device_name";
 log "Device Model" "$(file_getprop $b_prop ro.product.model)";
 log "Device Type" "$device_type";
-log "Device CPU" "$(file_getprop $b_prop ro.product.cpu.abilist32)";
+log "Device CPU" "$device_architecture";
 log "getprop Density" "$(getprop ro.sf.lcd_density)";
 log "default.prop Density" "$(file_getprop /default.prop ro.sf.lcd_density)";
 log "build.prop Density" "$(file_getprop $b_prop ro.sf.lcd_density)";
@@ -838,7 +838,7 @@ log "Remove Stock/AOSP Gallery" $remove_gallery;
 log "Remove Stock/AOSP Launcher" $remove_launcher;
 log "Remove Stock/AOSP MMS App" $remove_mms;
 log "Remove Stock/AOSP Pico TTS" $remove_picotts;
-log "Remove Stock/AOSP Stock WebView" $remove_webviewstock;
+log "Remove Stock/AOSP WebView" $remove_webviewstock;
 log "Installing Play Services DPI variation" "$gms";
 log "Installing Play Games DPI variation" "$pg";
 log "Installing Messenger DPI variation" "$msg";
