@@ -59,16 +59,16 @@ abort() {
 }
 
 ch_con() {
-  LD_LIBRARY_PATH=/system/lib /system/toolbox chcon u:object_r:system_file:s0 $1;
-  LD_LIBRARY_PATH=/system/lib /system/bin/toolbox chcon u:object_r:system_file:s0 $1;
+  LD_LIBRARY_PATH=/system/lib /system/lib64 /system/toolbox chcon u:object_r:system_file:s0 $1;
+  LD_LIBRARY_PATH=/system/lib /system/lib64 /system/bin/toolbox chcon u:object_r:system_file:s0 $1;
   chcon u:object_r:system_file:s0 $1;
 }
 
 ch_con_recursive() {
     dirs=$(echo $* | awk '{ print substr($0, index($0,$1)) }');
     for i in $dirs; do
-        find "$i" -exec LD_LIBRARY_PATH=/system/lib /system/toolbox chcon u:object_r:system_file:s0 {} +;
-        find "$i" -exec LD_LIBRARY_PATH=/system/lib /system/bin/toolbox chcon u:object_r:system_file:s0 {} +;
+        find "$i" -exec LD_LIBRARY_PATH=/system/lib /system/lib64 /system/toolbox chcon u:object_r:system_file:s0 {} +;
+        find "$i" -exec LD_LIBRARY_PATH=/system/lib /system/lib64 /system/bin/toolbox chcon u:object_r:system_file:s0 {} +;
         find "$i" -exec chcon u:object_r:system_file:s0 {} +;
     done;
 }
@@ -1030,16 +1030,16 @@ EOFILE
 if [ "$API" -gt "19" ]; then
 	echo 'if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     folder_extract Optional keybd_lib; # Install Keyboard lib to add swipe capabilities to AOSP Keyboard
-    ln -sf /system/lib/$keybd_lib_filename1 /system/lib/$keybd_lib_filename2; # create required symlink
-    mkdir -p /system/app/LatinIME/lib/arm;
-    ln -sf /system/lib/$keybd_lib_filename1 /system/app/LatinIME/lib/arm/$keybd_lib_filename1; # create required symlink
-    ln -sf /system/lib/$keybd_lib_filename1 /system/app/LatinIME/lib/arm/$keybd_lib_filename2; # create required symlink
+    ln -sf /system/'$LIBFOLDER'/$keybd_lib_filename1 /system/'$LIBFOLDER'/$keybd_lib_filename2; # create required symlink
+    mkdir -p /system/app/LatinIME/lib/'$ARCH';
+    ln -sf /system/'$LIBFOLDER'/$keybd_lib_filename1 /system/app/LatinIME/lib/'$ARCH'/$keybd_lib_filename1; # create required symlink
+    ln -sf /system/'$LIBFOLDER'/$keybd_lib_filename1 /system/app/LatinIME/lib/'$ARCH'/$keybd_lib_filename2; # create required symlink
 
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/lib/$keybd_lib_filename1 /system/app/LatinIME/lib/arm/$keybd_lib_filename2" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/lib/$keybd_lib_filename1 /system/app/LatinIME/lib/arm/$keybd_lib_filename1" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/LatinIME/lib/arm" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/lib/$keybd_lib_filename1 /system/lib/$keybd_lib_filename2" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'$LIBFOLDER'/$keybd_lib_filename1 /system/app/LatinIME/lib/'$ARCH'/$keybd_lib_filename2" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'$LIBFOLDER'/$keybd_lib_filename1 /system/app/LatinIME/lib/'$ARCH'/$keybd_lib_filename1" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/LatinIME/lib/'$ARCH'" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'$LIBFOLDER'/$keybd_lib_filename1 /system/'$LIBFOLDER'/$keybd_lib_filename2" $bkup_tail;
 fi;' >> "$build"META-INF/com/google/android/update-binary
 fi
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
@@ -1105,11 +1105,10 @@ fi;
 
 EOFILE
 fi
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
-# Progress Bar increment calculations for GApps Install process
+echo '# Progress Bar increment calculations for GApps Install process
 set_progress 0.30;
 gapps_count=$(echo "${gapps_list}" | wc -w); # Count number of GApps left to be installed
-if [ $gapps_count -lt 1 ]; then gapps_count=1; fi; # Prevent 'division by zero'
+if [ $gapps_count -lt 1 ]; then gapps_count=1; fi; # Prevent division by zero
 incr_amt=$(( 5000 / $gapps_count )); # Determine increment factor of progress bar during GApps installation
 prog_bar=3000; # Set Progress Bar start point (0.3000) for below
 
@@ -1128,14 +1127,15 @@ done;
 
 # Create FaceLock lib symlink if FaceLock was installed
 if ( contains "$gapps_list" "faceunlock" ); then
-    mkdir -p /system/app/FaceLock/lib/arm;
-    ln -sf /system/lib/$FaceLock_lib_filename1 /system/app/FaceLock/lib/arm/$FaceLock_lib_filename1; # create required symlink
-    ln -sf /system/lib/$FaceLock_lib_filename2 /system/app/FaceLock/lib/arm/$FaceLock_lib_filename2; # create required symlink
+    mkdir -p /system/app/FaceLock/lib/'$ARCH';
+    ln -sf /system/'$LIBFOLDER'/$FaceLock_lib_filename1 /system/app/FaceLock/lib/'$ARCH'/$FaceLock_lib_filename1; # create required symlink
+    ln -sf /system/'$LIBFOLDER'/$FaceLock_lib_filename2 /system/app/FaceLock/lib/'$ARCH'/$FaceLock_lib_filename2; # create required symlink
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/lib/$FaceLock_lib_filename2 /system/app/FaceLock/lib/arm/$FaceLock_lib_filename2" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/lib/$FaceLock_lib_filename1 /system/app/FaceLock/lib/arm/$FaceLock_lib_filename1" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'$LIBFOLDER'/$FaceLock_lib_filename2 /system/app/FaceLock/lib/'$ARCH'/$FaceLock_lib_filename2" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'$LIBFOLDER'/$FaceLock_lib_filename1 /system/app/FaceLock/lib/'$ARCH'/$FaceLock_lib_filename1" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/FaceLock/lib/arm" $bkup_tail;
-fi;
+fi;' >> "$build"META-INF/com/google/android/update-binary
+tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 
 # Copy g.prop over to /system/etc
 cp -f /tmp/g.prop $g_prop;
@@ -1173,7 +1173,7 @@ cat $bkup_tail >> /system/addon.d/70-gapps.sh;
 set_progress 0.83;
 ui_print "- Fixing permissions & contexts";
 ui_print " ";
-set_perm_recursive 0 0 755 644 "/system/app" "/system/framework" "/system/lib" "/system/priv-app" "/system/usr/srec" "/system/vendor/pittpatt" "/system/etc/permissions" "/system/etc/preferred-apps";
+set_perm_recursive 0 0 755 644 "/system/app" "/system/framework" "/system/lib" "/system/lib64" "/system/priv-app" "/system/usr/srec" "/system/vendor/pittpatt" "/system/etc/permissions" "/system/etc/preferred-apps";
 
 set_progress 0.85;
 set_perm_recursive 0 0 755 755 "/system/addon.d";
@@ -1185,7 +1185,7 @@ set_perm 0 0 644 $g_prop;
 
 # Set contexts on all files we installed
 set_progress 0.88;
-ch_con_recursive "/system/app" "/system/framework" "/system/lib" "/system/priv-app" "/system/usr/srec" "/system/vendor/pittpatt" "/system/etc/permissions" "/system/etc/preferred-apps" "/system/addon.d";
+ch_con_recursive "/system/app" "/system/framework" "/system/lib" "/system/lib64" "/system/priv-app" "/system/usr/srec" "/system/vendor/pittpatt" "/system/etc/permissions" "/system/etc/preferred-apps" "/system/addon.d";
 ch_con $g_prop;
 
 set_progress 0.92;

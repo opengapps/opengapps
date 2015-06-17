@@ -123,7 +123,7 @@ addapk() {
 	getarchitectures "$file"
 	#We manually check for each of our set of supported architectures
 	#We assume NO universal packages for 32vs64 bit, so start with the 'highest' architectures first, if it matches one of those, we will NOT add it to a lower architecture
-	echo "$architectures" | grep -q "arm64-v8a "
+	echo "$architectures" | grep -q "arm64" #no space, all arm64 types are valid
 	if [ $? -eq 0 ]
 	then
 		installapk "arm64"

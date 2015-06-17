@@ -451,10 +451,11 @@ privapp_list="
 # Stock/AOSP Keyboard lib (and symlink) that are always removed since they are always replaced 
 reqd_list="' >> "$build"installer.data
 if [ "$API" -gt "19" ]; then
-echo '/system/lib/libjni_latinime.so
+echo "/system/lib/libjni_latinime.so
 /system/lib/libjni_latinimegoogle.so
-/system/app/LatinIME/lib/arm/libjni_latinime.so
-/system/app/LatinIME/lib/arm/libjni_latinimegoogle.so' >> "$build"installer.data
+/system/lib64/libjni_latinimegoogle.so
+/system/app/LatinIME/lib/$ARCH/libjni_latinime.so
+/system/app/LatinIME/lib/$ARCH/libjni_latinimegoogle.so" >> "$build"installer.data
 fi
 echo '";
 

@@ -18,7 +18,7 @@ builddpiapp "com.google.android.apps.messaging" "Messenger" "app/PrebuiltBugle"
 builddpiapp "com.google.android.play.games" "PlayGames" "app/PlayGames"
 if [ "$API" -gt "19" ]; then
 	#Keyboard Lib
-	buildfile "lib/libjni_latinimegoogle.so" "Optional/keybd_lib/lib/"
+	buildfile "$LIBFOLDER/libjni_latinimegoogle.so" "Optional/keybd_lib/$LIBFOLDER/"
 fi
 #####---------CORE APPLICATIONS---------
 buildfile "etc/" "Core/required/etc/"
@@ -46,8 +46,9 @@ buildapp "com.google.android.ears" "GApps/ears/app/GoogleEars"
 buildapp "com.google.earth" "GApps/earth/app/GoogleEarth"
 buildapp "com.google.android.gm.exchange" "GApps/exchangegoogle/app/PrebuiltExchange3Google"
 #FaceLock with libs
-buildfile "lib/libfacelock_jni.so" "GApps/faceunlock/lib/"
-buildfile "lib/libfilterpack_facedetect.so" "GApps/faceunlock/lib/"
+buildfile "$LIBFOLDER/libfacelock_jni.so" "GApps/faceunlock/$LIBFOLDER/"
+buildfile "lib/libfilterpack_facedetect.so" "GApps/faceunlock/lib/" #this file is both on 32 and 64 bit
+buildfile "lib64/libfilterpack_facedetect.so" "GApps/faceunlock/lib64/" #only on 64 bit
 buildfile "vendor/pittpatt/" "GApps/faceunlock/vendor/pittpatt/"
 buildapp "com.android.facelock" "GApps/faceunlock/app/FaceLock"
 #End of FaceLock

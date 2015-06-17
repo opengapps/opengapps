@@ -31,12 +31,16 @@ copy() {
 buildfile() {
 	#buildfile needs slashes when used, unlike the buildapp
 	targetdir="$build$2"
-	install -d "$targetdir"
 	if [ -e "$SOURCES/$ARCH/$1" ] #check if directory or file exists
 	then
+		install -d "$targetdir"
 		copy "$SOURCES/$ARCH/$1" "$targetdir" #if we have a file specific to this architecture
-	else
+	elif [ -e "$SOURCES/all/$1" ]
+	then
+		install -d "$targetdir"
 		copy "$SOURCES/all/$1" "$targetdir" #use architecure independent file
+	else
+		echo "WARNING: file $1 does not exist in the sources for $ARCH"
 	fi
 }
 buildapp() {

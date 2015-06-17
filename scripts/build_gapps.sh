@@ -33,10 +33,13 @@ else
 	AROMAVARIANTS="" #keep empty to skip building of aroma
 fi
 if [ "$ARCH" = "arm64" ]; then
+	LIBFOLDER="lib64"
 	FALLBACKARCH="arm"
 elif [ "$ARCH" = "x86_64" ]; then
+	LIBFOLDER="lib64"
 	FALLBACKARCH="x86"
 else
+	LIBFOLDER="lib"
 	FALLBACKARCH="$ARCH"
 fi
 
