@@ -98,13 +98,58 @@ mfhash() {
 #######################  MANIFEST.MF entry: $zipfilename, $zipentryname - $ret
 mfentry() {
   local hash=$($UNZIP -p "$ORIG" "$1"|mfhash)
-  ret="Name: $1\r\nSHA1-Digest: $hash\r\n\r\n"
+  ret="N"
+  namepart="ame: $1"
+  lengthname=`printf "$namepart" | wc -c`
+  for ((s=1; $s<$lengthname; s=$s+69)) ;
+  do
+    e=`expr $s + 68`
+    ret="$ret"`printf "$namepart" | cut -b$s-$e`
+    ret="$ret\r\n "
+  done
+  ret="${ret%?}" #remove the space we inserted, was only for if a next line was coming
+
+  ret="$ret""S"
+  hashpart="HA1-Digest: $hash"
+  lengthhash=`printf "$hashpart" | wc -c`
+  for ((s=1; $s<$lengthhash; s=$s+69)) ;
+  do
+    e=`expr $s + 68`
+    ret="$ret"`printf "$hashpart" | cut -b$s-$e`
+    ret="$ret\r\n "
+  done
+  ret="${ret%?}" #remove the space we inserted, was only for if a next line was coming
+
+  ret="$ret\r\n" #extra white line at the end of the section
+  retpure="Name: $1\r\nSHA1-Digest: $hash\r\n\r\n"
 }
 
 #######################  CERT.SF entry: $zipentryname, $mfentry - $ret
 sfentry() {
   local hash=$($PRINTF "$2"|mfhash)
-  ret="Name: $1\r\nSHA1-Digest: $hash\r\n\r\n"
+  ret="N"
+  namepart="ame: $1"
+  lengthname=`printf "$namepart" | wc -c`
+  for ((s=1; $s<$lengthname; s=$s+69)) ;
+  do
+    e=`expr $s + 68`
+    ret="$ret"`printf "$namepart" | cut -b$s-$e`
+    ret="$ret\r\n "
+  done
+  ret="${ret%?}" #remove the space we inserted, was only for if a next line was coming
+
+  ret="$ret""S"
+  hashpart="HA1-Digest: $hash"
+  lengthhash=`printf "$hashpart" | wc -c`
+  for ((s=1; $s<$lengthhash; s=$s+69)) ;
+  do
+    e=`expr $s + 68`
+    ret="$ret"`printf "$hashpart" | cut -b$s-$e`
+    ret="$ret\r\n "
+  done
+  ret="${ret%?}" #remove the space we inserted, was only for if a next line was coming
+
+  ret="$ret\r\n" #extra white line at the end of the section
 }
 
 #######################  serial of zip's signing cert: $zipfilename - $?, stdout
@@ -261,7 +306,7 @@ if [ "x$1" = "xsign" ]; then
         p "$file  "
         mfentry "$file" 
         mf="$mf$ret"
-        sfentry "$file" "$ret"
+        sfentry "$file" "$retpure"
         sf="$sf$ret"
       fi
     fi
