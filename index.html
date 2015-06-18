@@ -185,6 +185,10 @@
                     var arch = form.arch[i].value;
                 }
             }
+            if(typeof arch=="undefined"){
+                alert("No architecture platform selected!");
+                return;
+            }
 	    for(var i = 0; i < form.api.length; i++)  // buztype is the name of the radio buttons which is an array; ie buztype[0].value is 1, buztype[1].value is 2, buztype[2].value is 3 based on what you have above.
 	    {
                 if(form.api[i].checked)
@@ -192,12 +196,20 @@
                     var api = form.api[i].value;
                 }
             }
+            if(typeof api=="undefined"){
+                alert("No android version selected!");
+                return;
+            }
 	    for(var i = 0; i < form.variant.length; i++)  // buztype is the name of the radio buttons which is an array; ie buztype[0].value is 1, buztype[1].value is 2, buztype[2].value is 3 based on what you have above.
 	    {
                 if(form.variant[i].checked)
                 {
                     var variant = form.variant[i].value;
                 }
+            }
+            if(typeof variant=="undefined"){
+                alert("No Open GApps variant selected!");
+                return;
             }
             var date = this.DownloadForm.date.value;
             window.location = "https://github.com/opengapps/opengapps/releases/download/"+date+"/open_gapps-"+arch+"-"+api+"-"+variant+"-"+date+".zip";
