@@ -722,12 +722,6 @@ if [ $config_type = "include" ] && ( grep -qi "calsync" "$g_conf" ); then
     gapps_list="${gapps_list}calsync"$'\n';
 fi;
 
-# If we're installing clockgoogle we must ADD clockstock to $aosp_remove_list (if it's not already there)
-if ( contains "$gapps_list" "clockgoogle" ) && ( ! contains "$aosp_remove_list" "clockstock" ); then
-    aosp_remove_list="${aosp_remove_list}clockstock"$'\n';
-fi;
-
-
 # If user wants to install keyboardgoogle then it MUST be a Clean Install OR keyboardgoogle was previously installed in system partition
 if ( contains "$gapps_list" "keyboardgoogle" ) && ( ! clean_inst ) && [ $keyboardgoogle_inst = "false" ]; then
     gapps_list=${gapps_list/keyboardgoogle}; # we must DISALLOW keyboardgoogle from being installed
@@ -762,6 +756,18 @@ fi;
 # If we're installing cameragoogle we MUST ADD camerastock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "cameragoogle" ) && ( ! contains "$aosp_remove_list" "camerastock" ); then
     aosp_remove_list="${aosp_remove_list}camerastock"$'\n';
+fi;
+
+# If user wants to install clockgoogle then it MUST be a Clean Install OR clockgoogle was previously installed in system partition
+if ( contains "$gapps_list" "clockgoogle" ) && ( ! clean_inst ) && [ $clockgoogle_inst = "false" ]; then
+    gapps_list=${gapps_list/clockgoogle}; # we must DISALLOW clockgoogle from being installed
+    aosp_remove_list=${aosp_remove_list/clockstock}; # and we'll prevent clockstock from being removed so user isn't left with no clock
+    install_note="${install_note}clock_sys_msg"$'\n'; # make note that Google Desk Clock will NOT be installed as user requested
+fi;
+
+# If we're installing clockgoogle we must ADD clockstock to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "clockgoogle" ) && ( ! contains "$aosp_remove_list" "clockstock" ); then
+    aosp_remove_list="${aosp_remove_list}clockstock"$'\n';
 fi;
 
 # If we're installing exchangegoogle we must ADD exchangestock to $aosp_remove_list (if it's not already there)
