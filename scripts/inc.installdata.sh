@@ -202,6 +202,7 @@ optional_aosp_remove_list="
 basicdreams
 calendarstock
 camerastock
+clockstock
 cmaudiofx
 cmaccount
 cmeleven
