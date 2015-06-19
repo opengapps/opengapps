@@ -13,12 +13,13 @@
 #
 # This specific script is derived from https://code.google.com/p/signapk/
 
+TOP="$(realpath .)"
 TMP="/tmp"                          # write temp files here, or try these if it won't work:
 
 #######################
 DEFKEYNAME="testkey"                  # default name of cert/key pair. script comes with AOSP testkey/media/platform/shared.
-PKEY="$DEFKEYNAME.pk8"      # generated path to default private key; 'signapk-key.testkey.pk8'. 
-CERT="$DEFKEYNAME.x509.pem" # generated path to default cert; 'signapk-key.testkey.x509.pem'
+PKEY="$TOP/$DEFKEYNAME.pk8"      # generated path to default private key; 'signapk-key.testkey.pk8'. 
+CERT="$TOP/$DEFKEYNAME.x509.pem" # generated path to default cert; 'signapk-key.testkey.x509.pem'
 VERSION="0.3.1"
 
 ####################### Pointers to utils
@@ -330,7 +331,7 @@ if [ "x$1" = "xsign" ]; then
   message="signed by Open GApps"
   printf "$message" > "${TMPDIR}/zipcomment"
   printf "00" | xxd -r -p >> "${TMPDIR}/zipcomment"
-  dd if="$TARGET" | $OPENSSL smime -sign -inkey "$TMPPKEY" -signer "$CERT" -binary -outform DER -noattr >> "${TMPDIR}/zipcomment"
+  dd if="$TARGET" 2>/dev/null | $OPENSSL smime -sign -inkey "$TMPPKEY" -signer "$CERT" -binary -outform DER -noattr >> "${TMPDIR}/zipcomment"
   sizemessage=`printf "$message" | wc -c`
   sizeheader=`wc -c "${TMPDIR}/zipcomment" | cut -f1 -d' '`
   sizetotal=`expr $sizeheader + 6`
