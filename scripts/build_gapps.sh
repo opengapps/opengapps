@@ -67,10 +67,11 @@ talkback
 wallet"
 if [ "$API" -gt "19" ]; then
 	FULL="$FULL
-webview"
+webviewgoogle"
 fi
 
-MINI="googleplus
+MINI="clockgoogle
+googleplus
 hangouts
 maps
 photos

@@ -39,6 +39,7 @@ buildapp "com.google.android.calendar" "GApps/calendargoogle/app/CalendarGoogleP
 buildapp "com.google.android.syncadapters.calendar" "GApps/calsync/app/GoogleCalendarSyncAdapter"
 buildapp "com.google.android.googlecamera" "GApps/cameragoogle/app/GoogleCamera"
 buildapp "com.android.chrome" "GApps/chrome/app/Chrome"
+buildapp "com.google.android.deskclock" "GApps/clockgoogle/app/DeskClockGoogle"
 buildapp "com.google.android.apps.cloudprint" "GApps/cloudprint/app/CloudPrint2"
 buildapp "com.google.android.apps.docs.editors.docs" "GApps/docs/app/EditorsDocs"
 buildapp "com.google.android.apps.docs" "GApps/drive/app/Drive"
@@ -76,7 +77,7 @@ buildapp "com.google.android.street" "GApps/street/app/Street"
 buildapp "com.google.android.marvin.talkback" "GApps/talkback/app/talkback"
 buildapp "com.google.android.apps.walletnfcrel" "GApps/wallet/priv-app/Wallet"
 if [ "$API" -gt "19" ]; then
-	buildapp "com.google.android.webview" "GApps/webview/app/Webview"
+	buildapp "com.google.android.webview" "GApps/webviewgoogle/app/Webview"
 fi
 buildapp "com.google.android.youtube" "GApps/youtube/app/YouTube"
 }

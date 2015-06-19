@@ -62,7 +62,7 @@ echo "street_size="`du -s --apparent-size "$build"GApps/street | cut -f 1` >> "$
 echo "talkback_size="`du -s --apparent-size "$build"GApps/talkback | cut -f 1` >> "$build"sizes.prop
 echo "wallet_size="`du -s --apparent-size "$build"GApps/wallet | cut -f 1` >> "$build"sizes.prop
 if [ "$API" -gt "19" ]; then
-	echo "webview_size="`du -s --apparent-size "$build"GApps/webview | cut -f 1` >> "$build"sizes.prop
+	echo "webview_size="`du -s --apparent-size "$build"GApps/webviewgoogle | cut -f 1` >> "$build"sizes.prop
 fi
 echo "youtube_size="`du -s --apparent-size "$build"GApps/youtube | cut -f 1` >> "$build"sizes.prop
 }
@@ -251,6 +251,10 @@ app/Camera'"$REMOVALSUFFIX"'
 app/Camera2'"$REMOVALSUFFIX"'
 priv-app/Camera'"$REMOVALSUFFIX"'
 priv-app/Camera2'"$REMOVALSUFFIX"'
+";
+
+clockstock_list="
+app/DeskClock'"$REMOVALSUFFIX"'
 ";
 
 cmaccount_list="
