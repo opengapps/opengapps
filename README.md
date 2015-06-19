@@ -34,6 +34,6 @@ For contributors, updated sources can be uploaded by browsing to one of the sour
 ```
 cd sources/architecture
 git add *
-git commit
+git commit -a
 git push
 ```
