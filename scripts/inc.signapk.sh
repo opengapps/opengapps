@@ -272,7 +272,7 @@ if [ "x$1" = "xsign" ]; then
   IFS=$esc
   ORIG=$($READLINK -f "$2")
 
-  mf="Manifest-Version: 1.0\r\nCreated-By: 1.0 (Android SignApk)\r\n\r\n"
+  mf="Manifest-Version: 1.0\r\nCreated-By: 1.0 (Open GApps)\r\n\r\n"
   sf=""
 
   ZIPls=$($ZIPINFO -1 "$ORIG"); ordie "$ORIG: unzip error" 1
@@ -313,7 +313,7 @@ if [ "x$1" = "xsign" ]; then
   done
   p "\n"
   sfhead=$($PRINTF "$mf"|mfhash)
-  sf="Signature-Version: 1.0\r\nCreated-By: 1.0 (Android SignApk)\r\nSHA1-Digest-Manifest: $sfhead\r\n\r\n$sf"
+  sf="Signature-Version: 1.0\r\nCreated-By: 1.0 (Android Open GApps)\r\nSHA1-Digest-Manifest: $sfhead\r\n\r\n$sf"
   TMPDIR="${TMP}/sign-$$"
   TMPPKEY="${TMPDIR}/tmp.pkey"
   mkdir -p "$TMPDIR/META-INF"; ordie "" 3
@@ -325,6 +325,26 @@ if [ "x$1" = "xsign" ]; then
   ENVKLUDGE="$ZIP"; unset ZIP # thanks new-version-of-infozip =[
   dprint $ENVKLUDGE $QZIP "$TARGET" META-INF/MANIFEST.MF META-INF/CERT.SF META-INF/CERT.RSA
   $ENVKLUDGE $QZIP "$TARGET" META-INF/MANIFEST.MF META-INF/CERT.SF META-INF/CERT.RSA;  ordie "" 5
+
+  truncate --size=-2 "$TARGET"
+  message="signed by Open GApps"
+  printf "$message" > "${TMPDIR}/zipcomment"
+  printf "00" | xxd -r -p >> "${TMPDIR}/zipcomment"
+  dd if="$TARGET" | $OPENSSL smime -sign -inkey "$TMPPKEY" -signer "$CERT" -binary -outform DER -noattr >> "${TMPDIR}/zipcomment"
+  sizemessage=`printf "$message" | wc -c`
+  sizeheader=`wc -c "${TMPDIR}/zipcomment" | cut -f1 -d' '`
+  sizetotal=`expr $sizeheader + 6`
+
+  sigstart=`expr $sizetotal - $sizemessage`
+  sigstart=`expr $sigstart - 1`
+
+  printf "%.4x" $sigstart | sed -E 's/(..)(..)/\2\1/' | xxd -r -p >> "${TMPDIR}/zipcomment"
+  printf "FFFF" | xxd -r -p >> "${TMPDIR}/zipcomment"
+  printf "%.4x" $sizetotal | sed -E 's/(..)(..)/\2\1/' | xxd -r -p >> "${TMPDIR}/zipcomment"
+
+  printf "%.4x" $sizetotal | sed -E 's/(..)(..)/\2\1/' | xxd -r -p >> "$TARGET"
+  cat "${TMPDIR}/zipcomment" >> "$TARGET"
+
   cd - > /dev/null
   rm -rf "${TMPDIR}"
 
