@@ -185,6 +185,7 @@ form(
 	  "CalSync",     "<b>CalSync</b>",       "To Exclude/Include Google Calendar Sync (installed by default when Google Calendar is NOT being installed) [Stock/Full/Mini/Micro/Nano/Pico]",                      "check",
       "CameraGoogle",     "<b>CameraGoogle</b>",       "To Exclude/Include Google Camera [Stock]",                      "check",
       "Chrome",     "<b>Chrome</b>",       "To Exclude/Include Chrome Browser [Stock/Full]",                      "check",
+      "ClockGoogle",     "<b>ClockGoogle</b>",       "To Exclude/Include Google Clock [Stock/Full]",                      "check",
       "CloudPrint",     "<b>CloudPrint</b>",       "To Exclude/Include Cloud Print [Stock/Full]",                      "check",
       "Docs",     "<b>Docs</b>",       "To Exclude/Include Google Docs [Stock/Full]",                      "check",
       "Drive",     "<b>Drive</b>",       "To Exclude/Include Google Drive [Stock/Full]",                      "check",
@@ -215,7 +216,7 @@ form(
 	  "Photos",     "<b>Photos</b>",       "To Exclude/Include the Google Photos[Stock/Full/Mini]",                      "check",
 	  "Talkback",     "<b>Talkback</b>",       "To Exclude/Include TalkBack [Stock/Full]",                      "check",
 	  "Wallet",     "<b>Wallet</b>",       "To Exclude/Include Google Wallet [Stock/Full]",                      "check",
-	  "Webview",     "<b>Webview</b>",       "To Exclude/Include Google Webview [Stock/Full]",                      "check",
+	  "WebViewStock",     "<b>WebViewStock</b>",       "To Exclude/Include Google Webview [Stock/Full]",                      "check",
 	  "YouTube",     "<b>YouTube</b>",       "To Exclude/Include YouTube [Stock/Full/Mini]",                      "check"
 );
 #Duplicate aromagapps.prop and rename it to gapps.prop - this method is useful because the selections doesn't get erased by the complete installation (menu.prop selected ==2)
@@ -388,6 +389,12 @@ if
 	prop("gapps.prop", "Chrome")=="1"
 then
 	appendvar("gapps", "Chrome\n");
+endif;
+
+if
+	prop("gapps.prop", "ClockGoogle")=="1"
+then
+	appendvar("gapps", "ClockGoogle\n");
 endif;
 
 if
@@ -572,9 +579,9 @@ endif;
 
 
 if
-	prop("gapps.prop", "Webview")=="1"
+	prop("gapps.prop", "WebViewStock")=="1"
 then
-	appendvar("gapps", "Webview\n");
+	appendvar("gapps", "WebViewStock\n");
 endif;
 
 if
