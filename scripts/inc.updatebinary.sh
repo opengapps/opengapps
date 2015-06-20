@@ -462,6 +462,7 @@ done;
 if ( clean_inst ); then
     install_type="Clean[Data Wiped]";
     cameragoogle_inst=Clean;
+    clockgoogle_inst=Clean;
     keyboardgoogle_inst=Clean;
 else
     install_type="Dirty[Data NOT Wiped]";
@@ -471,6 +472,13 @@ else
         cameragoogle_inst=true;
     else
         cameragoogle_inst=false;
+    fi;
+
+    # Was Google Clock previously installed (in /system)
+    if ( sys_app DeskClockGoogle ); then
+        clockgoogle_inst=true;
+    else
+        clockgoogle_inst=false;
     fi;
 
     # Was Google Keyboard previously installed (in /system)
@@ -526,6 +534,7 @@ log "build.prop Density" "$(file_getprop $b_prop ro.sf.lcd_density)";
 log "Display Density Used" "${density}ppi";
 log "Install Type" "$install_type";
 log "Google Camera Installed¹" "$cameragoogle_inst";
+log "Google Clock Installed¹" "$clockgoogle_inst";
 log "Google Keyboard Installed¹" "$keyboardgoogle_inst";
 log "FaceUnlock Compatible" "$faceunlock_compat";
 log "Google Camera Compatible" "$cameragoogle_compat";
