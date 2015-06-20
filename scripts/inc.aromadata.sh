@@ -216,7 +216,7 @@ form(
 	  "Photos",     "<b>Photos</b>",       "To Exclude/Include the Google Photos[Stock/Full/Mini]",                      "check",
 	  "Talkback",     "<b>Talkback</b>",       "To Exclude/Include TalkBack [Stock/Full]",                      "check",
 	  "Wallet",     "<b>Wallet</b>",       "To Exclude/Include Google Wallet [Stock/Full]",                      "check",
-	  "WebViewStock",     "<b>WebViewStock</b>",       "To Exclude/Include Google Webview [Stock/Full]",                      "check",
+	  "WebViewGoogle",     "<b>WebViewGoogle</b>",       "To Exclude/Include Google Webview [Stock/Full]",                      "check",
 	  "YouTube",     "<b>YouTube</b>",       "To Exclude/Include YouTube [Stock/Full/Mini]",                      "check"
 );
 #Duplicate aromagapps.prop and rename it to gapps.prop - this method is useful because the selections doesn't get erased by the complete installation (menu.prop selected ==2)
@@ -579,9 +579,9 @@ endif;
 
 
 if
-	prop("gapps.prop", "WebViewStock")=="1"
+	prop("gapps.prop", "WebViewGoogle")=="1"
 then
-	appendvar("gapps", "WebViewStock\n");
+	appendvar("gapps", "WebViewGoogle\n");
 endif;
 
 if
