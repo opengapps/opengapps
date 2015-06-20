@@ -356,6 +356,10 @@ fi;
 
 # Check to make certain that user device matches the architecture
 device_architecture=$(file_getprop $b_prop ro.product.cpu.abilist)
+# If the recommended field is empty, fall back to the deprecated one
+if [ $device_architecture = "" ]; then
+    device_architecture=$(file_getprop $b_prop ro.product.cpu.abi)
+fi
 EOFILE
 printf 'if (echo "$device_architecture" | '>> "$build"META-INF/com/google/android/update-binary
 case "$ARCH" in
