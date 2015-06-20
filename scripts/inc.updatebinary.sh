@@ -866,9 +866,11 @@ ui_print "- Performing system space calculations";
 ui_print " ";
 
 # Perform calculations of device specific applications
-eval "gms_size=\$gms_${gms}_size"; # Determine size of GMSCore
-eval "messenger_size=\$msg_${msg}_size"; # Determine size of Messenger
-eval "playgames_size=\$pg_${pg}_size"; # Determine size of PlayGames
+gms_size=$(unzip -lq $ZIP GMSCore/common/* GMSCore/${gms}/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }')
+messenger_size=$(unzip -lq $ZIP Messenger/common/* Messenger/${msg}/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }')
+playgames_size=$(unzip -lq $ZIP PlayGames/common/* PlayGames/${pg}/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }')
+core_size=$(unzip -lq $ZIP Core/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }')
+keybd_lib_size=$(unzip -lq $ZIP Optional/keybd_lib/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }')
 
 EOFILE
 if [ "$API" -gt "19" ]; then
@@ -940,9 +942,13 @@ post_install_size_kb=$((post_install_size_kb - gms_size)); # Add Google Play Ser
 log_sub "Install" "GMSCore²" $gms_size $post_install_size_kb;
 
 for gapp_name in $gapps_list; do
-    eval "gapp_size_kb=\$${gapp_name}_size"; # Determine size of GApp being installed
-    post_install_size_kb=$((post_install_size_kb - gapp_size_kb));
-    log_sub "Install" "$gapp_name³" $gapp_size_kb $post_install_size_kb;
+    if [ "$gapp_name" != "playgames" ] && [ "$gapp_name" != "messenger" ]; then
+        gapp_size_kb=$(unzip -lq $ZIP GApps/$gapp_name/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }')
+    else
+        gapp_size_kb="$${gapp_name}_size"
+    fi
+    post_install_size_kb=$((post_install_size_kb - gapp_size_kb))
+    log_sub "Install" "$gapp_name³" $gapp_size_kb $post_install_size_kb
 done;
 
 # Perform calculations of Core GApps Removals that will be performed after install

@@ -22,7 +22,6 @@ alignbuild() {
 commonscripts() {
 	install -d "$build"META-INF/com/google/android
 	echo "# Dummy file; update-binary is a shell script.">"$build"META-INF/com/google/android/updater-script
-	makesizesprop
 	makegappsremovetxt
 	copy "$SCRIPTS/bkup_tail.sh" "$build"
 }

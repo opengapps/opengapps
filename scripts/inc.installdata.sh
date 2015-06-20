@@ -27,45 +27,6 @@ playgamespath="$BUILD/$ARCH/$API/PlayGames/"
 find "$corepath" "$gappspath" "$gmscorepath" "$messengerpath" "$playgamespath" -mindepth 3 -maxdepth 3 -printf "%P\n" -name "*" | grep -v "etc/" | sed 's#^[^/]*#/system#' | sort | uniq > "$build"gapps-remove.txt
 find "$corepath" "$gappspath" "$gmscorepath" "$messengerpath" "$playgamespath" -mindepth 4 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^[^/]*#/system#' | sort | uniq >> "$build"gapps-remove.txt
 }
-makesizesprop(){
-echo "books_size="`du -s --apparent-size "$build"GApps/books | cut -f 1` > "$build"sizes.prop
-echo "calendargoogle_size="`du -s --apparent-size "$build"GApps/calendargoogle | cut -f 1` >> "$build"sizes.prop
-echo "calsync_size="`du -s --apparent-size "$build"GApps/calsync | cut -f 1` >> "$build"sizes.prop
-echo "cameragoogle_size="`du -s --apparent-size "$build"GApps/cameragoogle | cut -f 1` >> "$build"sizes.prop
-echo "chrome_size="`du -s --apparent-size "$build"GApps/chrome | cut -f 1` >> "$build"sizes.prop
-echo "cloudprint_size="`du -s --apparent-size "$build"GApps/cloudprint | cut -f 1` >> "$build"sizes.prop
-echo "docs_size="`du -s --apparent-size "$build"GApps/docs | cut -f 1` >> "$build"sizes.prop
-echo "drive_size="`du -s --apparent-size "$build"GApps/drive | cut -f 1` >> "$build"sizes.prop
-echo "ears_size="`du -s --apparent-size "$build"GApps/ears | cut -f 1` >> "$build"sizes.prop
-echo "earth_size="`du -s --apparent-size "$build"GApps/earth | cut -f 1` >> "$build"sizes.prop
-echo "exchangegoogle_size="`du -s --apparent-size "$build"GApps/exchangegoogle | cut -f 1` >> "$build"sizes.prop
-echo "faceunlock_size="`du -s --apparent-size "$build"GApps/faceunlock | cut -f 1` >> "$build"sizes.prop
-echo "fitness_size="`du -s --apparent-size "$build"GApps/fitness | cut -f 1` >> "$build"sizes.prop
-echo "gmail_size="`du -s --apparent-size "$build"GApps/gmail | cut -f 1` >> "$build"sizes.prop
-echo "googlenow_size="`du -s --apparent-size "$build"GApps/googlenow | cut -f 1` >> "$build"sizes.prop
-echo "googleplus_size="`du -s --apparent-size "$build"GApps/googleplus | cut -f 1` >> "$build"sizes.prop
-echo "googletts_size="`du -s --apparent-size "$build"GApps/googletts | cut -f 1` >> "$build"sizes.prop
-echo "hangouts_size="`du -s --apparent-size "$build"GApps/hangouts | cut -f 1` >> "$build"sizes.prop
-echo "keep_size="`du -s --apparent-size "$build"GApps/keep | cut -f 1` >> "$build"sizes.prop
-echo "keyboardgoogle_size="`du -s --apparent-size "$build"GApps/keyboardgoogle | cut -f 1` >> "$build"sizes.prop
-echo "maps_size="`du -s --apparent-size "$build"GApps/maps | cut -f 1` >> "$build"sizes.prop
-echo "movies_size="`du -s --apparent-size "$build"GApps/movies | cut -f 1` >> "$build"sizes.prop
-echo "music_size="`du -s --apparent-size "$build"GApps/music | cut -f 1` >> "$build"sizes.prop
-echo "newsstand_size="`du -s --apparent-size "$build"GApps/newsstand | cut -f 1` >> "$build"sizes.prop
-echo "newswidget_size="`du -s --apparent-size "$build"GApps/newswidget | cut -f 1` >> "$build"sizes.prop
-echo "photos_size="`du -s --apparent-size "$build"GApps/photos | cut -f 1` >> "$build"sizes.prop
-echo "search_size="`du -s --apparent-size "$build"GApps/search | cut -f 1` >> "$build"sizes.prop
-echo "sheets_size="`du -s --apparent-size "$build"GApps/sheets | cut -f 1` >> "$build"sizes.prop
-echo "slides_size="`du -s --apparent-size "$build"GApps/slides | cut -f 1` >> "$build"sizes.prop
-echo "speech_size="`du -s --apparent-size "$build"GApps/speech | cut -f 1` >> "$build"sizes.prop
-echo "street_size="`du -s --apparent-size "$build"GApps/street | cut -f 1` >> "$build"sizes.prop
-echo "talkback_size="`du -s --apparent-size "$build"GApps/talkback | cut -f 1` >> "$build"sizes.prop
-echo "wallet_size="`du -s --apparent-size "$build"GApps/wallet | cut -f 1` >> "$build"sizes.prop
-if [ "$API" -gt "19" ]; then
-	echo "webview_size="`du -s --apparent-size "$build"GApps/webviewgoogle | cut -f 1` >> "$build"sizes.prop
-fi
-echo "youtube_size="`du -s --apparent-size "$build"GApps/youtube | cut -f 1` >> "$build"sizes.prop
-}
 makeinstallerdata(){
 if [ "$API" -le "19" ]; then
 	REMOVALSUFFIX=".apk"
@@ -115,36 +76,7 @@ keybd_lib_filename2="libjni_latinime.so";' >> "$build"installer.data
 fi
 
 echo 'FaceLock_lib_filename1="libfacelock_jni.so";
-FaceLock_lib_filename2="libfilterpack_facedetect.so";
-
-# Google Play Services version sizes' >> "$build"installer.data
-gmscommon=`du -s "$build"GMSCore/common | cut -f 1`
-for t in $GMSCore; do
-	gmst=`du -s "$build"GMSCore/$t | cut -f 1`
-	printf "gms_"$t"_size="`expr $gmst + $gmscommon`"; " >> "$build"installer.data
-done
-
-echo "\n\n# Google Messenger version sizes" >> "$build"installer.data
-msgcommon=`du -s "$build"Messenger/common | cut -f 1`
-for t in $Messenger; do
-	msgt=`du -s "$build"Messenger/$t | cut -f 1`
-	printf "msg_"$t"_size="`expr $msgt + $msgcommon`"; " >> "$build"installer.data
-done
-
-echo "\n\n# Google Play Games version sizes" >> "$build"installer.data
-pgcommon=`du -s "$build"PlayGames/common | cut -f 1`
-for t in $PlayGames; do
-	pgt=`du -s "$build"PlayGames/$t | cut -f 1`
-	printf "pg_"$t"_size="`expr $pgt + $pgcommon`"; " >> "$build"installer.data
-done
-
-echo "\n\n# Core & Optional Apps size" >> "$build"installer.data
-core=`du -s "$build"Core | cut -f 1`
-printf "core_size="$core";">> "$build"installer.data
-if [ "$API" -gt "19" ]; then
-	keybdlib=`du -s "$build"Optional/keybd_lib | cut -f 1`
-	printf " keybd_lib_size="$keybdlib";">> "$build"installer.data
-fi
+FaceLock_lib_filename2="libfilterpack_facedetect.so";' >> "$build"installer.data
 
 #The part below still has to be made more dynamic
 #We can include again the gms_base type
