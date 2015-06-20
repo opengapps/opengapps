@@ -81,7 +81,7 @@ createzip() {
 }
 
 getzipfolders() {
-	zipfolders="Core GMSCore META-INF bkup_tail.sh g.prop gapps-remove.txt installer.data sizes.prop"
+	zipfolders="Core GMSCore META-INF bkup_tail.sh g.prop gapps-remove.txt installer.data"
 	if [ "$API" -gt "19" ]; then
 		zipfolders="$zipfolders Optional"
 	fi

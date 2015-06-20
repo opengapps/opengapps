@@ -18,9 +18,8 @@ tee "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 # This Open GApps Shell Script Installer includes code derived from the TK GApps of @TKruzze and @osm0sis,
 # The TK GApps are available under the GPLv3 from http://forum.xda-developers.com/android/software/tk-gapps-t3116347
 #
-unzip -o "$3" installer.data sizes.prop g.prop gapps-remove.txt bkup_tail.sh -d /tmp;
+unzip -o "$3" installer.data g.prop gapps-remove.txt bkup_tail.sh -d /tmp;
 . /tmp/installer.data;
-. /tmp/sizes.prop;
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
 ZIP="$3";
