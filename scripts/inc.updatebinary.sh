@@ -1,6 +1,6 @@
 makeupdatebinary(){
 tee "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
-#!/sbin/sh
+#!/sbin/ash
 #This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
@@ -153,7 +153,7 @@ EOF
 quit() {
     set_progress 0.94;
     install_note=$(echo "${install_note}" | sort -r | sed '/^$/d'); # sort Installation Notes & remove empty lines
-    echo -------------------------------------------------------------------------------- >> $g_log;
+    echo ----------------------------------------------------------------------------- >> $g_log;
     echo -e "$log_close" >> $g_log;
 
     # Add Installation Notes to log to help user better understand conflicts/errors
@@ -330,7 +330,7 @@ fi;
 
 # Get Rom Version from build.prop
 for field in ro.modversion ro.build.version.incremental; do
-    rom_version=$(file_getprop $b_prop $field);
+    rom_version="$(file_getprop $b_prop $field)";
     if [ ${#rom_version} -ge 2 ]; then
         break;
     fi;
@@ -338,7 +338,7 @@ for field in ro.modversion ro.build.version.incremental; do
 done;
 
 echo "# Begin Open GApps Install Log" > $g_log;
-echo -------------------------------------------------------------------------------- >> $g_log;
+echo ----------------------------------------------------------------------------- >> $g_log;
 log "ROM Android Version" $rom_android_version;
 
 # Check to make certain user has proper version ROM Installed
@@ -354,13 +354,13 @@ if [ ! ${rom_android_version:0:3} == $req_android_version ]; then
 fi;
 
 # Check to make certain that user device matches the architecture
-device_architecture=$(file_getprop $b_prop ro.product.cpu.abilist)
+device_architecture="$(file_getprop $b_prop ro.product.cpu.abilist)"
 # If the recommended field is empty, fall back to the deprecated one
-if [ $device_architecture = "" ]; then
-    device_architecture=$(file_getprop $b_prop ro.product.cpu.abi)
+if [ "$device_architecture" = "" ]; then
+    device_architecture="$(file_getprop $b_prop ro.product.cpu.abi)"
 fi
 EOFILE
-printf 'if (echo "$device_architecture" | '>> "$build"META-INF/com/google/android/update-binary
+printf 'if ! (echo "$device_architecture" | '>> "$build"META-INF/com/google/android/update-binary
 case "$ARCH" in
 	arm)	printf 'grep -i "armeabi" | grep -qiv "arm64"'>> "$build"META-INF/com/google/android/update-binary;;
 	arm64)	printf 'grep -qi "arm64"'>> "$build"META-INF/com/google/android/update-binary;;
@@ -369,8 +369,6 @@ case "$ARCH" in
 esac
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 ); then
-    log "Device Architecture Compatible:" "$device_architecture";
-else
     ui_print "***** Incompatible Device Detected *****";
     ui_print " ";
     ui_print "This Open GApps package cannot be";
@@ -911,7 +909,7 @@ reclaimed_removal_space_kb=$(du -ck `obsolete_gapps_list` | tail -n1 | awk '{ pr
 
 # Add information to calc.log that will later be added to open_gapps.log to assist user with app removals
 post_install_size_kb=$((free_system_size_kb + reclaimed_gapps_space_kb)); # Add opening calculations
-echo --------------------------------------------------------- > $calc_log;
+echo ----------------------------------------------------------------------------- > $calc_log;
 printf "%7s | %26s |   %7s | %7s\n" "TYPE " "DESCRIPTION       " "SIZE" "  TOTAL" >> $calc_log;
 printf "%7s | %26s |   %7d | %7d\n" "" "Current Free Space" $free_system_size_kb $free_system_size_kb >> $calc_log;
 printf "%7s | %26s | + %7d | %7d\n" "Remove" "Existing GApps" $reclaimed_gapps_space_kb $post_install_size_kb >> $calc_log;
@@ -955,6 +953,14 @@ for gapp_name in $gapps_list; do
     else
         eval "gapp_size_kb=\$${gapp_name}_size";
     fi
+EOFILE
+if [ "$API" -le "19" ]; then
+echo '# Broken lib configuration on KitKat, so some apps do not count for the /system space because they are on /app
+    if [ "$gapp_name" == "hangouts" ] || [ "$gapp_name" == "googleplus" ] || [ "$gapp_name" == "photos" ] || [ "$gapp_name" == "youtube" ]; then
+        gapp_size_kb="0";
+    fi' >> "$build"META-INF/com/google/android/update-binary
+fi
+tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
     post_install_size_kb=$((post_install_size_kb - gapp_size_kb));
     log_sub "Install" "$gapp_name³" $gapp_size_kb $post_install_size_kb;
 done;
@@ -978,7 +984,7 @@ fi;
 
 post_install_size_kb=$((post_install_size_kb - buffer_size_kb));
 log_sub "" "Buffer Space²" $buffer_size_kb $post_install_size_kb;
-echo --------------------------------------------------------- >> $calc_log;
+echo ----------------------------------------------------------------------------- >> $calc_log;
 
 if [ "$post_install_size_kb" -ge 0 ]; then
     printf "%47s | %7d\n" "  Post Install Free Space" $post_install_size_kb >> $calc_log;
@@ -990,7 +996,7 @@ else
 fi;
 
 # Finish up Calculation Log
-echo --------------------------------------------------------- >> $calc_log;
+echo ----------------------------------------------------------------------------- >> $calc_log;
 if [ -n "$user_remove_folder_list" ] || [ -n "$gapps_remove_folder_list" ]; then
     echo "              ° User Requested Removal" >> $calc_log;
 fi;
