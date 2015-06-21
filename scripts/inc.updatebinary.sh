@@ -1,6 +1,6 @@
 makeupdatebinary(){
 tee "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
-#!/sbin/bash
+#!/sbin/sh
 #This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
