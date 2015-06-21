@@ -953,7 +953,7 @@ for gapp_name in $gapps_list; do
     if [ "$gapp_name" != "playgames" ] && [ "$gapp_name" != "messenger" ]; then
         gapp_size_kb=$(unzip -lq $ZIP GApps/$gapp_name/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
     else
-        gapp_size_kb="$${gapp_name}_size";
+        eval "gapp_size_kb=\$${gapp_name}_size";
     fi
     post_install_size_kb=$((post_install_size_kb - gapp_size_kb));
     log_sub "Install" "$gapp_name³" $gapp_size_kb $post_install_size_kb;
