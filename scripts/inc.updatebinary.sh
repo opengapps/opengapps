@@ -1,6 +1,6 @@
 makeupdatebinary(){
 tee "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
-#!/sbin/sh
+#!/sbin/bash
 #This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
@@ -54,12 +54,12 @@ abort() {
     ui_print " ";
     ui_print "Error Code: $1";
     sleep 5;
-    exxit $1;
+    exxit "$1";
 }
 
 ch_con() {
-  LD_LIBRARY_PATH=/system/lib /system/lib64 /system/toolbox chcon u:object_r:system_file:s0 $1;
-  LD_LIBRARY_PATH=/system/lib /system/lib64 /system/bin/toolbox chcon u:object_r:system_file:s0 $1;
+  LD_LIBRARY_PATH=/system/lib /system/lib64 /system/toolbox chcon u:object_r:system_file:s0 "$1";
+  LD_LIBRARY_PATH=/system/lib /system/lib64 /system/bin/toolbox chcon u:object_r:system_file:s0 "$1";
   chcon u:object_r:system_file:s0 $1;
 }
 
@@ -108,7 +108,7 @@ exxit() {
         cp -f $rec_cache_log /tmp/logs/Recovery_cache.log;
         cp -f $rec_tmp_log /tmp/logs/Recovery_tmp.log;
         cd /tmp/logs;
-        tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" *;
+        tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" ./*;
         cd /;
     fi;
     rm -rf /tmp/*;
@@ -118,7 +118,7 @@ exxit() {
     umount /system;
     umount /data;
     umount /cache;
-    exit $1;
+    exit "$1";
 }
 
 file_getprop() {
@@ -127,7 +127,7 @@ file_getprop() {
 
 folder_extract() {
     unzip -o "$ZIP" "$1/$2/*" -d /tmp;
-    bkup_list=$'\n'"$(find /tmp/$1/$2 -type f | cut -d/ -f5-)${bkup_list}";
+    bkup_list=$'\n'"$(find "/tmp/$1/$2" -type f | cut -d/ -f5-)${bkup_list}";
     cp -rf "/tmp/$1/$2/." /system/;
     rm -rf "/tmp/$1";
 }
@@ -199,7 +199,7 @@ quit() {
     # Add list of Raw User Application Removals back to end of processed gapps-config for display in gapps log
     if [ -n "$user_remove_list" ]; then
         for user_remove_app_raw in $user_remove_list; do
-            echo "(${user_remove_app_raw})" >> $g_conf;
+            echo "(${user_remove_app_raw})" >> "$g_conf";
         done;
     fi;
 
@@ -290,7 +290,7 @@ if [ "$g_conf" ]; then
     # Create processed gapps-config with user comments stripped and user app removals removed and stored in variable for processing later
     g_conf=/tmp/proc_gconf;
     sed -e 's|#.*||g' -e 's/\r//g' -e '/^$/d'  "$g_conf_orig" > $g_conf; # Strip user comments from gapps-config
-    user_remove_list=`awk -F "[()]" '{ for (i=2; i<NF; i+=2) print $i }' $g_conf`; # Get users list of apk's to remove from gapps-config
+    user_remove_list=$(awk -F "[()]" '{ for (i=2; i<NF; i+=2) print $i }' $g_conf); # Get users list of apk's to remove from gapps-config
     sed -i s/'([^)]*)'/''/g $g_conf; # Remove all instances of user app removals (stuff between parentheses)
     sed -i '/^$/d' $g_conf; # Remove all empty lines for cleaner appearance
 else
@@ -511,7 +511,7 @@ esac;
 # Hackish code, checks if ROM is CM12.1 from 23th of May or newer, that supports Google Webview,
 # or ResurrectionROM newer than 19th of May, otherwise does not allow the install
 rocmversion=`echo $(file_getprop $b_prop ro.cm.version) | tr "-" " " | tr -d "."`
-rrotaversion=`echo $(file_getprop $b_prop rr.ota.version)`
+rrotaversion=$(file_getprop $b_prop rr.ota.version)
 cmversion=`echo "$rocmversion" | awk '{print $1}'`
 cmdate=`echo "$rocmversion" | awk '{print $2}'`
 if { [ "0$cmversion" -ge "121" ] && [ "0$cmdate" -ge "020150523" ]; } || [ 0$rrotaversion -ge "020150519" ]; then
