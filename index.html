@@ -177,6 +177,20 @@
     <script src="javascripts/git.js" type="text/javascript"></script>
     <script src="javascripts/scale.fix.js" type="text/javascript">></script>
     <script type="text/javascript">
+
+function getUrlParameter(sParam)
+{
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++) 
+    {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam) 
+        {
+            return sParameterName[1];
+        }
+    }
+}      
         function downloadSubmit () {
             var form = document.getElementById('DownloadForm');
 	    for(var i = 0; i < form.arch.length; i++)
@@ -235,6 +249,22 @@
         var arm64_variants = ["aroma", "stock", "full", "mini", "micro", "nano", "pico"];
         var x86_variants = ["stock", "full", "mini", "micro", "nano", "pico"];
         var x86_64_variants = ["stock", "full", "mini", "micro", "nano", "pico"];
+
+        var arch = getUrlParameter('arch');
+        var api = getUrlParameter('api');
+        var variant = getUrlParameter('variant');
+        if(typeof arch=="undefined"){
+            arch = "arm"
+        }
+        if(typeof api=="undefined"){
+            api = "5.1"
+        }
+        if(typeof variant=="undefined"){
+            variant = "stock"
+        }
+        $("input:radio[id='"+arch+"']").attr("checked",true);
+        $("input:radio[id='"+api+"']").attr("checked",true);
+        $("input:radio[id='"+variant+"']").attr("checked",true);
 
         $("input:radio").change(function(){
             var arch = $("input:radio[name='arch']:checked").attr("value");
