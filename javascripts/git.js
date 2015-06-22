@@ -3,7 +3,7 @@ jQuery.githubReleases = function(username, reponame, callback) {
 }
 
 jQuery.fn.loadLatestPreRelease = function(username, reponame) {
-    this.html("<span>Querying GitHub...</span>");
+    this.html('<span>Querying GitHub...</span>');
      
     var target = this;
     $.githubReleases(username, reponame, function(data) {
@@ -12,12 +12,12 @@ jQuery.fn.loadLatestPreRelease = function(username, reponame) {
         var output = $('<dl/>');
         target.empty().append(output);
         $(releases).each(function() {
-         
-                output.append('<dt>' + this.name + '</dt>');
-                output.append('<input type="hidden" name="date" value="' + this.tag_name +'">');
-		return false;
-
-        });      
-      });
-      
+           output.append('<dt>' + this.name + '</dt>');
+           output.append('<input type="hidden" name="date" value="' + this.tag_name +'">');
+           return false;
+        });
+        if(autoDownload){
+           downloadSubmit();
+        }
+     });
 }
