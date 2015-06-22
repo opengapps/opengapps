@@ -322,7 +322,7 @@ for field in ro.product.device ro.build.product; do
 done;
 
 # Get Device Type (phone or tablet) from build.prop
-if $(file_getprop $b_prop ro.build.characteristics) | grep -qi "tablet"; then
+if echo "$(file_getprop $b_prop ro.build.characteristics)" | grep -qi "tablet"; then
     device_type=tablet;
 else
     device_type=phone;
@@ -508,7 +508,7 @@ esac;
 
 # Hackish code, checks if ROM is CM12.1 from 23th of May or newer, that supports Google Webview,
 # or ResurrectionROM newer than 19th of May, otherwise does not allow the install
-rocmversion=$($(file_getprop $b_prop ro.cm.version) | tr "-" " " | tr -d ".")
+rocmversion=$(echo "$(file_getprop $b_prop ro.cm.version)" | tr "-" " " | tr -d ".")
 rrotaversion=$(file_getprop $b_prop rr.ota.version)
 cmversion=$(echo "$rocmversion" | awk '{print $1}')
 cmdate=$(echo "$rocmversion" | awk '{print $2}')
