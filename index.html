@@ -179,7 +179,7 @@
     <script type="text/javascript">
         function downloadSubmit () {
             var form = document.getElementById('DownloadForm');
-	    for(var i = 0; i < form.arch.length; i++)  // buztype is the name of the radio buttons which is an array; ie buztype[0].value is 1, buztype[1].value is 2, buztype[2].value is 3 based on what you have above.
+	    for(var i = 0; i < form.arch.length; i++)
 	    {
                 if(form.arch[i].checked)
                 {
@@ -190,7 +190,7 @@
                 alert("No architecture platform selected!");
                 return;
             }
-	    for(var i = 0; i < form.api.length; i++)  // buztype is the name of the radio buttons which is an array; ie buztype[0].value is 1, buztype[1].value is 2, buztype[2].value is 3 based on what you have above.
+	    for(var i = 0; i < form.api.length; i++)
 	    {
                 if(form.api[i].checked)
                 {
@@ -201,7 +201,7 @@
                 alert("No android version selected!");
                 return;
             }
-	    for(var i = 0; i < form.variant.length; i++)  // buztype is the name of the radio buttons which is an array; ie buztype[0].value is 1, buztype[1].value is 2, buztype[2].value is 3 based on what you have above.
+	    for(var i = 0; i < form.variant.length; i++)
 	    {
                 if(form.variant[i].checked)
                 {
@@ -213,6 +213,10 @@
                 return;
             }
             var date = this.DownloadForm.date.value;
+            if(typeof date=="undefined"){
+                alert("Querying for the latest version from GitHub failed!");
+                return;
+            }
             window.location = "https://github.com/opengapps/opengapps/releases/download/"+date+"/open_gapps-"+arch+"-"+api+"-"+variant+"-"+date+".zip";
         }
 
