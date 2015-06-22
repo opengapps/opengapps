@@ -60,11 +60,11 @@ echo "#This file is part of The Open GApps script of @mfonville.
 # TKruzze's original work is used with permission, under the license that it may be re-used to continue the GApps package.
 # This Installation Data file for Open GApps Installer includes code derived from the TK GApps of @TKruzze and @osm0sis,
 # The TK GApps are available under the GPLv3 from http://forum.xda-developers.com/android/software/tk-gapps-t3116347
-# Last Updated: "$DATE > "$build"installer.data
+# Last Updated: $DATE" > "$build"installer.data
 echo '# _____________________________________________________________________________________________________________________
 #                                             Define Current Package Variables
 # List of GApps packages that can be installed with this installer
-pkg_names="'"`printf "$SUPPORTEDVARIANTS " | tac -s' ' -`"'";
+pkg_names="'"$(printf "%s " "$SUPPORTEDVARIANTS" | tac -s' ' -)"'";
 
 # Installer Name (32 chars Total, excluding "")
 installer_name="Open GApps '"$VARIANT"' '"$PLATFORM"' - ";
@@ -78,9 +78,6 @@ fi
 echo 'FaceLock_lib_filename1="libfacelock_jni.so";
 FaceLock_lib_filename2="libfilterpack_facedetect.so";' >> "$build"installer.data
 
-#The part below still has to be made more dynamic
-#We can include again the gms_base type
-#We whould replace 'arm' with the $ARCH type
 echo '
 
 # Buffer of extra system space to require for GApps install (9216=9MB)

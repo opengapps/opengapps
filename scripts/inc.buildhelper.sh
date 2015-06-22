@@ -20,7 +20,7 @@ copy() {
 	if [ -d "$1" ]
 	then
 		for f in $1/*; do
-			copy "$f" "$2/$(basename $f)"
+			copy "$f" "$2/$(basename "$f")"
 		done
 	fi
 	if [ -f "$1" ]
@@ -49,11 +49,11 @@ buildapp() {
 	if [ "x$3" = "x" ]; then SOURCEARCH="$ARCH"
 	else SOURCEARCH="$3"; fi #allows for an override
 
-	if getsourceforapi $package
+	if getsourceforapi "$package"
 	then
 		buildapk "$package" "$targetlocation"
 		buildlib "$package" "$targetlocation"
-		echo "Built $package version "$(basename -s .apk "$sourceapk")
+		echo "Built $package version "$(basename -s ".apk" "$sourceapk")
 	else
 		if [ "$SOURCEARCH" != "$FALLBACKARCH" ]
 		then
@@ -122,11 +122,11 @@ getsourceforapi() {
 		return 1 #appname is not there, error!?
 	fi
 	#sed copies filename to the beginning, to compare version, and later we remove it with cut
-	for foundapk in `{ eval "$sourcearch$sourceall"; }\
+	for foundapk in $({ eval "$sourcearch$sourceall"; }\
 			| sed 's!.*/\(.*\)!\1/&!'\
 			| sort -r -t/ -k1,1\
-			| cut -d/ -f2-`; do
-		api=$(basename $(dirname "$foundapk"))
+			| cut -d/ -f2-); do
+		api=$(basename "$(dirname "$foundapk")")
 		if [ "$api" -le "$API" ]
 		then
 			sourceapk=$foundapk
@@ -149,7 +149,7 @@ buildapk() {
 		rm "$targetapk"
 		zip -q -U "$sourceapk" -O "$targetapk" --exclude "lib*"
 	else ##This is Lollipop, much more nice :-)
-		targetapk="$targetdir/$(basename $targetdir).apk"
+		targetapk="$targetdir/$(basename "$targetdir").apk"
 		if [ -f "$targetapk" ]
 			then
 			rm "$targetapk"
@@ -181,19 +181,19 @@ buildlib() {
 		libfallbacksearchpath="lib/mips/*"
 	fi
 	if [ "$API" = "19" ]; then ##We will do this as long as we support KitKat
-		targetdir=$(dirname $(dirname "$targetdir"))
-		if [ "x`unzip -qql "$sourceapk" $libsearchpath | cut -c1- | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
+		targetdir=$(dirname "$(dirname "$targetdir")")
+		if [ "x$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" != "x" ]
 		then
 			install -d "$targetdir/lib"
-			unzip -q -j -o "$sourceapk" -d "$targetdir/lib" "$libsearchpath"
+			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/" "$libsearchpath"
 		fi
 	else ##This is Lollipop, much more nice :-)
-		if [ "x`unzip -qql "$sourceapk" $libsearchpath | cut -c1- | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
+		if [ "x$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" != "x" ]
 		then
 			install -d "$targetdir/lib/$SOURCEARCH"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$SOURCEARCH" "$libsearchpath"
 		fi
-		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ "x`unzip -qql "$sourceapk" $libfallbacksearchpath | cut -c1- | tr -s ' ' | cut -d' ' -f5-`" != "x" ]
+		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ "x$(unzip -qql "$sourceapk" "$libfallbacksearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" != "x" ]
 		then
 			install -d "$targetdir/lib/$FALLBACKARCH"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$FALLBACKARCH" "$libfallbacksearchpath"
@@ -203,7 +203,7 @@ buildlib() {
 getversion(){
 	if getsourceforapi "$1"
 	then
-		getversion=`aapt dump badging "$sourceapk" | grep "versionCode=" |awk '{print $3}' |tr -d "/versionCode='"`
+		getversion=$(aapt dump badging "$sourceapk" | grep "versionCode=" |awk '{print $3}' |tr -d "/versionCode='")
 	else
 		return 1
 	fi
@@ -213,10 +213,10 @@ comparebaseversion(){
 	#returns true if both versions are equal
 	#versionnumber to compare with is in $1
 	#packageID to compare with is in $2
-	baseversion1=`echo "$1" | sed 's/.$//'`
+	baseversion1=$(echo "$1" | sed 's/.$//')
 	if getversion "$2" #we rely on the fact that this method calls getsourceforapi and changes $sourceapk for us
 	then
-		baseversion2=`echo "$getversion" | sed 's/.$//'`
+		baseversion2=$(echo "$getversion" | sed 's/.$//')
 		test "$baseversion1" = "$baseversion2"
 		return $?  #ugly, but I fail to get it more nice than this :-/
 	else

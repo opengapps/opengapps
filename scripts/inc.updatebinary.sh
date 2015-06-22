@@ -411,13 +411,13 @@ esac;
 case $density in
 EOFILE
 for d in $DENSITIES; do
-	if [ $d -lt 8 ]
+	if [ "$d" -lt 8 ]
 	then
 		x=80
 	else
 		x=160 #resolution 8 for 480 is weird
 	fi
-	printf "    "`expr 40 \* $d + $x`") ">> "$build"META-INF/com/google/android/update-binary
+	printf "    %s) " "$(expr 40 \* $d + $x)">> "$build"META-INF/com/google/android/update-binary
 	echo "$GMSCore" | grep -q "$d"
 	if [ $? -eq 0 ]
 	then
@@ -955,7 +955,7 @@ for gapp_name in $gapps_list; do
     fi
 EOFILE
 if [ "$API" -le "19" ]; then
-echo '# Broken lib configuration on KitKat, so some apps do not count for the /system space because they are on /app
+echo '# Broken lib configuration on KitKat, so some apps do not count for the /system space because they are on /data
     if [ "$gapp_name" == "hangouts" ] || [ "$gapp_name" == "googleplus" ] || [ "$gapp_name" == "photos" ] || [ "$gapp_name" == "youtube" ]; then
         gapp_size_kb="0";
     fi' >> "$build"META-INF/com/google/android/update-binary
@@ -1068,16 +1068,16 @@ EOFILE
 if [ "$API" -gt "19" ]; then
 	echo 'if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     folder_extract Optional keybd_lib; # Install Keyboard lib to add swipe capabilities to AOSP Keyboard
-    ln -sf /system/'$LIBFOLDER'/$keybd_lib_filename1 /system/'$LIBFOLDER'/$keybd_lib_filename2; # create required symlink
-    mkdir -p /system/app/LatinIME/lib/'$ARCH';
-    ln -sf /system/'$LIBFOLDER'/$keybd_lib_filename1 /system/app/LatinIME/lib/'$ARCH'/$keybd_lib_filename1; # create required symlink
-    ln -sf /system/'$LIBFOLDER'/$keybd_lib_filename1 /system/app/LatinIME/lib/'$ARCH'/$keybd_lib_filename2; # create required symlink
+    ln -sf /system/'"$LIBFOLDER"'/$keybd_lib_filename1 /system/'"$LIBFOLDER"'/$keybd_lib_filename2; # create required symlink
+    mkdir -p /system/app/LatinIME/lib/'"$ARCH"';
+    ln -sf /system/'"$LIBFOLDER"'/$keybd_lib_filename1 /system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1; # create required symlink
+    ln -sf /system/'"$LIBFOLDER"'/$keybd_lib_filename1 /system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename2; # create required symlink
 
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'$LIBFOLDER'/$keybd_lib_filename1 /system/app/LatinIME/lib/'$ARCH'/$keybd_lib_filename2" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'$LIBFOLDER'/$keybd_lib_filename1 /system/app/LatinIME/lib/'$ARCH'/$keybd_lib_filename1" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/LatinIME/lib/'$ARCH'" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'$LIBFOLDER'/$keybd_lib_filename1 /system/'$LIBFOLDER'/$keybd_lib_filename2" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'"$LIBFOLDER"'/$keybd_lib_filename1 /system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename2" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'"$LIBFOLDER"'/$keybd_lib_filename1 /system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/LatinIME/lib/'"$ARCH"'" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'"$LIBFOLDER"'/$keybd_lib_filename1 /system/'"$LIBFOLDER"'/$keybd_lib_filename2" $bkup_tail;
 fi;' >> "$build"META-INF/com/google/android/update-binary
 fi
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
@@ -1143,7 +1143,8 @@ fi;
 
 EOFILE
 fi
-echo '# Progress Bar increment calculations for GApps Install process
+tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+# Progress Bar increment calculations for GApps Install process
 set_progress 0.30;
 gapps_count=$(echo "${gapps_list}" | wc -w); # Count number of GApps left to be installed
 if [ $gapps_count -lt 1 ]; then gapps_count=1; fi; # Prevent division by zero
@@ -1163,14 +1164,15 @@ for remove_folder in $gapps_remove_folder_list; do
     bkup_list=$(echo "$bkup_list" | sed '\+'${remove_folder#/system/}'+d'); # Remove folder and its contents from the addon.d backup script
 done;
 
-# Create FaceLock lib symlink if FaceLock was installed
+EOFILE
+echo '# Create FaceLock lib symlink if FaceLock was installed
 if ( contains "$gapps_list" "faceunlock" ); then
-    mkdir -p /system/app/FaceLock/lib/'$ARCH';
-    ln -sf /system/'$LIBFOLDER'/$FaceLock_lib_filename1 /system/app/FaceLock/lib/'$ARCH'/$FaceLock_lib_filename1; # create required symlink
-    ln -sf /system/'$LIBFOLDER'/$FaceLock_lib_filename2 /system/app/FaceLock/lib/'$ARCH'/$FaceLock_lib_filename2; # create required symlink
+    mkdir -p /system/app/FaceLock/lib/'"$ARCH"';
+    ln -sf /system/'"$LIBFOLDER"'/$FaceLock_lib_filename1 /system/app/FaceLock/lib/'"$ARCH"'/$FaceLock_lib_filename1; # create required symlink
+    ln -sf /system/'"$LIBFOLDER"'/$FaceLock_lib_filename2 /system/app/FaceLock/lib/'"$ARCH"'/$FaceLock_lib_filename2; # create required symlink
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'$LIBFOLDER'/$FaceLock_lib_filename2 /system/app/FaceLock/lib/'$ARCH'/$FaceLock_lib_filename2" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'$LIBFOLDER'/$FaceLock_lib_filename1 /system/app/FaceLock/lib/'$ARCH'/$FaceLock_lib_filename1" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'"$LIBFOLDER"'/$FaceLock_lib_filename2 /system/app/FaceLock/lib/'"$ARCH"'/$FaceLock_lib_filename2" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf /system/'"$LIBFOLDER"'/$FaceLock_lib_filename1 /system/app/FaceLock/lib/'"$ARCH"'/$FaceLock_lib_filename1" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/FaceLock/lib/arm" $bkup_tail;
 fi;' >> "$build"META-INF/com/google/android/update-binary
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'

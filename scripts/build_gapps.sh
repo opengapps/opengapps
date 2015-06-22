@@ -141,7 +141,7 @@ for VARIANT in $VARIANTS; do
 	variantscripts
 	createzip
 	#smaller variants can't build larger variants
-	SUPPORTEDVARIANTS=$(echo $SUPPORTEDVARIANTS | sed "s/$VARIANT//g")
+	SUPPORTEDVARIANTS=$(echo "$SUPPORTEDVARIANTS" | sed "s/$VARIANT//g")
 done
 
 #ONLY BUILD AROMA AFTER NORMAL VARIANTS, the build-tree will be heavily modified

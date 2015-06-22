@@ -4,7 +4,7 @@ EOF
 # Backup/Restore using /sdcard if the installed GApps size plus a buffer for other addon.d backups (204800=200MB) is larger than /tmp
 installed_gapps_size_kb=$(grep "^installed_gapps_size_kb" /tmp/gapps.prop | cut -d= -f2)
 if [ ! "$installed_gapps_size_kb" ]; then
-  installed_gapps_size_kb=$(cd /system; du -ak `list_files` | awk '{ i+=$1 } END { print i }')
+  installed_gapps_size_kb=$(cd /system; du -ak "$(list_files)" | awk '{ i+=$1 } END { print i }')
   echo "installed_gapps_size_kb=$installed_gapps_size_kb" >> /tmp/gapps.prop
 fi
 
@@ -15,21 +15,21 @@ if [ ! "$free_tmp_size_kb" ]; then
 fi
 
 buffer_size_kb=204800
-if [ $((installed_gapps_size_kb + buffer_size_kb)) -ge $free_tmp_size_kb ]; then
+if [ $((installed_gapps_size_kb + buffer_size_kb)) -ge "$free_tmp_size_kb" ]; then
   C=/sdcard/tmp-gapps
 fi
 
 case "$1" in
   backup)
     list_files | while read FILE DUMMY; do
-      backup_file $S/$FILE
+      backup_file "$S"/"$FILE"
     done
   ;;
   restore)
     list_files | while read FILE REPLACEMENT; do
       R=""
       [ -n "$REPLACEMENT" ] && R="$S/$REPLACEMENT"
-      [ -f "$C/$S/$FILE" ] && restore_file $S/$FILE $R
+      [ -f "$C/$S/$FILE" ] && restore_file "$S"/"$FILE" "$R"
     done
   ;;
   pre-backup)
@@ -56,10 +56,10 @@ case "$1" in
         find $i -type d | xargs rmdir -p --ignore-fail-on-non-empty;
     done;
     # Fix ownership/permissions and clean up after backup and restore from /sdcard
-    for i in `list_files`; do
-      busybox chown root.root /system/$i
-      busybox chmod 644 /system/$i
-      busybox chmod 755 `busybox dirname /system/$i`
+    for i in $(list_files); do
+      busybox chown root.root /system/"$i"
+      busybox chmod 644 /system/"$i"
+      busybox chmod 755 $(busybox dirname /system/"$i")
     done
     rm -rf /sdcard/tmp-gapps
   ;;

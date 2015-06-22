@@ -12,7 +12,7 @@
 #
 
 alignbuild() {
-	for f in `find "$build" -name '*.apk'`; do
+	for f in $(find "$build" -name '*.apk'); do
 		mv "$f" "$f.orig"
 		zipalign 4 "$f.orig" "$f"
 		rm "$f.orig"
@@ -75,7 +75,7 @@ createzip() {
 	fi
 	cd "$build"
 	echo "Compressing and signing $signedzip..."
-	zip -q -r -D -X -9 "$unsignedzip" $zipfolders 
+	zip -q -r -D -X -9 "$unsignedzip" $zipfolders #don't doublequote zipfolders, contains multiple (safe) arguments
 	cd "$TOP"
 	signzip
 }
