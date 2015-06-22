@@ -194,26 +194,35 @@
         var variant = getUrlParameter('variant');
         var download = getUrlParameter('download');
 
-	//We do this before the auto-assignments, to prevent future conflicts
-        if(download =="true" && typeof arch!="undefined" && typeof api!="undefined" && typeof variant!="undefined"){
-            var autoDownload = true;
-        }else{
-            var autoDownload = false;
-            alert("Auto Download requested, but refused because of missing parameter(s)!");
-        }
+        var autoDownload = false;
+        var autoAllowArch = true;
+        var autoAllowApi = true;
+        var autoAllowVariant = true;
 
-        if(typeof arch=="undefined"){
-            arch = "arm"
+        if($.inArray(arch, archs) == -1){
+            autoAllowArch = false;
+            arch = "arm";
         }
-        if(typeof api=="undefined"){
-            api = "5.1"
+        if($.inArray(api, eval(arch+"_apis")) == -1){
+            autoAllowApi = false;
+            api = "5.1";
         }
-        if(typeof variant=="undefined"){
-            variant = "stock"
+        if($.inArray(variant, eval(arch+"_variants")) == -1){
+            autoAllowVariant = false;
+            variant = "stock";
         }
         $("input:radio[id='"+arch+"']").attr("checked",true);
         $("input:radio[id='"+api+"']").attr("checked",true);
         $("input:radio[id='"+variant+"']").attr("checked",true);
+
+        //We do this before the auto-assignments, to prevent future conflicts
+        if(download =="true"){
+            if(autoAllowArch && autoAllowApi && autoAllowVariant){
+                var autoDownload = true;
+            }else{
+                alert("Auto Download requested, but refused because of missing or broken parameter(s)!");
+            }
+        }
 
         function getUrlParameter(sParam)
         {
