@@ -48,8 +48,10 @@ buildapp "com.google.earth" "GApps/earth/app/GoogleEarth"
 buildapp "com.google.android.gm.exchange" "GApps/exchangegoogle/app/PrebuiltExchange3Google"
 #FaceLock with libs
 buildfile "$LIBFOLDER/libfacelock_jni.so" "GApps/faceunlock/$LIBFOLDER/"
-buildfile "lib/libfilterpack_facedetect.so" "GApps/faceunlock/lib/" #this file is both on 32 and 64 bit
-buildfile "lib64/libfilterpack_facedetect.so" "GApps/faceunlock/lib64/" #only on 64 bit
+buildfile "$LIBFOLDER/libfilterpack_facedetect.so" "GApps/faceunlock/$LIBFOLDER/"
+if [ "$FALLBACKARCH" != "$ARCH" ]; then
+	buildfile "lib/libfilterpack_facedetect.so" "GApps/faceunlock/lib/" #on 64 bit, we also need the 32 bit file
+fi
 buildfile "vendor/pittpatt/" "GApps/faceunlock/vendor/pittpatt/"
 buildapp "com.android.facelock" "GApps/faceunlock/app/FaceLock"
 #End of FaceLock

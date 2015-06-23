@@ -92,7 +92,7 @@ removal_bypass_list="'"$REMOVALBYPASS"'
 E_ROMVER=20; # Wrong ROM version
 E_NOSPACE=70; # Insufficient Space Available in System Partition
 E_NONOPEN=40; # NON-Open GApps Currently Installed
-E_ARCH=64 ; # Wrong rchitecture Detected
+E_ARCH=64 ; # Wrong Architecture Detected
 #_________________________________________________________________________________________________________________
 #                                             GApps List (Applications user can Select/Deselect)
 # calsync will be added to GApps Install List as needed during script execution' >> "$build"installer.data
