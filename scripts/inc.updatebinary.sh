@@ -901,11 +901,11 @@ log "Used System Space (KB)" "$used_system_size_kb";
 log "Current Free Space (KB)" "$free_system_size_kb";
 
 # Perform storage space calculations of existing GApps that will be deleted/replaced
-reclaimed_gapps_space_kb=$(du -ck "$(complete_gapps_list)" | tail -n1 | awk '{ print $1 }');
+reclaimed_gapps_space_kb=$(du -ck $(complete_gapps_list) | tail -n1 | awk '{ print $1 }');
 
 # Perform storage space calculations of other Removals that need to be deleted (Obsolete and Conflicting Apps)
 set_progress 0.05;
-reclaimed_removal_space_kb=$(du -ck "$(obsolete_gapps_list)" | tail -n1 | awk '{ print $1 }');
+reclaimed_removal_space_kb=$(du -ck $(obsolete_gapps_list) | tail -n1 | awk '{ print $1 }');
 
 # Add information to calc.log that will later be added to open_gapps.log to assist user with app removals
 post_install_size_kb=$((free_system_size_kb + reclaimed_gapps_space_kb)); # Add opening calculations
