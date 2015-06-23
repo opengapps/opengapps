@@ -79,7 +79,7 @@ buildapp "com.google.android.street" "GApps/street/app/Street"
 buildapp "com.google.android.marvin.talkback" "GApps/talkback/app/talkback"
 buildapp "com.google.android.apps.walletnfcrel" "GApps/wallet/priv-app/Wallet"
 if [ "$API" -gt "19" ]; then
-	buildapp "com.google.android.webview" "GApps/webviewgoogle/app/Webview"
+	buildapp "com.google.android.webview" "GApps/webviewgoogle/app/WebViewGoogle"
 fi
 buildapp "com.google.android.youtube" "GApps/youtube/app/YouTube"
 }

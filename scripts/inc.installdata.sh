@@ -394,8 +394,10 @@ fi
 echo '";
 
 # Remove talkback from priv-app since it was moved to app in 5.1
+# Webview was erronously in /system/app/Webview/ for some builds
 obsolete_list="
 /system/priv-app/talkback
+/system/app/Webview
 ";
 
 # Obsolete files from xxxx
