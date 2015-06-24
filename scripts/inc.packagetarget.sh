@@ -55,19 +55,10 @@ aromaupdatebinary() {
 }
 
 createzip() {
-	if [ "x$1" = "x" ]; then VARIANTNAME="$VARIANT"
-	else VARIANTNAME="$1"; fi #allows for an override
-	unsignedzip="$BUILD/$ARCH/$API.zip"
-	signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANTNAME-$DATE.zip"
+	unsignedzip="$BUILD/$ARCH/$API/$VARIANT.zip"
+	signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.zip"
 
-	case "$VARIANT" in
-		stock)	getzipfolders "$STOCK $FULL $MINI $MICRO $NANO $PICO";;
-		full)	getzipfolders "$FULL $MINI $MICRO $NANO $PICO";;
-		mini)	getzipfolders "$MINI $MICRO $NANO $PICO";;
-		micro)	getzipfolders "$MICRO $NANO $PICO";;
-		nano)	getzipfolders "$NANO $PICO";;
-		pico)	getzipfolders "$PICO";;
-	esac
+	getzipfolders "$gapps" #Since building is now split out, this is technically not necessary anymore, we could add everything that is in the folder
 
 	if [ -f "$unsignedzip" ]
 	then
@@ -111,5 +102,5 @@ signzip() {
 		exit 1
 	fi
 	cd "$TOP"
-	echo "SUCCESS: Built Open GApps variation $VARIANTNAME with API $API level for $ARCH as $signedzip"
+	echo "SUCCESS: Built Open GApps variation $VARIANT with API $API level for $ARCH as $signedzip"
 }

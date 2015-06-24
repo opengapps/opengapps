@@ -21,32 +21,45 @@ DATE=$(date +"%Y%m%d")
 TOP="$(realpath .)"
 ARCH="$1"
 API="$2"
+VARIANT="$3"
 BUILD="$TOP/build"
 OUT="$TOP/out"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 DENSITIES="2 4 6 8" #don't add 0
-VARIANTS="stock full mini micro nano pico" #keep in order from large to small
-if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then
-	AROMAVARIANTS="stock" #add 'stock' to build aroma for ARM platforms
-else
-	AROMAVARIANTS="" #keep empty to skip building of aroma
-fi
-if [ "$ARCH" = "arm64" ]; then
-	LIBFOLDER="lib64"
-	FALLBACKARCH="arm"
-elif [ "$ARCH" = "x86_64" ]; then
-	LIBFOLDER="lib64"
-	FALLBACKARCH="x86"
-else
-	LIBFOLDER="lib"
-	FALLBACKARCH="$ARCH"
-fi
 
-STOCK="cameragoogle
+case "$ARCH" in
+	arm64)	LIBFOLDER="lib64"
+		FALLBACKARCH="arm";;
+	x86_64)	LIBFOLDER="lib64"
+		FALLBACKARCH="x86";;
+	*)	LIBFOLDER="lib"
+		FALLBACKARCH="$ARCH";;
+esac
+
+case "$API" in
+	19)	PLATFORM="4.4";;
+	21)	PLATFORM="5.0";;
+	22)	PLATFORM="5.1";;
+	*)	echo "ERROR: Unknown API version! Aborting..."
+		exit 1;;
+esac
+
+case "$VARIANT" in
+	stock|aroma)	SUPPORTEDVARIANTS="pico nano micro mini full stock";;
+	full)	SUPPORTEDVARIANTS="pico nano micro mini full";;
+	mini)	SUPPORTEDVARIANTS="pico nano micro mini";;
+	micro)	SUPPORTEDVARIANTS="pico nano micro";;
+	nano)	SUPPORTEDVARIANTS="pico nano";;
+	pico)	SUPPORTEDVARIANTS="pico";;
+	*)	echo "Unknown variant, aborting..."
+		exit 1;;
+esac
+
+gappsstock="cameragoogle
 keyboardgoogle"
 
-FULL="books
+gappsfull="books
 chrome
 cloudprint
 docs
@@ -66,11 +79,11 @@ slides
 talkback
 wallet"
 if [ "$API" -gt "19" ]; then
-	FULL="$FULL
+	gappsfull="$gappsfull
 webviewgoogle"
 fi
 
-MINI="clockgoogle
+gappsmini="clockgoogle
 googleplus
 hangouts
 maps
@@ -78,42 +91,37 @@ photos
 street
 youtube"
 
-MICRO="calendargoogle
+gappsmicro="calendargoogle
 exchangegoogle
 gmail
 googlenow
 googletts
 faceunlock"
 
-NANO="search
+gappsnano="search
 speech"
 
-PICO="calsync"
+gappspico="calsync"
 
-STOCKREMOVE="browser
+stockremove="browser
 email
 gallery
 launcher
 mms
 picotts"
 if [ "$API" -gt "19" ]; then
-	STOCKREMOVE="$STOCKREMOVE
+	stockremove="$stockremove
 webviewstock"
 fi
 
-#Calculate platform version
-if [ "$API" = "19" ]; then
-	PLATFORM="4.4"
-elif [ "$API" = "21" ]; then
-	PLATFORM="5.0"
-elif [ "$API" = "22" ]; then
-	PLATFORM="5.1"
-else
-	echo "ERROR: Unknown API version! Aborting..."
-	exit 1
-fi
+#Compile the list of applications that will have to be build for this variant
+gapps=""
+for variant in $SUPPORTEDVARIANTS; do
+	eval "addtogapps=\$gapps$variant"
+	gapps="$gapps\n$addtogapps"
+done
 
-build="$BUILD/$ARCH/$API/"
+build="$BUILD/$ARCH/$API/$VARIANT/"
 install -d "$build"
 
 #####---------CHECK FOR EXISTANCE OF SOME BINARIES---------
@@ -135,20 +143,8 @@ command -v zipalign >/dev/null 2>&1 || { echo "zipalign is required but it's not
 buildtarget
 alignbuild
 commonscripts
-#The first variant we build is stock, which supports all smaller variants
-SUPPORTEDVARIANTS="$VARIANTS"
-for VARIANT in $VARIANTS; do
-	variantscripts
-	createzip
-	#smaller variants can't build larger variants
-	SUPPORTEDVARIANTS=$(echo "$SUPPORTEDVARIANTS" | sed "s/$VARIANT//g")
-done
-
-#ONLY BUILD AROMA AFTER NORMAL VARIANTS, the build-tree will be heavily modified
-SUPPORTEDVARIANTS="$VARIANTS" #notice that aroma can build all 'normal' variants
-for AROMA in $AROMAVARIANTS; do
-	VARIANT="$AROMA"
-	variantscripts
+variantscripts
+if [ "$VARIANT" = "aroma" ]; then
 	aromascripts
-	createzip "aroma"
-done
+fi
+createzip

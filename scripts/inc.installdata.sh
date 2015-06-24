@@ -19,13 +19,20 @@ ro.addon.open_version=$DATE
 # end addon properties" > "$build"g.prop
 }
 makegappsremovetxt(){
-corepath="$BUILD/$ARCH/$API/Core/"
-gappspath="$BUILD/$ARCH/$API/GApps/"
-gmscorepath="$BUILD/$ARCH/$API/GMSCore/"
-messengerpath="$BUILD/$ARCH/$API/Messenger/"
-playgamespath="$BUILD/$ARCH/$API/PlayGames/"
-find "$corepath" "$gappspath" "$gmscorepath" "$messengerpath" "$playgamespath" -mindepth 3 -maxdepth 3 -printf "%P\n" -name "*" | grep -v "etc/" | sed 's#^[^/]*#/system#' | sort | uniq > "$build"gapps-remove.txt
-find "$corepath" "$gappspath" "$gmscorepath" "$messengerpath" "$playgamespath" -mindepth 4 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^[^/]*#/system#' | sort | uniq >> "$build"gapps-remove.txt
+if [ "$VARIANT" = "stock" ];then
+	corepath="$build/Core/"
+	gappspath="$build/GApps/"
+	gmscorepath="$build/GMSCore/"
+	messengerpath="$build/Messenger/"
+	playgamespath="$build/PlayGames/"
+	find "$corepath" "$gappspath" "$gmscorepath" "$messengerpath" "$playgamespath" -mindepth 3 -maxdepth 3 -printf "%P\n" -name "*" | grep -v "etc/" | sed 's#^[^/]*#/system#' | sort | uniq > "$build"gapps-remove.txt
+	find "$corepath" "$gappspath" "$gmscorepath" "$messengerpath" "$playgamespath" -mindepth 4 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^[^/]*#/system#' | sort | uniq >> "$build"gapps-remove.txt
+elif [ -f "$BUILD/$ARCH/$API/stock/gapps-remove.txt" ];then
+	cp "$BUILD/$ARCH/$API/stock/gapps-remove.txt" "$build"gapps-remove.txt
+else
+	echo "No gapps-remove.txt available, first build stock!"
+	exit 1
+fi
 }
 makeinstallerdata(){
 if [ "$API" -le "19" ]; then
@@ -64,7 +71,7 @@ echo "#This file is part of The Open GApps script of @mfonville.
 echo '# _____________________________________________________________________________________________________________________
 #                                             Define Current Package Variables
 # List of GApps packages that can be installed with this installer
-pkg_names="'"$(printf "%s " "$SUPPORTEDVARIANTS" | tac -s' ' -)"'";
+pkg_names="'"$SUPPORTEDVARIANTS"'";
 
 # Installer Name (32 chars Total, excluding "")
 installer_name="Open GApps '"$VARIANT"' '"$PLATFORM"' - ";
@@ -98,32 +105,32 @@ E_ARCH=64 ; # Wrong Architecture Detected
 # calsync will be added to GApps Install List as needed during script execution' >> "$build"installer.data
 
 echo 'stock_gapps_list="
-'"$STOCK"'
+'"$gappsstock"'
 ";
 
 full_gapps_list="
-'"$FULL"'
+'"$gappsfull"'
 ";
 
 mini_gapps_list="
-'"$MINI"'
+'"$gappsmini"'
 ";
 
 micro_gapps_list="
-'"$MICRO"'
+'"$gappsmicro"'
 ";
 
 nano_gapps_list="
-'"$NANO"'
+'"$gappsnano"'
 ";
 
 pico_gapps_list="
-'"$PICO"'
+'"$gappspico"'
 ";' >> "$build"installer.data
 echo '# _____________________________________________________________________________________________________________________
 #                                             Default Stock/AOSP Removal List (Stock GApps Only)
 default_aosp_remove_list="
-'"$STOCKREMOVE"'
+'"$stockremove"'
 ";' >> "$build"installer.data
 echo '# _____________________________________________________________________________________________________________________
 #                                             Optional Stock/AOSP/ROM Removal List

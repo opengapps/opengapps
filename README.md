@@ -21,10 +21,14 @@ To build Open GApps for all platforms and all android releases:
 make
 ```
 To build Open GApps for a specific android release on a specific platform,
-define both the platform and the API level of that release, seperated by a dash.
-A (most widely used) example:
+define both the platform and the API level of that release, seperated by a dash and optionally add the variant with another dash.
+Two (most widely used) examples:
 ```
 make arm-22
+```
+or
+```
+make arm-22-stock
 ```
 One can update the sources used with the command:
 ```

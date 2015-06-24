@@ -13,12 +13,13 @@
 TOPDIR := .
 BUILD_SYSTEM := $(TOPDIR)/scripts
 BUILD_GAPPS := $(BUILD_SYSTEM)/build_gapps.sh
-API_LEVELS := 19 21 22
+APIS := 19 21 22
 PLATFORMS := arm arm64 x86 x86_64
-LOWESTAPI_arm := 19
-LOWESTAPI_arm64 := 21
-LOWESTAPI_x86 := 19
-LOWESTAPI_x86_64 := 21
+LOWEST_API_arm := 19
+LOWEST_API_arm64 := 21
+LOWEST_API_x86 := 19
+LOWEST_API_x86_64 := 21
+VARIANTS := stock full mini micro nano pico aroma
 BUILDDIR := $(TOPDIR)/build
 OUTDIR := $(TOPDIR)/out
 LOG_BUILD := /tmp/gapps_log
@@ -27,20 +28,35 @@ define make-gapps
 #We first define 'all' so that this is the primary make target
 all:: $1
 
-#With this you can always call e.g. 'make arm-22' just to make only the arm packages for 5.1
-#It will execute the build script with the platform and api as parameter,
+#With this you can always call e.g. 'make arm-22' or 'make arm-22-stock'
+#to make the arm (stock) package for 5.1
+#It will execute the build script with the platform, api (and variant) as parameter,
 #meanwhile ensuring the minimum api for the platform that is selected
 $1:		
 	$(platform = $(firstword $(subst -, ,$1)))
 	$(api = $(word 2, $(subst -, ,$1)))
-	@if [ "$(api)" -ge "$(LOWESTAPI_$(platform))" ] ; then\
-		echo "Generating Open GApps package for $(platform) with API level $(api)...";\
-		$(BUILD_GAPPS) $(platform) $(api) 2>&1 | tee $(LOG_BUILD);\
+	$(variant = $(word 3, $(subst -, ,$1)))
+	@if [ "$(api)" -ge "$(LOWEST_API_$(platform))" ] && [ "$(variant)" != "" ] ; then\
+		echo "Generating Open GApps $(variant) package for $(platform) with API level $(api)...";\
+		$(BUILD_GAPPS) $(platform) $(api) $(variant) 2>&1 | tee $(LOG_BUILD);\
 		echo "--------------------------------------------------------------------";\
+	elif [ "$(api)" -ge "$(LOWEST_API_$(platform))" ] && [ "$(variant)" = "" ] ; then\
+		for variant in $(VARIANTS);do\
+			$(BUILD_GAPPS) $(platform) $(api) $$$$variant 2>&1 | tee $(LOG_BUILD);\
+		done;\
 	fi
 endef
 
-$(foreach platform,$(PLATFORMS),$(foreach api,$(API_LEVELS),$(eval $(call make-gapps,$(platform)-$(api)))))
+$(foreach platform,$(PLATFORMS),\
+$(foreach api,$(APIS),\
+$(foreach variant,$(VARIANTS),\
+$(eval $(call make-gapps,$(platform)-$(api)-$(variant)))\
+)))
+
+$(foreach platform,$(PLATFORMS),\
+$(foreach api,$(APIS),\
+$(eval $(call make-gapps,$(platform)-$(api)))\
+))
 
 distclean:
 	@rm -fr $(BUILDDIR)
