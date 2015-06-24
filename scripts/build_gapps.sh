@@ -118,7 +118,7 @@ fi
 gapps=""
 for variant in $SUPPORTEDVARIANTS; do
 	eval "addtogapps=\$gapps$variant"
-	gapps="$gapps\n$addtogapps"
+	gapps="$gapps $addtogapps"
 done
 
 build="$BUILD/$ARCH/$API/$VARIANT/"
