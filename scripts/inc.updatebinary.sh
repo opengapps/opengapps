@@ -408,6 +408,12 @@ case $density in
     *) density=$(file_getprop $b_prop ro.sf.lcd_density);;
 esac;
 
+# Check for DPI Override in gapps-config
+if ( grep -qiE "forcedpi(16|24|32|48|56|64)0" $g_conf ); then # user wants to override the DPI selection
+    density=$( grep -iEo "forcedpi(16|24|32|48|56|64)0" $g_conf | tr '[:upper:]'  '[:lower:]' );
+    density=${density#forcedpi};
+fi;
+
 case $density in
 EOFILE
 for d in $DENSITIES; do
