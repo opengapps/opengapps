@@ -30,7 +30,7 @@ buildapp "com.google.android.onetimeinitializer" "Core/required/priv-app/GoogleO
 buildapp "com.google.android.partnersetup" "Core/required/priv-app/GooglePartnerSetup"
 buildapp "com.google.android.setupwizard" "Core/required/priv-app/SetupWizard"
 buildapp "com.android.vending" "Core/required/priv-app/Phonesky"
-echo $gapps > /home/maarten/gapps.txt
+
 #####---------GENERIC PACKAGES---------
 for app in $gapps; do
 	case $app in
