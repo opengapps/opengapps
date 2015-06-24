@@ -864,17 +864,17 @@ fi;
 EOFILE
 
 if [ "$gapps_variant" = "fornexus" ]; then
-    echo 'obsolete_libs_list=""'>> "$build"META-INF/com/google/android/update-binary
-    echo 'if ( contains "$gapps_list" "chrome" ); then'>> "$build"META-INF/com/google/android/update-binary
-    echo '    for f in $(find /system/lib -name libchrome.*.so); do'>> "$build"META-INF/com/google/android/update-binary
-    echo '        obsolete_libs_list="${obsolete_libs_list}$f"$'\n''>> "$build"META-INF/com/google/android/update-binary
-    echo '    done'>> "$build"META-INF/com/google/android/update-binary
-    echo 'fi'>> "$build"META-INF/com/google/android/update-binary
-    echo '# Read in gapps removal list from file'>> "$build"META-INF/com/google/android/update-binary
-    echo 'full_removal_list=$(cat $gapps_removal_list)'"$'\n'"'"$obsolete_libs_list"'>> "$build"META-INF/com/google/android/update-binary
+    echo 'obsolete_libs_list=""
+if ( contains "$gapps_list" "chrome" ); then
+    for f in $(find /system/lib -name libchrome.*.so); do
+        obsolete_libs_list="${obsolete_libs_list}$f"'"$'\n'"'
+    done
+fi
+# Read in gapps removal list from file
+full_removal_list=$(cat $gapps_removal_list)'"$'\n'"'"$obsolete_libs_list"'>> "$build"META-INF/com/google/android/update-binary
 else
-    echo '# Read in gapps removal list from file'>> "$build"META-INF/com/google/android/update-binary
-    echo 'full_removal_list=$(cat $gapps_removal_list);'>> "$build"META-INF/com/google/android/update-binary
+    echo '# Read in gapps removal list from file
+full_removal_list=$(cat $gapps_removal_list);'>> "$build"META-INF/com/google/android/update-binary
 fi
 
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
