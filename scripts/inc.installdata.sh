@@ -135,6 +135,7 @@ default_aosp_remove_list="
 echo '# _____________________________________________________________________________________________________________________
 #                                             Optional Stock/AOSP/ROM Removal List
 optional_aosp_remove_list="
+boxer
 basicdreams
 calendarstock
 camerastock
@@ -168,6 +169,10 @@ whisperpush
 ";
 # _____________________________________________________________________________________________________________________
 #                                             Stock/AOSP/ROM File Removal Lists
+boxer_list="
+vendor/bundled-app/Boxer'"$REMOVALSUFFIX"'
+";
+
 browser_list="
 app/Browser'"$REMOVALSUFFIX"'
 ";
@@ -228,6 +233,7 @@ app/DashClock'"$REMOVALSUFFIX"'
 
 email_list="
 app/Email'"$REMOVALSUFFIX"'
+app/PrebuiltEmailGoogle'"$REMOVALSUFFIX"'
 ";
 
 exchangestock_list="
@@ -352,13 +358,20 @@ echo '# ________________________________________________________________________
 # Pieces that may be left over from AIO ROMs that can/will interfere with these GApps
 other_list="
 /system/app/BrowserProviderProxy'"$REMOVALSUFFIX"'
+/system/app/CalendarGoogle'"$REMOVALSUFFIX"'
+/system/app/CloudPrint'"$REMOVALSUFFIX"'
+/system/app/EditorsDocsStub'"$REMOVALSUFFIX"'
+/system/app/EditorsSheetsStub'"$REMOVALSUFFIX"'
+/system/app/EditorsSlidesStub'"$REMOVALSUFFIX"'
 /system/app/Gmail'"$REMOVALSUFFIX"'
+/system/app/Gmail2'"$REMOVALSUFFIX"'
 /system/app/GoogleCalendar'"$REMOVALSUFFIX"'
 /system/app/GoogleCloudPrint'"$REMOVALSUFFIX"'
 /system/app/GoogleHangouts'"$REMOVALSUFFIX"'
 /system/app/GoogleKeep'"$REMOVALSUFFIX"'
 /system/app/GoogleLatinIme'"$REMOVALSUFFIX"'
 /system/app/GooglePlus'"$REMOVALSUFFIX"'
+/system/app/NewsWeather'"$REMOVALSUFFIX"'
 /system/app/PartnerBookmarksProvider'"$REMOVALSUFFIX"'
 /system/app/QuickSearchBox'"$REMOVALSUFFIX"'
 /system/app/Vending'"$REMOVALSUFFIX"'
@@ -382,6 +395,7 @@ privapp_list="
 /system/app/GooglePartnerSetup'"$REMOVALSUFFIX"'
 /system/app/GoogleServicesFramework'"$REMOVALSUFFIX"'
 /system/app/Hangouts'"$REMOVALSUFFIX"'
+/system/app/OneTimeInitializer'"$REMOVALSUFFIX"'
 /system/app/Phonesky'"$REMOVALSUFFIX"'
 /system/app/PrebuiltGmsCore'"$REMOVALSUFFIX"'
 /system/app/SetupWizard'"$REMOVALSUFFIX"'
