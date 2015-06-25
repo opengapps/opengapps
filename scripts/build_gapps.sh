@@ -46,7 +46,7 @@ case "$API" in
 esac
 
 case "$VARIANT" in
-	stock|aroma)	SUPPORTEDVARIANTS="pico nano micro mini full stock";;
+	stock|aroma|fornexus)	SUPPORTEDVARIANTS="pico nano micro mini full stock";;
 	full)	SUPPORTEDVARIANTS="pico nano micro mini full";;
 	mini)	SUPPORTEDVARIANTS="pico nano micro mini";;
 	micro)	SUPPORTEDVARIANTS="pico nano micro";;

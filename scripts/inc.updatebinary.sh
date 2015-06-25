@@ -108,7 +108,7 @@ exxit() {
         cp -f $rec_cache_log /tmp/logs/Recovery_cache.log;
         cp -f $rec_tmp_log /tmp/logs/Recovery_tmp.log;
         cd /tmp/logs;
-        tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" ./*;
+        tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" *;
         cd /;
     fi;
     rm -rf /tmp/*;
@@ -563,7 +563,7 @@ if [ -e /system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk -a 
     else
 EOFILE
 
-if [ "$gapps_variant" = "fornexus" ]; then
+if [ "$VARIANT" = "fornexus" ]; then
     echo '        log "Current GApps Version" "NON Open GApps Currently Installed";'>> "$build"META-INF/com/google/android/update-binary
 else
     echo '        log "Current GApps Version" "NON Open GApps Currently Installed (FAILURE)";
@@ -863,15 +863,16 @@ fi;
 
 EOFILE
 
-if [ "$gapps_variant" = "fornexus" ]; then
-    echo 'obsolete_libs_list=""
-if ( contains "$gapps_list" "chrome" ); then
-    for f in $(find /system/lib -name libchrome.*.so); do
-        obsolete_libs_list="${obsolete_libs_list}$f"'"$'\n'"'
-    done
-fi
-# Read in gapps removal list from file
-full_removal_list=$(cat $gapps_removal_list)'"$'\n'"'"$obsolete_libs_list"'>> "$build"META-INF/com/google/android/update-binary
+if [ "$VARIANT" = "fornexus" ]; then
+    echo '# Removing old Chrome libraries
+obsolete_libs_list=""
+for f in $(find /system/lib -name libchrome.*.so); do
+obsolete_libs_list="${obsolete_libs_list}$f
+";
+done
+# Read in gapps removal list from file and append old Chrome libs
+full_removal_list="$(cat $gapps_removal_list)
+${obsolete_libs_list}";'>> "$build"META-INF/com/google/android/update-binary
 else
     echo '# Read in gapps removal list from file
 full_removal_list=$(cat $gapps_removal_list);'>> "$build"META-INF/com/google/android/update-binary
