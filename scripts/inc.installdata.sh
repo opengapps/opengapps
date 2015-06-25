@@ -19,7 +19,7 @@ ro.addon.open_version=$DATE
 # end addon properties" > "$build"g.prop
 }
 makegappsremovetxt(){
-if [ "$VARIANT" = "stock" ];then
+if [ "$VARIANT" = "stock" ] || [ "$VARIANT" = "aroma" ] || [ "$VARIANT" = "fornexus" ];then
 	corepath="$build/Core/"
 	gappspath="$build/GApps/"
 	gmscorepath="$build/GMSCore/"
