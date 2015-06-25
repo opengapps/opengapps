@@ -107,8 +107,8 @@ exxit() {
         cp -f $gapps_removal_list "/tmp/logs/gapps-remove_revised.txt";
         cp -f $rec_cache_log /tmp/logs/Recovery_cache.log;
         cp -f $rec_tmp_log /tmp/logs/Recovery_tmp.log;
-        cd /tmp/logs;
-        tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" ./*;
+        cd /tmp;
+        tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" logs/*;
         cd /;
     fi;
     rm -rf /tmp/*;
@@ -518,7 +518,13 @@ rocmversion=$(echo "$(file_getprop $b_prop ro.cm.version)" | tr "-" " " | tr -d 
 rrotaversion=$(file_getprop $b_prop rr.ota.version)
 cmversion=$(echo "$rocmversion" | awk '{print $1}')
 cmdate=$(echo "$rocmversion" | awk '{print $2}')
-if { [ "0$cmversion" -ge "121" ] && [ "0$cmdate" -ge "020150523" ]; } || [ "0$rrotaversion" -ge "020150519" ]; then
+# Ugly code to check if it's a Nexus device (we have to check if it works)
+buildhost="$(file_getprop $b_prop ro.build.host)"
+case "$buildhost" in
+     *corp.google.com) isnexus="yes";;
+     *) isnexus="no";;
+esac
+if { [ "0$cmversion" -ge "121" ] && [ "0$cmdate" -ge "020150523" ]; } || [ "0$rrotaversion" -ge "020150519" ] || [ "$isnexus" = "yes" ]; then
     webviewgoogle_compat=true
 else
     webviewgoogle_compat=false
@@ -555,7 +561,12 @@ if [ -e /system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk -a 
             log "Current Open GApps Package" "Unknown";
         fi;
     else
-        log "Current GApps Version" "NON Open GApps Currently Installed (FAILURE)";
+EOFILE
+
+if [ "$VARIANT" = "fornexus" ]; then
+    echo '        log "Current GApps Version" "NON Open GApps Currently Installed";'>> "$build"META-INF/com/google/android/update-binary
+else
+    echo '        log "Current GApps Version" "NON Open GApps Currently Installed (FAILURE)";
         ui_print "* Incompatible GApps Currently Installed *";
         ui_print " ";
         ui_print "Open GApps can ONLY be installed on top of";
@@ -565,8 +576,11 @@ if [ -e /system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk -a 
         ui_print " ";
         ui_print "******* GApps Installation failed *******";
         ui_print " ";
-        install_note="${install_note}non_open_gapps_msg"$'\n'; # make note that currently installed GApps are non-Open
-        abort "$E_NONOPEN";
+        install_note="${install_note}non_open_gapps_msg"'"$'\n'"'; # make note that currently installed GApps are non-Open
+        abort "$E_NONOPEN";'>> "$build"META-INF/com/google/android/update-binary
+fi
+
+tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
     fi;
 else
     # User does NOT have a GApps package installed on their device
@@ -847,9 +861,24 @@ tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
     done;
 fi;
 
-# Read in gapps removal list from file
-full_removal_list=$(cat $gapps_removal_list);
+EOFILE
 
+if [ "$VARIANT" = "fornexus" ]; then
+    echo '# Removing old Chrome libraries
+obsolete_libs_list=""
+for f in $(find /system/lib -name libchrome.*.so); do
+obsolete_libs_list="${obsolete_libs_list}$f
+";
+done
+# Read in gapps removal list from file and append old Chrome libs
+full_removal_list="$(cat $gapps_removal_list)
+${obsolete_libs_list}";'>> "$build"META-INF/com/google/android/update-binary
+else
+    echo '# Read in gapps removal list from file
+full_removal_list=$(cat $gapps_removal_list);'>> "$build"META-INF/com/google/android/update-binary
+fi
+
+tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 # Clean up and sort our lists for space calculations and installation
 set_progress 0.04;
 gapps_list=$(echo "${gapps_list}" | sort | sed '/^$/d'); # sort GApps list & remove empty lines
