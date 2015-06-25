@@ -107,8 +107,8 @@ exxit() {
         cp -f $gapps_removal_list "/tmp/logs/gapps-remove_revised.txt";
         cp -f $rec_cache_log /tmp/logs/Recovery_cache.log;
         cp -f $rec_tmp_log /tmp/logs/Recovery_tmp.log;
-        cd /tmp/logs;
-        tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" *;
+        cd /tmp;
+        tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" logs/*;
         cd /;
     fi;
     rm -rf /tmp/*;
