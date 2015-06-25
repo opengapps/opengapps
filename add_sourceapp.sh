@@ -94,8 +94,17 @@ addapk() {
 	versionname=`aapt dump badging "$apk" | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'"`
 	versioncode=`aapt dump badging "$apk" | grep "versionCode=" |awk '{print $3}' |tr -d "/versionCode='"`
 	sdkversion=`aapt dump badging "$apk" | grep "sdkVersion:" |tr -d "/sdkVersion:'"`
+	compatiblescreens=`aapt dump badging "$apk" | grep "compatible-screens:"`
 	echo "Importing "$name
 	echo "Package "$package" | VersionName "$versionname" | VersionCode "$versioncode" | API level "$sdkversion
+
+	if [ "$compatiblescreens" = "" ]
+	then
+		echo "Package is universal DPI"
+	else
+		dpis=$(printf "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])0" | cut -c 2- | uniq)
+		echo "Package supports DPIs: $dpis"
+	fi
 
 	if [ "$package" = "com.google.android.backuptransport" ] \
 	|| [ "$package" = "com.google.android.feedback" ] \
@@ -119,7 +128,7 @@ addapk() {
 	then
 		package="$package.`echo $versioncode| rev | cut -c 1 | rev`"
 	fi
-	
+
 	getarchitectures "$file"
 	#We manually check for each of our set of supported architectures
 	#We assume NO universal packages for 32vs64 bit, so start with the 'highest' architectures first, if it matches one of those, we will NOT add it to a lower architecture
