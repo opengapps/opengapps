@@ -92,7 +92,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <input disabled id="x86" name="arch" type="radio" value="x86"><em>x86</em>
+                                    <input id="x86" name="arch" type="radio" value="x86"><em>x86</em>
                                 </td>
                                 <td>
                                     <input checked id="5.1" name="api" type="radio" value="5.1">5.1
@@ -130,7 +130,12 @@
                             <tr>
                                 <td>
                                     <input id="pico" name="variant" type="radio" value="pico"><a href="https://github.com/opengapps/opengapps/wiki/Pico-Package">pico</a>
-                                    </td>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="fornexus" name="variant" type="radio" value="fornexus"><a href="https://github.com/opengapps/opengapps/wiki/For-Nexus-Package">for nexus</a>
+                                </td>
                             </tr>
                         </table>
                     </form>
@@ -163,7 +168,7 @@
                         Builds are generated every (European) night automatically (if there are any changes) and uploaded to the GitHub Releases page.
                     </p>
                     <p>
-                        Currently only arm and arm64 platforms are available. X86 and x86_64 are still in development.
+                        Currently only arm and arm64 platforms are fully supported. x86 only has the mini and smaller packages available. x86_64 is still in development.
                     </p>
                 </section>
                 <footer>
@@ -183,11 +188,11 @@
         var arm64_apis = ["5.0", "5.1"];
         var x86_apis = ["4.4", "5.0", "5.1"];
         var x86_64_apis = ["5.0", "5.1"];
-        var variants = ["aroma", "stock", "full", "mini", "micro", "nano", "pico"];
-        var arm_variants = ["aroma", "stock", "full", "mini", "micro", "nano", "pico"];
-        var arm64_variants = ["aroma", "stock", "full", "mini", "micro", "nano", "pico"];
-        var x86_variants = ["stock", "full", "mini", "micro", "nano", "pico"];
-        var x86_64_variants = ["stock", "full", "mini", "micro", "nano", "pico"];
+        var variants = ["aroma", "stock", "full", "mini", "micro", "nano", "pico", "fornexus"];
+        var arm_variants = ["aroma", "stock", "full", "mini", "micro", "nano", "pico", "fornexus"];
+        var arm64_variants = ["aroma", "stock", "full", "mini", "micro", "nano", "pico", "fornexus"];
+        var x86_variants = ["mini", "micro", "nano", "pico"];
+        var x86_64_variants = ["mini", "micro", "nano", "pico"];
 
         var arch = getUrlParameter('arch');
         var api = getUrlParameter('api');
