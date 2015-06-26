@@ -18,8 +18,8 @@ command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not install
 command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }
 #coreutils also contains the basename command
 
-result="$(printf "%45s|%7s|%3s|%18s| %s" "Application Name" "archite" "sdk" "Version Name" "version")
--------------------------------------------------------------------------------------"
+result="$(printf "%45s|%7s|%3s|%18s|%11s" "Application Name" "Arch." "SDK" "Version Name" "Version")
+----------------------------------------------------------------------------------------"
 allapks="$(find "$SOURCES/" -iname "*.apk" | awk -F '/' '{print $(NF-2)}' | sort | uniq)"
 for appname in $allapks;do
 	appnamefiles="$(find "$SOURCES/" -iname "*.apk" -ipath "*/$appname/*")"
@@ -34,7 +34,7 @@ for appname in $allapks;do
 			appversion="$(basename -s ".apk" "$appversionfile")"
 			appversionname="$(aapt dump badging "$appversionfile" | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
 			result="$result
-$(printf "%45s| %6s| %2s| %17s| %s" "$appname" "$arch" "$sdk" "$appversionname" "$appversion")"
+$(printf "%45s| %6s| %2s| %17s| %10s" "$appname" "$arch" "$sdk" "$appversionname" "$appversion")"
 		done
 	done
 done
