@@ -38,19 +38,23 @@ for app in $gapps; do
 		books)	 	buildapp "com.google.android.apps.books" "GApps/books/app/Books";;
 		calendargoogle)	buildapp "com.google.android.calendar" "GApps/calendargoogle/app/CalendarGooglePrebuilt";;
 		calsync)	buildapp "com.google.android.syncadapters.calendar" "GApps/calsync/app/GoogleCalendarSyncAdapter";;
-		cameragoogle)	buildapp "com.google.android.googlecamera" "GApps/cameragoogle/app/GoogleCamera";;
+		cameragoogle)	if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
+					buildapp "com.google.android.googlecamera" "GApps/cameragoogle/app/GoogleCamera"
+				fi;;
 		chrome)		buildapp "com.android.chrome" "GApps/chrome/app/Chrome";;
 		clockgoogle)	buildapp "com.google.android.deskclock" "GApps/clockgoogle/app/DeskClockGoogle";;
 		cloudprint)	buildapp "com.google.android.apps.cloudprint" "GApps/cloudprint/app/CloudPrint2";;
 		docs)		buildapp "com.google.android.apps.docs.editors.docs" "GApps/docs/app/EditorsDocs";;
 		drive)		buildapp "com.google.android.apps.docs" "GApps/drive/app/Drive";;
-		ears)		buildapp "com.google.android.ears" "GApps/ears/app/GoogleEars";;
+		ears)		if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
+					buildapp "com.google.android.ears" "GApps/ears/app/GoogleEars"
+				fi;;
 		earth)		buildapp "com.google.earth" "GApps/earth/app/GoogleEarth";;
 		exchangegoogle)	buildapp "com.google.android.gm.exchange" "GApps/exchangegoogle/app/PrebuiltExchange3Google";;
 		faceunlock)	buildfile "$LIBFOLDER/libfacelock_jni.so" "GApps/faceunlock/$LIBFOLDER/"
 				buildfile "$LIBFOLDER/libfilterpack_facedetect.so" "GApps/faceunlock/$LIBFOLDER/"
-				if [ "$FALLBACKARCH" != "$ARCH" ]; then
-					buildfile "lib/libfilterpack_facedetect.so" "GApps/faceunlock/lib/" #on 64 bit, we also need the 32 bit file
+				if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64 bit, we also need the 32 bit file
+					buildfile "lib/libfilterpack_facedetect.so" "GApps/faceunlock/lib/"
 				fi
 				buildfile "vendor/pittpatt/" "GApps/faceunlock/vendor/pittpatt/"
 				buildapp "com.android.facelock" "GApps/faceunlock/app/FaceLock";;
@@ -78,7 +82,9 @@ for app in $gapps; do
 		speech)		buildfile "usr/srec/" "GApps/speech/usr/srec/";;
 		street)		buildapp "com.google.android.street" "GApps/street/app/Street";;
 		talkback)	buildapp "com.google.android.marvin.talkback" "GApps/talkback/app/talkback";;
-		wallet)		buildapp "com.google.android.apps.walletnfcrel" "GApps/wallet/priv-app/Wallet";;
+		wallet)		if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
+					buildapp "com.google.android.apps.walletnfcrel" "GApps/wallet/priv-app/Wallet"
+				fi;;
 		webviewgoogle)	buildapp "com.google.android.webview" "GApps/webviewgoogle/app/WebViewGoogle";;
 		youtube)	buildapp "com.google.android.youtube" "GApps/youtube/app/YouTube";;
 		*) 		echo "ERROR! Missing build rule for application with keyword $app";exit 1;;

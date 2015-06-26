@@ -56,6 +56,13 @@ case "$VARIANT" in
 		exit 1;;
 esac
 
+if [ "$FALLBACKARCH" != "arm" ];then #For all non-arm(64) platforms
+	case "$VARIANT" in
+		aroma|fornexus) echo "ERROR! Variant $VARIANT cannot be built a non-arm platform";
+		exit 1;;
+	esac
+fi
+
 gappsstock="cameragoogle
 keyboardgoogle"
 

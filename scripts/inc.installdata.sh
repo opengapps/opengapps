@@ -19,7 +19,7 @@ ro.addon.open_version=$DATE
 # end addon properties" > "$build"g.prop
 }
 makegappsremovetxt(){
-if [ "$VARIANT" = "stock" ] || [ "$VARIANT" = "aroma" ] || [ "$VARIANT" = "fornexus" ] || { [ "$VARIANT" = "mini" ] && [ "$ARCH" = "x86" ] ;};then #for x86 we cannot build stock for now, but mini
+if [ "$VARIANT" = "stock" ] || [ "$VARIANT" = "aroma" ] || [ "$VARIANT" = "fornexus" ];then
 	corepath="$build/Core/"
 	gappspath="$build/GApps/"
 	gmscorepath="$build/GMSCore/"
@@ -29,8 +29,6 @@ if [ "$VARIANT" = "stock" ] || [ "$VARIANT" = "aroma" ] || [ "$VARIANT" = "forne
 	find "$corepath" "$gappspath" "$gmscorepath" "$messengerpath" "$playgamespath" -mindepth 4 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^[^/]*#/system#' | sort | uniq >> "$build"gapps-remove.txt
 elif [ -f "$BUILD/$ARCH/$API/stock/gapps-remove.txt" ];then
 	cp "$BUILD/$ARCH/$API/stock/gapps-remove.txt" "$build"gapps-remove.txt
-elif [ "$ARCH" = "x86" ] && [ -f "$BUILD/$ARCH/$API/mini/gapps-remove.txt" ];then #hack for x86
-	cp "$BUILD/$ARCH/$API/mini/gapps-remove.txt" "$build"gapps-remove.txt
 else
 	echo "No gapps-remove.txt available, first build stock!"
 	exit 1
