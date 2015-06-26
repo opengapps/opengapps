@@ -65,6 +65,10 @@ fi
 
 gappsstock="cameragoogle
 keyboardgoogle"
+if [ "$API" -gt "19" ]; then
+	gappsstock="$gappsstock
+webviewgoogle"
+fi
 
 gappsfull="books
 chrome
@@ -85,10 +89,6 @@ sheets
 slides
 talkback
 wallet"
-if [ "$API" -gt "19" ]; then
-	gappsfull="$gappsfull
-webviewgoogle"
-fi
 
 gappsmini="clockgoogle
 googleplus
