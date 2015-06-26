@@ -12,13 +12,14 @@
 #
 buildtarget() {
 clean
-#####---------FIRST THE SPECIAL CASES---------
+#####---------CORE APPLICATIONS---------
+#special case:
 builddpiapp "com.google.android.gms" "GMSCore" "priv-app/PrebuiltGmsCore"
+#only on lollipop extra gestures for AOSP keyboard:
 if [ "$API" -gt "19" ]; then
 	#Keyboard Lib
 	buildfile "$LIBFOLDER/libjni_latinimegoogle.so" "Optional/keybd_lib/$LIBFOLDER/"
 fi
-#####---------CORE APPLICATIONS---------
 buildfile "etc/" "Core/required/etc/"
 buildfile "framework" "Core/required/framework/"
 buildapp "com.google.android.syncadapters.contacts" "Core/required/app/GoogleContactsSyncAdapter"
