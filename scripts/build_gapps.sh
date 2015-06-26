@@ -58,7 +58,7 @@ esac
 
 if [ "$FALLBACKARCH" != "arm" ];then #For all non-arm(64) platforms
 	case "$VARIANT" in
-		aroma|fornexus) echo "ERROR! Variant $VARIANT cannot be built a non-arm platform";
+		aroma|fornexus) echo "ERROR! Variant $VARIANT cannot be built on a non-arm platform";
 		exit 1;;
 	esac
 fi
