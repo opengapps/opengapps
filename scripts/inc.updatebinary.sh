@@ -866,7 +866,7 @@ EOFILE
 if [ "$VARIANT" = "fornexus" ]; then
     echo '# Removing old Chrome libraries
 obsolete_libs_list=""
-for f in $(find /system/lib -name libchrome.*.so); do
+for f in $(find /system/lib /system/lib64 -name 'libchrome.*.so'); do
 obsolete_libs_list="${obsolete_libs_list}$f
 ";
 done
@@ -910,7 +910,7 @@ ui_print " ";
 gms_size=$(unzip -lq "$ZIP" GMSCore/common/* GMSCore/${gms}/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
 messenger_size=$(unzip -lq "$ZIP" Messenger/common/* Messenger/${msg}/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
 playgames_size=$(unzip -lq "$ZIP" PlayGames/common/* PlayGames/${pg}/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
-core_size=$(unzip -lq "$ZIP" Core/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
+core_size=$(unzip -lq "$ZIP" Core/required/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
 keybd_lib_size=$(unzip -lq "$ZIP" Optional/keybd_lib/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
 
 EOFILE
