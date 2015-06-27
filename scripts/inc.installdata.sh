@@ -371,6 +371,7 @@ other_list="
 /system/app/GoogleKeep'"$REMOVALSUFFIX"'
 /system/app/GoogleLatinIme'"$REMOVALSUFFIX"'
 /system/app/GooglePlus'"$REMOVALSUFFIX"'
+/system/app/Keep'"$REMOVALSUFFIX"'
 /system/app/NewsWeather'"$REMOVALSUFFIX"'
 /system/app/PartnerBookmarksProvider'"$REMOVALSUFFIX"'
 /system/app/QuickSearchBox'"$REMOVALSUFFIX"'
