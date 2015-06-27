@@ -245,6 +245,13 @@ sys_app() {
     return 1;
 }
 
+is_in_system() {
+    if ( find /system/app -name "$1.apk" ) || ( find /system/priv-app -name "$1.apk" ); then
+        return 0;
+    fi;
+    return 1;
+}
+
 ui_print() {
     echo -ne "ui_print $1\n" > "$OUTFD";
     echo -ne "ui_print\n" > "$OUTFD";
@@ -512,28 +519,28 @@ case $device_name in
     *) cameragoogle_compat=true;;
 esac;
 
-EOFILE
-
-if [ "$VARIANT" = "fornexus" ]; then
-    echo '# With the "fornexus" package Google WebView is always installed
-webviewgoogle_compat=true'>> "$build"META-INF/com/google/android/update-binary
-else
-    tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 # Hackish code, checks if ROM is CM12.1 from 23th of May or newer, that supports Google Webview,
 # or ResurrectionROM newer than 19th of May, otherwise does not allow the install
 rocmversion=$(echo "$(file_getprop $b_prop ro.cm.version)" | tr "-" " " | tr -d ".")
 rrotaversion=$(file_getprop $b_prop rr.ota.version)
 cmversion=$(echo "$rocmversion" | awk '{print $1}')
 cmdate=$(echo "$rocmversion" | awk '{print $2}')
-if { [ "0$cmversion" -ge "121" ] && [ "0$cmdate" -ge "020150523" ]; } || [ "0$rrotaversion" -ge "020150519" ]; then
+# Ugly code to check if it's a Nexus or GPE device (we have to check if it works)
+buildhost="$(file_getprop $b_prop ro.build.host)"
+case "$buildhost" in
+     *corp.google.com) isnexus="yes";;
+     *) isnexus="no";;
+esac
+productname="$(file_getprop $b_prop ro.product.name)"
+case "$productname" in
+     *gpe*) isgpe="yes";;
+     *) isgpe="no";;
+esac
+if { [ "0$cmversion" -ge "121" ] && [ "0$cmdate" -ge "020150523" ]; } || [ "0$rrotaversion" -ge "020150519" ] || [ "$isnexus" = "yes" ] || [ "$isgpe" = "yes" ] || ( is_in_system WebViewGoogle ); then
     webviewgoogle_compat=true
 else
     webviewgoogle_compat=false
 fi
-EOFILE
-fi
-
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 
 log "ROM ID" "$(file_getprop $b_prop ro.build.display.id)";
 log "ROM Version" "$rom_version";
