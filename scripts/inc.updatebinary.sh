@@ -873,15 +873,15 @@ fi;
 EOFILE
 
 if [ "$VARIANT" = "fornexus" ]; then
-    echo '# Removing old Chrome libraries
+    tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+# Removing old Chrome libraries
 obsolete_libs_list=""
-for f in $(find /system/lib /system/lib64 -name 'libchrome*.so' 2> /dev/null); do
-obsolete_libs_list="${obsolete_libs_list}$f
-";
+for f in $(find /system/lib /system/lib64 -name 'libchrome*.so' 2>/dev/null); do
+obsolete_libs_list="${obsolete_libs_list}$f"$'\n';
 done
 # Read in gapps removal list from file and append old Chrome libs
-full_removal_list="$(cat $gapps_removal_list)
-${obsolete_libs_list}";'>> "$build"META-INF/com/google/android/update-binary
+full_removal_list=$(cat $gapps_removal_list)$'\n'"${obsolete_libs_list}";
+EOFILE
 else
     echo '# Read in gapps removal list from file
 full_removal_list=$(cat $gapps_removal_list);'>> "$build"META-INF/com/google/android/update-binary
