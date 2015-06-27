@@ -246,10 +246,7 @@ sys_app() {
 }
 
 is_in_system() {
-    if ( find /system/app -name "$1.apk" ) || ( find /system/priv-app -name "$1.apk" ); then
-        return 0;
-    fi;
-    return 1;
+    { [ -n "$(find /system/app -name $1.apk 2>/dev/null)" ] || [ -n "$(find /system/priv-app -name $1.apk 2>/dev/null)" ]; };
 }
 
 ui_print() {
