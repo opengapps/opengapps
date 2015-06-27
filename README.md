@@ -1,6 +1,6 @@
 Getting the latest Open GApps
 ---------------
-The latest version of pre-built Open GApps can be found at http://opengapps.github.io/opengapps/
+The latest version of pre-built Open GApps can be found at http://opengapps.cf
 
 Build your own Open GApps
 ---------------
