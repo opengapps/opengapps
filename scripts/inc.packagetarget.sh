@@ -85,7 +85,7 @@ getzipfolders() {
 	done
 }
 
-signzip() {	
+signzip() {
 	install -d "$OUT"
 	if [ -f "$signedzip" ]
 	then
@@ -93,8 +93,7 @@ signzip() {
 	fi
 
 	cd "$SCRIPTS"
-	./inc.signapk.sh -q sign "$unsignedzip" "$signedzip"
-	if [ $? -eq 0 ]; then #if signing did succeed
+	if ./inc.signapk.sh -q sign "$unsignedzip" "$signedzip"; then #if signing did succeed
 	    rm "$unsignedzip"
 	else
 		echo "ERROR: Creating Flashable ZIP-file failed"
