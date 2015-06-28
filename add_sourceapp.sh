@@ -103,8 +103,8 @@ addapk() {
 
 	if [ "$compatiblescreens" = "" ]
 	then
-		dpis="universal"
-		echo "Package is universal DPI"
+		dpis="nodpi"
+		echo "Universal DPI package"
 	else
 		dpis=$(printf "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])0" | cut -c 2- | uniq)
 		echo "Package supports DPIs: $dpis"
