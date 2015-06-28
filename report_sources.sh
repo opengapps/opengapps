@@ -62,7 +62,7 @@ for appname in $allapks;do
 			if [ "$sdk" -le "$maxsdk" ];then
 				appversionfile="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/*" | tail -n 1)"
 				appversion="$(basename -s ".apk" "$appversionfile")"
-				appversionname="$(aapt dump badging "$appversionfile" | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
+				appversionname="$(aapt dump badging "$appversionfile" 2>/dev/null | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
 				result="$result
 $(printf "%45s| %6s| %2s| %17s| %10s" "$appname" "$arch" "$sdk" "$appversionname" "$appversion")"
 				if [ "$maxsdk" != "99" ];then
