@@ -44,9 +44,9 @@ getarchitectures() {
 			architectures="all"
 		fi
 	else
-	for arch in $native
+		for arch in $native
 		do
-			architectures="$architectures$arch "
+				architectures="$architectures$arch "
 		done
 	fi
 	echo "Native code for architecture(s): $architectures"
@@ -54,37 +54,40 @@ getarchitectures() {
 
 installapk() {
 	architecture="$1"
-	#targetlocation: sources/platform/type/package/sdkversion/versioncode.apk
-	target="$SOURCES/$architecture/$type/$package/$sdkversion/"
-	install -d "$target"
-	if stat --printf='' "$target"* 2>/dev/null
-	then
-		existing=`find "$target"* | sort -r | cut -c1-` 
-		echo "Existing version $existing"
-		existingversion=`basename -s.apk "$existing"`
-		if [ "$versioncode" -gt "$existingversion" ]; then
-			echo "Replaced with $target$versioncode.apk"
-			rm "$existing"
-			install -D "$apk" "$target$versioncode.apk"
-		else
-			echo "ERROR: APK is not newer than existing"
-		fi
-	else
-		install -D "$apk" "$target$versioncode.apk"
-		echo "SUCCESS: Added $target$versioncode.apk"
-	fi
-
-	if [ "$sdkversion" -le "$LOWESTAPI" ];then
-		max=`expr $sdkversion - 1`
-		for i in `seq 1 "$max"`
-		do
-			remove="$SOURCES/$architecture/$type/$package/$i/"
-			if [ -e "$remove" ];then
-				rm -rf "$remove"
-				echo "Cleaned up old API: $remove"
+	#targetlocation: sources/platform/type/package/sdkversion/dpi/versioncode.apk
+	for dpi in $dpis
+	do
+		target="$SOURCES/$architecture/$type/$package/$sdkversion/$dpi"
+		install -d "$target"
+		if stat --printf='' "$target/"* 2>/dev/null
+		then
+			existing=`find "$target/" -name "*.apk" | sort -r | cut -c1-` #we only look for lowercase .apk, since basename later assumes the same
+			echo "Existing version $existing"
+			existingversion=`basename -s.apk "$existing"`
+			if [ "$versioncode" -gt "$existingversion" ]; then
+				echo "Replaced with $target/$versioncode.apk"
+				rm "$existing"
+				install -D "$apk" "$target/$versioncode.apk"
+			else
+				echo "ERROR: APK is not newer than existing"
 			fi
-		done
-	fi
+		else
+			install -D "$apk" "$target/$versioncode.apk"
+			echo "SUCCESS: Added $target/$versioncode.apk"
+		fi
+
+		if [ "$sdkversion" -le "$LOWESTAPI" ];then
+			max=`expr $sdkversion - 1`
+			for i in `seq 1 "$max"`
+			do
+				remove="$SOURCES/$architecture/$type/$package/$i/"
+				if [ -e "$remove" ];then
+					rm -rf "$remove"
+					echo "Cleaned up old API: $remove"
+				fi
+			done
+		fi
+	done
 }
 
 addapk() {
@@ -100,6 +103,7 @@ addapk() {
 
 	if [ "$compatiblescreens" = "" ]
 	then
+		dpis="universal"
 		echo "Package is universal DPI"
 	else
 		dpis=$(printf "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])0" | cut -c 2- | uniq)
@@ -121,41 +125,28 @@ addapk() {
 		type="app"
 	fi
 
-	#Keep track of specific version of the special DPI packages
-	if [ "$package" = "com.google.android.gms" ] \
-	|| [ "$package" = "com.google.android.apps.messaging" ] \
-	|| [ "$package" = "com.google.android.play.games" ]
-	then
-		package="$package.`echo $versioncode| rev | cut -c 1 | rev`"
-	fi
-
 	getarchitectures "$file"
 	#We manually check for each of our set of supported architectures
 	#We assume NO universal packages for 32vs64 bit, so start with the 'highest' architectures first, if it matches one of those, we will NOT add it to a lower architecture
-	echo "$architectures" | grep -q "arm64" #no space, all arm64 types are valid
-	if [ $? -eq 0 ]
+	if echo "$architectures" | grep -q "arm64" #no space, all arm64 types are valid
 	then
 		installapk "arm64"
 	else
-		echo "$architectures" | grep -q "armeabi" #no space, all armearbi types are valid
-		if [ $? -eq 0 ]
+		if echo "$architectures" | grep -q "armeabi" #no space, all armearbi types are valid
 		then
 			installapk "arm"
 		fi
 	fi
-	echo "$architectures" | grep -q "x86_64 "
-	if [ $? -eq 0 ]
+	if echo "$architectures" | grep -q "x86_64 "
 	then
 		installapk "x86_64"
 	else
-		echo "$architectures" | grep -q "x86 "
-		if [ $? -eq 0 ]
+		if echo "$architectures" | grep -q "x86 "
 		then
 			installapk "x86"
 		fi
 	fi
-	echo "$architectures" | grep -q "all" #no space (single entry)
-	if [ $? -eq 0 ]
+	if echo "$architectures" | grep -q "all" #no space (single entry)
 	then
 		installapk "all"
 	fi
@@ -165,8 +156,7 @@ for file in "$@"
 do
 	if [ -f "$file" ]
 	then
-		aapt dump configurations "$file" >/dev/null
-		if [ $? -eq 0 ]
+		if aapt dump configurations "$file" >/dev/null
 		then
 			addapk "$file"
 		else
