@@ -13,8 +13,7 @@
 buildtarget() {
 clean
 #####---------CORE APPLICATIONS---------
-#special case:
-buildapp "com.google.android.gms" "Core/gms" "priv-app/PrebuiltGmsCore"
+buildapp "com.google.android.gms" "Core/gmscore" "priv-app/PrebuiltGmsCore"
 #only on lollipop extra gestures for AOSP keyboard:
 if [ "$API" -gt "19" ]; then
 	#Keyboard Lib
@@ -22,13 +21,13 @@ if [ "$API" -gt "19" ]; then
 fi
 buildfile "etc/" "Core/framework/common/etc/"
 buildfile "framework" "Core/framework/common/framework/"
-buildapp "com.google.android.syncadapters.contacts" "Core/contacts" "app/GoogleContactsSyncAdapter"
-buildapp "com.google.android.backuptransport" "Core/backuptransport" "priv-app/GoogleBackupTransport"
-buildapp "com.google.android.feedback" "Core/feedback" "priv-app/GoogleFeedback"
-buildapp "com.google.android.gsf" "Core/gsf" "priv-app/GoogleServicesFramework"
-buildapp "com.google.android.gsf.login" "Core/login" "priv-app/GoogleLoginService"
-buildapp "com.google.android.onetimeinitializer" "Core/onetimeinitializer" "priv-app/GoogleOneTimeInitializer"
-buildapp "com.google.android.partnersetup" "Core/partnersetup" "priv-app/GooglePartnerSetup"
+buildapp "com.google.android.syncadapters.contacts" "Core/googlecontactssync" "app/GoogleContactsSyncAdapter"
+buildapp "com.google.android.backuptransport" "Core/googlebackuptransport" "priv-app/GoogleBackupTransport"
+buildapp "com.google.android.feedback" "Core/googlefeedback" "priv-app/GoogleFeedback"
+buildapp "com.google.android.gsf" "Core/gsfcore" "priv-app/GoogleServicesFramework"
+buildapp "com.google.android.gsf.login" "Core/gsflogin" "priv-app/GoogleLoginService"
+buildapp "com.google.android.onetimeinitializer" "Core/googleonetimeinitializer" "priv-app/GoogleOneTimeInitializer"
+buildapp "com.google.android.partnersetup" "Core/googlepartnersetup" "priv-app/GooglePartnerSetup"
 buildapp "com.google.android.setupwizard" "Core/setupwizard" "priv-app/SetupWizard"
 buildapp "com.android.vending" "Core/vending" "priv-app/Phonesky"
 

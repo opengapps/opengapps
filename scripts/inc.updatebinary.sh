@@ -92,6 +92,12 @@ clean_inst() {
     return 0;
 }
 
+extract_app() {
+    which_dpi "$1"
+    folder_extract "$dpiapkpath"
+    folder_extract "$1/common"
+}
+
 exxit() {
     set_progress 0.98;
     if ( ! grep -qi "nodebug" "$g_conf" ); then
@@ -126,10 +132,15 @@ file_getprop() {
 }
 
 folder_extract() {
-    unzip -o "$ZIP" "$1/$2/*" -d /tmp;
-    bkup_list=$'\n'"$(find "/tmp/$1/$2" -type f | cut -d/ -f5-)${bkup_list}";
-    cp -rf "/tmp/$1/$2/." /system/;
-    rm -rf "/tmp/$1";
+    unzip -o "$ZIP" "$1/*" -d /tmp;
+    bkup_list=$'\n'"$(find /tmp/$1 -type f | cut -d/ -f5-)${bkup_list}";
+    cp -rf /tmp/$1/. /system/;
+    rm -rf /tmp/$topdir;
+}
+
+get_appsize() {
+    which_dpi "$1"
+    appsize="$(unzip -ql "$ZIP" "$1/common/*" "$dpiapkpath/*" | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }')"
 }
 
 log() {
@@ -246,12 +257,28 @@ sys_app() {
 }
 
 is_in_system() {
-    { [ -n "$(find /system/app -name $1.apk 2>/dev/null)" ] || [ -n "$(find /system/priv-app -name $1.apk 2>/dev/null)" ]; };
+    { [ -n "$(find /system/app -name "$1.apk" 2>/dev/null)" ] || [ -n "$(find /system/priv-app -name "$1.apk" 2>/dev/null)" ]; };
 }
 
 ui_print() {
     echo -ne "ui_print $1\n" > "$OUTFD";
     echo -ne "ui_print\n" > "$OUTFD";
+}
+
+which_dpi() {
+    dpiapkpath=""
+    if unzip -qql "$ZIP" "$1/*$density*/*"; then #mind the wildcards, because it could be multiple dpis specified in the foldername
+        dpiapkpath="$1/*$density*"
+    elif unzip -qql "$ZIP" "$1/nodpi/*"; then
+        dpiapkpath="$1/nodpi"
+    else
+        #If there is no machting dpi, and no universal dpi, we pick the highest dpi available
+        alternative="$(unzip -qql "$ZIP" "$1/*/*"  | tr -s ' ' | cut -d ' ' -f5- | grep -v common | sort -r | grep -oE "$1/([0-9][0-9][0-9])" | head -n 1 | cut -c "$((${#1} + 2))-")"
+        if [ "$alternative" != "" ]; then
+            dpiapkpath="$1/*$alternative*"
+        fi
+    fi
+    echo "using $dpkiapkpath for $1"
 }
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Pre-Install Info
@@ -328,6 +355,8 @@ done;
 # Get Device Type (phone or tablet) from build.prop
 if echo "$(file_getprop $b_prop ro.build.characteristics)" | grep -qi "tablet"; then
     device_type=tablet;
+elif echo "$(file_getprop $b_prop ro.build.characteristics)" | grep -qi "tv"; then
+    device_type=tv;
 else
     device_type=phone;
 fi;
@@ -402,60 +431,21 @@ density=$(getprop ro.sf.lcd_density);
 
 # If the density returned by getprop is empty or non-standard - read from default.prop instead
 case $density in
-    160|240|320|480|560|640) ;;
+    160|213|240|320|480|560|640) ;;
     *) density=$(file_getprop /default.prop ro.sf.lcd_density);;
 esac;
 
 # If the density from default.prop is still empty or non-standard - read from build.prop instead
 case $density in
-    160|240|320|480|560|640) ;;
+    160|213|240|320|480|560|640) ;;
     *) density=$(file_getprop $b_prop ro.sf.lcd_density);;
 esac;
 
 # Check for DPI Override in gapps-config
-if ( grep -qiE "forcedpi(16|24|32|48|56|64)0" $g_conf ); then # user wants to override the DPI selection
-    density=$( grep -iEo "forcedpi(16|24|32|48|56|64)0" $g_conf | tr '[:upper:]'  '[:lower:]' );
+if ( grep -qiE "forcedpi(160|213|240|320|480|560|640)" $g_conf ); then # user wants to override the DPI selection
+    density=$( grep -iEo "forcedpi(160|213|240|320|480|560|640)" $g_conf | tr '[:upper:]'  '[:lower:]' );
     density=${density#forcedpi};
 fi;
-
-case $density in
-EOFILE
-for d in $DENSITIES; do
-	if [ "$d" -lt 8 ]
-	then
-		x=80
-	else
-		x=160 #resolution 8 for 480 is weird
-	fi
-	printf "    %s) " "$(expr 40 \* $d + $x)">> "$build"META-INF/com/google/android/update-binary
-	echo "$GMSCore" | grep -q "$d"
-	if [ $? -eq 0 ]
-	then
-		echo "gms=$d">> "$build"META-INF/com/google/android/update-binary
-	else
-		echo "gms=0">> "$build"META-INF/com/google/android/update-binary
-	fi
-	echo "$Messenger" | grep -q "$d"
-	if [ $? -eq 0 ]
-	then
-		echo "         msg=$d">> "$build"META-INF/com/google/android/update-binary
-	else
-		echo "         msg=0">> "$build"META-INF/com/google/android/update-binary
-	fi
-	echo "$PlayGames" | grep -q "$d"
-	if [ $? -eq 0 ]
-	then
-		echo "         pg=$d;;">> "$build"META-INF/com/google/android/update-binary
-	else
-		echo "         pg=0;;">> "$build"META-INF/com/google/android/update-binary
-	fi
-done
-
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
-      *) gms=0
-         msg=0
-         pg=0;;
-esac;
 
 # Set density to unknown if it's still empty
 test -z "$density" && density=unknown;
@@ -837,17 +827,6 @@ if [ -n "$user_remove_list" ]; then
           *".apk" ) ;;
           * )       testapk="${testapk}.apk" ;;
         esac;
-        # Create gapps_remove_folder_list if this is a GApps application
-        gapps_folder=${testapk%.apk};
-        for folder in /system/app /system/priv-app; do # Check all subfolders in /system/app /system/priv-app for the folder name
-            folder_count=0; # Reset Counter
-            folder_count=$(grep -ci "^$folder/$gapps_folder$" "$gapps_removal_list");
-            case $folder_count in
-                1)  gapps_remove_folder_list="${gapps_remove_folder_list}$(grep -i "^$folder/$gapps_folder$" "$gapps_removal_list")"$'\n'; # Add 'found' folder to list
-                    continue 2;; #the 2 is necessary to escape twice
-                *)  continue;;
-            esac;
-        done;
         # Create user_remove_folder_list if this is a system/ROM application
         for folder in /system/app /system/priv-app; do # Check all subfolders in /system/app /system/priv-app for the apk
             file_count=0; # Reset Counter
@@ -856,9 +835,13 @@ if [ -n "$user_remove_list" ]; then
                 0)  continue;;
 EOFILE
 if [ "$API" -le "19" ]; then
-	echo '                1)  user_remove_folder_list="${user_remove_folder_list}$(find $folder -type f -iname "$testapk")"$'\n'; # Add found file to list' >> "$build"META-INF/com/google/android/update-binary
+    tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+                1)  user_remove_folder_list="${user_remove_folder_list}$(find "$folder" -type f -iname "$testapk")"$'\n'; # Add found file to list
+EOFILE
 else
-	echo '                1)  user_remove_folder_list="${user_remove_folder_list}$(dirname "$(find $folder -type f -iname "$testapk")")"$'\n'; # Add found folder to list' >> "$build"META-INF/com/google/android/update-binary
+    tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+                1)  user_remove_folder_list="${user_remove_folder_list}$(dirname "$(find "$folder" -type f -iname "$testapk")")"$'\n'; # Add found folder to list
+EOFILE
 fi
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
                     break;;
@@ -907,19 +890,17 @@ log "Remove Stock/AOSP Launcher" "$remove_launcher";
 log "Remove Stock/AOSP MMS App" "$remove_mms";
 log "Remove Stock/AOSP Pico TTS" "$remove_picotts";
 log "Remove Stock/AOSP WebView" "$remove_webviewstock";
-log "Installing Play Services DPI variation" "$gms";
-log "Installing Play Games DPI variation" "$pg";
-log "Installing Messenger DPI variation" "$msg";
 # _____________________________________________________________________________________________________________________
 #                                                  Perform space calculations
 ui_print "- Performing system space calculations";
 ui_print " ";
 
-# Perform calculations of device specific applications
-gms_size=$(unzip -lq "$ZIP" GMSCore/common/* GMSCore/${gms}/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
-messenger_size=$(unzip -lq "$ZIP" Messenger/common/* Messenger/${msg}/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
-playgames_size=$(unzip -lq "$ZIP" PlayGames/common/* PlayGames/${pg}/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
-core_size=$(unzip -lq "$ZIP" Core/required/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
+# Perform calculations of core applications
+core_size=0
+for gapp_name in $core_gapps_list; do
+    get_appsize "Core/$gapp_name"
+    core_size=$((core_size + appsize))
+done
 keybd_lib_size=$(unzip -lq "$ZIP" Optional/keybd_lib/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
 
 EOFILE
@@ -988,36 +969,19 @@ done;
 set_progress 0.09;
 post_install_size_kb=$((post_install_size_kb - core_size)); # Add Core GApps
 log_sub "Install" "Core²" $core_size $post_install_size_kb;
-post_install_size_kb=$((post_install_size_kb - gms_size)); # Add Google Play Services
-log_sub "Install" "GMSCore²" "$gms_size" $post_install_size_kb;
 
 for gapp_name in $gapps_list; do
-    if [ "$gapp_name" != "playgames" ] && [ "$gapp_name" != "messenger" ]; then
-        gapp_size_kb=$(unzip -lq "$ZIP" "GApps/$gapp_name/*" | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
-    else
-        eval "gapp_size_kb=\$${gapp_name}_size";
-    fi
+        get_appsize "GApps/$gapp_name"
 EOFILE
 if [ "$API" -le "19" ]; then
 echo '# Broken lib configuration on KitKat, so some apps do not count for the /system space because they are on /data
     if [ "$gapp_name" = "hangouts" ] || [ "$gapp_name" = "googleplus" ] || [ "$gapp_name" = "photos" ] || [ "$gapp_name" = "youtube" ]; then
-        gapp_size_kb="0";
+        appsize=0;
     fi' >> "$build"META-INF/com/google/android/update-binary
 fi
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
-    post_install_size_kb=$((post_install_size_kb - gapp_size_kb));
-    log_sub "Install" "$gapp_name³" "$gapp_size_kb" $post_install_size_kb;
-done;
-
-# Perform calculations of Core GApps Removals that will be performed after install
-for remove_folder in $gapps_remove_folder_list; do
-    core_size_kb=$(unzip -lq "$ZIP" "Core/required/${remove_folder#/system/}/*" | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
-    post_install_size_kb=$((post_install_size_kb + core_size_kb));
-    if [ "$core_size_kb" -eq 0 ]; then
-        printf "%7s | %26s | + %7s | %7d\n" "Remove" "${remove_folder#/system/*app/}°" unknown $post_install_size_kb>> $calc_log;
-    else
-        log_add "Remove" "${remove_folder#/system/*app/}°" "$core_size_kb" $post_install_size_kb;
-    fi;
+    post_install_size_kb=$((post_install_size_kb - appsize));
+    log_sub "Install" "$gapp_name³" "$appsize" $post_install_size_kb;
 done;
 
 # Perform calculations of required Buffer Size
@@ -1041,7 +1005,7 @@ fi;
 
 # Finish up Calculation Log
 echo ----------------------------------------------------------------------------- >> $calc_log;
-if [ -n "$user_remove_folder_list" ] || [ -n "$gapps_remove_folder_list" ]; then
+if [ -n "$user_remove_folder_list" ]; then
     echo "              ° User Requested Removal" >> $calc_log;
 fi;
 echo "              ² Required (ALWAYS Installed)" >> $calc_log;
@@ -1107,11 +1071,15 @@ done;
 ui_print "- Installing updated GApps";
 ui_print " ";
 set_progress 0.15;
-folder_extract Core required; # Install Core GApps
+for gapp_name in $core_gapps_list; do
+    extract_app "Core/$gapp_name"
+done
+set_progress 0.25;
+
 EOFILE
 if [ "$API" -gt "19" ]; then
 	echo 'if ( ! contains "$gapps_list" "keyboardgoogle" ); then
-    folder_extract Optional keybd_lib; # Install Keyboard lib to add swipe capabilities to AOSP Keyboard
+    folder_extract "Optional/keybd_lib"; # Install Keyboard lib to add swipe capabilities to AOSP Keyboard
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/'"$LIBFOLDER"'/$keybd_lib_filename2"; # create required symlink
     mkdir -p /system/app/LatinIME/lib/'"$ARCH"';
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1"; # create required symlink
@@ -1125,23 +1093,6 @@ if [ "$API" -gt "19" ]; then
 fi;' >> "$build"META-INF/com/google/android/update-binary
 fi
 tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
-set_progress 0.20;
-folder_extract GMSCore common; # Install Google Play Services libs
-set_progress 0.25;
-folder_extract GMSCore $gms; # Install Google Play Services apk
-
-# Install PlayGames if it's in $gapps_list
-if ( contains "$gapps_list" "playgames" ); then
-    folder_extract PlayGames common; # Install Google PlayGames libs
-    folder_extract PlayGames $pg; # Install Google PlayGames apk
-    gapps_list=${gapps_list/playgames}; # remove PlayGames from gapps list since it's now installed
-fi;
-# Install Messenger if it's in $gapps_list
-if ( contains "$gapps_list" "messenger" ); then
-    folder_extract Messenger $msg; # Install Google Messenger apk
-    folder_extract Messenger common; # Install Google Messenger libs
-    gapps_list=${gapps_list/messenger}; # Remove Messenger from gapps list since it's now installed
-fi;
 
 EOFILE
 if [ "$API" -le "19" ]; then
@@ -1192,20 +1143,14 @@ tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 set_progress 0.30;
 gapps_count=$(echo "${gapps_list}" | wc -w); # Count number of GApps left to be installed
 if [ "$gapps_count" -lt 1 ]; then gapps_count=1; fi; # Prevent division by zero
-incr_amt=$(( 5000 / $gapps_count )); # Determine increment factor of progress bar during GApps installation
+incr_amt=$(( 5000 / gapps_count )); # Determine increment factor of progress bar during GApps installation
 prog_bar=3000; # Set Progress Bar start point (0.3000) for below
 
 # Install the rest of GApps still in $gapps_list
 for gapp_name in $gapps_list; do
-    folder_extract GApps "$gapp_name"; # Installing User Selected GApps
+    extract_app "GApps/$gapp_name"; # Installing User Selected GApps
     prog_bar=$((prog_bar + incr_amt));
     set_progress 0.$prog_bar;
-done;
-
-# Perform Core GApps Removals now that GApps have been installed
-for remove_folder in $gapps_remove_folder_list; do
-    rm -rf "$remove_folder"; # Remove folder and all its contents
-    bkup_list=$(echo "$bkup_list" | sed '\+'"${remove_folder#/system/}"'+d'); # Remove folder and its contents from the addon.d backup script
 done;
 
 EOFILE

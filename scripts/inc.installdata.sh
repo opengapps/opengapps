@@ -101,7 +101,11 @@ E_ARCH=64 ; # Wrong Architecture Detected
 #                                             GApps List (Applications user can Select/Deselect)
 # calsync will be added to GApps Install List as needed during script execution' >> "$build"installer.data
 
-echo 'stock_gapps_list="
+echo 'core_gapps_list="
+'"$gappscore"'
+";
+
+stock_gapps_list="
 '"$gappsstock"'
 ";
 
