@@ -22,11 +22,8 @@ makegappsremovetxt(){
 if [ "$VARIANT" = "stock" ] || [ "$VARIANT" = "aroma" ] || [ "$VARIANT" = "fornexus" ];then
 	corepath="$build/Core/"
 	gappspath="$build/GApps/"
-	gmscorepath="$build/GMSCore/"
-	messengerpath="$build/Messenger/"
-	playgamespath="$build/PlayGames/"
-	find "$corepath" "$gappspath" "$gmscorepath" "$messengerpath" "$playgamespath" -mindepth 3 -maxdepth 3 -printf "%P\n" -name "*" | grep -v "etc/" | sed 's#^[^/]*#/system#' | sort | uniq > "$build"gapps-remove.txt
-	find "$corepath" "$gappspath" "$gmscorepath" "$messengerpath" "$playgamespath" -mindepth 4 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^[^/]*#/system#' | sort | uniq >> "$build"gapps-remove.txt
+	find "$corepath" "$gappspath" -mindepth 4 -maxdepth 4 -printf "%P\n" -name "*" | grep -v "etc/" | sed 's#^[^/]*/[^/]*#/system#' | sort | uniq > "$build"gapps-remove.txt
+	find "$corepath" "$gappspath" -mindepth 5 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^[^/]*/[^/]*#/system#' | sort | uniq >> "$build"gapps-remove.txt
 elif [ -f "$BUILD/$ARCH/$API/stock/gapps-remove.txt" ];then
 	cp "$BUILD/$ARCH/$API/stock/gapps-remove.txt" "$build"gapps-remove.txt
 else
