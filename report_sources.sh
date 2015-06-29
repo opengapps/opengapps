@@ -63,7 +63,7 @@ for appname in $allapps;do
 				appdpifiles="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/*")"
 				appdpis="$(printf "$appdpifiles" | awk -F '/' '{print $(NF-1)}' | sort | uniq)"
 				for dpi in $appdpis;do
-					appversionfile="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/$dpi/*" | tail -n 1)"
+					appversionfile="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/$dpi/*" | head -n 1)"
 					appversion="$(basename -s ".apk" "$appversionfile")"
 					appversionname="$(aapt dump badging "$appversionfile" 2>/dev/null | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
 					result="$result
