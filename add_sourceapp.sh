@@ -21,7 +21,6 @@ command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not insta
 
 getarchitectures() {
 	architectures=""
-	native=`aapt dump badging "$1" | grep "native-code:" |sed 's/native-code://g' | tr -d "'"`
 	if [ "$native" = "" ]
 	then
 		echo "No native-code specification defined"
@@ -52,11 +51,22 @@ getarchitectures() {
 	echo "Native code for architecture(s): $architectures"
 }
 
+getapkproperties(){
+	apkproperties="$(aapt dump badging "$1" 2>/dev/null)"
+	name="$(echo "$apkproperties" | grep "application-label:" |sed 's/application-label://g' |tr -d "/'")"
+	package="$(echo "$apkproperties" | grep package: | awk '{print $2}' | sed s/name=//g | sed s/\'//g | awk '{print tolower($0)}')"
+	versionname="$(echo "$apkproperties" | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
+	versioncode="$(echo "$apkproperties" | grep "versionCode=" |awk '{print $3}' |tr -d "/versionCode='")"
+	sdkversion="$(echo "$apkproperties" | grep "sdkVersion:" |tr -d "/sdkVersion:'")"
+	compatiblescreens="$(echo "$apkproperties" | grep "compatible-screens:")"
+	native="$(echo "$apkproperties" | grep "native-code:" |sed 's/native-code://g' | tr -d "'")"
+}
+
 installapk() {
 	architecture="$1"
 
 	#targetlocation: sources/platform/type/package/sdkversion/dpi1-dpi2-dpi3/versioncode.apk
-	target="$SOURCES/$architecture/$type/$package/$sdkversion/$dpis"
+	target="$SOURCES/$1/$type/$package/$sdkversion/$dpis"
 	install -d "$target"
 	if stat --printf='' "$target/"* 2>/dev/null
 	then
@@ -90,12 +100,8 @@ installapk() {
 
 addapk() {
 	apk="$1"
-	name=`aapt dump badging "$apk" | grep "application-label:" |sed 's/application-label://g' |tr -d "/'"`
-	package=`aapt dump badging "$apk" | grep package: | awk '{print $2}' | sed s/name=//g | sed s/\'//g | awk '{print tolower($0)}'`
-	versionname=`aapt dump badging "$apk" | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'"`
-	versioncode=`aapt dump badging "$apk" | grep "versionCode=" |awk '{print $3}' |tr -d "/versionCode='"`
-	sdkversion=`aapt dump badging "$apk" | grep "sdkVersion:" |tr -d "/sdkVersion:'"`
-	compatiblescreens=`aapt dump badging "$apk" | grep "compatible-screens:"`
+	getapkproperties "$apk"
+
 	echo "Importing "$name
 	echo "Package "$package" | VersionName "$versionname" | VersionCode "$versioncode" | API level "$sdkversion
 
@@ -123,7 +129,7 @@ addapk() {
 		type="app"
 	fi
 
-	getarchitectures "$file"
+	getarchitectures "$apk"
 	#We manually check for each of our set of supported architectures
 	#We assume NO universal packages for 32vs64 bit, so start with the 'highest' architectures first, if it matches one of those, we will NOT add it to a lower architecture
 	if echo "$architectures" | grep -q "arm64" #no space, all arm64 types are valid
@@ -150,8 +156,9 @@ addapk() {
 	fi
 }
 
-for file in "$@"
+for argument in "$@"
 do
+	file="$(readlink -f $argument)"
 	if [ -f "$file" ]
 	then
 		if aapt dump configurations "$file" >/dev/null
