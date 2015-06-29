@@ -54,40 +54,38 @@ getarchitectures() {
 
 installapk() {
 	architecture="$1"
-	#targetlocation: sources/platform/type/package/sdkversion/dpi/versioncode.apk
-	for dpi in $dpis
-	do
-		target="$SOURCES/$architecture/$type/$package/$sdkversion/$dpi"
-		install -d "$target"
-		if stat --printf='' "$target/"* 2>/dev/null
-		then
-			existing=`find "$target/" -name "*.apk" | sort -r | cut -c1-` #we only look for lowercase .apk, since basename later assumes the same
-			echo "Existing version $existing"
-			existingversion=`basename -s.apk "$existing"`
-			if [ "$versioncode" -gt "$existingversion" ]; then
-				echo "Replaced with $target/$versioncode.apk"
-				rm "$existing"
-				install -D "$apk" "$target/$versioncode.apk"
-			else
-				echo "ERROR: APK is not newer than existing"
-			fi
-		else
-			install -D "$apk" "$target/$versioncode.apk"
-			echo "SUCCESS: Added $target/$versioncode.apk"
-		fi
 
-		if [ "$sdkversion" -le "$LOWESTAPI" ];then
-			max=`expr $sdkversion - 1`
-			for i in `seq 1 "$max"`
-			do
-				remove="$SOURCES/$architecture/$type/$package/$i/"
-				if [ -e "$remove" ];then
-					rm -rf "$remove"
-					echo "Cleaned up old API: $remove"
-				fi
-			done
+	#targetlocation: sources/platform/type/package/sdkversion/dpi1-dpi2-dpi3/versioncode.apk
+	target="$SOURCES/$architecture/$type/$package/$sdkversion/$dpis"
+	install -d "$target"
+	if stat --printf='' "$target/"* 2>/dev/null
+	then
+		existing=`find "$target/" -name "*.apk" | sort -r | cut -c1-` #we only look for lowercase .apk, since basename later assumes the same
+		echo "Existing version $existing"
+		existingversion=`basename -s.apk "$existing"`
+		if [ "$versioncode" -gt "$existingversion" ]; then
+			echo "Replaced with $target/$versioncode.apk"
+			rm "$existing"
+			install -D "$apk" "$target/$versioncode.apk"
+		else
+			echo "ERROR: APK is not newer than existing"
 		fi
-	done
+	else
+		install -D "$apk" "$target/$versioncode.apk"
+		echo "SUCCESS: Added $target/$versioncode.apk"
+	fi
+
+	if [ "$sdkversion" -le "$LOWESTAPI" ];then
+		max=`expr $sdkversion - 1`
+		for i in `seq 1 "$max"`
+		do
+			remove="$SOURCES/$architecture/$type/$package/$i/"
+			if [ -e "$remove" ];then
+				rm -rf "$remove"
+				echo "Cleaned up old API: $remove"
+			fi
+		done
+	fi
 }
 
 addapk() {
@@ -106,8 +104,8 @@ addapk() {
 		dpis="nodpi"
 		echo "Universal DPI package"
 	else
-		dpis=$(printf "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])0" | cut -c 2- | uniq)
-		echo "Package supports DPIs: $dpis"
+		dpis=$(printf "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])0" | uniq | tr -d '\012\015' | tr '/' '-' | cut -c 2-)
+		echo "Package supports DPIs: $(printf "$dpis" | tr '-' ' ')"
 	fi
 
 	if [ "$package" = "com.google.android.backuptransport" ] \
