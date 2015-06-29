@@ -26,7 +26,7 @@ getarchitectures() {
 		echo "No native-code specification defined"
 		#Some packages don't have native-code specified, but are still depending on it.
 		#So an extra check is necessary before declaring it suitable for all platforms
-		libfiles=`unzip -qql "$1" lib\* | tr -s ' ' | cut -d ' ' -f5-`
+		libfiles=$(unzip -qql "$1" lib/* | tr -s ' ' | cut -d ' ' -f5-)
 		for lib in $libfiles
 		do
 			#this gives all files found in the lib-folder(s), check their paths for which architectures' libs are included
@@ -110,7 +110,7 @@ addapk() {
 		dpis="nodpi"
 		echo "Universal DPI package"
 	else
-		dpis=$(printf "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])0" | uniq | tr -d '\012\015' | tr '/' '-' | cut -c 2-)
+		dpis=$(printf "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])[0-9]" | uniq | tr -d '\012\015' | tr '/' '-' | cut -c 2-)
 		echo "Package supports DPIs: $(printf "$dpis" | tr '-' ' ')"
 	fi
 
