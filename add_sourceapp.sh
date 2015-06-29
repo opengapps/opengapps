@@ -86,8 +86,7 @@ installapk() {
 	fi
 
 	if [ "$sdkversion" -le "$LOWESTAPI" ];then
-		max=`expr $sdkversion - 1`
-		for i in `seq 1 "$max"`
+		for i in `seq 1 "$(($sdkversion - 1))"`
 		do
 			remove="$SOURCES/$architecture/$type/$package/$i/"
 			if [ -e "$remove" ];then
