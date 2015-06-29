@@ -748,19 +748,10 @@ if ( ! contains "$gapps_list" "googlenow" ) && ( contains "$aosp_remove_list" "l
     install_note="${install_note}nolauncher_msg"$'\n'; # make note that Launcher can't be removed unless user Overrides
 fi;
 
-# If we're installing calendargoogle we must ADD calendarstock to $aosp_remove_list (if it's not already there)
+# If we're installing calendargoogle we must ADD calendarstock to $aosp_remove_list (if it's not already there) and NOT install calsync
 if ( contains "$gapps_list" "calendargoogle" ) && ( ! contains "$aosp_remove_list" "calendarstock" ); then
     aosp_remove_list="${aosp_remove_list}calendarstock"$'\n';
-fi;
-
-# If we're NOT installing calendargoogle we will ADD calsync to $gapps_list IF $config_type != "include" AND $g_conf does NOT contain calsync
-if ( ! contains "$gapps_list" "calendargoogle" ) && [ "$config_type" != "include" ] && ( ! grep -qi "calsync" "$g_conf" ); then
-    gapps_list="${gapps_list}calsync"$'\n';
-fi;
-
-# Add calsync to $gapps_list IF $config_type = "include" AND $g_conf contains calsync
-if [ "$config_type" = "include" ] && ( grep -qi "calsync" "$g_conf" ); then
-    gapps_list="${gapps_list}calsync"$'\n';
+    gapps_list=${gapps_list/calsync};
 fi;
 
 # If user wants to install keyboardgoogle then it MUST be a Clean Install OR keyboardgoogle was previously installed in system partition
