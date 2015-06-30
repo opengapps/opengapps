@@ -54,7 +54,9 @@ buildapp(){
 	if getsourceforapi "$package"
 	then
 		baseversionname=""
-		for dpivariant in $sourceapks; do
+		for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
+			dpivariant="$(echo "$dpivariant"| tr '' ' ')" #and we place the spaces back again
+			echo "$dpivariant"
 			versionname="$(aapt dump badging "$dpivariant" 2>/dev/null | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
 			case "$package" in
 				#the Drive/Docs/Sheets/Slides variate even the last two different digits of the versionName per DPI variant, so we only take the first 10 chars
@@ -66,7 +68,7 @@ buildapp(){
 				echo "Using version $baseversionname of package $package"
 			fi
 			if [ "$versionname" = "$baseversionname" ]; then
-				density=$(basename "$(dirname $dpivariant)")
+				density=$(basename "$(dirname "$dpivariant")")
 				buildapk "$dpivariant" "$ziplocation/$density/$targetlocation"
 				echo "Built $package with DPI variant: $density" #still do something for the libs
 			fi
@@ -103,12 +105,14 @@ getsourceforapi() {
 	then
 		return 1 #appname is not there, error!?
 	fi
+
 	#sed copies filename to the beginning, to compare version, and later we remove it with cut
-	for foundapk in $({ eval "$sourcearch$sourceall"; }\
+	for foundapk in $(echo "$(eval "$sourcearch$sourceall")"\
 			| sed 's!.*/\(.*\)!\1/&!'\
 			| sort -r -t/ -k1,1\
-			| cut -d/ -f2-); do
-		foundpath="$(dirname "$(dirname "$foundapk")")"
+			| cut -d/ -f2-\
+			| tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
+		foundpath="$(dirname "$(dirname "$(echo "$foundapk" | tr '' ' ')")")" #and we place the spaces back again
 		api="$(basename "$foundpath")"
 		if [ "$api" -le "$API" ]
 		then
