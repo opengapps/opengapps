@@ -109,8 +109,8 @@ addapk() {
 		dpis="nodpi"
 		echo "Universal DPI package"
 	else
-		dpis=$(printf "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])[0-9]" | uniq | tr -d '\012\015' | tr '/' ' ' | cut -c 2-)
-		echo "Package supports DPIs: $(printf "$dpis")"
+		dpis=$(printf "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])[0-9]" | uniq | tr -d '\012\015' | tr '/' '-' | cut -c 2-)
+		echo "Package supports DPIs: $(printf "$dpis" | tr '-' ' ')"
 	fi
 
 	if [ "$package" = "com.google.android.backuptransport" ] \
