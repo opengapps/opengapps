@@ -283,7 +283,7 @@ ui_print() {
 which_dpi() {
     dpiapkpath=""
     # Calculate available densities
-    app_densities="$(unzip -lq "$ZIP" "$1/*" | grep -E "$1/[0-9 ]*|nodpi/" | sed -r 's#.*/([0-9 ]*|nodpi)/.*#\1#' | uniq | tr '\n' ' ')";
+    app_densities="$(unzip -lq "$ZIP" "$1/*" | grep -E "$1/[0-9-]+|nodpi/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | uniq | sed 's/-/ /g' | tr '\n' ' ')";
     # Check if in the package there is a version for our density, or a universal one.
     case "$app_densities" in
         *"$density"*) dpiapkpath="$1/*$density*";;
