@@ -265,20 +265,51 @@ ui_print() {
     echo -ne "ui_print\n" > "$OUTFD";
 }
 
+#which_dpi() {
+#    dpiapkpath=""
+#    if unzip -qql "$ZIP" "$1/*$density*/*"; then #mind the wildcards, because it could be multiple dpis specified in the foldername
+#        dpiapkpath="$1/*$density*"
+#    elif unzip -qql "$ZIP" "$1/nodpi/*"; then
+#        dpiapkpath="$1/nodpi"
+#    else
+#        #If there is no machting dpi, and no universal dpi, we pick the highest dpi available
+#        alternative="$(unzip -qql "$ZIP" "$1/*/*"  | tr -s ' ' | cut -d ' ' -f5- | grep -v common | sort -r | grep -oE "$1/([0-9][0-9][0-9])" | head -n 1 | cut -c "$((${#1} + 2))-")"
+#        if [ "$alternative" != "" ]; then
+#            dpiapkpath="$1/*$alternative*"
+#        fi
+#    fi
+#    echo "using $dpkiapkpath for $1"
+#}
 which_dpi() {
     dpiapkpath=""
-    if unzip -qql "$ZIP" "$1/*$density*/*"; then #mind the wildcards, because it could be multiple dpis specified in the foldername
-        dpiapkpath="$1/*$density*"
-    elif unzip -qql "$ZIP" "$1/nodpi/*"; then
-        dpiapkpath="$1/nodpi"
-    else
-        #If there is no machting dpi, and no universal dpi, we pick the highest dpi available
-        alternative="$(unzip -qql "$ZIP" "$1/*/*"  | tr -s ' ' | cut -d ' ' -f5- | grep -v common | sort -r | grep -oE "$1/([0-9][0-9][0-9])" | head -n 1 | cut -c "$((${#1} + 2))-")"
-        if [ "$alternative" != "" ]; then
-            dpiapkpath="$1/*$alternative*"
-        fi
-    fi
-    echo "using $dpkiapkpath for $1"
+    # Calculate available densities
+    app_densities="$(unzip -lq "$ZIP" "$1/*" | grep -E "$1/[0-9 ]*|nodpi/" | sed -r 's#.*/([0-9 ]*|nodpi)/.*#\1#' | uniq | tr '\n' ' ')";
+    # Check if in the package there is a version for our density, or a universal one.
+    case "$app_densities" in
+        *"$density"*) dpiapkpath="$1/*$density*";;
+        *nodpi*) dpiapkpath="$1/nodpi";;
+        *) dpiapkpath="unknown";;
+    esac;
+    # If there is no package for our density nor a universal one, we will look for the one with closer, but higher density.
+    if [ "$dpiapkpath" = "unknowkn" ]; then
+        app_densities="$(echo "$app_densities" | tr ' ' '\n' | sort | tr '\n' ' ')"
+        for d in "$app_densities"; do
+            if [ "$d" -ge "$density" ]; then
+                dpiapkpath="$1/*$d*";
+                break;
+            fi;
+        done;
+    fi;
+    # If there is no package for our density nor a universal one or one for higher density, we will use the one with closer, but lower density.
+    if [ "$dpiapkpath" = "unknowkn" ]; then
+        app_densities="$(echo "$app_densities" | tr ' ' '\n' | sort -r | tr '\n' ' ')"
+        for d in "$app_densities"; do
+            if [ "$d" -le "$density" ]; then
+                dpiapkpath="$1/*$d*";
+                break;
+            fi;
+        done;
+    fi;
 }
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Pre-Install Info
