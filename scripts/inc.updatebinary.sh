@@ -283,7 +283,7 @@ ui_print() {
 which_dpi() {
     dpiapkpath=""
     # Calculate available densities
-    app_densities="$(unzip -lq "$ZIP" "$1/*" | grep -E "$1/[0-9-]+|nodpi/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | uniq | sed 's/-/ /g' | tr '\n' ' ')";
+    app_densities="$(unzip -lq "$ZIP" "$1/*" | grep -E "$1/[0-9 ]+|nodpi/" | sed -r 's#.*/([0-9 ]+|nodpi)/.*#\1#' | uniq | tr '\n' ' ')";
     # Check if in the package there is a version for our density, or a universal one.
     case "$app_densities" in
         *"$density"*) dpiapkpath="$1/*$density*";;
@@ -291,7 +291,7 @@ which_dpi() {
         *) dpiapkpath="unknown";;
     esac;
     # If there is no package for our density nor a universal one, we will look for the one with closer, but higher density.
-    if [ "$dpiapkpath" = "unknowkn" ]; then
+    if [ "$dpiapkpath" = "unknown" ]; then
         app_densities="$(echo "$app_densities" | tr ' ' '\n' | sort | tr '\n' ' ')"
         for d in "$app_densities"; do
             if [ "$d" -ge "$density" ]; then
@@ -301,7 +301,7 @@ which_dpi() {
         done;
     fi;
     # If there is no package for our density nor a universal one or one for higher density, we will use the one with closer, but lower density.
-    if [ "$dpiapkpath" = "unknowkn" ]; then
+    if [ "$dpiapkpath" = "unknown" ]; then
         app_densities="$(echo "$app_densities" | tr ' ' '\n' | sort -r | tr '\n' ' ')"
         for d in "$app_densities"; do
             if [ "$d" -le "$density" ]; then
