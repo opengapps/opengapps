@@ -646,7 +646,7 @@ else # User is not using a gapps-config and we're doing the 'full monty'
 fi;
 
 # Configure default removal of Stock/AOSP apps - if we're installing Stock GApps
-if [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "fornexus" ]; then
+if [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ] || [ "$gapps_type" = "fornexus" ]; then
     for default_name in $default_aosp_remove_list; do
         eval "remove_${default_name}=true[default]";
     done;
@@ -664,7 +664,7 @@ if [ "$g_conf" ]; then
     for default_name in $default_aosp_remove_list; do
         if ( grep -qi "+$default_name" "$g_conf" ); then
             eval "remove_${default_name}=false[gapps-config]";
-        elif [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "fornexus" ]; then
+        elif [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ] || [ "$gapps_type" = "fornexus" ]; then
             aosp_remove_list="$aosp_remove_list$default_name"$'\n';
             if ( grep -qi "$default_name" "$g_conf" ); then
                 eval "remove_${default_name}=true[gapps-config]";
@@ -683,7 +683,7 @@ if [ "$g_conf" ]; then
         fi;
     done;
 else
-    if [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "fornexus" ]; then
+    if [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ] || [ "$gapps_type" = "fornexus" ]; then
         aosp_remove_list=$default_aosp_remove_list;
     fi;
 fi;
