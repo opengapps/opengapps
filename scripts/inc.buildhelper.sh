@@ -56,7 +56,6 @@ buildapp(){
 		baseversionname=""
 		for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
 			dpivariant="$(echo "$dpivariant"| tr '' ' ')" #and we place the spaces back again
-			echo "$dpivariant"
 			versionname="$(aapt dump badging "$dpivariant" 2>/dev/null | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
 			case "$package" in
 				#the Drive/Docs/Sheets/Slides variate even the last two different digits of the versionName per DPI variant, so we only take the first 10 chars
