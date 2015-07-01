@@ -94,7 +94,9 @@ clean_inst() {
 
 extract_app() {
     which_dpi "$1"
-    folder_extract "$dpiapkpath"
+    if [ "$dpiapkpath" != "unknown" ]; then #technically not necessary, 'unknown' folder would not exist anyway
+        folder_extract "$dpiapkpath"
+    fi
     folder_extract "$1/common"
 }
 
@@ -266,7 +268,6 @@ ui_print() {
 }
 
 which_dpi() {
-    dpiapkpath=""
     # Calculate available densities
     app_densities="$(unzip -lq "$ZIP" "$1/*" | grep -E "$1/[0-9-]+|nodpi/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | uniq | sed 's/-/ /g' | tr '\n' ' ')";
     # Check if in the package there is a version for our density, or a universal one.
