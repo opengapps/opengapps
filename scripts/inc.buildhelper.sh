@@ -64,14 +64,15 @@ buildapp(){
 			if [ "$baseversionname" = "" ]; then
 				baseversionname=$versionname
 				buildlib "$dpivariant" "$ziplocation/common/$targetlocation" #Use the libs from this baseversion
-				echo "Using version $baseversionname of package $package"
+				printf "%45s %17s" "$package" "$baseversionname"
 			fi
 			if [ "$versionname" = "$baseversionname" ]; then
 				density=$(basename "$(dirname "$dpivariant")")
 				buildapk "$dpivariant" "$ziplocation/$density/$targetlocation"
-				echo "Built $package with DPI variant: $density" #still do something for the libs
+				printf " $density" #still do something for the libs
 			fi
 		done
+		printf "\n"
 	else
 		if [ "$SOURCEARCH" != "$FALLBACKARCH" ]
 		then
