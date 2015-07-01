@@ -417,10 +417,8 @@ fi
 echo '";
 
 # Remove talkback from priv-app since it was moved to app in 5.1
-# Webview was erronously in /system/app/Webview/ for some builds
 obsolete_list="
 /system/priv-app/talkback
-/system/app/Webview
 ";
 
 # Obsolete files from xxxx
@@ -444,7 +442,6 @@ clock_sys_msg="WARNING: Google Desk Clock has/will not be installed as requested
 faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";
 googlenow_msg="WARNING: Google Now Launcher has/will not be installed as requested. Google \nSearch must be added to the GApps installation if you want to install the Google\nNow Launcher.\n";
 keyboard_sys_msg="WARNING: Google Keyboard has/will not be installed as requested. Google Keyboard\ncan only be installed during a Clean Install or as an update to an existing\nGApps Installation.\n";
-webview_compat_msg="WARNING: Google Webview has/will not be installed as requested. Google Webview\nis NOT compatible with your ROM when installed.\n";
 nokeyboard_msg="NOTE: The Stock/AOSP keyboard was NOT removed as requested to ensure your device\nwas not accidentally left with no keyboard installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
 nolauncher_msg="NOTE: The Stock/AOSP Launcher was NOT removed as requested to ensure your device\nwas not accidentally left with no Launcher. If this was your intention, you can\nadd 'Override' to your gapps-config to override this protection.\n";
 nomms_msg="NOTE: The Stock/AOSP MMS app was NOT removed as requested to ensure your device\nwas not accidentally left with no way to receive text messages. If this WAS\nintentional, add 'Override' to your gapps-config to override this protection.\n";

@@ -523,29 +523,6 @@ case $device_name in
     *) cameragoogle_compat=true;;
 esac;
 
-# Hackish code, checks if ROM is CM12.1 from 23th of May or newer, that supports Google Webview,
-# or ResurrectionROM newer than 19th of May, otherwise does not allow the install
-rocmversion=$(echo "$(file_getprop $b_prop ro.cm.version)" | tr "-" " " | tr -d ".")
-rrotaversion=$(file_getprop $b_prop rr.ota.version)
-cmversion=$(echo "$rocmversion" | awk '{print $1}')
-cmdate=$(echo "$rocmversion" | awk '{print $2}')
-# Ugly code to check if it's a Nexus or GPE device (we have to check if it works)
-buildhost="$(file_getprop $b_prop ro.build.host)"
-case "$buildhost" in
-     *corp.google.com) isnexus="yes";;
-     *) isnexus="no";;
-esac
-productname="$(file_getprop $b_prop ro.product.name)"
-case "$productname" in
-     *gpe*) isgpe="yes";;
-     *) isgpe="no";;
-esac
-if { [ "0$cmversion" -ge "121" ] && [ "0$cmdate" -ge "020150523" ]; } || [ "0$rrotaversion" -ge "020150519" ] || [ "$isnexus" = "yes" ] || [ "$isgpe" = "yes" ] || ( is_in_system WebViewGoogle ); then
-    webviewgoogle_compat=true
-else
-    webviewgoogle_compat=false
-fi
-
 log "ROM ID" "$(file_getprop $b_prop ro.build.display.id)";
 log "ROM Version" "$rom_version";
 log "Device Recovery" "$recovery";
@@ -563,7 +540,6 @@ log "Google Clock Installed¹" "$clockgoogle_inst";
 log "Google Keyboard Installed¹" "$keyboardgoogle_inst";
 log "FaceUnlock Compatible" "$faceunlock_compat";
 log "Google Camera Compatible" "$cameragoogle_compat";
-log "Google Webview Compatible" "$webviewgoogle_compat";
 log_close="                  ¹ Previously installed with Open GApps\n$log_close";
 
 # Determine if a GApps package is installed and
@@ -812,12 +788,6 @@ fi;
 # If we're installing exchangegoogle we must ADD exchangestock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "exchangegoogle" ) && ( ! contains "$aosp_remove_list" "exchangestock" ); then
     aosp_remove_list="${aosp_remove_list}exchangestock"$'\n';
-fi;
-
-# Verify ROM is Google Webview compatible BEFORE we allow it in $gapps_list
-if ( contains "$gapps_list" "webviewgoogle" ) && [ $webviewgoogle_compat = "false" ]; then
-    gapps_list=${gapps_list/webviewgoogle}; # we must DISALLOW webviewgoogle from being installed
-    install_note="${install_note}webview_compat_msg"$'\n'; # make note that Google Webview will NOT be installed as user requested
 fi;
 
 # If we're NOT installing webviewgoogle make certain 'webviewstock' is NOT in $aosp_remove_list

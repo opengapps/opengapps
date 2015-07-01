@@ -76,7 +76,7 @@ vending"
 
 gappsstock="cameragoogle
 keyboardgoogle"
-if [ "$API" -gt "19" ]; then
+if [ "$API" -ge "22" ] || { [ "$API" -ge "21" ] && [ "$VARIANT" = "fornexus" ]; }; then #on AOSP we only support Webview on 5.1+, on fornexus 5.0+ is valid
 	gappsstock="$gappsstock
 webviewgoogle"
 fi
@@ -127,7 +127,7 @@ gallery
 launcher
 mms
 picotts"
-if [ "$API" -gt "19" ]; then
+if [ "$API" -ge "22" ] || { [ "$API" -ge "21" ] && [ "$VARIANT" = "fornexus" ]; }; then #on AOSP we only support Webview on 5.1+, on fornexus 5.0+ is valid
 	stockremove="$stockremove
 webviewstock"
 fi
