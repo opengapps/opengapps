@@ -265,21 +265,6 @@ ui_print() {
     echo -ne "ui_print\n" > "$OUTFD";
 }
 
-#which_dpi() {
-#    dpiapkpath=""
-#    if unzip -qql "$ZIP" "$1/*$density*/*"; then #mind the wildcards, because it could be multiple dpis specified in the foldername
-#        dpiapkpath="$1/*$density*"
-#    elif unzip -qql "$ZIP" "$1/nodpi/*"; then
-#        dpiapkpath="$1/nodpi"
-#    else
-#        #If there is no machting dpi, and no universal dpi, we pick the highest dpi available
-#        alternative="$(unzip -qql "$ZIP" "$1/*/*"  | tr -s ' ' | cut -d ' ' -f5- | grep -v common | sort -r | grep -oE "$1/([0-9][0-9][0-9])" | head -n 1 | cut -c "$((${#1} + 2))-")"
-#        if [ "$alternative" != "" ]; then
-#            dpiapkpath="$1/*$alternative*"
-#        fi
-#    fi
-#    echo "using $dpkiapkpath for $1"
-#}
 which_dpi() {
     dpiapkpath=""
     # Calculate available densities
