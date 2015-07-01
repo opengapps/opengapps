@@ -62,7 +62,8 @@ if [ "$FALLBACKARCH" != "arm" ];then #For all non-arm(64) platforms
 	esac
 fi
 
-gappscore="googlebackuptransport
+gappscore="framework
+googlebackuptransport
 googlecontactssync
 googlefeedback
 googleonetimeinitializer
