@@ -69,7 +69,7 @@ buildapp(){
 			if [ "$versionname" = "$baseversionname" ]; then
 				density=$(basename "$(dirname "$dpivariant")")
 				buildapk "$dpivariant" "$ziplocation/$density/$targetlocation"
-				printf " $density" #still do something for the libs
+				printf " $density"
 			fi
 		done
 		printf "\n"
