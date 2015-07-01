@@ -43,57 +43,41 @@ buildfile() {
 		echo "WARNING: file $1 does not exist in the sources for $ARCH"
 	fi
 }
-buildapp() {
-	package="$1"
-	targetlocation="$2"
-	if [ "x$3" = "x" ]; then SOURCEARCH="$ARCH"
-	else SOURCEARCH="$3"; fi #allows for an override
 
-	if getsourceforapi "$package"
-	then
-		buildapk "$package" "$targetlocation"
-		buildlib "$package" "$targetlocation"
-		echo "Built $package version "$(basename -s ".apk" "$sourceapk")
-	else
-		if [ "$SOURCEARCH" != "$FALLBACKARCH" ]
-		then
-			echo "WARNING: Falling back from $ARCH to $FALLBACKARCH for package $package"
-			buildapp "$package" "$targetlocation" "$FALLBACKARCH"
-		else
-			echo "ERROR: Failed to build package $package on $ARCH"
-			exit 1
-		fi
-	fi
-}
-builddpiapp(){
+buildapp(){
 	package="$1"
-	targettoplocation="$2" # is also used as variablename's identifier (for installdata.sh)
-	targetsublocation="$3"
+	ziplocation="$2"
+	targetlocation="$3"
 	if [ "x$4" = "x" ]; then SOURCEARCH="$ARCH"
 	else SOURCEARCH="$4"; fi #allows for an override
 
-	if getversion "$package.0" #universal DPI version is our benchmark
+	if getsourceforapi "$package"
 	then
-		dpiversion="$getversion"
-		dpitargets=""
-		#$sourceapk is because of getversion still the one of the '0' variant
-		buildapk "$package.0" "$targettoplocation/0/$targetsublocation"
-		buildlib "$package.0" "$targettoplocation/common/$targetsublocation"
-		for v in $DENSITIES; do
-			if comparebaseversion "$dpiversion" "$package.$v"
-			then
-				dpitargets="$dpitargets $v"
-				#the value of $sourceapk has been changed for us by calling the comparebaseversion
-				buildapk "$package.$v" "$targettoplocation/$v/$targetsublocation"
+		baseversionname=""
+		for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
+			dpivariant="$(echo "$dpivariant"| tr '' ' ')" #and we place the spaces back again
+			versionname="$(aapt dump badging "$dpivariant" 2>/dev/null | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
+			case "$package" in
+				#the Drive/Docs/Sheets/Slides variate even the last two different digits of the versionName per DPI variant, so we only take the first 10 chars
+				com.google.android.apps.docs*) versionname="$(echo "$versionname" | cut -c 1-10)";;
+			esac
+			if [ "$baseversionname" = "" ]; then
+				baseversionname=$versionname
+				buildlib "$dpivariant" "$ziplocation/common/$targetlocation" #Use the libs from this baseversion
+				printf "%44s %17s" "$package" "$baseversionname"
+			fi
+			if [ "$versionname" = "$baseversionname" ]; then
+				density=$(basename "$(dirname "$dpivariant")")
+				buildapk "$dpivariant" "$ziplocation/$density/$targetlocation"
+				printf " $density"
 			fi
 		done
-		echo "Built $package with extra DPI variants:$dpitargets of universal version $dpiversion"
-		eval "$targettoplocation=\$dpitargets" #store the found dpi versions in ${targettoplocation
+		printf "\n"
 	else
 		if [ "$SOURCEARCH" != "$FALLBACKARCH" ]
 		then
 			echo "WARNING: Falling back from $ARCH to $FALLBACKARCH for package $package"
-			builddpiapp "$package" "$targettoplocation" "$targetsublocation" "$FALLBACKARCH"
+			buildapp "$package" "$ziplocation" "$targetlocation" "$FALLBACKARCH"
 		else
 			echo "ERROR: No fallback available. Failed to build package $package on $ARCH"
 			exit 1
@@ -105,7 +89,7 @@ getsourceforapi() {
 	#loop over all source-instances and find the highest available acceptable api level
 	sourcearch=""
 	sourceall=""
-	sourceapk=""
+	sourceapks=""
 	if stat --printf='' "$SOURCES/$SOURCEARCH/"*"app/$appname" 2>/dev/null
 	then
 		sourcearch="find $SOURCES/$SOURCEARCH/*app/$appname -iname '*.apk'"
@@ -121,28 +105,36 @@ getsourceforapi() {
 	then
 		return 1 #appname is not there, error!?
 	fi
+
 	#sed copies filename to the beginning, to compare version, and later we remove it with cut
-	for foundapk in $({ eval "$sourcearch$sourceall"; }\
+	for foundapk in $(echo "$(eval "$sourcearch$sourceall")"\
 			| sed 's!.*/\(.*\)!\1/&!'\
 			| sort -r -t/ -k1,1\
-			| cut -d/ -f2-); do
-		api=$(basename "$(dirname "$foundapk")")
+			| cut -d/ -f2-\
+			| tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
+		foundpath="$(dirname "$(dirname "$(echo "$foundapk" | tr '' ' ')")")" #and we place the spaces back again
+		api="$(basename "$foundpath")"
 		if [ "$api" -le "$API" ]
 		then
-			sourceapk=$foundapk
+			#We need to keep them sorted
+			sourceapks="$(find "$foundpath" -name "*.apk"\
+			| sed 's!.*/\(.*\)!\1/&!'\
+			| sort -r -t/ -k1,1\
+			| cut -d/ -f2-)"
 			break
 		fi
 	done
-	if [ "$sourceapk" = "" ]
+	if [ "$sourceapks" = "" ]
 	then
 		echo "WARNING: No APK found compatible with API level $API for package $appname on $SOURCEARCH, lowest found: $api"
 		return 1 #error
 	fi
-	#$sourceapk has the useful returnvalue
+	#$sourceapks has the useful returnvalue
 	return 0 #return that it was a success
 }
 buildapk() {
-	targetdir=$build$2
+	sourceapk="$1"
+	targetdir="$build$2"
 	if [ "$API" -le "19" ]; then ##We will do this as long as we support KitKat
 		targetapk="$targetdir.apk"
 		install -D "$sourceapk" "$targetapk" #inefficient, we will write this file, just to make the higher directories
@@ -159,7 +151,8 @@ buildapk() {
 	fi
 }
 buildlib() {
-	targetdir=$build$2
+	sourceapk="$1"
+	targetdir="$build$2"
 	libsearchpath="lib/*" #default that should never happen: all libs
 	if [ "$SOURCEARCH" = "arm" ]; then
 		libsearchpath="lib/armeabi*/*" #mind the wildcard
@@ -198,28 +191,5 @@ buildlib() {
 			install -d "$targetdir/lib/$FALLBACKARCH"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$FALLBACKARCH" "$libfallbacksearchpath"
 		fi
-	fi
-}
-getversion(){
-	if getsourceforapi "$1"
-	then
-		getversion=$(aapt dump badging "$sourceapk" | grep "versionCode=" |awk '{print $3}' |tr -d "/versionCode='")
-	else
-		return 1
-	fi
-	return 0
-}
-comparebaseversion(){
-	#returns true if both versions are equal
-	#versionnumber to compare with is in $1
-	#packageID to compare with is in $2
-	baseversion1=$(echo "$1" | sed 's/.$//')
-	if getversion "$2" #we rely on the fact that this method calls getsourceforapi and changes $sourceapk for us
-	then
-		baseversion2=$(echo "$getversion" | sed 's/.$//')
-		test "$baseversion1" = "$baseversion2"
-		return $?  #ugly, but I fail to get it more nice than this :-/
-	else
-		return 1 #the package does not even exist
 	fi
 }

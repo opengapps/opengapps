@@ -26,7 +26,6 @@ BUILD="$TOP/build"
 OUT="$TOP/out"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
-DENSITIES="2 4 6 8" #don't add 0
 
 case "$ARCH" in
 	arm64)	LIBFOLDER="lib64"
@@ -62,6 +61,18 @@ if [ "$FALLBACKARCH" != "arm" ];then #For all non-arm(64) platforms
 		exit 1;;
 	esac
 fi
+
+gappscore="framework
+googlebackuptransport
+googlecontactssync
+googlefeedback
+googleonetimeinitializer
+googlepartnersetup
+gmscore
+gsfcore
+gsflogin
+setupwizard
+vending"
 
 gappsstock="cameragoogle
 keyboardgoogle"

@@ -20,11 +20,11 @@ command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not
 
 argument(){
 	case $1 in
-		all) apparchs="$apparchs"" all";;
-		arm) apparchs="$apparchs"" arm";;
-		arm64) apparchs="$apparchs"" arm64";;
-		x86) apparchs="$apparchs"" x86";;
-		x86_64) apparchs="$apparchs"" x86_64";;
+		all) filterapparchs="$filterapparchs"" all";;
+		arm) filterapparchs="$filterapparchs"" arm";;
+		arm64) filterapparchs="$filterapparchs"" arm64";;
+		x86) filterapparchs="$filterapparchs"" x86";;
+		x86_64) filterapparchs="$filterapparchs"" x86_64";;
 		*) maxsdk="$1";;
 	esac
 }
@@ -35,9 +35,9 @@ echo "=== Simple How To ===:
 * all/arm/arm64/x86/x86_64: Show only packages of given architecture
 * These arguments can be combined in any order and multiple architectures can be supplied
 * Example command: './report_sources.sh 22 all arm arm64'
-----------------------------------------------------------------------------------------"
+---------------------------------------------------------------------------------------------------------"
 
-apparchs=""
+filterapparchs=""
 maxsdk="99"
 
 for arg in "$@";do
@@ -45,29 +45,35 @@ for arg in "$@";do
 done
 
 
-result="$(printf "%45s|%7s|%3s|%18s|%11s" "Application Name" "Arch." "SDK" "Version Name" "Version")
-----------------------------------------------------------------------------------------"
-allapks="$(find "$SOURCES/" -iname "*.apk" | awk -F '/' '{print $(NF-2)}' | sort | uniq)"
-for appname in $allapks;do
+result="$(printf "%45s|%7s|%3s|%16s|%18s|%11s" "Application Name" "Arch." "SDK" "DPI" "Version Name" "Version")
+---------------------------------------------------------------------------------------------------------"
+allapps="$(find "$SOURCES/" -iname "*.apk" | awk -F '/' '{print $(NF-3)}' | sort | uniq)"
+for appname in $allapps;do
 	appnamefiles="$(find "$SOURCES/" -iname "*.apk" -ipath "*/$appname/*")"
-	if [ "$apparchs" = "" ];then
-		apparchs="$(printf "$appnamefiles" | awk -F '/' '{print $(NF-4)}' | sort | uniq)"
+	if [ "$filterapparchs" = "" ];then
+		apparchs="$(printf "$appnamefiles" | awk -F '/' '{print $(NF-5)}' | sort | uniq)"
+	else
+		apparchs="$filterapparchs"
 	fi
 
 	for arch in $apparchs;do
 		appsdkfiles="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/*")"
-		appsdks="$(printf "$appsdkfiles" | awk -F '/' '{print $(NF-1)}' | sort | uniq)"
+		appsdks="$(printf "$appsdkfiles" | awk -F '/' '{print $(NF-2)}' | sort | uniq)"
 
 		for sdk in $appsdks;do
 			if [ "$sdk" -le "$maxsdk" ];then
-				appversionfile="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/*" | tail -n 1)"
-				appversion="$(basename -s ".apk" "$appversionfile")"
-				appversionname="$(aapt dump badging "$appversionfile" 2>/dev/null | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
-				result="$result
-$(printf "%45s| %6s| %2s| %17s| %10s" "$appname" "$arch" "$sdk" "$appversionname" "$appversion")"
-				if [ "$maxsdk" != "99" ];then
-					break #if a specific sdk level is supplied, we only show 1 relevant version
-				fi
+				appdpifiles="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/*")"
+				appdpis="$(printf "$appdpifiles" | awk -F '/' '{print $(NF-1)}' | sort | uniq)"
+				for dpi in $appdpis;do
+					appversionfile="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/$dpi/*" | head -n 1)"
+					appversion="$(basename -s ".apk" "$appversionfile")"
+					appversionname="$(aapt dump badging "$appversionfile" 2>/dev/null | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
+					result="$result
+$(printf "%45s| %6s| %2s| %15s| %17s| %10s" "$appname" "$arch" "$sdk" "$dpi" "$appversionname" "$appversion")"
+					if [ "$maxsdk" != "99" ];then
+						break #if a specific sdk level is supplied, we only show 1 relevant version
+					fi
+				done
 			fi
 		done
 	done

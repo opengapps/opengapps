@@ -58,7 +58,10 @@ createzip() {
 	unsignedzip="$BUILD/$ARCH/$API/$VARIANT.zip"
 	signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.zip"
 
-	getzipfolders "$gapps" #Since building is now split out, this is technically not necessary anymore, we could add everything that is in the folder
+	zipfolders="Core GApps META-INF bkup_tail.sh g.prop gapps-remove.txt installer.data"
+	if [ "$API" -gt "19" ]; then
+		zipfolders="$zipfolders Optional"
+	fi
 
 	if [ -f "$unsignedzip" ]
 	then
@@ -69,20 +72,6 @@ createzip() {
 	zip -q -r -D -X -9 "$unsignedzip" $zipfolders #don't doublequote zipfolders, contains multiple (safe) arguments
 	cd "$TOP"
 	signzip
-}
-
-getzipfolders() {
-	zipfolders="Core GMSCore META-INF bkup_tail.sh g.prop gapps-remove.txt installer.data"
-	if [ "$API" -gt "19" ]; then
-		zipfolders="$zipfolders Optional"
-	fi
-	for app in $1; do
-		case "$app" in
-		messenger)	zipfolders="$zipfolders Messenger";;
-		playgames)	zipfolders="$zipfolders PlayGames";;
-		*)		zipfolders="$zipfolders GApps/$app";;
-		esac
-	done
 }
 
 signzip() {
