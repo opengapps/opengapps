@@ -135,7 +135,7 @@ folder_extract() {
     unzip -o "$ZIP" "$1/*" -d /tmp;
     bkup_list=$'\n'"$(find /tmp/$1 -type f | cut -d/ -f5-)${bkup_list}";
     cp -rf /tmp/$1/. /system/;
-    rm -rf /tmp/$topdir;
+    rm -rf /tmp/$1;
 }
 
 get_appsize() {
