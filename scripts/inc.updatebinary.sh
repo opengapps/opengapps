@@ -1079,38 +1079,46 @@ install -d /data/app/
 install -d /data/app-lib/
 # Handle broken lib configuration on KitKat by putting Hangouts on /data/
 if ( contains "$gapps_list" "hangouts" ); then
-    unzip -o "$ZIP" "GApps/hangouts/*" -d /tmp;
-    bkup_list=$'\n'"$(find /tmp/GApps/hangouts -type f | cut -d/ -f5-)${bkup_list}";
-    cp -f "/tmp/GApps/hangouts/priv-app/Hangouts.apk" /data/app/com.google.android.talk.apk;
-    cp -rf "/tmp/GApps/hangouts/lib/." /data/app-lib/com.google.android.talk/;
-    rm -rf "/tmp/GApps";
+    which_dpi "GApps/hangouts"
+    unzip -o "$ZIP" "$dpiapkpath/*" -d /tmp;
+    cp -rf /tmp/$dpiapkpath/priv-app/Hangouts.apk /data/app/com.google.android.talk.apk;
+    rm -rf /tmp/$dpiapkpath
+    unzip -o "$ZIP" "GApps/hangouts/common" -d /tmp;
+    cp -rf /tmp/GApps/hangouts/common/lib. /data/app-lib/com.google.android.talk/;
+    rm -rf /tmp/GApps/hangouts/common;
     gapps_list=${gapps_list/hangouts};
 fi;
 # Handle broken lib configuration on KitKat by putting Google+ on /data/
 if ( contains "$gapps_list" "googleplus" ); then
-    unzip -o "$ZIP" "GApps/googleplus/*" -d /tmp;
-    bkup_list=$'\n'"$(find /tmp/GApps/googleplus -type f | cut -d/ -f5-)${bkup_list}";
-    cp -f "/tmp/GApps/googleplus/app/PlusOne.apk" /data/app/com.google.android.apps.plus.apk;
-    cp -rf "/tmp/GApps/googleplus/lib/." /data/app-lib/com.google.android.apps.plus/;
-    rm -rf "/tmp/GApps";
+    which_dpi "GApps/googleplus"
+    unzip -o "$ZIP" "$dpiapkpath/*" -d /tmp;
+    cp -rf /tmp/$dpiapkpath/app/PlusOne.apk /data/app/com.google.android.apps.plus.apk;
+    rm -rf /tmp/$dpiapkpath
+    unzip -o "$ZIP" "GApps/googleplus/common" -d /tmp;
+    cp -rf /tmp/GApps/googleplus/common/lib. /data/app-lib/com.google.android.apps.plus/;
+    rm -rf /tmp/GApps/googleplus/common;
     gapps_list=${gapps_list/googleplus};
 fi;
 # Handle broken lib configuration on KitKat by putting Photos on /data/
 if ( contains "$gapps_list" "photos" ); then
-    unzip -o "$ZIP" "GApps/photos/*" -d /tmp;
-    bkup_list=$'\n'"$(find /tmp/GApps/photos -type f | cut -d/ -f5-)${bkup_list}";
-    cp -f "/tmp/GApps/photos/app/Photos.apk" /data/app/com.google.android.apps.photos.apk;
-    cp -rf "/tmp/GApps/photos/lib/." /data/app-lib/com.google.android.apps.photos/;
-    rm -rf "/tmp/GApps";
+    which_dpi "GApps/photos"
+    unzip -o "$ZIP" "$dpiapkpath/*" -d /tmp;
+    cp -rf /tmp/$dpiapkpath/app/Photos.apk /data/app/com.google.android.apps.photos.apk;
+    rm -rf /tmp/$dpiapkpath
+    unzip -o "$ZIP" "GApps/photos/common" -d /tmp;
+    cp -rf /tmp/GApps/photos/common/lib. /data/app-lib/com.google.android.apps.photos/;
+    rm -rf /tmp/GApps/photos/common;
     gapps_list=${gapps_list/photos};
 fi;
 # Handle broken lib configuration on KitKat by putting YouTube on /data/
 if ( contains "$gapps_list" "youtube" ); then
-    unzip -o "$ZIP" "GApps/youtube/*" -d /tmp;
-    bkup_list=$'\n'"$(find /tmp/GApps/youtube -type f | cut -d/ -f5-)${bkup_list}";
-    cp -f "/tmp/GApps/youtube/app/YouTube.apk" /data/app/com.google.android.youtube.apk;
-    cp -rf "/tmp/GApps/youtube/lib/." /data/app-lib/com.google.android.youtube/;
-    rm -rf "/tmp/GApps";
+    which_dpi "GApps/youtube"
+    unzip -o "$ZIP" "$dpiapkpath/*" -d /tmp;
+    cp -rf /tmp/$dpiapkpath/app/YouTube.apk /data/app/com.google.android.youtube.apk;
+    rm -rf /tmp/$dpiapkpath
+    unzip -o "$ZIP" "GApps/youtube/common" -d /tmp;
+    cp -rf /tmp/GApps/youtube/common/lib. /data/app-lib/com.google.android.youtube/;
+    rm -rf /tmp/GApps/youtube/common;
     gapps_list=${gapps_list/youtube};
 fi;
 
