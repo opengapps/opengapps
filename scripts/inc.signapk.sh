@@ -18,7 +18,7 @@ TMP="/tmp"                          # write temp files here, or try these if it 
 
 #######################
 DEFKEYNAME="testkey"                  # default name of cert/key pair. script comes with AOSP testkey/media/platform/shared.
-PKEY="$TOP/$DEFKEYNAME.pk8"      # generated path to default private key; 'signapk-key.testkey.pk8'. 
+PKEY="$TOP/$DEFKEYNAME.pk8"      # generated path to default private key; 'signapk-key.testkey.pk8'.
 CERT="$TOP/$DEFKEYNAME.x509.pem" # generated path to default cert; 'signapk-key.testkey.x509.pem'
 VERSION="0.3.1"
 
@@ -42,7 +42,7 @@ PAD="                                                                           
 dprint() {
   if [ $DEBUG ] && [ "$DEBUG" != "0" ]; then
     #IFS=$OLDIFS
-    echo "[DEBUG $$] $*" 1>&2 
+    echo "[DEBUG $$] $*" 1>&2
   fi
 }
 #######################  informational spew
@@ -91,7 +91,7 @@ chkcert() {
   fi
 }
 
-#######################  MANIFEST.MF entry hash: stdin - stdout 
+#######################  MANIFEST.MF entry hash: stdin - stdout
 mfhash() {
   $OPENSSL sha1 -binary |$OPENSSL base64
 }
@@ -110,7 +110,7 @@ mfentry() {
   done
   ret="${ret%?}" #remove the space we inserted, was only for if a next line was coming
 
-  ret="$ret""S"
+  ret="${ret}S"
   hashpart="HA1-Digest: $hash"
   lengthhash=`printf "$hashpart" | wc -c`
   for ((s=1; $s<$lengthhash; s=$s+69)) ;
@@ -139,7 +139,7 @@ sfentry() {
   done
   ret="${ret%?}" #remove the space we inserted, was only for if a next line was coming
 
-  ret="$ret""S"
+  ret="${ret}S"
   hashpart="HA1-Digest: $hash"
   lengthhash=`printf "$hashpart" | wc -c`
   for ((s=1; $s<$lengthhash; s=$s+69)) ;
@@ -250,7 +250,7 @@ getop() {
         args="$args$1$esc"
       ;;
     esac
-    shift  
+    shift
   done
 }
 
@@ -262,7 +262,7 @@ getop() {
 
 
 getop "$@"
-IFS="$esc"; 
+IFS="$esc";
 set -- $args
 IFS=$OLDIFS
 #######################
@@ -305,7 +305,7 @@ if [ "x$1" = "xsign" ]; then
       ret=""
       if [ "x$file" != "xMETA-INF/MANIFEST.MF" ] && [ "x$file" != "xMETA-INF/CERT.SF" ] && [ "x$file" != "xMETA-INF/CERT.RSA" ]; then
         p "$file  "
-        mfentry "$file" 
+        mfentry "$file"
         mf="$mf$ret"
         sfentry "$file" "$retpure"
         sf="$sf$ret"
@@ -381,7 +381,7 @@ elif [ "x$1" = "xcert" ]; then
         pkg=$(echo "$packages"|$GREP "codePath=\"$real\""|$TR -d '"' )
         if [ $? -eq 0 ]; then
           IFS=" "
-          set -- $pkg          
+          set -- $pkg
           for p in $*; do
             IFS="="
             set -- $p
@@ -403,7 +403,7 @@ elif [ "x$1" = "xcert" ]; then
         out="${out:0:60}  $user$PAD"
         out="${out:0:74}  $certserial$PAD"
         $PRINTF "${out:0:92}  $title\n"
-      else 
+      else
         $PRINTF "${out:0:60}  Invalid\n"
       fi
     fi
@@ -425,10 +425,10 @@ elif [ "x$1" = "xcmp" ]; then
     c1=$(getcertid "$2"); ordie "Error: $c1" 1
   fi
   if [ "$c1" != "$c2" ]; then
-    echo "$2 ($c1) != $3 ($c2)" 
+    echo "$2 ($c1) != $3 ($c2)"
     exit 10
   else
-    echo "$2 ($c1) == $3 ($c2)" 
+    echo "$2 ($c1) == $3 ($c2)"
     exit 0
   fi
 elif [ "x$1" = "xgetcert" ]; then

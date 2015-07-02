@@ -20,11 +20,11 @@ command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not
 
 argument(){
 	case $1 in
-		all) filterapparchs="$filterapparchs"" all";;
-		arm) filterapparchs="$filterapparchs"" arm";;
-		arm64) filterapparchs="$filterapparchs"" arm64";;
-		x86) filterapparchs="$filterapparchs"" x86";;
-		x86_64) filterapparchs="$filterapparchs"" x86_64";;
+		all) filterapparchs="${filterapparchs} all";;
+		arm) filterapparchs="${filterapparchs} arm";;
+		arm64) filterapparchs="${filterapparchs} arm64";;
+		x86) filterapparchs="${filterapparchs} x86";;
+		x86_64) filterapparchs="${filterapparchs} x86_64";;
 		*) maxsdk="$1";;
 	esac
 }
@@ -50,7 +50,7 @@ result="$(printf "%45s|%7s|%3s|%16s|%18s|%11s" "Application Name" "Arch." "SDK" 
 allapps="$(find "$SOURCES/" -iname "*.apk" | awk -F '/' '{print $(NF-3)}' | sort | uniq)"
 for appname in $allapps;do
 	appnamefiles="$(find "$SOURCES/" -iname "*.apk" -ipath "*/$appname/*")"
-	if [ "$filterapparchs" = "" ];then
+	if [ -z "$filterapparchs" ];then
 		apparchs="$(printf "$appnamefiles" | awk -F '/' '{print $(NF-5)}' | sort | uniq)"
 	else
 		apparchs="$filterapparchs"

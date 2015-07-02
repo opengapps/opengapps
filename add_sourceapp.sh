@@ -21,7 +21,7 @@ command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not insta
 
 getarchitectures() {
 	architectures=""
-	if [ "$native" = "" ]
+	if [ -z "$native" ]
 	then
 		echo "No native-code specification defined"
 		#Some packages don't have native-code specified, but are still depending on it.
@@ -38,7 +38,7 @@ getarchitectures() {
 				echo "Manually found native code for: $arch"
 			fi
 		done
-		if [ "$architectures" = "" ] #If the package really has no native code
+		if [ -z "$architectures" ] #If the package really has no native code
 		then
 			architectures="all"
 		fi
@@ -104,7 +104,7 @@ addapk() {
 	echo "Importing "$name
 	echo "Package "$package" | VersionName "$versionname" | VersionCode "$versioncode" | API level "$sdkversion
 
-	if [ "$compatiblescreens" = "" ]
+	if [ -z "$compatiblescreens" ]
 	then
 		dpis="nodpi"
 		echo "Universal DPI package"

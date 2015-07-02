@@ -61,7 +61,7 @@ buildapp(){
 				#the Drive/Docs/Sheets/Slides variate even the last two different digits of the versionName per DPI variant, so we only take the first 10 chars
 				com.google.android.apps.docs*) versionname="$(echo "$versionname" | cut -c 1-10)";;
 			esac
-			if [ "$baseversionname" = "" ]; then
+			if [ -z "$baseversionname" ]; then
 				baseversionname=$versionname
 				buildlib "$dpivariant" "$ziplocation/common/$targetlocation" #Use the libs from this baseversion
 				printf "%44s %17s" "$package" "$baseversionname"
@@ -97,11 +97,11 @@ getsourceforapi() {
 	fi
 	if stat --printf='' "$SOURCES/all/"*"app/$appname" 2>/dev/null
 	then
-		sourceall="$sourceall""find $SOURCES/all/*app/$appname -iname '*.apk'"
+		sourceall="${sourceall}find $SOURCES/all/*app/$appname -iname '*.apk'"
 	else
 		sourceall="" #undo glue
 	fi
-	if [ "$sourcearch" = "" ] && [ "$sourceall" = "" ]
+	if [ -z "$sourcearch" ] && [ -z "$sourceall" ]
 	then
 		return 1 #appname is not there, error!?
 	fi
@@ -124,7 +124,7 @@ getsourceforapi() {
 			break
 		fi
 	done
-	if [ "$sourceapks" = "" ]
+	if [ -z "$sourceapks" ]
 	then
 		echo "WARNING: No APK found compatible with API level $API for package $appname on $SOURCEARCH, lowest found: $api"
 		return 1 #error

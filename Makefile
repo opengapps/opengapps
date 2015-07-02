@@ -32,14 +32,14 @@ all:: $1
 #to make the arm (stock) package for 5.1
 #It will execute the build script with the platform, api (and variant) as parameter,
 #meanwhile ensuring the minimum api for the platform that is selected
-$1:		
+$1:
 	$(platform = $(firstword $(subst -, ,$1)))
 	$(api = $(word 2, $(subst -, ,$1)))
 	$(variant = $(word 3, $(subst -, ,$1)))
-	@if [ "$(api)" -ge "$(LOWEST_API_$(platform))" ] && [ "$(variant)" != "" ] ; then\
+	@if [ "$(api)" -ge "$(LOWEST_API_$(platform))" ] && [ ! -z "$(variant)" ] ; then\
 		echo "Generating Open GApps $(variant) package for $(platform) with API level $(api)...";\
 		$(BUILD_GAPPS) $(platform) $(api) $(variant) 2>&1 | tee $(LOG_BUILD);\
-	elif [ "$(api)" -ge "$(LOWEST_API_$(platform))" ] && [ "$(variant)" = "" ] ; then\
+	elif [ "$(api)" -ge "$(LOWEST_API_$(platform))" ] && [ -z "$(variant)" ] ; then\
 		for variant in $(VARIANTS);do\
 			$(BUILD_GAPPS) $(platform) $(api) $$$$variant 2>&1 | tee $(LOG_BUILD);\
 		done;\
@@ -63,4 +63,3 @@ $(eval $(call make-gapps,$(platform)-$(api)))\
 distclean:
 	@rm -fr $(BUILDDIR)
 	@echo "$(tput setaf 2)Build directory removed! Ready for a clean build$(tput sgr 0)"
-
