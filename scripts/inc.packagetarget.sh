@@ -1,14 +1,14 @@
 #This file is part of The Open GApps script of @mfonville.
 #
-#    The Open GApps scripts are free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#	The Open GApps scripts are free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
 #
-#    These scripts are distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#	These scripts are distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
 #
 
 alignbuild() {
@@ -55,27 +55,27 @@ aromaupdatebinary() {
 }
 
 createzip() {
-    echo "Compressing apps in tar.xz archives..."
+	echo "Compressing apps in tar.xz archives..."
 	cd "$build"Core
-    for f in $(ls); do
-        echo "Compressing Core/$f"
-        XZ_OPT=-9e tar -cJf "$f.tar.xz" "$f"
-        rm -rf "$f"
-    done
+	for f in $(ls); do
+		echo "Compressing Core/$f"
+		XZ_OPT=-9e tar -cJf "$f.tar.xz" "$f"
+		rm -rf "$f"
+	done
 	cd "$build"GApps
-    for f in $(ls); do
-        echo "Compressing GApps/$f"
-        XZ_OPT=-9e tar -cJf "$f.tar.xz" "$f"
-        rm -rf "$f"
-    done
+	for f in $(ls); do
+		echo "Compressing GApps/$f"
+		XZ_OPT=-9e tar -cJf "$f.tar.xz" "$f"
+		rm -rf "$f"
+	done
 	if [ "$API" -gt "19" ]; then
-	    cd "$build"Optional
-        for f in $(ls); do
-            echo "Compressing Optional/$f"
-            XZ_OPT=-9e tar -cJf "$f.tar.xz" "$f"
-            rm -rf "$f"
-        done
-    fi
+		cd "$build"Optional
+		for f in $(ls); do
+			echo "Compressing Optional/$f"
+			XZ_OPT=-9e tar -cJf "$f.tar.xz" "$f"
+			rm -rf "$f"
+		done
+	fi
 
 	unsignedzip="$BUILD/$ARCH/$API/$VARIANT.zip"
 	signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.zip"
@@ -90,8 +90,8 @@ createzip() {
 		rm "$unsignedzip"
 	fi
 	cd "$build"
-	echo "Compressing and signing $signedzip..."
-    # Store only the files in the zip without compressing tehm (-0 switch): further compression will be useless and will slow down the building process
+	echo "Packaging and signing $signedzip..."
+	# Store only the files in the zip without compressing them (-0 switch): further compression will be useless and will slow down the building process
 	zip -q -r -D -X -0 "$unsignedzip" $zipfolders #don't doublequote zipfolders, contains multiple (safe) arguments
 	cd "$TOP"
 	signzip
@@ -106,7 +106,7 @@ signzip() {
 
 	cd "$SCRIPTS"
 	if ./inc.signapk.sh -q sign "$unsignedzip" "$signedzip"; then #if signing did succeed
-	    rm "$unsignedzip"
+		rm "$unsignedzip"
 	else
 		echo "ERROR: Creating Flashable ZIP-file failed"
 		cd "$TOP"
