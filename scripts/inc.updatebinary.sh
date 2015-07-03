@@ -29,7 +29,7 @@ OUTFD=/proc/self/fd/$2;
 g_prop=/system/etc/g.prop;
 b_prop=/system/build.prop;
 bkup_tail=/tmp/bkup_tail.sh;
-gapps_removal_list=/tmp/gapps-remove.txt
+gapps_removal_list=/tmp/gapps-remove.txt;
 g_log=/tmp/g.log;
 calc_log=/tmp/calc.log;
 conflicts_log=/tmp/conflicts.log;
@@ -93,11 +93,15 @@ clean_inst() {
 }
 
 extract_app() {
-    which_dpi "$1"
+	unzip -o "$ZIP" "$1.tar.xz" -d /tmp;
+	TAR="/tmp/$1.tar.xz";
+	app_name=$(basename $1);
+    which_dpi "$app_name";
     if [ "$dpiapkpath" != "unknown" ]; then #technically not necessary, 'unknown' folder would not exist anyway
-        folder_extract "$dpiapkpath"
+        folder_extract "$dpiapkpath";
     fi
-    folder_extract "$1/common"
+    folder_extract "$app_name/common";
+	rm -f "$TAR";
 }
 
 exxit() {
@@ -134,15 +138,19 @@ file_getprop() {
 }
 
 folder_extract() {
-    unzip -o "$ZIP" "$1/*" -d /tmp;
+	tar -xJf "$TAR" -C /tmp --wildcards "$1/*";
     bkup_list=$'\n'"$(find "/tmp/$1/*" -type f | cut -d/ -f5-)${bkup_list}";
     cp -rf /tmp/$1/. /system/;
     rm -rf /tmp/$1;
 }
 
 get_appsize() {
-    which_dpi "$1"
-    appsize="$(unzip -ql "$ZIP" "$1/common/*" "$dpiapkpath/*" | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }')"
+	unzip -o "$ZIP" "$1.tar.xz" -d /tmp;
+	TAR="/tmp/$1.tar.xz";
+	app_name=$(basename $1);
+    which_dpi "$app_name";
+    appsize="$(tar -tvJf "$TAR" --wildcards "$1/common/*" "$dpiapkpath/*" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }')";
+	rm -f "$TAR";
 }
 
 log() {
@@ -269,7 +277,7 @@ ui_print() {
 
 which_dpi() {
     # Calculate available densities
-    app_densities="$(unzip -lq "$ZIP" "$1/*" | grep -E "$1/[0-9-]+|nodpi/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | uniq | sed 's/-/ /g' | tr '\n' ' ')";
+	app_densities="$(tar -tJf "$TAR" --wildcards "$1/*" | grep -E "$1/[0-9-]+|nodpi/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | uniq | sed 's/-/ /g' | tr '\n' ' ')";
     # Check if in the package there is a version for our density, or a universal one.
     case "$app_densities" in
         *"$density"*) dpiapkpath="$1/*$density*";;
@@ -278,7 +286,7 @@ which_dpi() {
     esac;
     # If there is no package for our density nor a universal one, we will look for the one with closer, but higher density.
     if [ "$dpiapkpath" = "unknown" ]; then
-        app_densities="$(echo "$app_densities" | tr ' ' '\n' | sort | tr '\n' ' ')"
+        app_densities="$(echo "$app_densities" | tr ' ' '\n' | sort | tr '\n' ' ')";
         for d in $app_densities; do
             if [ "$d" -ge "$density" ]; then
                 dpiapkpath="$1/*$d*";
@@ -288,7 +296,7 @@ which_dpi() {
     fi;
     # If there is no package for our density nor a universal one or one for higher density, we will use the one with closer, but lower density.
     if [ "$dpiapkpath" = "unknown" ]; then
-        app_densities="$(echo "$app_densities" | tr ' ' '\n' | sort -r | tr '\n' ' ')"
+        app_densities="$(echo "$app_densities" | tr ' ' '\n' | sort -r | tr '\n' ' ')";
         for d in $app_densities; do
             if [ "$d" -le "$density" ]; then
                 dpiapkpath="$1/*$d*";
@@ -404,11 +412,11 @@ if [ ! "${rom_android_version:0:3}" = "$req_android_version" ]; then
 fi;
 
 # Check to make certain that user device matches the architecture
-device_architecture="$(file_getprop $b_prop ro.product.cpu.abilist)"
+device_architecture="$(file_getprop $b_prop ro.product.cpu.abilist)";
 # If the recommended field is empty, fall back to the deprecated one
 if [ -z "$device_architecture" ]; then
-    device_architecture="$(file_getprop $b_prop ro.product.cpu.abi)"
-fi
+    device_architecture="$(file_getprop $b_prop ro.product.cpu.abi)";
+fi;
 EOFILE
 printf 'if ! (echo "$device_architecture" | '>> "$build"META-INF/com/google/android/update-binary
 case "$ARCH" in
@@ -836,10 +844,10 @@ EOFILE
 if [ "$VARIANT" = "fornexus" ]; then
     tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 # Removing old Chrome libraries
-obsolete_libs_list=""
+obsolete_libs_list="";
 for f in $(find /system/lib /system/lib64 -name 'libchrome*.so' 2>/dev/null); do
-obsolete_libs_list="${obsolete_libs_list}$f"$'\n';
-done
+	obsolete_libs_list="${obsolete_libs_list}$f"$'\n';
+done;
 # Read in gapps removal list from file and append old Chrome libs
 full_removal_list=$(cat $gapps_removal_list)$'\n'"${obsolete_libs_list}";
 EOFILE
@@ -874,12 +882,15 @@ ui_print "- Performing system space calculations";
 ui_print " ";
 
 # Perform calculations of core applications
-core_size=0
+core_size=0;
 for gapp_name in $core_gapps_list; do
-    get_appsize "Core/$gapp_name"
-    core_size=$((core_size + appsize))
-done
-keybd_lib_size=$(unzip -lq "$ZIP" Optional/keybd_lib/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
+    get_appsize "Core/$gapp_name";
+    core_size=$((core_size + appsize));
+done;
+unzip -o "$ZIP" "Optional/keybd_lib.tar.xz" -d /tmp;
+TAR="/tmp/Optional/keybd_lib.tar.xz";
+keybd_lib_size=$(tar -tvJf "$TAR" --wildcards "keybd_lib/*" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
+rm -f "/tmp/Optional/keybd_lib.tar.xz";
 
 EOFILE
 if [ "$API" -gt "19" ]; then
@@ -949,7 +960,7 @@ post_install_size_kb=$((post_install_size_kb - core_size)); # Add Core GApps
 log_sub "Install" "Core²" $core_size $post_install_size_kb;
 
 for gapp_name in $gapps_list; do
-        get_appsize "GApps/$gapp_name"
+        get_appsize "GApps/$gapp_name";
 EOFILE
 if [ "$API" -le "19" ]; then
 echo '# Broken lib configuration on KitKat, so some apps do not count for the /system space because they are on /data
@@ -1050,14 +1061,17 @@ ui_print "- Installing updated GApps";
 ui_print " ";
 set_progress 0.15;
 for gapp_name in $core_gapps_list; do
-    extract_app "Core/$gapp_name"
-done
+    extract_app "Core/$gapp_name";
+done;
 set_progress 0.25;
 
 EOFILE
 if [ "$API" -gt "19" ]; then
 	echo 'if ( ! contains "$gapps_list" "keyboardgoogle" ); then
-    folder_extract "Optional/keybd_lib"; # Install Keyboard lib to add swipe capabilities to AOSP Keyboard
+	unzip -o "$ZIP" "Optional/keybd_lib.tar.xz" -d /tmp;
+	TAR="/tmp/Optional/keybd_lib.tar.xz";
+    folder_extract "keybd_lib"; # Install Keyboard lib to add swipe capabilities to AOSP Keyboard
+	rm -f "/tmp/Optional/keybd_lib.tar.xz";
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/'"$LIBFOLDER"'/$keybd_lib_filename2"; # create required symlink
     mkdir -p /system/app/LatinIME/lib/'"$ARCH"';
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1"; # create required symlink
@@ -1079,46 +1093,58 @@ install -d /data/app/
 install -d /data/app-lib/
 # Handle broken lib configuration on KitKat by putting Hangouts on /data/
 if ( contains "$gapps_list" "hangouts" ); then
-    which_dpi "GApps/hangouts"
-    unzip -o "$ZIP" "$dpiapkpath/*" -d /tmp;
+	unzip -o "$ZIP" "GApps/hangouts.tar.xz" -d /tmp;
+	TAR="/tmp/GApps/hangouts.tar.xz";
+    which_dpi "hangouts";
+	tar -xJf "$TAR" -C /tmp --wildcards "$dpiapkpath/*";
     cp -rf /tmp/$dpiapkpath/priv-app/Hangouts.apk /data/app/com.google.android.talk.apk;
-    rm -rf /tmp/$dpiapkpath
-    unzip -o "$ZIP" "GApps/hangouts/common" -d /tmp;
-    cp -rf /tmp/GApps/hangouts/common/lib. /data/app-lib/com.google.android.talk/;
-    rm -rf /tmp/GApps/hangouts/common;
+    rm -rf /tmp/$dpiapkpath;
+	tar -xJf "$TAR" -C /tmp --wildcards "common/*";
+    cp -rf /tmp/hangouts/common/lib. /data/app-lib/com.google.android.talk/;
+    rm -rf /tmp/hangouts/common;
+	rm -f "$TAR";
     gapps_list=${gapps_list/hangouts};
 fi;
 # Handle broken lib configuration on KitKat by putting Google+ on /data/
 if ( contains "$gapps_list" "googleplus" ); then
-    which_dpi "GApps/googleplus"
-    unzip -o "$ZIP" "$dpiapkpath/*" -d /tmp;
+	unzip -o "$ZIP" "GApps/googleplus.tar.xz" -d /tmp;
+	TAR="/tmp/GApps/googleplus.tar.xz";
+    which_dpi "googleplus";
+	tar -xJf "$TAR" -C /tmp --wildcards "$dpiapkpath/*";
     cp -rf /tmp/$dpiapkpath/app/PlusOne.apk /data/app/com.google.android.apps.plus.apk;
-    rm -rf /tmp/$dpiapkpath
-    unzip -o "$ZIP" "GApps/googleplus/common" -d /tmp;
-    cp -rf /tmp/GApps/googleplus/common/lib. /data/app-lib/com.google.android.apps.plus/;
-    rm -rf /tmp/GApps/googleplus/common;
+    rm -rf /tmp/$dpiapkpath;
+	tar -xJf "$TAR" -C /tmp --wildcards "common/*";
+    cp -rf /tmp/googleplus/common/lib. /data/app-lib/com.google.android.apps.plus/;
+    rm -rf /tmp/googleplus/common;
+	rm -f "$TAR";
     gapps_list=${gapps_list/googleplus};
 fi;
 # Handle broken lib configuration on KitKat by putting Photos on /data/
 if ( contains "$gapps_list" "photos" ); then
-    which_dpi "GApps/photos"
-    unzip -o "$ZIP" "$dpiapkpath/*" -d /tmp;
+	unzip -o "$ZIP" "GApps/photos.tar.xz" -d /tmp;
+	TAR="/tmp/GApps/photos.tar.xz";
+    which_dpi "photos";
+	tar -xJf "$TAR" -C /tmp --wildcards "$dpiapkpath/*";
     cp -rf /tmp/$dpiapkpath/app/Photos.apk /data/app/com.google.android.apps.photos.apk;
-    rm -rf /tmp/$dpiapkpath
-    unzip -o "$ZIP" "GApps/photos/common" -d /tmp;
-    cp -rf /tmp/GApps/photos/common/lib. /data/app-lib/com.google.android.apps.photos/;
-    rm -rf /tmp/GApps/photos/common;
+    rm -rf /tmp/$dpiapkpath;
+	tar -xJf "$TAR" -C /tmp --wildcards "common/*";
+    cp -rf /tmp/photos/common/lib. /data/app-lib/com.google.android.apps.photos/;
+    rm -rf /tmp/photos/common;
+	rm -f "$TAR";
     gapps_list=${gapps_list/photos};
 fi;
 # Handle broken lib configuration on KitKat by putting YouTube on /data/
 if ( contains "$gapps_list" "youtube" ); then
-    which_dpi "GApps/youtube"
-    unzip -o "$ZIP" "$dpiapkpath/*" -d /tmp;
+	unzip -o "$ZIP" "GApps/youtube.tar.xz" -d /tmp;
+	TAR="/tmp/GApps/youtube.tar.xz";
+    which_dpi "youtube";
+	tar -xJf "$TAR" -C /tmp --wildcards "$dpiapkpath/*";
     cp -rf /tmp/$dpiapkpath/app/YouTube.apk /data/app/com.google.android.youtube.apk;
-    rm -rf /tmp/$dpiapkpath
-    unzip -o "$ZIP" "GApps/youtube/common" -d /tmp;
-    cp -rf /tmp/GApps/youtube/common/lib. /data/app-lib/com.google.android.youtube/;
-    rm -rf /tmp/GApps/youtube/common;
+    rm -rf /tmp/$dpiapkpath;
+	tar -xJf "$TAR" -C /tmp --wildcards "common/*";
+    cp -rf /tmp/youtube/common/lib. /data/app-lib/com.google.android.youtube/;
+    rm -rf /tmp/youtube/common;
+	rm -f "$TAR";
     gapps_list=${gapps_list/youtube};
 fi;
 

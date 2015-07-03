@@ -66,13 +66,6 @@ createzip() {
 		echo "Compressing GApps/$f"
 		XZ_OPT=-9e tar --remove-files -cJf "$f.tar.xz" "$f"
 	done
-	if [ "$API" -gt "19" ]; then
-		cd "$build"Optional
-		for f in $(ls); do
-			echo "Compressing Optional/$f"
-			XZ_OPT=-9e tar --remove-files -cJf "$f.tar.xz" "$f"
-		done
-	fi
 
 	unsignedzip="$BUILD/$ARCH/$API/$VARIANT.zip"
 	signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.zip"
