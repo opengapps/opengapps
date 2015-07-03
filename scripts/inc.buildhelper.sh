@@ -28,19 +28,26 @@ copy() {
   		install -D -p "$1" "$2"
 	fi
 }
+
 buildfile() {
-	#buildfile needs slashes when used, unlike the buildapp
-	targetdir="$build$2"
-	if [ -e "$SOURCES/$ARCH/$1" ] #check if directory or file exists
-	then
+	if [ -e "$SOURCES/$ARCH/$2" ];then #check if directory or file exists
+		if [ -d "$SOURCES/$ARCH/$2" ];then #if we are handling a directory
+			targetdir="$build/$1/$2"
+		else
+			targetdir="$build/$1/$(dirname "$2")"
+		fi
 		install -d "$targetdir"
-		copy "$SOURCES/$ARCH/$1" "$targetdir" #if we have a file specific to this architecture
-	elif [ -e "$SOURCES/all/$1" ]
-	then
+		copy "$SOURCES/$ARCH/$2" "$targetdir" #if we have a file specific to this architecture
+	elif [ -e "$SOURCES/all/$2" ];then
+		if [ -d "$SOURCES/all/$2" ];then #if we are handling a directory
+			targetdir="$build/$1/$2"
+		else
+			targetdir="$build/$1/$(dirname "$2")"
+		fi
 		install -d "$targetdir"
-		copy "$SOURCES/all/$1" "$targetdir" #use architecure independent file
+		copy "$SOURCES/all/$2" "$targetdir" #use architecure independent file
 	else
-		echo "WARNING: file $1 does not exist in the sources for $ARCH"
+		echo "WARNING: file $2 does not exist in the sources for $ARCH"
 	fi
 }
 

@@ -11,7 +11,7 @@
 #    GNU General Public License for more details.
 #
 makegprop(){
-echo "# begin addon properties
+	echo "# begin addon properties
 ro.addon.type=gapps
 ro.addon.platform=$PLATFORM
 ro.addon.open_type=$VARIANT
@@ -19,35 +19,31 @@ ro.addon.open_version=$DATE
 # end addon properties" > "$build"g.prop
 }
 makegappsremovetxt(){
-if [ "$VARIANT" = "stock" ] || [ "$VARIANT" = "aroma" ] || [ "$VARIANT" = "fornexus" ];then
-	corepath="$build/Core/"
-	gappspath="$build/GApps/"
-	find "$corepath" "$gappspath" -mindepth 4 -maxdepth 4 -printf "%P\n" -name "*" | grep -v "etc/" | sed 's#^[^/]*/[^/]*#/system#' | sort | uniq > "$build"gapps-remove.txt
-	find "$corepath" "$gappspath" -mindepth 5 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^[^/]*/[^/]*#/system#' | sort | uniq >> "$build"gapps-remove.txt
-elif [ -f "$BUILD/$ARCH/$API/stock/gapps-remove.txt" ];then
-	cp "$BUILD/$ARCH/$API/stock/gapps-remove.txt" "$build"gapps-remove.txt
-else
-	echo "No gapps-remove.txt available, first build stock!"
-	exit 1
-fi
+	gapps_remove=""
+	get_supported_variants "stock"
+	get_gapps_list "$supported_variants"
+	for gapp in $gapps_list; do
+		get_package_info "$gapp"
+		if [ ! -z $packagename ]; then
+			gapps_remove="/system/$packagetarget$REMOVALSUFFIX
+$gapps_remove"
+		fi
+		for file in $packagefiles; do
+			if [ "$file" = "etc" ];then
+				gapps_remove="$(find "$SOURCES/all/" -mindepth 3 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^#/system/#' | sort | uniq)
+$gapps_remove"
+			elif [ "$file" = "framework" ];then
+				gapps_remove="$(find "$SOURCES/all/" -mindepth 2 -printf "%P\n" -name "*" | grep "framework/" | sed 's#^#/system/#' | sort | uniq)
+$gapps_remove"
+			else
+				gapps_remove="/system/$file
+$gapps_remove"
+			fi
+		done
+	done
+	printf "$gapps_remove" | sort > "$build"gapps-remove.txt
 }
 makeinstallerdata(){
-if [ "$API" -le "19" ]; then
-	REMOVALSUFFIX=".apk"
-	REMOVALBYPASS="
-/system/lib/libjni_eglfence.so
-/system/lib/libjni_filtershow_filters.so
-/system/lib/libjni_latinime.so
-/system/lib/libjni_tinyplanet.so
-/system/lib/libjpeg.so
-/system/lib/libWVphoneAPI.so
-/system/priv-app/CalendarProvider.apk"
-else
-	REMOVALSUFFIX=""
-	REMOVALBYPASS=""
-fi
-
-
 echo "#This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify

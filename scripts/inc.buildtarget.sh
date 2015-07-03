@@ -10,81 +10,112 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
+get_supported_variants(){
+	case "$1" in
+		stock|aroma|fornexus)	supported_variants="pico nano micro mini full stock";;
+		full)	supported_variants="pico nano micro mini full";;
+		mini)	supported_variants="pico nano micro mini";;
+		micro)	supported_variants="pico nano micro";;
+		nano)	supported_variants="pico nano";;
+		pico)	supported_variants="pico";;
+		*)	supported_variants="";;
+	esac
+}
+
+get_gapps_list(){
+	#Compile the list of applications that will have to be build for this variant
+	gapps_list="$gappscore"
+	for variant in $1; do
+		eval "addtogapps=\$gapps$variant"
+		gapps_list="$gapps_list $addtogapps"
+	done
+}
+
 buildtarget() {
 clean
-#####---------CORE APPLICATIONS---------
-buildapp "com.google.android.gms" "Core/gmscore" "priv-app/PrebuiltGmsCore"
-#only on lollipop extra gestures for AOSP keyboard:
-if [ "$API" -gt "19" ]; then
-	#Keyboard Lib
-	buildfile "$LIBFOLDER/libjni_latinimegoogle.so" "Optional/keybd_lib/$LIBFOLDER/"
-fi
-buildfile "etc/" "Core/framework/common/etc/"
-buildfile "framework" "Core/framework/common/framework/"
-buildapp "com.google.android.syncadapters.contacts" "Core/googlecontactssync" "app/GoogleContactsSyncAdapter"
-buildapp "com.google.android.backuptransport" "Core/googlebackuptransport" "priv-app/GoogleBackupTransport"
-buildapp "com.google.android.feedback" "Core/googlefeedback" "priv-app/GoogleFeedback"
-buildapp "com.google.android.gsf" "Core/gsfcore" "priv-app/GoogleServicesFramework"
-buildapp "com.google.android.gsf.login" "Core/gsflogin" "priv-app/GoogleLoginService"
-buildapp "com.google.android.onetimeinitializer" "Core/googleonetimeinitializer" "priv-app/GoogleOneTimeInitializer"
-buildapp "com.google.android.partnersetup" "Core/googlepartnersetup" "priv-app/GooglePartnerSetup"
-buildapp "com.google.android.setupwizard" "Core/setupwizard" "priv-app/SetupWizard"
-buildapp "com.android.vending" "Core/vending" "priv-app/Phonesky"
-
-#####---------GENERIC PACKAGES---------
 for app in $gapps; do
-	case $app in
-		books)	 	buildapp "com.google.android.apps.books" "GApps/$app" "app/Books";;
-		calendargoogle)	buildapp "com.google.android.calendar" "GApps/$app" "app/CalendarGooglePrebuilt";;
-		calsync)	buildapp "com.google.android.syncadapters.calendar" "GApps/$app" "app/GoogleCalendarSyncAdapter";;
-		cameragoogle)	if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
-					buildapp "com.google.android.googlecamera" "GApps/$app" "app/GoogleCamera"
-				fi;;
-		chrome)		buildapp "com.android.chrome" "GApps/$app" "app/Chrome";;
-		clockgoogle)	buildapp "com.google.android.deskclock" "GApps/$app" "app/DeskClockGoogle";;
-		cloudprint)	buildapp "com.google.android.apps.cloudprint" "GApps/$app" "app/CloudPrint2";;
-		docs)		buildapp "com.google.android.apps.docs.editors.docs" "GApps/$app" "app/EditorsDocs";;
-		drive)		buildapp "com.google.android.apps.docs" "GApps/$app" "app/Drive";;
-		ears)		if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
-					buildapp "com.google.android.ears" "GApps/$app" "app/GoogleEars"
-				fi;;
-		earth)		buildapp "com.google.earth" "GApps/$app" "app/GoogleEarth";;
-		exchangegoogle)	buildapp "com.google.android.gm.exchange" "GApps/$app" "app/PrebuiltExchange3Google";;
-		faceunlock)	buildfile "$LIBFOLDER/libfacelock_jni.so" "GApps/$app/common/$LIBFOLDER/"
-				buildfile "$LIBFOLDER/libfilterpack_facedetect.so" "GApps/$app/common/$LIBFOLDER/"
-				if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64 bit, we also need the 32 bit file
-					buildfile "lib/libfilterpack_facedetect.so" "GApps/$app/common/lib/"
-				fi
-				buildfile "vendor/pittpatt/" "GApps/$app/common/vendor/pittpatt/"
-				buildapp "com.android.facelock" "GApps/$app" "app/FaceLock";;
-		fitness)	buildapp "com.google.android.apps.fitness" "GApps/$app" "app/FitnessPrebuilt";;
-		gmail)		buildapp "com.google.android.gm" "GApps/$app" "app/PrebuiltGmail";;
-		googlenow)	buildapp "com.google.android.launcher" "GApps/$app" "priv-app/GoogleHome";; #moves in android M to /app/
-		photos)		buildapp "com.google.android.apps.photos" "GApps/$app" "app/Photos";;
-		googleplus)	buildapp "com.google.android.apps.plus" "GApps/$app" "app/PlusOne";;
-		googletts)	buildapp "com.google.android.tts" "GApps/$app" "app/GoogleTTS";;
-		hangouts)	buildapp "com.google.android.talk" "GApps/$app" "priv-app/Hangouts";;
-		keep)		buildapp "com.google.android.keep" "GApps/$app" "app/PrebuiltKeep";;
-		keyboardgoogle)	buildapp "com.google.android.inputmethod.latin" "GApps/$app" "app/LatinImeGoogle";;
-		maps)		buildapp "com.google.android.apps.maps" "GApps/$app" "app/Maps";;
-		messenger) 	buildapp "com.google.android.apps.messaging" "GApps/$app" "app/PrebuiltBugle";;
-		movies)		buildapp "com.google.android.videos" "GApps/$app" "app/Videos";;
-		music)		buildapp "com.google.android.music" "GApps/$app" "app/Music2";;
-		newsstand)	buildapp "com.google.android.apps.magazines" "GApps/$app" "app/Newsstand";;
-		newswidget)	buildapp "com.google.android.apps.genie.geniewidget" "GApps/$app" "app/PrebuiltNewsWeather";;
-		playgames) 	buildapp "com.google.android.play.games" "GApps/$app" "app/PlayGames";;
-		search)		buildapp "com.google.android.googlequicksearchbox" "GApps/$app" "priv-app/Velvet";;
-		sheets)		buildapp "com.google.android.apps.docs.editors.sheets" "GApps/$app" "app/EditorsSheets";;
-		slides)		buildapp "com.google.android.apps.docs.editors.slides" "GApps/$app" "app/EditorsSlides";;
-		speech)		buildfile "usr/srec/" "GApps/$app/common/usr/srec/";;
-		street)		buildapp "com.google.android.street" "GApps/$app" "app/Street";;
-		talkback)	buildapp "com.google.android.marvin.talkback" "GApps/$app" "app/talkback";;
-		wallet)		if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
-					buildapp "com.google.android.apps.walletnfcrel" "GApps/$app" "priv-app/Wallet"
-				fi;;
-		webviewgoogle)	buildapp "com.google.android.webview" "GApps/$app" "app/WebViewGoogle";;
-		youtube)	buildapp "com.google.android.youtube" "GApps/$app" "app/YouTube";;
+	get_package_info $app
+	if [ ! -z $packagename ]; then
+		buildapp "$packagename" "$packagetype/$app" "$packagetarget"
+	fi
+	for file in $packagefiles; do
+		buildfile "$packagetype/$app/common" "$file"
+	done
+done
+}
+
+#only on lollipop extra gestures for AOSP keyboard:
+#if [ "$API" -gt "19" ]; then
+#	#Keyboard Lib
+#	buildfile "$LIBFOLDER/libjni_latinimegoogle.so" "Optional/keybd_lib/$LIBFOLDER/"
+#fi
+
+get_package_info(){
+	packagename=""
+	packagetype=""
+	packagetarget=""
+	packagefiles=""
+	case "$1" in
+		framework)					packagetype="Core"; packagefiles="etc framework";;
+		gmscore)					packagename="com.google.android.gms"; packagetype="Core"; packagetarget="priv-app/PrebuiltGmsCore";;
+		googlecontactssync)			packagename="com.google.android.syncadapters.contacts"; packagetype="Core"; packagetarget="app/GoogleContactsSyncAdapter";;
+		googlebackuptransport)		packagename="com.google.android.backuptransport"; packagetype="Core"; packagetarget="priv-app/GoogleBackupTransport";;
+		googlefeedback)				packagename="com.google.android.feedback"; packagetype="Core"; packagetarget="priv-app/GoogleFeedback";;
+		gsfcore)					packagename="com.google.android.gsf"; packagetype="Core"; packagetarget="priv-app/GoogleServicesFramework";;
+		gsflogin)					packagename="com.google.android.gsf.login"; packagetype="Core"; packagetarget="priv-app/GoogleLoginService";;
+		googleonetimeinitializer)	packagename="com.google.android.onetimeinitializer"; packagetype="Core"; packagetarget="priv-app/GoogleOneTimeInitializer";;
+		googlepartnersetup)			packagename="com.google.android.partnersetup"; packagetype="Core"; packagetarget="priv-app/GooglePartnerSetup";;
+		setupwizard)				packagename="com.google.android.setupwizard"; packagetype="Core"; packagetarget="priv-app/SetupWizard";;
+		vending)					packagename="com.android.vending"; packagetype="Core"; packagetarget="priv-app/Phonesky";;
+
+		books)	 		packagename="com.google.android.apps.books"; packagetype="GApps"; packagetarget="app/Books";;
+		calendargoogle)	packagename="com.google.android.calendar"; packagetype="GApps"; packagetarget="app/CalendarGooglePrebuilt";;
+		calsync)		packagename="com.google.android.syncadapters.calendar"; packagetype="GApps"; packagetarget="app/GoogleCalendarSyncAdapter";;
+		cameragoogle) 	if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
+							packagename="com.google.android.googlecamera"; packagetype="GApps"; packagetarget="app/GoogleCamera"
+						fi;;
+		chrome)			packagename="com.android.chrome"; packagetype="GApps"; packagetarget="app/Chrome";;
+		clockgoogle)	packagename="com.google.android.deskclock"; packagetype="GApps"; packagetarget="app/DeskClockGoogle";;
+		cloudprint)		packagename="com.google.android.apps.cloudprint"; packagetype="GApps"; packagetarget="app/CloudPrint2";;
+		docs)			packagename="com.google.android.apps.docs.editors.docs"; packagetype="GApps"; packagetarget="app/EditorsDocs";;
+		drive)			packagename="com.google.android.apps.docs"; packagetype="GApps"; packagetarget="app/Drive";;
+		ears)			if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
+							packagename="com.google.android.ears"; packagetype="GApps"; packagetarget="app/GoogleEars"
+						fi;;
+		earth)			packagename="com.google.earth"; packagetype="GApps"; packagetarget="app/GoogleEarth";;
+		exchangegoogle)	packagename="com.google.android.gm.exchange"; packagetype="GApps"; packagetarget="app/PrebuiltExchange3Google";;
+		faceunlock)		packagename="com.android.facelock"; packagetype="GApps"; packagetarget="app/FaceLock";
+						packagefiles="vendor/pittpatt/ $LIBFOLDER/libfacelock_jni.so $LIBFOLDER/libfilterpack_facedetect.so"
+						if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64 bit, we also need the 32 bit file
+							packagefiles="$packagefiles lib/libfilterpack_facedetect.so";
+						fi;;
+		fitness)		packagename="com.google.android.apps.fitness"; packagetype="GApps"; packagetarget="app/FitnessPrebuilt";;
+		gmail)			packagename="com.google.android.gm"; packagetype="GApps"; packagetarget="app/PrebuiltGmail";;
+		googlenow)		packagename="com.google.android.launcher"; packagetype="GApps"; packagetarget="priv-app/GoogleHome";; #moves in android M to /app/
+		photos)			packagename="com.google.android.apps.photos"; packagetype="GApps"; packagetarget="app/Photos";;
+		googleplus)		packagename="com.google.android.apps.plus"; packagetype="GApps"; packagetarget="app/PlusOne";;
+		googletts)		packagename="com.google.android.tts"; packagetype="GApps"; packagetarget="app/GoogleTTS";;
+		hangouts)		packagename="com.google.android.talk"; packagetype="GApps"; packagetarget="priv-app/Hangouts";;
+		keep)			packagename="com.google.android.keep"; packagetype="GApps"; packagetarget="app/PrebuiltKeep";;
+		keyboardgoogle)	packagename="com.google.android.inputmethod.latin"; packagetype="GApps"; packagetarget="app/LatinImeGoogle";;
+		maps)			packagename="com.google.android.apps.maps"; packagetype="GApps"; packagetarget="app/Maps";;
+		messenger)	 	packagename="com.google.android.apps.messaging"; packagetype="GApps"; packagetarget="app/PrebuiltBugle";;
+		movies)			packagename="com.google.android.videos"; packagetype="GApps"; packagetarget="app/Videos";;
+		music)			packagename="com.google.android.music"; packagetype="GApps"; packagetarget="app/Music2";;
+		newsstand)		packagename="com.google.android.apps.magazines"; packagetype="GApps"; packagetarget="app/Newsstand";;
+		newswidget)		packagename="com.google.android.apps.genie.geniewidget"; packagetype="GApps"; packagetarget="app/PrebuiltNewsWeather";;
+		playgames) 		packagename="com.google.android.play.games"; packagetype="GApps"; packagetarget="app/PlayGames";;
+		search)			packagename="com.google.android.googlequicksearchbox"; packagetype="GApps"; packagetarget="priv-app/Velvet";;
+		sheets)			packagename="com.google.android.apps.docs.editors.sheets"; packagetype="GApps"; packagetarget="app/EditorsSheets";;
+		slides)			packagename="com.google.android.apps.docs.editors.slides"; packagetype="GApps"; packagetarget="app/EditorsSlides";;
+		speech)			packagetype="GApps"; packagefiles="usr/srec/";;
+		street)			packagename="com.google.android.street"; packagetype="GApps"; packagetarget="app/Street";;
+		talkback)		packagename="com.google.android.marvin.talkback"; packagetype="GApps"; packagetarget="app/talkback";;
+		wallet)			if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
+							packagename="com.google.android.apps.walletnfcrel"; packagetype="GApps"; packagetarget="priv-app/Wallet"
+						fi;;
+		webviewgoogle)	packagename="com.google.android.webview"; packagetype="GApps"; packagetarget="app/WebViewGoogle";;
+		youtube)		packagename="com.google.android.youtube"; packagetype="GApps"; packagetarget="app/YouTube";;
 		*) 		echo "ERROR! Missing build rule for application with keyword $app";exit 1;;
 	esac
-done
 }

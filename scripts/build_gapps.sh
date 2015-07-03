@@ -26,6 +26,22 @@ BUILD="$TOP/build"
 OUT="$TOP/out"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
+. "$SCRIPTS/inc.buildhelper.sh"
+. "$SCRIPTS/inc.buildtarget.sh"
+. "$SCRIPTS/inc.aromadata.sh"
+. "$SCRIPTS/inc.installdata.sh"
+. "$SCRIPTS/inc.packagetarget.sh"
+. "$SCRIPTS/inc.updatebinary.sh"
+
+#####---------CHECK FOR EXISTANCE OF SOME BINARIES---------
+command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
+command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }
+#coreutils also contains the basename command
+command -v openssl >/dev/null 2>&1 || { echo "openssl is required but it's not installed.  Aborting." >&2; exit 1; }
+#necessary to use signapk
+command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not installed.  Aborting." >&2; exit 1; }
+command -v zip >/dev/null 2>&1 || { echo "zip is required but it's not installed.  Aborting." >&2; exit 1; }
+command -v zipalign >/dev/null 2>&1 || { echo "zipalign is required but it's not installed.  Aborting." >&2; exit 1; }
 
 case "$ARCH" in
 	arm64)	LIBFOLDER="lib64"
@@ -44,16 +60,11 @@ case "$API" in
 		exit 1;;
 esac
 
-case "$VARIANT" in
-	stock|aroma|fornexus)	SUPPORTEDVARIANTS="pico nano micro mini full stock";;
-	full)	SUPPORTEDVARIANTS="pico nano micro mini full";;
-	mini)	SUPPORTEDVARIANTS="pico nano micro mini";;
-	micro)	SUPPORTEDVARIANTS="pico nano micro";;
-	nano)	SUPPORTEDVARIANTS="pico nano";;
-	pico)	SUPPORTEDVARIANTS="pico";;
-	*)	echo "Unknown variant, aborting..."
-		exit 1;;
-esac
+get_supported_variants "$VARIANT"
+if [ -z "$supported_variants" ]; then
+	echo "Unknown variant, aborting..."; exit 1
+fi
+SUPPORTEDVARIANTS="$supported_variants"
 
 if [ "$FALLBACKARCH" != "arm" ];then #For all non-arm(64) platforms
 	case "$VARIANT" in
@@ -132,32 +143,27 @@ if [ "$API" -ge "22" ] || { [ "$API" -ge "21" ] && [ "$VARIANT" = "fornexus" ]; 
 webviewstock"
 fi
 
+if [ "$API" -le "19" ]; then
+	REMOVALSUFFIX=".apk"
+	REMOVALBYPASS="
+/system/lib/libjni_eglfence.so
+/system/lib/libjni_filtershow_filters.so
+/system/lib/libjni_latinime.so
+/system/lib/libjni_tinyplanet.so
+/system/lib/libjpeg.so
+/system/lib/libWVphoneAPI.so
+/system/priv-app/CalendarProvider.apk"
+else
+	REMOVALSUFFIX=""
+	REMOVALBYPASS=""
+fi
+
 #Compile the list of applications that will have to be build for this variant
-gapps=""
-for variant in $SUPPORTEDVARIANTS; do
-	eval "addtogapps=\$gapps$variant"
-	gapps="$gapps $addtogapps"
-done
+get_gapps_list "$SUPPORTEDVARIANTS"
+gapps="$gapps_list"
 
 build="$BUILD/$ARCH/$API/$VARIANT/"
 install -d "$build"
-
-#####---------CHECK FOR EXISTANCE OF SOME BINARIES---------
-command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
-command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }
-#coreutils also contains the basename command
-command -v openssl >/dev/null 2>&1 || { echo "openssl is required but it's not installed.  Aborting." >&2; exit 1; }
-#necessary to use signapk
-command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not installed.  Aborting." >&2; exit 1; }
-command -v zip >/dev/null 2>&1 || { echo "zip is required but it's not installed.  Aborting." >&2; exit 1; }
-command -v zipalign >/dev/null 2>&1 || { echo "zipalign is required but it's not installed.  Aborting." >&2; exit 1; }
-
-. "$SCRIPTS/inc.buildhelper.sh"
-. "$SCRIPTS/inc.buildtarget.sh"
-. "$SCRIPTS/inc.aromadata.sh"
-. "$SCRIPTS/inc.installdata.sh"
-. "$SCRIPTS/inc.packagetarget.sh"
-. "$SCRIPTS/inc.updatebinary.sh"
 buildtarget
 alignbuild
 commonscripts

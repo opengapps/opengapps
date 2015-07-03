@@ -15,8 +15,6 @@ TOP="$(realpath .)"
 SOURCES="$TOP/sources"
 
 command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
-command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }
-#coreutils also contains the basename command
 
 argument(){
 	case $1 in
