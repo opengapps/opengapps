@@ -55,6 +55,28 @@ aromaupdatebinary() {
 }
 
 createzip() {
+    echo "Compressing apps in tar.xz archives..."
+	cd "$build"Core
+    for f in $(ls); do
+        echo "Compressing Core/$f"
+        XZ_OPT=-9e tar -cJf "$f.tar.xz" "$f"
+        rm -rf "$f"
+    done
+	cd "$build"GApps
+    for f in $(ls); do
+        echo "Compressing GApps/$f"
+        XZ_OPT=-9e tar -cJf "$f.tar.xz" "$f"
+        rm -rf "$f"
+    done
+	if [ "$API" -gt "19" ]; then
+	    cd "$build"Optional
+        for f in $(ls); do
+            echo "Compressing Optional/$f"
+            XZ_OPT=-9e tar -cJf "$f.tar.xz" "$f"
+            rm -rf "$f"
+        done
+    fi
+
 	unsignedzip="$BUILD/$ARCH/$API/$VARIANT.zip"
 	signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.zip"
 
@@ -69,7 +91,8 @@ createzip() {
 	fi
 	cd "$build"
 	echo "Compressing and signing $signedzip..."
-	zip -q -r -D -X -9 "$unsignedzip" $zipfolders #don't doublequote zipfolders, contains multiple (safe) arguments
+    # Store only the files in the zip without compressing tehm (-0 switch): further compression will be useless and will slow down the building process
+	zip -q -r -D -X -0 "$unsignedzip" $zipfolders #don't doublequote zipfolders, contains multiple (safe) arguments
 	cd "$TOP"
 	signzip
 }
