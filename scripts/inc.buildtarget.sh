@@ -33,6 +33,10 @@ get_gapps_list(){
 
 buildtarget() {
 clean
+#only on lollipop extra gestures for AOSP keyboard:
+if [ "$API" -gt "19" ]; then
+	buildfile "Optional/keybd_lib" "$LIBFOLDER/libjni_latinimegoogle.so"
+fi
 for app in $gapps; do
 	get_package_info $app
 	if [ ! -z $packagename ]; then
@@ -43,12 +47,6 @@ for app in $gapps; do
 	done
 done
 }
-
-#only on lollipop extra gestures for AOSP keyboard:
-#if [ "$API" -gt "19" ]; then
-#	#Keyboard Lib
-#	buildfile "$LIBFOLDER/libjni_latinimegoogle.so" "Optional/keybd_lib/$LIBFOLDER/"
-#fi
 
 get_package_info(){
 	packagename=""
