@@ -10,6 +10,88 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
+
+# Static definitions, lists of packages per variant and in the core
+gappscore="framework
+googlebackuptransport
+googlecontactssync
+googlefeedback
+googleonetimeinitializer
+googlepartnersetup
+gmscore
+gsfcore
+gsflogin
+setupwizard
+vending"
+
+gappsstock="cameragoogle
+keyboardgoogle"
+if [ "$API" -ge "22" ] || { [ "$API" -ge "21" ] && [ "$VARIANT" = "fornexus" ]; }; then #on AOSP we only support Webview on 5.1+, on fornexus 5.0+ is valid
+	gappsstock="$gappsstock
+webviewgoogle"
+fi
+
+gappsfull="books
+chrome
+cloudprint
+docs
+drive
+ears
+earth
+fitness
+keep
+messenger
+movies
+music
+newsstand
+newswidget
+playgames
+sheets
+slides
+talkback
+wallet"
+
+gappsmini="clockgoogle
+googleplus
+hangouts
+maps
+photos
+street
+youtube"
+
+gappsmicro="calendargoogle
+exchangegoogle
+gmail
+googlenow
+googletts
+faceunlock"
+
+gappsnano="search
+speech"
+
+gappspico="calsync"
+
+stockremove="browser
+email
+gallery
+launcher
+mms
+picotts"
+if [ "$API" -ge "22" ] || { [ "$API" -ge "21" ] && [ "$VARIANT" = "fornexus" ]; }; then #on AOSP we only support Webview on 5.1+, on fornexus 5.0+ is valid
+	stockremove="$stockremove
+webviewstock"
+fi
+
+# Static definitions, libraries and fallbacks per architecture
+case "$ARCH" in
+	arm64)	LIBFOLDER="lib64"
+		FALLBACKARCH="arm";;
+	x86_64)	LIBFOLDER="lib64"
+		FALLBACKARCH="x86";;
+	*)	LIBFOLDER="lib"
+		FALLBACKARCH="$ARCH";;
+esac
+
 get_supported_variants(){
 	case "$1" in
 		stock|aroma|fornexus)	supported_variants="pico nano micro mini full stock";;
@@ -23,7 +105,7 @@ get_supported_variants(){
 }
 
 get_gapps_list(){
-	#Compile the list of applications that will have to be build for this variant
+	#Compile the list of applications that will be build for this variant
 	gapps_list="$gappscore"
 	for variant in $1; do
 		eval "addtogapps=\$gapps$variant"
@@ -32,9 +114,9 @@ get_gapps_list(){
 }
 
 buildtarget() {
-clean
-#only on lollipop extra gestures for AOSP keyboard:
-if [ "$API" -gt "19" ]; then
+clean #make sure the build area is clean
+
+if [ "$API" -gt "19" ]; then #only on lollipop extra gestures for AOSP keyboard:
 	buildfile "Optional/keybd_lib" "$LIBFOLDER/libjni_latinimegoogle.so"
 fi
 for app in $gapps; do

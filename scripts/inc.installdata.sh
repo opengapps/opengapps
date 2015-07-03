@@ -10,6 +10,22 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
+kitkathacks(){
+	if [ "$API" -le "19" ]; then
+		REMOVALSUFFIX=".apk"
+		REMOVALBYPASS="
+	/system/lib/libjni_eglfence.so
+	/system/lib/libjni_filtershow_filters.so
+	/system/lib/libjni_latinime.so
+	/system/lib/libjni_tinyplanet.so
+	/system/lib/libjpeg.so
+	/system/lib/libWVphoneAPI.so
+	/system/priv-app/CalendarProvider.apk"
+	else
+		REMOVALSUFFIX=""
+		REMOVALBYPASS=""
+	fi
+}
 makegprop(){
 	echo "# begin addon properties
 ro.addon.type=gapps

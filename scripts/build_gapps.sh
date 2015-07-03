@@ -43,15 +43,6 @@ command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not insta
 command -v zip >/dev/null 2>&1 || { echo "zip is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v zipalign >/dev/null 2>&1 || { echo "zipalign is required but it's not installed.  Aborting." >&2; exit 1; }
 
-case "$ARCH" in
-	arm64)	LIBFOLDER="lib64"
-		FALLBACKARCH="arm";;
-	x86_64)	LIBFOLDER="lib64"
-		FALLBACKARCH="x86";;
-	*)	LIBFOLDER="lib"
-		FALLBACKARCH="$ARCH";;
-esac
-
 case "$API" in
 	19)	PLATFORM="4.4";;
 	21)	PLATFORM="5.0";;
@@ -62,7 +53,7 @@ esac
 
 get_supported_variants "$VARIANT"
 if [ -z "$supported_variants" ]; then
-	echo "Unknown variant, aborting..."; exit 1
+	echo "ERROR: Unknown variant! aborting..."; exit 1
 fi
 SUPPORTEDVARIANTS="$supported_variants"
 
@@ -73,90 +64,7 @@ if [ "$FALLBACKARCH" != "arm" ];then #For all non-arm(64) platforms
 	esac
 fi
 
-gappscore="framework
-googlebackuptransport
-googlecontactssync
-googlefeedback
-googleonetimeinitializer
-googlepartnersetup
-gmscore
-gsfcore
-gsflogin
-setupwizard
-vending"
-
-gappsstock="cameragoogle
-keyboardgoogle"
-if [ "$API" -ge "22" ] || { [ "$API" -ge "21" ] && [ "$VARIANT" = "fornexus" ]; }; then #on AOSP we only support Webview on 5.1+, on fornexus 5.0+ is valid
-	gappsstock="$gappsstock
-webviewgoogle"
-fi
-
-gappsfull="books
-chrome
-cloudprint
-docs
-drive
-ears
-earth
-fitness
-keep
-messenger
-movies
-music
-newsstand
-newswidget
-playgames
-sheets
-slides
-talkback
-wallet"
-
-gappsmini="clockgoogle
-googleplus
-hangouts
-maps
-photos
-street
-youtube"
-
-gappsmicro="calendargoogle
-exchangegoogle
-gmail
-googlenow
-googletts
-faceunlock"
-
-gappsnano="search
-speech"
-
-gappspico="calsync"
-
-stockremove="browser
-email
-gallery
-launcher
-mms
-picotts"
-if [ "$API" -ge "22" ] || { [ "$API" -ge "21" ] && [ "$VARIANT" = "fornexus" ]; }; then #on AOSP we only support Webview on 5.1+, on fornexus 5.0+ is valid
-	stockremove="$stockremove
-webviewstock"
-fi
-
-if [ "$API" -le "19" ]; then
-	REMOVALSUFFIX=".apk"
-	REMOVALBYPASS="
-/system/lib/libjni_eglfence.so
-/system/lib/libjni_filtershow_filters.so
-/system/lib/libjni_latinime.so
-/system/lib/libjni_tinyplanet.so
-/system/lib/libjpeg.so
-/system/lib/libWVphoneAPI.so
-/system/priv-app/CalendarProvider.apk"
-else
-	REMOVALSUFFIX=""
-	REMOVALBYPASS=""
-fi
+kitkathacks
 
 #Compile the list of applications that will have to be build for this variant
 get_gapps_list "$SUPPORTEDVARIANTS"
