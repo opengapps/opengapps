@@ -95,7 +95,7 @@ clean_inst() {
 extract_app() {
 	unzip -o "$ZIP" "$1.tar.xz" -d /tmp;
 	TAR="/tmp/$1.tar.xz";
-	app_name=$(basename $1);
+	app_name="$(basename "$1")";
     which_dpi "$app_name";
     if [ "$dpiapkpath" != "unknown" ]; then #technically not necessary, 'unknown' folder would not exist anyway
         folder_extract "$dpiapkpath";
@@ -138,7 +138,7 @@ file_getprop() {
 }
 
 folder_extract() {
-	tar -xJf "$TAR" -C /tmp --wildcards "$1/*";
+	tar -xJf "$TAR" -C /tmp "$1";
     bkup_list=$'\n'"$(find "/tmp/$1/*" -type f | cut -d/ -f5-)${bkup_list}";
     cp -rf /tmp/$1/. /system/;
     rm -rf /tmp/$1;
@@ -147,9 +147,9 @@ folder_extract() {
 get_appsize() {
 	unzip -o "$ZIP" "$1.tar.xz" -d /tmp;
 	TAR="/tmp/$1.tar.xz";
-	app_name=$(basename $1);
+	app_name="$(basename "$1")";
     which_dpi "$app_name";
-    appsize="$(tar -tvJf "$TAR" --wildcards "$1/common/*" "$dpiapkpath/*" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }')";
+    appsize="$(tar -tvJf "$TAR" "$1/common" "$dpiapkpath" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }')";
 	rm -f "$TAR";
 }
 
@@ -276,34 +276,41 @@ ui_print() {
 }
 
 which_dpi() {
+	correct_dpi="unknown"
     # Calculate available densities
-	app_densities="$(tar -tJf "$TAR" --wildcards "$1/*" | grep -E "$1/[0-9-]+|nodpi/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | uniq | sed 's/-/ /g' | tr '\n' ' ')";
+	app_densities="$(tar -tJf "$TAR" "$1" | grep -E "$1/[0-9-]+|nodpi/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | uniq | sort)";
     # Check if in the package there is a version for our density, or a universal one.
-    case "$app_densities" in
-        *"$density"*) dpiapkpath="$1/*$density*";;
-        *nodpi*) dpiapkpath="$1/nodpi";;
-        *) dpiapkpath="unknown";;
-    esac;
-    # If there is no package for our density nor a universal one, we will look for the one with closer, but higher density.
-    if [ "$dpiapkpath" = "unknown" ]; then
-        app_densities="$(echo "$app_densities" | tr ' ' '\n' | sort | tr '\n' ' ')";
-        for d in $app_densities; do
-            if [ "$d" -ge "$density" ]; then
-                dpiapkpath="$1/*$d*";
-                break;
-            fi;
-        done;
-    fi;
-    # If there is no package for our density nor a universal one or one for higher density, we will use the one with closer, but lower density.
-    if [ "$dpiapkpath" = "unknown" ]; then
-        app_densities="$(echo "$app_densities" | tr ' ' '\n' | sort -r | tr '\n' ' ')";
-        for d in $app_densities; do
-            if [ "$d" -le "$density" ]; then
-                dpiapkpath="$1/*$d*";
-                break;
-            fi;
-        done;
-    fi;
+	for densities in $app_densities; do
+		case "$densities" in
+			*"$density"*) dpiapkpath="$1/densities"; break;;
+			*nodpi*) dpiapkpath="$1/nodpi"; break;;
+			*) dpiapkpath="unknown";;
+		esac;
+	done;
+	# If there is no package for our density nor a universal one, we will look for the one with closer, but higher density.
+	if [ "$dpiapkpath" = "unknown" ]; then
+		for densities in $app_densities; do
+			all_densities="$(echo "$densities" | sed 's/-/ /g' | tr ' ' '\n' | sort | tr '\n' ' ')";
+			for d in $all_densities; do
+				if [ "$d" -ge "$density" ]; then
+					dpiapkpath="$1/$densities";
+					break 2;
+				fi;
+			done;
+		done;
+	fi;
+	# If there is no package for our density nor a universal one or one for higher density, we will use the one with closer, but lower density.
+	if [ "$dpiapkpath" = "unknown" ]; then
+		for densities in $app_densities; do
+			all_densities="$(echo "$densities" | sed 's/-/ /g' | tr ' ' '\n' | sort -r | tr '\n' ' ')";
+			for d in $all_densities; do
+				if [ "$d" -ge "$density" ]; then
+					dpiapkpath="$1/$densities";
+					break 2;
+				fi;
+			done;
+		done;
+	fi;
 }
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Pre-Install Info
@@ -889,7 +896,7 @@ for gapp_name in $core_gapps_list; do
 done;
 unzip -o "$ZIP" "Optional/keybd_lib.tar.xz" -d /tmp;
 TAR="/tmp/Optional/keybd_lib.tar.xz";
-keybd_lib_size=$(tar -tvJf "$TAR" --wildcards "keybd_lib/*" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
+keybd_lib_size=$(tar -tvJf "$TAR" "keybd_lib" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
 rm -f "/tmp/Optional/keybd_lib.tar.xz";
 
 EOFILE
@@ -1096,10 +1103,10 @@ if ( contains "$gapps_list" "hangouts" ); then
 	unzip -o "$ZIP" "GApps/hangouts.tar.xz" -d /tmp;
 	TAR="/tmp/GApps/hangouts.tar.xz";
     which_dpi "hangouts";
-	tar -xJf "$TAR" -C /tmp --wildcards "$dpiapkpath/*";
+	tar -xJf "$TAR" -C /tmp "$dpiapkpath";
     cp -rf /tmp/$dpiapkpath/priv-app/Hangouts.apk /data/app/com.google.android.talk.apk;
     rm -rf /tmp/$dpiapkpath;
-	tar -xJf "$TAR" -C /tmp --wildcards "common/*";
+	tar -xJf "$TAR" -C /tmp "common";
     cp -rf /tmp/hangouts/common/lib. /data/app-lib/com.google.android.talk/;
     rm -rf /tmp/hangouts/common;
 	rm -f "$TAR";
@@ -1110,10 +1117,10 @@ if ( contains "$gapps_list" "googleplus" ); then
 	unzip -o "$ZIP" "GApps/googleplus.tar.xz" -d /tmp;
 	TAR="/tmp/GApps/googleplus.tar.xz";
     which_dpi "googleplus";
-	tar -xJf "$TAR" -C /tmp --wildcards "$dpiapkpath/*";
+	tar -xJf "$TAR" -C /tmp "$dpiapkpath";
     cp -rf /tmp/$dpiapkpath/app/PlusOne.apk /data/app/com.google.android.apps.plus.apk;
     rm -rf /tmp/$dpiapkpath;
-	tar -xJf "$TAR" -C /tmp --wildcards "common/*";
+	tar -xJf "$TAR" -C /tmp "common";
     cp -rf /tmp/googleplus/common/lib. /data/app-lib/com.google.android.apps.plus/;
     rm -rf /tmp/googleplus/common;
 	rm -f "$TAR";
@@ -1124,10 +1131,10 @@ if ( contains "$gapps_list" "photos" ); then
 	unzip -o "$ZIP" "GApps/photos.tar.xz" -d /tmp;
 	TAR="/tmp/GApps/photos.tar.xz";
     which_dpi "photos";
-	tar -xJf "$TAR" -C /tmp --wildcards "$dpiapkpath/*";
+	tar -xJf "$TAR" -C /tmp "$dpiapkpath";
     cp -rf /tmp/$dpiapkpath/app/Photos.apk /data/app/com.google.android.apps.photos.apk;
     rm -rf /tmp/$dpiapkpath;
-	tar -xJf "$TAR" -C /tmp --wildcards "common/*";
+	tar -xJf "$TAR" -C /tmp "common";
     cp -rf /tmp/photos/common/lib. /data/app-lib/com.google.android.apps.photos/;
     rm -rf /tmp/photos/common;
 	rm -f "$TAR";
@@ -1138,10 +1145,10 @@ if ( contains "$gapps_list" "youtube" ); then
 	unzip -o "$ZIP" "GApps/youtube.tar.xz" -d /tmp;
 	TAR="/tmp/GApps/youtube.tar.xz";
     which_dpi "youtube";
-	tar -xJf "$TAR" -C /tmp --wildcards "$dpiapkpath/*";
+	tar -xJf "$TAR" -C /tmp "$dpiapkpath";
     cp -rf /tmp/$dpiapkpath/app/YouTube.apk /data/app/com.google.android.youtube.apk;
     rm -rf /tmp/$dpiapkpath;
-	tar -xJf "$TAR" -C /tmp --wildcards "common/*";
+	tar -xJf "$TAR" -C /tmp "common";
     cp -rf /tmp/youtube/common/lib. /data/app-lib/com.google.android.youtube/;
     rm -rf /tmp/youtube/common;
 	rm -f "$TAR";
