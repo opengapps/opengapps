@@ -18,7 +18,7 @@ tee "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
 # This Open GApps Shell Script Installer includes code derived from the TK GApps of @TKruzze and @osm0sis,
 # The TK GApps are available under the GPLv3 from http://forum.xda-developers.com/android/software/tk-gapps-t3116347
 #
-unzip -o "$3" installer.data g.prop gapps-remove.txt bkup_tail.sh -d /tmp;
+unzip -o "$3" installer.data g.prop gapps-remove.txt bkup_tail.sh app_densities.txt -d /tmp;
 . /tmp/installer.data;
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
@@ -277,7 +277,7 @@ ui_print() {
 
 which_dpi() {
     # Calculate available densities
-	app_densities="$(tar -tJf "$TAR" "$1" | grep -E "$1/[0-9-]+|nodpi/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | uniq | sort)";
+	app_densities="$(cat /tmp/app_densities.txt | grep -E "$1/[0-9-]+|nodpi/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | sort)";
     # Check if in the package there is a version for our density, or a universal one.
 	for densities in $app_densities; do
 		case "$densities" in
@@ -462,19 +462,19 @@ density=$(getprop ro.sf.lcd_density);
 
 # If the density returned by getprop is empty or non-standard - read from default.prop instead
 case $density in
-    120|160|213|240|320|400|480|560|640) ;;
+    120|160|213|240|280|320|400|480|560|640) ;;
     *) density=$(file_getprop /default.prop ro.sf.lcd_density);;
 esac;
 
 # If the density from default.prop is still empty or non-standard - read from build.prop instead
 case $density in
-    120|160|213|240|320|400|480|560|640) ;;
+    120|160|213|240|280|320|400|480|560|640) ;;
     *) density=$(file_getprop $b_prop ro.sf.lcd_density);;
 esac;
 
 # Check for DPI Override in gapps-config
-if ( grep -qiE "forcedpi(120|160|213|240|320|400|480|560|640)" $g_conf ); then # user wants to override the DPI selection
-    density=$( grep -iEo "forcedpi(120|160|213|240|320|400|480|560|640)" $g_conf | tr '[:upper:]'  '[:lower:]' );
+if ( grep -qiE "forcedpi(120|160|213|240|280|320|400|480|560|640)" $g_conf ); then # user wants to override the DPI selection
+    density=$( grep -iEo "forcedpi(120|160|213|240|280|320|400|480|560|640)" $g_conf | tr '[:upper:]'  '[:lower:]' );
     density=${density#forcedpi};
 fi;
 

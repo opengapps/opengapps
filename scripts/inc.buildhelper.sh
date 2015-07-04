@@ -70,6 +70,7 @@ buildapp(){
 				density=$(basename "$(dirname "$dpivariant")")
 				buildapk "$dpivariant" "$ziplocation/$density/$targetlocation"
 				printf " $density"
+				echo "$ziplocation/$density/" >> "$build"app_densities.txt
 			fi
 		done
 		printf "\n"
