@@ -14,16 +14,23 @@ kitkathacks(){
 	if [ "$API" -le "19" ]; then
 		REMOVALSUFFIX=".apk"
 		REMOVALBYPASS="
-	/system/lib/libjni_eglfence.so
-	/system/lib/libjni_filtershow_filters.so
-	/system/lib/libjni_latinime.so
-	/system/lib/libjni_tinyplanet.so
-	/system/lib/libjpeg.so
-	/system/lib/libWVphoneAPI.so
-	/system/priv-app/CalendarProvider.apk"
+/system/lib/libjni_eglfence.so
+/system/lib/libjni_filtershow_filters.so
+/system/lib/libjni_latinime.so
+/system/lib/libjni_tinyplanet.so
+/system/lib/libjpeg.so
+/system/lib/libWVphoneAPI.so
+/system/priv-app/CalendarProvider.apk"
 	else
 		REMOVALSUFFIX=""
 		REMOVALBYPASS=""
+	fi
+
+	if [ "$API" -ge "22" ] || { [ "$API" -ge "21" ] && [ "$VARIANT" = "fornexus" ]; }; then #on AOSP we only support Webview on 5.1+, on fornexus 5.0+ is valid
+		gappsstock="$gappsstock
+webviewgoogle"
+		stockremove="$stockremove
+webviewstock"
 	fi
 }
 makegprop(){

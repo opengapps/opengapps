@@ -26,10 +26,6 @@ vending"
 
 gappsstock="cameragoogle
 keyboardgoogle"
-if [ "$API" -ge "22" ] || { [ "$API" -ge "21" ] && [ "$VARIANT" = "fornexus" ]; }; then #on AOSP we only support Webview on 5.1+, on fornexus 5.0+ is valid
-	gappsstock="$gappsstock
-webviewgoogle"
-fi
 
 gappsfull="books
 chrome
@@ -77,10 +73,6 @@ gallery
 launcher
 mms
 picotts"
-if [ "$API" -ge "22" ] || { [ "$API" -ge "21" ] && [ "$VARIANT" = "fornexus" ]; }; then #on AOSP we only support Webview on 5.1+, on fornexus 5.0+ is valid
-	stockremove="$stockremove
-webviewstock"
-fi
 
 # Static definitions, libraries and fallbacks per architecture
 case "$ARCH" in
@@ -114,11 +106,16 @@ get_gapps_list(){
 }
 
 buildtarget() {
-clean #make sure the build area is clean
+preparebuildarea
+
+#Compile the list of applications that will have to be build for this variant
+get_gapps_list "$SUPPORTEDVARIANTS"
+gapps="$gapps_list"
 
 if [ "$API" -gt "19" ]; then #only on lollipop extra gestures for AOSP keyboard:
 	buildfile "Optional/keybd_lib" "$LIBFOLDER/libjni_latinimegoogle.so"
 fi
+
 for app in $gapps; do
 	get_package_info $app
 	if [ ! -z $packagename ]; then

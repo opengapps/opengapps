@@ -11,9 +11,11 @@
 #    GNU General Public License for more details.
 #
 
-clean() {
+preparebuildarea() {
+	build="$BUILD/$ARCH/$API/$VARIANT/"
 	echo "Cleaning build area: $build"
 	rm -rf "$build"
+	install -d "$build"
 }
 
 copy() {

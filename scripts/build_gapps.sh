@@ -52,11 +52,11 @@ case "$API" in
 esac
 
 get_supported_variants "$VARIANT"
-if [ -z "$supported_variants" ]; then
-	echo "ERROR: Unknown variant! aborting..."; exit 1
-fi
 SUPPORTEDVARIANTS="$supported_variants"
 
+if [ -z "$SUPPORTEDVARIANTS" ]; then
+	echo "ERROR: Unknown variant! aborting..."; exit 1
+fi
 if [ "$FALLBACKARCH" != "arm" ];then #For all non-arm(64) platforms
 	case "$VARIANT" in
 		aroma|fornexus) echo "ERROR! Variant $VARIANT cannot be built on a non-arm platform";
@@ -66,12 +66,6 @@ fi
 
 kitkathacks
 
-#Compile the list of applications that will have to be build for this variant
-get_gapps_list "$SUPPORTEDVARIANTS"
-gapps="$gapps_list"
-
-build="$BUILD/$ARCH/$API/$VARIANT/"
-install -d "$build"
 buildtarget
 alignbuild
 commonscripts
