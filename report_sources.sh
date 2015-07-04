@@ -52,7 +52,8 @@ echo "=== Simple How To ===:
 * (all|arm|arm64|x86|x86_64)-(SDK-level): Show packages that will be selected when building for specified architecture and SDK-level
 * Example command: './report_sources.sh arm-22'
 === AND ===
-* hash: If you add hash as extra argument, the result will not be returned as human readable, but with a unique hash for the resultset
+* hash: If you add hash as an extra argument, the result will not be returned as human readable, but with a unique hash for the resultset
+* Example command: './report_sources.sh arm-22 hash'
 ---------------------------------------------------------------------------------------------------------"
 fi
 
