@@ -18,6 +18,7 @@ command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not install
 
 argument(){
 	case $1 in
+		hash)	hash="hash";;
 		all)	filterapparchs="${filterapparchs} all";;
 		arm)	filterapparchs="${filterapparchs} arm";;
 		arm64)	filterapparchs="${filterapparchs} arm64";;
@@ -29,6 +30,17 @@ argument(){
 	esac
 }
 
+hash=""
+filterapparchs=""
+buildarch=""
+fallbackarch=""
+maxsdk="99"
+
+for arg in "$@";do
+	argument "$arg"
+done
+
+if [ -z "$hash" ]; then
 echo "=== Simple How To ===:
 * No arguments: Show all packages of all architectures and SDK-levels
 === OR ===
@@ -39,17 +51,11 @@ echo "=== Simple How To ===:
 === OR ===
 * (all|arm|arm64|x86|x86_64)-(SDK-level): Show packages that will be selected when building for specified architecture and SDK-level
 * Example command: './report_sources.sh arm-22'
-
+=== AND ===
+* hash: If you add hash as extra argument, the result will not be returned as human readable, but with a unique hash for the resultset
 ---------------------------------------------------------------------------------------------------------"
+fi
 
-filterapparchs=""
-buildarch=""
-fallbackarch=""
-maxsdk="99"
-
-for arg in "$@";do
-	argument "$arg"
-done
 if [ "$buildarch" = arm64 ]; then
 	fallbackarch="arm"
 elif [ "$buildarch" = x86_64 ]; then
@@ -93,4 +99,8 @@ $(printf "%45s| %6s| %2s| %15s| %17s| %10s" "$appname" "$arch" "$sdk" "$dpi" "$a
 		done
 	done
 done
-echo "$result"
+if [ -z "$hash" ]; then
+	echo "$result"
+else
+	echo "$(echo -n "$result" | md5sum | cut -f1 -d' ')"
+fi
