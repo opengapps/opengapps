@@ -1,5 +1,5 @@
 makeupdatebinary(){
-tee "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+tee "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 #!/sbin/ash
 #This file is part of The Open GApps script of @mfonville.
 #
@@ -410,14 +410,14 @@ if [ -z "$device_architecture" ]; then
     device_architecture="$(file_getprop $b_prop ro.product.cpu.abi)"
 fi
 EOFILE
-printf 'if ! (echo "$device_architecture" | '>> "$build"META-INF/com/google/android/update-binary
+printf 'if ! (echo "$device_architecture" | '>> "$build/META-INF/com/google/android/update-binary"
 case "$ARCH" in
-	arm)	printf 'grep -i "armeabi" | grep -qiv "arm64"'>> "$build"META-INF/com/google/android/update-binary;;
-	arm64)	printf 'grep -qi "arm64"'>> "$build"META-INF/com/google/android/update-binary;;
-	x86)	printf 'grep -i "x86" | grep -qiv "x86_64"'>> "$build"META-INF/com/google/android/update-binary;;
-	x86_64)	printf 'grep -qi "x86_64"'>> "$build"META-INF/com/google/android/update-binary;;
+	arm)	printf 'grep -i "armeabi" | grep -qiv "arm64"'>> "$build/META-INF/com/google/android/update-binary";;
+	arm64)	printf 'grep -qi "arm64"'>> "$build/META-INF/com/google/android/update-binary";;
+	x86)	printf 'grep -i "x86" | grep -qiv "x86_64"'>> "$build/META-INF/com/google/android/update-binary";;
+	x86_64)	printf 'grep -qi "x86_64"'>> "$build/META-INF/com/google/android/update-binary";;
 esac
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 ); then
     ui_print "***** Incompatible Device Detected *****";
     ui_print " ";
@@ -520,9 +520,9 @@ fi;
 case $device_name in
 EOFILE
 if [ "$API" -le "19" ]; then
-    echo '    A0001|bacon|find7) cameragoogle_compat=false;; # bacon or A0001=OnePlus One | find7=Oppo Find7 and Find7a' >> "$build"META-INF/com/google/android/update-binary
+    echo '    A0001|bacon|find7) cameragoogle_compat=false;; # bacon or A0001=OnePlus One | find7=Oppo Find7 and Find7a' >> "$build/META-INF/com/google/android/update-binary"
 fi
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
     *) cameragoogle_compat=true;;
 esac;
 
@@ -559,7 +559,7 @@ if [ -e /system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk -a 
 EOFILE
 
 if [ "$VARIANT" = "fornexus" ]; then
-    echo '        log "Current GApps Version" "NON Open GApps Currently Installed";'>> "$build"META-INF/com/google/android/update-binary
+    echo '        log "Current GApps Version" "NON Open GApps Currently Installed";'>> "$build/META-INF/com/google/android/update-binary"
 else
     echo '        log "Current GApps Version" "NON Open GApps Currently Installed (FAILURE)";
         ui_print "* Incompatible GApps Currently Installed *";
@@ -572,10 +572,10 @@ else
         ui_print "******* GApps Installation failed *******";
         ui_print " ";
         install_note="${install_note}non_open_gapps_msg"'"$'\n'"'; # make note that currently installed GApps are non-Open
-        abort "$E_NONOPEN";'>> "$build"META-INF/com/google/android/update-binary
+        abort "$E_NONOPEN";'>> "$build/META-INF/com/google/android/update-binary"
 fi
 
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
     fi;
 else
     # User does NOT have a GApps package installed on their device
@@ -816,15 +816,15 @@ if [ -n "$user_remove_list" ]; then
                 0)  continue;;
 EOFILE
 if [ "$API" -le "19" ]; then
-    tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+    tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
                 1)  user_remove_folder_list="${user_remove_folder_list}$(find "$folder" -type f -iname "$testapk")"$'\n'; # Add found file to list
 EOFILE
 else
-    tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+    tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
                 1)  user_remove_folder_list="${user_remove_folder_list}$(dirname "$(find "$folder" -type f -iname "$testapk")")"$'\n'; # Add found folder to list
 EOFILE
 fi
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
                     break;;
                 *)  echo "$remove_apk" >> $user_remove_multiplefound_log; # Add app to user_remove_multiplefound_log since we found more than 1 instance
                     break;;
@@ -837,7 +837,7 @@ fi;
 EOFILE
 
 if [ "$VARIANT" = "fornexus" ]; then
-    tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+    tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 # Removing old Chrome libraries
 obsolete_libs_list=""
 for f in $(find /system/lib /system/lib64 -name 'libchrome*.so' 2>/dev/null); do
@@ -848,10 +848,10 @@ full_removal_list=$(cat $gapps_removal_list)$'\n'"${obsolete_libs_list}";
 EOFILE
 else
     echo '# Read in gapps removal list from file
-full_removal_list=$(cat $gapps_removal_list);'>> "$build"META-INF/com/google/android/update-binary
+full_removal_list=$(cat $gapps_removal_list);'>> "$build/META-INF/com/google/android/update-binary"
 fi
 
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 # Clean up and sort our lists for space calculations and installation
 set_progress 0.04;
 gapps_list=$(echo "${gapps_list}" | sort | sed '/^$/d'); # sort GApps list & remove empty lines
@@ -890,9 +890,9 @@ if [ "$API" -gt "19" ]; then
 if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     core_size=$((core_size + keybd_lib_size)); # Add Keyboard Lib size to core
 
-fi;' >> "$build"META-INF/com/google/android/update-binary
+fi;' >> "$build/META-INF/com/google/android/update-binary"
 fi
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 
 # Read and save system partition size details
 df=$(busybox df -k /system | tail -n 1);
@@ -958,9 +958,9 @@ if [ "$API" -le "19" ]; then
 echo '# Broken lib configuration on KitKat, so some apps do not count for the /system space because they are on /data
     if [ "$gapp_name" = "hangouts" ] || [ "$gapp_name" = "googleplus" ] || [ "$gapp_name" = "photos" ] || [ "$gapp_name" = "youtube" ]; then
         appsize=0;
-    fi' >> "$build"META-INF/com/google/android/update-binary
+    fi' >> "$build/META-INF/com/google/android/update-binary"
 fi
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
     post_install_size_kb=$((post_install_size_kb - appsize));
     log_sub "Install" "$gapp_name³" "$appsize" $post_install_size_kb;
 done;
@@ -1071,13 +1071,13 @@ if [ "$API" -gt "19" ]; then
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" /system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1\"" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/LatinIME/lib/'"$ARCH"'" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" /system/'"$LIBFOLDER"'/$keybd_lib_filename2\"" $bkup_tail;
-fi;' >> "$build"META-INF/com/google/android/update-binary
+fi;' >> "$build/META-INF/com/google/android/update-binary"
 fi
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 
 EOFILE
 if [ "$API" -le "19" ]; then
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 install -d /data/app/
 install -d /data/app-lib/
 # Handle broken lib configuration on KitKat by putting Hangouts on /data/
@@ -1127,7 +1127,7 @@ fi;
 
 EOFILE
 fi
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 # Progress Bar increment calculations for GApps Install process
 set_progress 0.30;
 gapps_count=$(echo "${gapps_list}" | wc -w); # Count number of GApps left to be installed
@@ -1152,8 +1152,8 @@ if ( contains "$gapps_list" "faceunlock" ); then
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$FaceLock_lib_filename2\" \"/system/app/FaceLock/lib/'"$ARCH"'/$FaceLock_lib_filename2\"" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$FaceLock_lib_filename1\" \"/system/app/FaceLock/lib/'"$ARCH"'/$FaceLock_lib_filename1\"" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/FaceLock/lib/arm" $bkup_tail;
-fi;' >> "$build"META-INF/com/google/android/update-binary
-tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
+fi;' >> "$build/META-INF/com/google/android/update-binary"
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 
 # Copy g.prop over to /system/etc
 cp -f /tmp/g.prop $g_prop;

@@ -13,7 +13,7 @@
 #
 
 #Check architecture
-if { [ "x$1" != "xarm" ] && [ "x$1" != "xarm64" ] && [ "x$1" != "xx86" ] && [ "x$1" != "xx86_64" ]; } || [ "x$2" = "x" ]; then
+if { [ "$1" != "arm" ] && [ "$1" != "arm64" ] && [ "$1" != "x86" ] && [ "$1" != "x86_64" ]; } || [ -z "$2" ]; then
 	echo "Usage: $0 (arm|arm64|x86|x86_64) API_LEVEL"
 	exit 1
 fi

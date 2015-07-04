@@ -12,7 +12,7 @@
 #
 
 preparebuildarea() {
-	build="$BUILD/$ARCH/$API/$VARIANT/"
+	build="$BUILD/$ARCH/$API/$VARIANT"
 	echo "Cleaning build area: $build"
 	rm -rf "$build"
 	install -d "$build"
@@ -57,7 +57,7 @@ buildapp(){
 	package="$1"
 	ziplocation="$2"
 	targetlocation="$3"
-	if [ "x$4" = "x" ]; then SOURCEARCH="$ARCH"
+	if [ -z "$4" ]; then SOURCEARCH="$ARCH"
 	else SOURCEARCH="$4"; fi #allows for an override
 
 	if getsourceforapi "$package"
@@ -143,7 +143,7 @@ getsourceforapi() {
 }
 buildapk() {
 	sourceapk="$1"
-	targetdir="$build$2"
+	targetdir="$build/$2"
 	targetapk="$targetdir/$(basename "$targetdir").apk"
 	if [ "$API" -le "19" ]; then ##We will do this as long as we support KitKat
 		targetapk="$targetdir.apk"
@@ -159,7 +159,7 @@ buildapk() {
 }
 buildlib() {
 	sourceapk="$1"
-	targetdir="$build$2"
+	targetdir="$build/$2"
 	libsearchpath="lib/*" #default that should never happen: all libs
 	if [ "$SOURCEARCH" = "arm" ]; then
 		libsearchpath="lib/armeabi*/*" #mind the wildcard
@@ -180,20 +180,20 @@ buildlib() {
 		libsearchpath="lib/mips64/*"
 		libfallbacksearchpath="lib/mips/*"
 	fi
-	if [ "$API" = "19" ]; then ##We will do this as long as we support KitKat
+	if [ "$API" -le "19" ]; then ##We will do this as long as we support KitKat
 		targetdir=$(dirname "$(dirname "$targetdir")")
-		if [ "x$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" != "x" ]
+		if [ ! -z "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 		then
 			install -d "$targetdir/lib"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/" "$libsearchpath"
 		fi
 	else ##This is Lollipop, much more nice :-)
-		if [ "x$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" != "x" ]
+		if [ ! -z "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 		then
 			install -d "$targetdir/lib/$SOURCEARCH"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$SOURCEARCH" "$libsearchpath"
 		fi
-		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ "x$(unzip -qql "$sourceapk" "$libfallbacksearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" != "x" ]
+		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ ! -z "$(unzip -qql "$sourceapk" "$libfallbacksearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 		then
 			install -d "$targetdir/lib/$FALLBACKARCH"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$FALLBACKARCH" "$libfallbacksearchpath"

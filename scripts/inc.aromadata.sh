@@ -11,7 +11,7 @@
 #    GNU General Public License for more details.
 #
 makearomaconfig(){
-tee "$build"META-INF/com/google/android/aroma-config > /dev/null <<'EOFILE'
+tee "$build/META-INF/com/google/android/aroma-config" > /dev/null <<'EOFILE'
 #This file is part of The Open GApps script of @raulx222.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ theme("material_green");
 ##############################################
 viewbox(
 	"Welcome",
-	
+
 	"With AROMA Open GApps you can choose which GApps to install!\n\n\n\n" +
 	"Package Information\n\n" +
 
@@ -90,20 +90,20 @@ viewbox(
 menubox(
   #-- Title
     "Open GApps",
-  
+
   #-- Sub Title
     "Please select one of the choices below",
-  
+
   #-- Icon
     "@apps",
-    
+
   #-- Will be saved in /tmp/aroma/demo.prop
     "menu.prop",
-    
+
   #-------------------------+-----------------[ Menubox Items ]-------------------------+---------------#
   # TITLE                   |  SUBTITLE                                                 |   Item Icons  #
   #-------------------------+-----------------------------------------------------------+---------------#
-  
+
     "Customized installation",      "Select yourself which GApps to install",       "@personalize",      #-- selected = 1
     "Complete installation",       "Install complete GApps package",                "@default",         #-- selected = 2
     "Exit",              "Exit to recovery",    "@alert"      #-- selected = 3
@@ -138,7 +138,7 @@ checkviewbox(
 );
 
 if
-		getvar("loadselections")=="1" 
+		getvar("loadselections")=="1"
 	then
 		resexec("scripts/tools.sh", "load");
 		setvar("reset", "1");
@@ -866,7 +866,7 @@ checkviewbox(
 	"Save selections.", "1", "saveselections"
 );
 if
-		getvar("saveselections")=="1" 
+		getvar("saveselections")=="1"
 	then
 		resexec("scripts/tools.sh", "save");
 endif;

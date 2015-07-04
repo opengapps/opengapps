@@ -48,7 +48,7 @@ ro.addon.type=gapps
 ro.addon.platform=$PLATFORM
 ro.addon.open_type=$VARIANT
 ro.addon.open_version=$DATE
-# end addon properties" > "$build"g.prop
+# end addon properties" > "$build/g.prop"
 }
 makegappsremovetxt(){
 	gapps_remove=""
@@ -73,7 +73,7 @@ $gapps_remove"
 			fi
 		done
 	done
-	printf "$gapps_remove" | sort > "$build"gapps-remove.txt
+	printf "$gapps_remove" | sort > "$build/gapps-remove.txt"
 }
 makeinstallerdata(){
 echo '#This file is part of The Open GApps script of @mfonville.
@@ -443,8 +443,8 @@ obsolete_list="
 oldscript_list="
 /system/etc/g.prop
 /system/addon.d/70-gapps.sh
-";' >> "$build"installer.data
-tee -a "$build"installer.data > /dev/null <<'EOFILE'
+";' >> "$build/installer.data"
+tee -a "$build/installer.data" > /dev/null <<'EOFILE'
 
 remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript_list}";
 # _____________________________________________________________________________________________________________________

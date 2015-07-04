@@ -20,8 +20,8 @@ alignbuild() {
 }
 
 commonscripts() {
-	install -d "$build"META-INF/com/google/android
-	echo "# Dummy file; update-binary is a shell script.">"$build"META-INF/com/google/android/updater-script
+	install -d "$build/META-INF/com/google/android"
+	echo "# Dummy file; update-binary is a shell script.">"$build/META-INF/com/google/android/updater-script"
 	makegappsremovetxt
 	copy "$SCRIPTS/bkup_tail.sh" "$build"
 }
@@ -35,23 +35,23 @@ variantscripts() {
 aromascripts() {
 	aromaupdatebinary
 	makearomaconfig
-	install -d "$build"META-INF/com/google/android/aroma #not necessary, but is safe
-	copy "$SCRIPTS/aroma-resources/fonts" "$build"META-INF/com/google/android/aroma/fonts
-	copy "$SCRIPTS/aroma-resources/icons" "$build"META-INF/com/google/android/aroma/icons
-	copy "$SCRIPTS/aroma-resources/langs" "$build"META-INF/com/google/android/aroma/langs
-	copy "$SCRIPTS/aroma-resources/scripts" "$build"META-INF/com/google/android/aroma/scripts
-	copy "$SCRIPTS/aroma-resources/themes" "$build"META-INF/com/google/android/aroma/themes
-	copy "$SCRIPTS/aroma-resources/ttf" "$build"META-INF/com/google/android/aroma/ttf
-	copy "$SCRIPTS/aroma-resources/open.png" "$build"META-INF/com/google/android/aroma
+	install -d "$build/META-INF/com/google/android/aroma #not necessary, but is safe"
+	copy "$SCRIPTS/aroma-resources/fonts" "$build/META-INF/com/google/android/aroma/fonts"
+	copy "$SCRIPTS/aroma-resources/icons" "$build/META-INF/com/google/android/aroma/icons"
+	copy "$SCRIPTS/aroma-resources/langs" "$build/META-INF/com/google/android/aroma/langs"
+	copy "$SCRIPTS/aroma-resources/scripts" "$build/META-INF/com/google/android/aroma/scripts"
+	copy "$SCRIPTS/aroma-resources/themes" "$build/META-INF/com/google/android/aroma/themes"
+	copy "$SCRIPTS/aroma-resources/ttf" "$build/META-INF/com/google/android/aroma/ttf"
+	copy "$SCRIPTS/aroma-resources/open.png" "$build/META-INF/com/google/android/aroma"
 }
 
 aromaupdatebinary() {
-	if [ -f "$build"META-INF/com/google/android/update-binary-installer ]
+	if [ -f "$build/META-INF/com/google/android/update-binary-installer" ]
 	then
-		rm "$build"META-INF/com/google/android/update-binary-installer
+		rm "$build/META-INF/com/google/android/update-binary-installer"
 	fi
-	mv "$build"META-INF/com/google/android/update-binary "$build"META-INF/com/google/android/update-binary-installer
-	copy "$SCRIPTS/aroma-resources/update-binary" "$build"META-INF/com/google/android/update-binary
+	mv "$build/META-INF/com/google/android/update-binary" "$build/META-INF/com/google/android/update-binary-installer"
+	copy "$SCRIPTS/aroma-resources/update-binary" "$build/META-INF/com/google/android/update-binary"
 }
 
 createzip() {
