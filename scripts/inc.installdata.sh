@@ -10,38 +10,6 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-kitkathacks(){
-	if [ "$API" -le "19" ]; then
-		REMOVALSUFFIX=".apk"
-		REMOVALBYPASS="
-/system/lib/libjni_eglfence.so
-/system/lib/libjni_filtershow_filters.so
-/system/lib/libjni_latinime.so
-/system/lib/libjni_tinyplanet.so
-/system/lib/libjpeg.so
-/system/lib/libWVphoneAPI.so
-/system/priv-app/CalendarProvider.apk"
-		REQDLIST="/system/lib/libjni_latinime.so
-/system/lib/libjni_latinimegoogle.so
-/system/lib64/libjni_latinimegoogle.so
-/system/app/LatinIME/lib/$ARCH/libjni_latinime.so
-/system/app/LatinIME/lib/$ARCH/libjni_latinimegoogle.so"
-		KEYBDLIBS=""
-	else
-		REMOVALSUFFIX=""
-		REMOVALBYPASS=""
-		REQDLIST=""
-		KEYBDLIBS='keybd_lib_filename1="libjni_latinimegoogle.so";
-keybd_lib_filename2="libjni_latinime.so";'
-	fi
-
-	if [ "$API" -ge "22" ] || { [ "$API" -ge "21" ] && [ "$VARIANT" = "fornexus" ]; }; then #on AOSP we only support Webview on 5.1+, on fornexus 5.0+ is valid
-		gappsstock="$gappsstock
-webviewgoogle"
-		stockremove="$stockremove
-webviewstock"
-	fi
-}
 makegprop(){
 	echo "# begin addon properties
 ro.addon.type=gapps

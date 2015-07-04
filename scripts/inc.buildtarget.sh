@@ -112,9 +112,7 @@ preparebuildarea
 get_gapps_list "$SUPPORTEDVARIANTS"
 gapps="$gapps_list"
 
-if [ "$API" -gt "19" ]; then #only on lollipop extra gestures for AOSP keyboard:
-	buildfile "Optional/keybd_lib" "$LIBFOLDER/libjni_latinimegoogle.so"
-fi
+
 
 for app in $gapps; do
 	get_package_info $app

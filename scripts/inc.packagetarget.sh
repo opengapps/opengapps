@@ -57,19 +57,14 @@ aromaupdatebinary() {
 createzip() {
 	unsignedzip="$BUILD/$ARCH/$API/$VARIANT.zip"
 	signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.zip"
-
-	zipfolders="Core GApps META-INF bkup_tail.sh g.prop gapps-remove.txt installer.data"
-	if [ "$API" -gt "19" ]; then
-		zipfolders="$zipfolders Optional"
-	fi
-
+	
 	if [ -f "$unsignedzip" ]
 	then
 		rm "$unsignedzip"
 	fi
 	cd "$build"
 	echo "Compressing and signing $signedzip..."
-	zip -q -r -D -X -9 "$unsignedzip" $zipfolders #don't doublequote zipfolders, contains multiple (safe) arguments
+	zip -q -r -D -X -9 "$unsignedzip" ./*
 	cd "$TOP"
 	signzip
 }

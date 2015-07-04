@@ -66,10 +66,9 @@ buildapp(){
 		for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
 			dpivariant="$(echo "$dpivariant"| tr '' ' ')" #and we place the spaces back again
 			versionname="$(aapt dump badging "$dpivariant" 2>/dev/null | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
-			case "$package" in
-				#the Drive/Docs/Sheets/Slides variate even the last two different digits of the versionName per DPI variant, so we only take the first 10 chars
-				com.google.android.apps.docs*) versionname="$(echo "$versionname" | cut -c 1-10)";;
-			esac
+
+			versionnamehack #Some packages have a different versionname, when the actual version is equal
+
 			if [ -z "$baseversionname" ]; then
 				baseversionname=$versionname
 				buildlib "$dpivariant" "$ziplocation/common/$targetlocation" #Use the libs from this baseversion
@@ -145,7 +144,7 @@ buildapk() {
 	sourceapk="$1"
 	targetdir="$build/$2"
 	targetapk="$targetdir/$(basename "$targetdir").apk"
-	if [ "$API" -le "19" ]; then ##We will do this as long as we support KitKat
+	if [ "$API" -le "19" ]; then #We will do this as long as we support KitKat
 		targetapk="$targetdir.apk"
 		targetdir="$(dirname "$targetapk")"
 	fi
@@ -180,14 +179,14 @@ buildlib() {
 		libsearchpath="lib/mips64/*"
 		libfallbacksearchpath="lib/mips/*"
 	fi
-	if [ "$API" -le "19" ]; then ##We will do this as long as we support KitKat
+	if [ "$API" -le "19" ]; then #We will do this as long as we support KitKat
 		targetdir=$(dirname "$(dirname "$targetdir")")
 		if [ ! -z "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 		then
 			install -d "$targetdir/lib"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/" "$libsearchpath"
 		fi
-	else ##This is Lollipop, much more nice :-)
+	else #This is Lollipop, much more nice :-)
 		if [ ! -z "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 		then
 			install -d "$targetdir/lib/$SOURCEARCH"

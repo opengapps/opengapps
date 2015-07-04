@@ -519,9 +519,7 @@ fi;
 # Check device name for devices that are incompatible with Google Camera
 case $device_name in
 EOFILE
-if [ "$API" -le "19" ]; then
-    echo '    A0001|bacon|find7) cameragoogle_compat=false;; # bacon or A0001=OnePlus One | find7=Oppo Find7 and Find7a' >> "$build/META-INF/com/google/android/update-binary"
-fi
+cameracompatibilityhack #in kitkat we don't have google camera compatibility with some phones
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
     *) cameragoogle_compat=true;;
 esac;
@@ -815,15 +813,7 @@ if [ -n "$user_remove_list" ]; then
             case $file_count in
                 0)  continue;;
 EOFILE
-if [ "$API" -le "19" ]; then
-    tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
-                1)  user_remove_folder_list="${user_remove_folder_list}$(find "$folder" -type f -iname "$testapk")"$'\n'; # Add found file to list
-EOFILE
-else
-    tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
-                1)  user_remove_folder_list="${user_remove_folder_list}$(dirname "$(find "$folder" -type f -iname "$testapk")")"$'\n'; # Add found folder to list
-EOFILE
-fi
+universalremoverhack #on kitkat the paths for the universalremover are different
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
                     break;;
                 *)  echo "$remove_apk" >> $user_remove_multiplefound_log; # Add app to user_remove_multiplefound_log since we found more than 1 instance
@@ -884,15 +874,10 @@ for gapp_name in $core_gapps_list; do
 done
 keybd_lib_size=$(unzip -lq "$ZIP" Optional/keybd_lib/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
 
-EOFILE
-if [ "$API" -gt "19" ]; then
-	echo '# Determine final size of Core Apps
+# Determine final size of Core Apps
 if ( ! contains "$gapps_list" "keyboardgoogle" ); then
-    core_size=$((core_size + keybd_lib_size)); # Add Keyboard Lib size to core
-
-fi;' >> "$build/META-INF/com/google/android/update-binary"
+    core_size=$((core_size + keybd_lib_size)); # Add Keyboard Lib size to core, if it exists
 fi
-tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 
 # Read and save system partition size details
 df=$(busybox df -k /system | tail -n 1);
@@ -954,12 +939,7 @@ log_sub "Install" "Core²" $core_size $post_install_size_kb;
 for gapp_name in $gapps_list; do
         get_appsize "GApps/$gapp_name"
 EOFILE
-if [ "$API" -le "19" ]; then
-echo '# Broken lib configuration on KitKat, so some apps do not count for the /system space because they are on /data
-    if [ "$gapp_name" = "hangouts" ] || [ "$gapp_name" = "googleplus" ] || [ "$gapp_name" = "photos" ] || [ "$gapp_name" = "youtube" ]; then
-        appsize=0;
-    fi' >> "$build/META-INF/com/google/android/update-binary"
-fi
+echo "$DATASIZESCODE" >> "$build/META-INF/com/google/android/update-binary"
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
     post_install_size_kb=$((post_install_size_kb - appsize));
     log_sub "Install" "$gapp_name³" "$appsize" $post_install_size_kb;
@@ -1058,75 +1038,8 @@ done
 set_progress 0.25;
 
 EOFILE
-if [ "$API" -gt "19" ]; then
-	echo 'if ( ! contains "$gapps_list" "keyboardgoogle" ); then
-    folder_extract "Optional/keybd_lib"; # Install Keyboard lib to add swipe capabilities to AOSP Keyboard
-    ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/'"$LIBFOLDER"'/$keybd_lib_filename2"; # create required symlink
-    mkdir -p /system/app/LatinIME/lib/'"$ARCH"';
-    ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1"; # create required symlink
-    ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename2"; # create required symlink
-
-    # Add same code to backup script to insure symlinks are recreated on addon.d restore
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" /system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename2\"" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" /system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1\"" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/LatinIME/lib/'"$ARCH"'" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" /system/'"$LIBFOLDER"'/$keybd_lib_filename2\"" $bkup_tail;
-fi;' >> "$build/META-INF/com/google/android/update-binary"
-fi
-tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
-
-EOFILE
-if [ "$API" -le "19" ]; then
-tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
-install -d /data/app/
-install -d /data/app-lib/
-# Handle broken lib configuration on KitKat by putting Hangouts on /data/
-if ( contains "$gapps_list" "hangouts" ); then
-    which_dpi "GApps/hangouts"
-    unzip -o "$ZIP" "$dpiapkpath/*" -d /tmp;
-    cp -rf /tmp/$dpiapkpath/priv-app/Hangouts.apk /data/app/com.google.android.talk.apk;
-    rm -rf /tmp/$dpiapkpath
-    unzip -o "$ZIP" "GApps/hangouts/common" -d /tmp;
-    cp -rf /tmp/GApps/hangouts/common/lib. /data/app-lib/com.google.android.talk/;
-    rm -rf /tmp/GApps/hangouts/common;
-    gapps_list=${gapps_list/hangouts};
-fi;
-# Handle broken lib configuration on KitKat by putting Google+ on /data/
-if ( contains "$gapps_list" "googleplus" ); then
-    which_dpi "GApps/googleplus"
-    unzip -o "$ZIP" "$dpiapkpath/*" -d /tmp;
-    cp -rf /tmp/$dpiapkpath/app/PlusOne.apk /data/app/com.google.android.apps.plus.apk;
-    rm -rf /tmp/$dpiapkpath
-    unzip -o "$ZIP" "GApps/googleplus/common" -d /tmp;
-    cp -rf /tmp/GApps/googleplus/common/lib. /data/app-lib/com.google.android.apps.plus/;
-    rm -rf /tmp/GApps/googleplus/common;
-    gapps_list=${gapps_list/googleplus};
-fi;
-# Handle broken lib configuration on KitKat by putting Photos on /data/
-if ( contains "$gapps_list" "photos" ); then
-    which_dpi "GApps/photos"
-    unzip -o "$ZIP" "$dpiapkpath/*" -d /tmp;
-    cp -rf /tmp/$dpiapkpath/app/Photos.apk /data/app/com.google.android.apps.photos.apk;
-    rm -rf /tmp/$dpiapkpath
-    unzip -o "$ZIP" "GApps/photos/common" -d /tmp;
-    cp -rf /tmp/GApps/photos/common/lib. /data/app-lib/com.google.android.apps.photos/;
-    rm -rf /tmp/GApps/photos/common;
-    gapps_list=${gapps_list/photos};
-fi;
-# Handle broken lib configuration on KitKat by putting YouTube on /data/
-if ( contains "$gapps_list" "youtube" ); then
-    which_dpi "GApps/youtube"
-    unzip -o "$ZIP" "$dpiapkpath/*" -d /tmp;
-    cp -rf /tmp/$dpiapkpath/app/YouTube.apk /data/app/com.google.android.youtube.apk;
-    rm -rf /tmp/$dpiapkpath
-    unzip -o "$ZIP" "GApps/youtube/common" -d /tmp;
-    cp -rf /tmp/GApps/youtube/common/lib. /data/app-lib/com.google.android.youtube/;
-    rm -rf /tmp/GApps/youtube/common;
-    gapps_list=${gapps_list/youtube};
-fi;
-
-EOFILE
-fi
+echo "$KEYBDINSTALLCODE" >> "$build/META-INF/com/google/android/update-binary"
+echo "$DATAINSTALLCODE" >> "$build/META-INF/com/google/android/update-binary"
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 # Progress Bar increment calculations for GApps Install process
 set_progress 0.30;

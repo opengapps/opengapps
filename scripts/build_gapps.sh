@@ -26,9 +26,10 @@ BUILD="$TOP/build"
 OUT="$TOP/out"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
+. "$SCRIPTS/inc.aromadata.sh"
 . "$SCRIPTS/inc.buildhelper.sh"
 . "$SCRIPTS/inc.buildtarget.sh"
-. "$SCRIPTS/inc.aromadata.sh"
+. "$SCRIPTS/inc.compatibility.sh"
 . "$SCRIPTS/inc.installdata.sh"
 . "$SCRIPTS/inc.packagetarget.sh"
 . "$SCRIPTS/inc.updatebinary.sh"
@@ -64,9 +65,11 @@ if [ "$FALLBACKARCH" != "arm" ];then #For all non-arm(64) platforms
 	esac
 fi
 
-kitkathacks
-
+kitkatpathshack	#kitkat has different apk and lib paths which impact installer.data
+kitkatdatahack #kitkat installs some applications on /data/ instead of /system/
+webviewhack #only lollipop (but not AOSP 5.0) support google webview
 buildtarget
+keyboardlibhack #only lollipop has gestures for the aosp keyboard possible, which impact installer.data and an extra file in the package
 alignbuild
 commonscripts
 variantscripts
