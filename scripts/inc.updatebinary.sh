@@ -276,13 +276,12 @@ ui_print() {
 }
 
 which_dpi() {
-	correct_dpi="unknown"
     # Calculate available densities
 	app_densities="$(tar -tJf "$TAR" "$1" | grep -E "$1/[0-9-]+|nodpi/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | uniq | sort)";
     # Check if in the package there is a version for our density, or a universal one.
 	for densities in $app_densities; do
 		case "$densities" in
-			*"$density"*) dpiapkpath="$1/densities"; break;;
+			*"$density"*) dpiapkpath="$1/$densities"; break;;
 			*nodpi*) dpiapkpath="$1/nodpi"; break;;
 			*) dpiapkpath="unknown";;
 		esac;
@@ -463,19 +462,19 @@ density=$(getprop ro.sf.lcd_density);
 
 # If the density returned by getprop is empty or non-standard - read from default.prop instead
 case $density in
-    160|213|240|320|480|560|640) ;;
+    120|160|213|240|320|400|480|560|640) ;;
     *) density=$(file_getprop /default.prop ro.sf.lcd_density);;
 esac;
 
 # If the density from default.prop is still empty or non-standard - read from build.prop instead
 case $density in
-    160|213|240|320|480|560|640) ;;
+    120|160|213|240|320|400|480|560|640) ;;
     *) density=$(file_getprop $b_prop ro.sf.lcd_density);;
 esac;
 
 # Check for DPI Override in gapps-config
-if ( grep -qiE "forcedpi(160|213|240|320|480|560|640)" $g_conf ); then # user wants to override the DPI selection
-    density=$( grep -iEo "forcedpi(160|213|240|320|480|560|640)" $g_conf | tr '[:upper:]'  '[:lower:]' );
+if ( grep -qiE "forcedpi(120|160|213|240|320|400|480|560|640)" $g_conf ); then # user wants to override the DPI selection
+    density=$( grep -iEo "forcedpi(120|160|213|240|320|400|480|560|640)" $g_conf | tr '[:upper:]'  '[:lower:]' );
     density=${density#forcedpi};
 fi;
 
