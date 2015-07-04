@@ -144,20 +144,18 @@ getsourceforapi() {
 buildapk() {
 	sourceapk="$1"
 	targetdir="$build$2"
+	targetapk="$targetdir/$(basename "$targetdir").apk"
 	if [ "$API" -le "19" ]; then ##We will do this as long as we support KitKat
 		targetapk="$targetdir.apk"
-		install -D "$sourceapk" "$targetapk" #inefficient, we will write this file, just to make the higher directories
-		rm "$targetapk"
-		zip -q -U "$sourceapk" -O "$targetapk" --exclude "lib*"
-	else ##This is Lollipop, much more nice :-)
-		targetapk="$targetdir/$(basename "$targetdir").apk"
-		if [ -f "$targetapk" ]
-			then
-			rm "$targetapk"
-		fi
-		install -d "$targetdir"
-		zip -q -U "$sourceapk" -O "$targetapk" --exclude "lib*"
+		targetdir="$(dirname "$targetapk")"
 	fi
+	install -d "$targetdir"
+	if [ -f "$targetapk" ]
+		then
+		rm "$targetapk"
+	fi
+
+	zip -q -b "$targetdir" -U "$sourceapk" -O "$targetapk" --exclude "lib*"
 }
 buildlib() {
 	sourceapk="$1"
