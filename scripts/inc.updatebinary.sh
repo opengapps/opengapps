@@ -517,9 +517,12 @@ else
 fi;
 
 # Check device name for devices that are incompatible with Google Camera
-# bacon or A0001=OnePlus One | find7=Oppo Find7 and Find7a
 case $device_name in
-    A0001|bacon|find7) cameragoogle_compat=false;;
+EOFILE
+if [ "$API" -le "19" ]; then
+    echo '    A0001|bacon|find7) cameragoogle_compat=false;; # bacon or A0001=OnePlus One | find7=Oppo Find7 and Find7a' >> "$build"META-INF/com/google/android/update-binary
+fi
+tee -a "$build"META-INF/com/google/android/update-binary > /dev/null <<'EOFILE'
     *) cameragoogle_compat=true;;
 esac;
 
