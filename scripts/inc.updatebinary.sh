@@ -18,7 +18,7 @@ tee "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 # This Open GApps Shell Script Installer includes code derived from the TK GApps of @TKruzze and @osm0sis,
 # The TK GApps are available under the GPLv3 from http://forum.xda-developers.com/android/software/tk-gapps-t3116347
 #
-unzip -o "$3" installer.data g.prop gapps-remove.txt bkup_tail.sh -d /tmp;
+unzip -o "$3" installer.data g.prop gapps-remove.txt bkup_tail.sh app_densities.txt app_sizes.txt -d /tmp;
 . /tmp/installer.data;
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
@@ -29,7 +29,7 @@ OUTFD=/proc/self/fd/$2;
 g_prop=/system/etc/g.prop;
 b_prop=/system/build.prop;
 bkup_tail=/tmp/bkup_tail.sh;
-gapps_removal_list=/tmp/gapps-remove.txt
+gapps_removal_list=/tmp/gapps-remove.txt;
 g_log=/tmp/g.log;
 calc_log=/tmp/calc.log;
 conflicts_log=/tmp/conflicts.log;
@@ -93,11 +93,15 @@ clean_inst() {
 }
 
 extract_app() {
-    which_dpi "$1"
+	unzip -o "$ZIP" "$1.tar.xz" -d /tmp;
+	TAR="/tmp/$1.tar.xz";
+	app_name="$(basename "$1")";
+    which_dpi "$app_name";
     if [ "$dpiapkpath" != "unknown" ]; then #technically not necessary, 'unknown' folder would not exist anyway
-        folder_extract "$dpiapkpath"
+        folder_extract "$dpiapkpath";
     fi
-    folder_extract "$1/common"
+    folder_extract "$app_name/common";
+	rm -f "$TAR";
 }
 
 exxit() {
@@ -134,15 +138,17 @@ file_getprop() {
 }
 
 folder_extract() {
-    unzip -o "$ZIP" "$1/*" -d /tmp;
+	tar -xJf "$TAR" -C /tmp "$1";
     bkup_list=$'\n'"$(find "/tmp/$1/*" -type f | cut -d/ -f5-)${bkup_list}";
     cp -rf /tmp/$1/. /system/;
     rm -rf /tmp/$1;
 }
 
 get_appsize() {
-    which_dpi "$1"
-    appsize="$(unzip -ql "$ZIP" "$1/common/*" "$dpiapkpath/*" | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }')"
+	app_name="$(basename "$1")";
+    which_dpi "$app_name";
+	app_density="$(basename "$dpiapkpath")";
+	appsize="$(cat /tmp/app_sizes.txt | grep -E "$app_name.*($app_density|common)" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')";
 }
 
 log() {
@@ -269,33 +275,40 @@ ui_print() {
 
 which_dpi() {
     # Calculate available densities
-    app_densities="$(unzip -lq "$ZIP" "$1/*" | grep -E "$1/[0-9-]+|nodpi/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | uniq | sed 's/-/ /g' | tr '\n' ' ')";
+	app_densities="";
+	app_densities="$(cat /tmp/app_densities.txt | grep -E "$1/([0-9-]+|nodpi)/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | sort)";
     # Check if in the package there is a version for our density, or a universal one.
-    case "$app_densities" in
-        *"$density"*) dpiapkpath="$1/*$density*";;
-        *nodpi*) dpiapkpath="$1/nodpi";;
-        *) dpiapkpath="unknown";;
-    esac;
-    # If there is no package for our density nor a universal one, we will look for the one with closer, but higher density.
-    if [ "$dpiapkpath" = "unknown" ]; then
-        app_densities="$(echo "$app_densities" | tr ' ' '\n' | sort | tr '\n' ' ')"
-        for d in $app_densities; do
-            if [ "$d" -ge "$density" ]; then
-                dpiapkpath="$1/*$d*";
-                break;
-            fi;
-        done;
-    fi;
-    # If there is no package for our density nor a universal one or one for higher density, we will use the one with closer, but lower density.
-    if [ "$dpiapkpath" = "unknown" ]; then
-        app_densities="$(echo "$app_densities" | tr ' ' '\n' | sort -r | tr '\n' ' ')"
-        for d in $app_densities; do
-            if [ "$d" -le "$density" ]; then
-                dpiapkpath="$1/*$d*";
-                break;
-            fi;
-        done;
-    fi;
+	for densities in $app_densities; do
+		case "$densities" in
+			*"$density"*) dpiapkpath="$1/$densities"; break;;
+			*nodpi*) dpiapkpath="$1/nodpi"; break;;
+			*) dpiapkpath="unknown";;
+		esac;
+	done;
+	# If there is no package for our density nor a universal one, we will look for the one with closer, but higher density.
+	if [ "$dpiapkpath" = "unknown" ] && [ -n "$app_densities" ]; then
+		for densities in $app_densities; do
+			all_densities="$(echo "$densities" | sed 's/-/ /g' | tr ' ' '\n' | sort | tr '\n' ' ')";
+			for d in $all_densities; do
+				if [ "$d" -ge "$density" ]; then
+					dpiapkpath="$1/$densities";
+					break 2;
+				fi;
+			done;
+		done;
+	fi;
+	# If there is no package for our density nor a universal one or one for higher density, we will use the one with closer, but lower density.
+	if [ "$dpiapkpath" = "unknown" ] && [ -n "$app_densities" ]; then
+		for densities in $app_densities; do
+			all_densities="$(echo "$densities" | sed 's/-/ /g' | tr ' ' '\n' | sort -r | tr '\n' ' ')";
+			for d in $all_densities; do
+				if [ "$d" -ge "$density" ]; then
+					dpiapkpath="$1/$densities";
+					break 2;
+				fi;
+			done;
+		done;
+	fi;
 }
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Pre-Install Info
@@ -448,19 +461,19 @@ density=$(getprop ro.sf.lcd_density);
 
 # If the density returned by getprop is empty or non-standard - read from default.prop instead
 case $density in
-    160|213|240|320|480|560|640) ;;
+    120|160|213|240|280|320|400|480|560|640) ;;
     *) density=$(file_getprop /default.prop ro.sf.lcd_density);;
 esac;
 
 # If the density from default.prop is still empty or non-standard - read from build.prop instead
 case $density in
-    160|213|240|320|480|560|640) ;;
+    120|160|213|240|280|320|400|480|560|640) ;;
     *) density=$(file_getprop $b_prop ro.sf.lcd_density);;
 esac;
 
 # Check for DPI Override in gapps-config
-if ( grep -qiE "forcedpi(160|213|240|320|480|560|640)" $g_conf ); then # user wants to override the DPI selection
-    density=$( grep -iEo "forcedpi(160|213|240|320|480|560|640)" $g_conf | tr '[:upper:]'  '[:lower:]' );
+if ( grep -qiE "forcedpi(120|160|213|240|280|320|400|480|560|640)" $g_conf ); then # user wants to override the DPI selection
+    density=$( grep -iEo "forcedpi(120|160|213|240|280|320|400|480|560|640)" $g_conf | tr '[:upper:]'  '[:lower:]' );
     density=${density#forcedpi};
 fi;
 
@@ -829,10 +842,10 @@ EOFILE
 if [ "$VARIANT" = "fornexus" ]; then
     tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 # Removing old Chrome libraries
-obsolete_libs_list=""
+obsolete_libs_list="";
 for f in $(find /system/lib /system/lib64 -name 'libchrome*.so' 2>/dev/null); do
-obsolete_libs_list="${obsolete_libs_list}$f"$'\n';
-done
+	obsolete_libs_list="${obsolete_libs_list}$f"$'\n';
+done;
 # Read in gapps removal list from file and append old Chrome libs
 full_removal_list=$(cat $gapps_removal_list)$'\n'"${obsolete_libs_list}";
 EOFILE
@@ -867,12 +880,15 @@ ui_print "- Performing system space calculations";
 ui_print " ";
 
 # Perform calculations of core applications
-core_size=0
+core_size=0;
 for gapp_name in $core_gapps_list; do
-    get_appsize "Core/$gapp_name"
-    core_size=$((core_size + appsize))
-done
-keybd_lib_size=$(unzip -lq "$ZIP" Optional/keybd_lib/* | tail -n1 | awk '{ size = $1 / 1024; printf "%.0f\n", size }');
+    get_appsize "Core/$gapp_name";
+    core_size=$((core_size + appsize));
+done;
+unzip -o "$ZIP" "Optional/keybd_lib.tar.xz" -d /tmp;
+TAR="/tmp/Optional/keybd_lib.tar.xz";
+keybd_lib_size=$(tar -tvJf "$TAR" "keybd_lib" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
+rm -f "/tmp/Optional/keybd_lib.tar.xz";
 
 # Determine final size of Core Apps
 if ( ! contains "$gapps_list" "keyboardgoogle" ); then
@@ -937,7 +953,7 @@ post_install_size_kb=$((post_install_size_kb - core_size)); # Add Core GApps
 log_sub "Install" "Core²" $core_size $post_install_size_kb;
 
 for gapp_name in $gapps_list; do
-        get_appsize "GApps/$gapp_name"
+        get_appsize "GApps/$gapp_name";
 EOFILE
 echo "$DATASIZESCODE" >> "$build/META-INF/com/google/android/update-binary"
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
@@ -1033,8 +1049,8 @@ ui_print "- Installing updated GApps";
 ui_print " ";
 set_progress 0.15;
 for gapp_name in $core_gapps_list; do
-    extract_app "Core/$gapp_name"
-done
+    extract_app "Core/$gapp_name";
+done;
 set_progress 0.25;
 
 EOFILE
