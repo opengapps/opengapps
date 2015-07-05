@@ -60,7 +60,7 @@ createzip() {
 		cd "$build/$d"
 		for f in $(ls); do # ls is safe here because there are no directories with spaces
 			for g in $(ls $f); do
-				foldersize="$(du -ck $f/$g/ | tail -n1 | awk '{ print $1 }')"
+				foldersize="$(du -ck "$f/$g/" | tail -n1 | awk '{ print $1 }')"
 				echo "$f\t$g\t$foldersize" >> "$build/app_sizes.txt"
 			done
 			echo "Compressing $d$f"

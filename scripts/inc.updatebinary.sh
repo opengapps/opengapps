@@ -277,9 +277,6 @@ which_dpi() {
     # Calculate available densities
 	app_densities="";
 	app_densities="$(cat /tmp/app_densities.txt | grep -E "$1/([0-9-]+|nodpi)/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | sort)";
-	if [ -z "$app_densities" ]; then
-		app_densities="unknown"
-	fi;
     # Check if in the package there is a version for our density, or a universal one.
 	for densities in $app_densities; do
 		case "$densities" in
@@ -289,7 +286,7 @@ which_dpi() {
 		esac;
 	done;
 	# If there is no package for our density nor a universal one, we will look for the one with closer, but higher density.
-	if [ "$dpiapkpath" = "unknown" ] && [ "$app_densities" != "unknown" ]; then
+	if [ "$dpiapkpath" = "unknown" ] && [ -n "$app_densities" ]; then
 		for densities in $app_densities; do
 			all_densities="$(echo "$densities" | sed 's/-/ /g' | tr ' ' '\n' | sort | tr '\n' ' ')";
 			for d in $all_densities; do
@@ -301,7 +298,7 @@ which_dpi() {
 		done;
 	fi;
 	# If there is no package for our density nor a universal one or one for higher density, we will use the one with closer, but lower density.
-	if [ "$dpiapkpath" = "unknown" ] && [ "$app_densities" != "unknown" ]; then
+	if [ "$dpiapkpath" = "unknown" ] && [ -n "$app_densities" ]; then
 		for densities in $app_densities; do
 			all_densities="$(echo "$densities" | sed 's/-/ /g' | tr ' ' '\n' | sort -r | tr '\n' ' ')";
 			for d in $all_densities; do
