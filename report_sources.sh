@@ -19,6 +19,7 @@ command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not install
 argument(){
 	case $1 in
 		hash)	hash="hash";;
+		nohelp)	nohelp="nohelp";;
 		all)	filterapparchs="${filterapparchs} all";;
 		arm)	filterapparchs="${filterapparchs} arm";;
 		arm64)	filterapparchs="${filterapparchs} arm64";;
@@ -31,6 +32,7 @@ argument(){
 }
 
 hash=""
+nohelp=""
 filterapparchs=""
 buildarch=""
 fallbackarch=""
@@ -40,7 +42,7 @@ for arg in "$@";do
 	argument "$arg"
 done
 
-if [ -z "$hash" ]; then
+if [ -z "$hash" ] && [ -z "$nohelp" ]; then
 echo "=== Simple How To ===:
 * No arguments: Show all packages of all architectures and SDK-levels
 === OR ===
@@ -53,6 +55,7 @@ echo "=== Simple How To ===:
 * Example command: './report_sources.sh arm-22'
 === AND ===
 * hash: If you add hash as an extra argument, the result will not be returned as human readable, but with a unique hash for the resultset
+* nohelp: If you add nohelp as an extra argument, the result will not include this helptext (not necessary if hash is used)
 * Example command: './report_sources.sh arm-22 hash'
 ---------------------------------------------------------------------------------------------------------"
 fi
