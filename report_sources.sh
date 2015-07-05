@@ -71,9 +71,9 @@ result="$(printf "%45s|%7s|%3s|%16s|%18s|%11s" "Application Name" "Arch." "SDK" 
 allapps="$(find "$SOURCES/" -iname "*.apk" | awk -F '/' '{print $(NF-3)}' | sort | uniq)"
 for appname in $allapps;do
 	appnamefiles="$(find "$SOURCES/" -iname "*.apk" -ipath "*/$appname/*")"
-	if [ ! -z "$buildarch" ]; then
+	if [ -n "$buildarch" ]; then
 		apparchs="$buildarch $fallbackarch all"
-	elif [ ! -z "$filterapparchs" ];then
+	elif [ -n "$filterapparchs" ];then
 		apparchs="$filterapparchs"
 	else
 		apparchs="$(printf "$appnamefiles" | awk -F '/' '{print $(NF-5)}' | sort | uniq)"
@@ -94,7 +94,7 @@ for appname in $allapps;do
 					result="$result
 $(printf "%45s| %6s| %2s| %15s| %17s| %10s" "$appname" "$arch" "$sdk" "$dpi" "$appversionname" "$appversion")"
 				done
-				if [ ! -z "$buildarch" ]; then
+				if [ -n "$buildarch" ]; then
 					break 2 #when selecting for the build of a specified architeture and sdk, only one architecture result is enough
 				elif [ "$maxsdk" != "99" ];then
 					break #if a specific sdk level is supplied, we only show 1 relevant version

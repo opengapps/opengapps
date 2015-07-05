@@ -181,18 +181,18 @@ buildlib() {
 	fi
 	if [ "$API" -le "19" ]; then #We will do this as long as we support KitKat
 		targetdir=$(dirname "$(dirname "$targetdir")")
-		if [ ! -z "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
+		if [ -n "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 		then
 			install -d "$targetdir/lib"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/" "$libsearchpath"
 		fi
 	else #This is Lollipop, much more nice :-)
-		if [ ! -z "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
+		if [ -n "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 		then
 			install -d "$targetdir/lib/$SOURCEARCH"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$SOURCEARCH" "$libsearchpath"
 		fi
-		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ ! -z "$(unzip -qql "$sourceapk" "$libfallbacksearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
+		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ -n "$(unzip -qql "$sourceapk" "$libfallbacksearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 		then
 			install -d "$targetdir/lib/$FALLBACKARCH"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$FALLBACKARCH" "$libfallbacksearchpath"
