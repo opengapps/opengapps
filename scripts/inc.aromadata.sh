@@ -284,7 +284,7 @@ form(
       "CMSetupWizard",     "<b>CMSetupWizard</b>",       "To remove the Stock CM Setup Wizard Application",                      "check",
       "CMUpdater",     "<b>CMUpdater</b>",       "To remove the Stock CM Updater Application",                      "check",
       "CMWallpapers",     "<b>CMWallpapers</b>",       "To remove the Stock CM Wallpapers",                      "check",
-      "DashClock",     "<b>DashClock</b>",       "To remove the Stock DashClock Application (found in certain ROM's)",                      "check",
+      "DashClock",     "<b>DashClock</b>",       "To remove the Stock DashClock Application (a widget found in certain ROMs)",                      "check",
       "Email",     "<b>Email</b>",       "To remove the Stock/AOSP Email Application",                      "check",
       "ExchangeStock",     "<b>ExchangeStock</b>",       "To remove the Stock/AOSP Exchange Services (automatically removed when Google Exchange Services is installed)",                      "check",
       "FMRadio",     "<b>FMRadio</b>",       "To remove the Stock FM Radio Application (not found on all devices or ROM's)",                      "check",
