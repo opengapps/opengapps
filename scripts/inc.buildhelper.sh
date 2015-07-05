@@ -11,9 +11,11 @@
 #    GNU General Public License for more details.
 #
 
-clean() {
+preparebuildarea() {
+	build="$BUILD/$ARCH/$API/$VARIANT"
 	echo "Cleaning build area: $build"
 	rm -rf "$build"
+	install -d "$build"
 }
 
 copy() {
@@ -28,19 +30,26 @@ copy() {
   		install -D -p "$1" "$2"
 	fi
 }
+
 buildfile() {
-	#buildfile needs slashes when used, unlike the buildapp
-	targetdir="$build$2"
-	if [ -e "$SOURCES/$ARCH/$1" ] #check if directory or file exists
-	then
+	if [ -e "$SOURCES/$ARCH/$2" ];then #check if directory or file exists
+		if [ -d "$SOURCES/$ARCH/$2" ];then #if we are handling a directory
+			targetdir="$build/$1/$2"
+		else
+			targetdir="$build/$1/$(dirname "$2")"
+		fi
 		install -d "$targetdir"
-		copy "$SOURCES/$ARCH/$1" "$targetdir" #if we have a file specific to this architecture
-	elif [ -e "$SOURCES/all/$1" ]
-	then
+		copy "$SOURCES/$ARCH/$2" "$targetdir" #if we have a file specific to this architecture
+	elif [ -e "$SOURCES/all/$2" ];then
+		if [ -d "$SOURCES/all/$2" ];then #if we are handling a directory
+			targetdir="$build/$1/$2"
+		else
+			targetdir="$build/$1/$(dirname "$2")"
+		fi
 		install -d "$targetdir"
-		copy "$SOURCES/all/$1" "$targetdir" #use architecure independent file
+		copy "$SOURCES/all/$2" "$targetdir" #use architecure independent file
 	else
-		echo "WARNING: file $1 does not exist in the sources for $ARCH"
+		echo "WARNING: file $2 does not exist in the sources for $ARCH"
 	fi
 }
 
@@ -48,7 +57,7 @@ buildapp(){
 	package="$1"
 	ziplocation="$2"
 	targetlocation="$3"
-	if [ "x$4" = "x" ]; then SOURCEARCH="$ARCH"
+	if [ -z "$4" ]; then SOURCEARCH="$ARCH"
 	else SOURCEARCH="$4"; fi #allows for an override
 
 	if getsourceforapi "$package"
@@ -57,10 +66,9 @@ buildapp(){
 		for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
 			dpivariant="$(echo "$dpivariant"| tr '' ' ')" #and we place the spaces back again
 			versionname="$(aapt dump badging "$dpivariant" 2>/dev/null | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
-			case "$package" in
-				#the Drive/Docs/Sheets/Slides variate even the last two different digits of the versionName per DPI variant, so we only take the first 10 chars
-				com.google.android.apps.docs*) versionname="$(echo "$versionname" | cut -c 1-10)";;
-			esac
+
+			versionnamehack #Some packages have a different versionname, when the actual version is equal
+
 			if [ -z "$baseversionname" ]; then
 				baseversionname=$versionname
 				buildlib "$dpivariant" "$ziplocation/common/$targetlocation" #Use the libs from this baseversion
@@ -70,7 +78,7 @@ buildapp(){
 				density=$(basename "$(dirname "$dpivariant")")
 				buildapk "$dpivariant" "$ziplocation/$density/$targetlocation"
 				printf " $density"
-				echo "$ziplocation/$density/" >> "$build"app_densities.txt
+				echo "$ziplocation/$density/" >> "$build/app_densities.txt"
 			fi
 		done
 		printf "\n"
@@ -135,25 +143,23 @@ getsourceforapi() {
 }
 buildapk() {
 	sourceapk="$1"
-	targetdir="$build$2"
-	if [ "$API" -le "19" ]; then ##We will do this as long as we support KitKat
+	targetdir="$build/$2"
+	targetapk="$targetdir/$(basename "$targetdir").apk"
+	if [ "$API" -le "19" ]; then #We will do this as long as we support KitKat
 		targetapk="$targetdir.apk"
-		install -D "$sourceapk" "$targetapk" #inefficient, we will write this file, just to make the higher directories
-		rm "$targetapk"
-		zip -q -U "$sourceapk" -O "$targetapk" --exclude "lib*"
-	else ##This is Lollipop, much more nice :-)
-		targetapk="$targetdir/$(basename "$targetdir").apk"
-		if [ -f "$targetapk" ]
-			then
-			rm "$targetapk"
-		fi
-		install -d "$targetdir"
-		zip -q -U "$sourceapk" -O "$targetapk" --exclude "lib*"
+		targetdir="$(dirname "$targetapk")"
 	fi
+	install -d "$targetdir"
+	if [ -f "$targetapk" ]
+		then
+		rm "$targetapk"
+	fi
+
+	zip -q -b "$targetdir" -U "$sourceapk" -O "$targetapk" --exclude "lib*"
 }
 buildlib() {
 	sourceapk="$1"
-	targetdir="$build$2"
+	targetdir="$build/$2"
 	libsearchpath="lib/*" #default that should never happen: all libs
 	if [ "$SOURCEARCH" = "arm" ]; then
 		libsearchpath="lib/armeabi*/*" #mind the wildcard
@@ -174,20 +180,20 @@ buildlib() {
 		libsearchpath="lib/mips64/*"
 		libfallbacksearchpath="lib/mips/*"
 	fi
-	if [ "$API" = "19" ]; then ##We will do this as long as we support KitKat
+	if [ "$API" -le "19" ]; then #We will do this as long as we support KitKat
 		targetdir=$(dirname "$(dirname "$targetdir")")
-		if [ "x$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" != "x" ]
+		if [ ! -z "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 		then
 			install -d "$targetdir/lib"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/" "$libsearchpath"
 		fi
-	else ##This is Lollipop, much more nice :-)
-		if [ "x$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" != "x" ]
+	else #This is Lollipop, much more nice :-)
+		if [ ! -z "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 		then
 			install -d "$targetdir/lib/$SOURCEARCH"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$SOURCEARCH" "$libsearchpath"
 		fi
-		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ "x$(unzip -qql "$sourceapk" "$libfallbacksearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" != "x" ]
+		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ ! -z "$(unzip -qql "$sourceapk" "$libfallbacksearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 		then
 			install -d "$targetdir/lib/$FALLBACKARCH"
 			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$FALLBACKARCH" "$libfallbacksearchpath"

@@ -15,45 +15,65 @@ TOP="$(realpath .)"
 SOURCES="$TOP/sources"
 
 command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
-command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }
-#coreutils also contains the basename command
 
 argument(){
 	case $1 in
-		all) filterapparchs="${filterapparchs} all";;
-		arm) filterapparchs="${filterapparchs} arm";;
-		arm64) filterapparchs="${filterapparchs} arm64";;
-		x86) filterapparchs="${filterapparchs} x86";;
-		x86_64) filterapparchs="${filterapparchs} x86_64";;
-		*) maxsdk="$1";;
+		hash)	hash="hash";;
+		all)	filterapparchs="${filterapparchs} all";;
+		arm)	filterapparchs="${filterapparchs} arm";;
+		arm64)	filterapparchs="${filterapparchs} arm64";;
+		x86)	filterapparchs="${filterapparchs} x86";;
+		x86_64)	filterapparchs="${filterapparchs} x86_64";;
+		*-*)	buildarch="$(echo "$1" | cut -f 1 -d '-')"
+				maxsdk="$(echo "$1" | cut -f 2 -d '-')";;
+		*)		maxsdk="$1";;
 	esac
 }
 
-echo "=== Simple How To ===:
-* No arguments: Show all packages of all architectures and SDK levels
-* A SDK level as a argument: Show packages that are eligable to be picked when building for specified SDK level
-* all/arm/arm64/x86/x86_64: Show only packages of given architecture
-* These arguments can be combined in any order and multiple architectures can be supplied
-* Example command: './report_sources.sh 22 all arm arm64'
----------------------------------------------------------------------------------------------------------"
-
+hash=""
 filterapparchs=""
+buildarch=""
+fallbackarch=""
 maxsdk="99"
 
 for arg in "$@";do
 	argument "$arg"
 done
 
+if [ -z "$hash" ]; then
+echo "=== Simple How To ===:
+* No arguments: Show all packages of all architectures and SDK-levels
+=== OR ===
+* SDK-level as a argument:  Show packages that are eligable to be picked when building for specified SDK-level
+* all|arm|arm64|x86|x86_64: Show only packages of given architecture
+* These arguments can be combined in any order and multiple architectures can be supplied
+* Example command: './report_sources.sh 22 all arm arm64'
+=== OR ===
+* (all|arm|arm64|x86|x86_64)-(SDK-level): Show packages that will be selected when building for specified architecture and SDK-level
+* Example command: './report_sources.sh arm-22'
+=== AND ===
+* hash: If you add hash as an extra argument, the result will not be returned as human readable, but with a unique hash for the resultset
+* Example command: './report_sources.sh arm-22 hash'
+---------------------------------------------------------------------------------------------------------"
+fi
+
+if [ "$buildarch" = arm64 ]; then
+	fallbackarch="arm"
+elif [ "$buildarch" = x86_64 ]; then
+	fallbackarch="x86"
+fi
 
 result="$(printf "%45s|%7s|%3s|%16s|%18s|%11s" "Application Name" "Arch." "SDK" "DPI" "Version Name" "Version")
 ---------------------------------------------------------------------------------------------------------"
 allapps="$(find "$SOURCES/" -iname "*.apk" | awk -F '/' '{print $(NF-3)}' | sort | uniq)"
 for appname in $allapps;do
 	appnamefiles="$(find "$SOURCES/" -iname "*.apk" -ipath "*/$appname/*")"
-	if [ -z "$filterapparchs" ];then
-		apparchs="$(printf "$appnamefiles" | awk -F '/' '{print $(NF-5)}' | sort | uniq)"
-	else
+	if [ ! -z "$buildarch" ]; then
+		apparchs="$buildarch $fallbackarch all"
+	elif [ ! -z "$filterapparchs" ];then
 		apparchs="$filterapparchs"
+	else
+		apparchs="$(printf "$appnamefiles" | awk -F '/' '{print $(NF-5)}' | sort | uniq)"
 	fi
 
 	for arch in $apparchs;do
@@ -70,12 +90,18 @@ for appname in $allapps;do
 					appversionname="$(aapt dump badging "$appversionfile" 2>/dev/null | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
 					result="$result
 $(printf "%45s| %6s| %2s| %15s| %17s| %10s" "$appname" "$arch" "$sdk" "$dpi" "$appversionname" "$appversion")"
-					if [ "$maxsdk" != "99" ];then
-						break #if a specific sdk level is supplied, we only show 1 relevant version
-					fi
 				done
+				if [ ! -z "$buildarch" ]; then
+					break 2 #when selecting for the build of a specified architeture and sdk, only one architecture result is enough
+				elif [ "$maxsdk" != "99" ];then
+					break #if a specific sdk level is supplied, we only show 1 relevant version
+				fi
 			fi
 		done
 	done
 done
-echo "$result"
+if [ -z "$hash" ]; then
+	echo "$result"
+else
+	echo "$(echo -n "$result" | md5sum | cut -f1 -d' ')"
+fi

@@ -11,44 +11,40 @@
 #    GNU General Public License for more details.
 #
 makegprop(){
-echo "# begin addon properties
+	echo "# begin addon properties
 ro.addon.type=gapps
 ro.addon.platform=$PLATFORM
 ro.addon.open_type=$VARIANT
 ro.addon.open_version=$DATE
-# end addon properties" > "$build"g.prop
+# end addon properties" > "$build/g.prop"
 }
 makegappsremovetxt(){
-if [ "$VARIANT" = "stock" ] || [ "$VARIANT" = "aroma" ] || [ "$VARIANT" = "fornexus" ];then
-	corepath="$build/Core/"
-	gappspath="$build/GApps/"
-	find "$corepath" "$gappspath" -mindepth 4 -maxdepth 4 -printf "%P\n" -name "*" | grep -v "etc/" | sed 's#^[^/]*/[^/]*#/system#' | sort | uniq > "$build"gapps-remove.txt
-	find "$corepath" "$gappspath" -mindepth 5 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^[^/]*/[^/]*#/system#' | sort | uniq >> "$build"gapps-remove.txt
-elif [ -f "$BUILD/$ARCH/$API/stock/gapps-remove.txt" ];then
-	cp "$BUILD/$ARCH/$API/stock/gapps-remove.txt" "$build"gapps-remove.txt
-else
-	echo "No gapps-remove.txt available, first build stock!"
-	exit 1
-fi
+	gapps_remove=""
+	get_supported_variants "stock"
+	get_gapps_list "$supported_variants"
+	for gapp in $gapps_list; do
+		get_package_info "$gapp"
+		if [ ! -z $packagename ]; then
+			gapps_remove="/system/$packagetarget$REMOVALSUFFIX
+$gapps_remove"
+		fi
+		for file in $packagefiles; do
+			if [ "$file" = "etc" ];then
+				gapps_remove="$(find "$SOURCES/all/" -mindepth 3 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^#/system/#' | sort | uniq)
+$gapps_remove"
+			elif [ "$file" = "framework" ];then
+				gapps_remove="$(find "$SOURCES/all/" -mindepth 2 -printf "%P\n" -name "*" | grep "framework/" | sed 's#^#/system/#' | sort | uniq)
+$gapps_remove"
+			else
+				gapps_remove="/system/$file
+$gapps_remove"
+			fi
+		done
+	done
+	printf "$gapps_remove" | sort > "$build/gapps-remove.txt"
 }
 makeinstallerdata(){
-if [ "$API" -le "19" ]; then
-	REMOVALSUFFIX=".apk"
-	REMOVALBYPASS="
-/system/lib/libjni_eglfence.so
-/system/lib/libjni_filtershow_filters.so
-/system/lib/libjni_latinime.so
-/system/lib/libjni_tinyplanet.so
-/system/lib/libjpeg.so
-/system/lib/libWVphoneAPI.so
-/system/priv-app/CalendarProvider.apk"
-else
-	REMOVALSUFFIX=""
-	REMOVALBYPASS=""
-fi
-
-
-echo "#This file is part of The Open GApps script of @mfonville.
+echo '#This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -60,12 +56,12 @@ echo "#This file is part of The Open GApps script of @mfonville.
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-# This Installation Data file for Open GApps Installer is derived from the work of @TKruzze,
-# TKruzze's original work is used with permission, under the license that it may be re-used to continue the GApps package.
+# This Installation Data file for Open GApps Installer is derived from the PA GApps work of @TKruzze,
+# PA GApps sources are used with permission, under the license that it may be re-used to continue the GApps package.
 # This Installation Data file for Open GApps Installer includes code derived from the TK GApps of @TKruzze and @osm0sis,
 # The TK GApps are available under the GPLv3 from http://forum.xda-developers.com/android/software/tk-gapps-t3116347
-# Last Updated: $DATE" > "$build"installer.data
-echo '# _____________________________________________________________________________________________________________________
+# Last Updated: '"$DATE"'
+# _____________________________________________________________________________________________________________________
 #                                             Define Current Package Variables
 # List of GApps packages that can be installed with this installer
 pkg_names="'"$SUPPORTEDVARIANTS"'";
@@ -73,16 +69,11 @@ pkg_names="'"$SUPPORTEDVARIANTS"'";
 # Installer Name (32 chars Total, excluding "")
 installer_name="Open GApps '"$VARIANT"' '"$PLATFORM"' - ";
 
-req_android_version="'"$PLATFORM"'";' >> "$build"installer.data
-if [ "$API" -gt "19" ]; then
-	echo 'keybd_lib_filename1="libjni_latinimegoogle.so";
-keybd_lib_filename2="libjni_latinime.so";' >> "$build"installer.data
-fi
+req_android_version="'"$PLATFORM"'";
 
-echo 'FaceLock_lib_filename1="libfacelock_jni.so";
-FaceLock_lib_filename2="libfilterpack_facedetect.so";' >> "$build"installer.data
-
-echo '
+'"$KEYBDLIBS"'
+FaceLock_lib_filename1="libfacelock_jni.so";
+FaceLock_lib_filename2="libfilterpack_facedetect.so";
 
 # Buffer of extra system space to require for GApps install (9216=9MB)
 # This will allow for some ROM size expansion when GApps are restored
@@ -99,9 +90,7 @@ E_NONOPEN=40; # NON-Open GApps Currently Installed
 E_ARCH=64 ; # Wrong Architecture Detected
 #_________________________________________________________________________________________________________________
 #                                             GApps List (Applications user can Select/Deselect)
-# calsync will be added to GApps Install List as needed during script execution' >> "$build"installer.data
-
-echo 'core_gapps_list="
+core_gapps_list="
 '"$gappscore"'
 ";
 
@@ -127,13 +116,13 @@ nano_gapps_list="
 
 pico_gapps_list="
 '"$gappspico"'
-";' >> "$build"installer.data
-echo '# _____________________________________________________________________________________________________________________
+";
+# _____________________________________________________________________________________________________________________
 #                                             Default Stock/AOSP Removal List (Stock GApps Only)
 default_aosp_remove_list="
 '"$stockremove"'
-";' >> "$build"installer.data
-echo '# _____________________________________________________________________________________________________________________
+";
+# _____________________________________________________________________________________________________________________
 #                                             Optional Stock/AOSP/ROM Removal List
 optional_aosp_remove_list="
 boxer
@@ -353,8 +342,8 @@ app/webview'"$REMOVALSUFFIX"'
 
 whisperpush_list="
 app/WhisperPush'"$REMOVALSUFFIX"'
-";' >> "$build"installer.data
-echo '# _____________________________________________________________________________________________________________________
+";
+# _____________________________________________________________________________________________________________________
 #                                             Permanently Removed Folders
 # Pieces that may be left over from AIO ROMs that can/will interfere with these GApps
 other_list="
@@ -406,19 +395,12 @@ privapp_list="
 ";
 
 # Stock/AOSP Keyboard lib (and symlink) that are always removed since they are always replaced
-reqd_list="' >> "$build"installer.data
-if [ "$API" -gt "19" ]; then
-echo "/system/lib/libjni_latinime.so
-/system/lib/libjni_latinimegoogle.so
-/system/lib64/libjni_latinimegoogle.so
-/system/app/LatinIME/lib/$ARCH/libjni_latinime.so
-/system/app/LatinIME/lib/$ARCH/libjni_latinimegoogle.so" >> "$build"installer.data
-fi
-echo '";
+reqd_list="
+'"$REQDLIST"'";
 
 # Remove talkback from priv-app since it was moved to app in 5.1
 obsolete_list="
-/system/priv-app/talkback
+/system/priv-app/talkback'"$REMOVALSUFFIX"'
 ";
 
 # Obsolete files from xxxx
@@ -429,8 +411,8 @@ obsolete_list="
 oldscript_list="
 /system/etc/g.prop
 /system/addon.d/70-gapps.sh
-";' >> "$build"installer.data
-tee -a "$build"installer.data > /dev/null <<'EOFILE'
+";' >> "$build/installer.data"
+tee -a "$build/installer.data" > /dev/null <<'EOFILE'
 
 remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript_list}";
 # _____________________________________________________________________________________________________________________
