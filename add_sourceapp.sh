@@ -104,7 +104,7 @@ addapk() {
 	echo "Importing "$name
 	echo "Package "$package" | VersionName "$versionname" | VersionCode "$versioncode" | API level "$sdkversion
 
-	if [ -z "$compatiblescreens" ]
+	if [ "$compatiblescreens" = "" ] # we can't use -z here, because there can be a linecontrol character or such in it
 	then
 		dpis="nodpi"
 		echo "Universal DPI package"
@@ -157,7 +157,7 @@ addapk() {
 
 for argument in "$@"
 do
-	file="$(readlink -f $argument)"
+	file="$(readlink -f "$argument")"
 	if [ -f "$file" ]
 	then
 		if aapt dump configurations "$file" >/dev/null
