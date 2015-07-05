@@ -180,44 +180,44 @@ form(
 	"0",     "Exclude",        "Choose the apps you DON'T WANT installed from the list below.",                                         "select",
 
     "gapps",     "Choose GApps which you want to add on install/exclude list",        "",                                         "group",
-      "Books",     "<b>Books</b>",       "To Exclude/Include Google Play Books [Stock/Full]",                      "check",
-      "CalendarGoogle",     "<b>CalendarGoogle </b>",       "To Exclude/Include Google Calendar [Stock/Full/Mini/Micro]",                      "check",
-      "CalSync",     "<b>CalSync</b>",       "To Exclude/Include Google Calendar Sync (installed by default when Google Calendar is NOT being installed) [Stock/Full/Mini/Micro/Nano/Pico]",                      "check",
-      "CameraGoogle",     "<b>CameraGoogle</b>",       "To Exclude/Include Google Camera [Stock]",                      "check",
-      "Chrome",     "<b>Chrome</b>",       "To Exclude/Include Chrome Browser [Stock/Full]",                      "check",
-      "ClockGoogle",     "<b>ClockGoogle</b>",       "To Exclude/Include Google Clock [Stock/Full]",                      "check",
-      "CloudPrint",     "<b>CloudPrint</b>",       "To Exclude/Include Cloud Print [Stock/Full]",                      "check",
-      "Docs",     "<b>Docs</b>",       "To Exclude/Include Google Docs [Stock/Full]",                      "check",
-      "Drive",     "<b>Drive</b>",       "To Exclude/Include Google Drive [Stock/Full]",                      "check",
-      "Ears",     "<b>Ears</b>",       "To Exclude/Include Sound Search for Google Play [Stock/Full]",                      "check",
-      "Earth",     "<b>Earth</b>",       "To Exclude/Include Google Earth [Stock/Full]",                      "check",
-      "ExchangeGoogle",     "<b>ExchangeGoogle</b>",       "To Exclude/Include Google Exchange Services [Stock/Full/Mini/Micro]",                      "check",
-      "FaceUnlock",     "<b>FaceUnlock</b>",       "To Exclude/Include FaceUnlock [Stock/Full/Mini/Micro]",                      "check",
-      "Fitness",     "<b>Fitness</b>",       "To Exclude/Include Fitness [Stock/Full]",                      "check",
-      "Gmail",     "<b>Gmail</b>",       "To Exclude/Include Gmail [Stock/Full/Mini/Micro]",                      "check",
-      "GoogleNow",     "<b>GoogleNow</b>",       "To Exclude/Include Google Now Launcher [Stock/Full/Mini/Micro]",                      "check",
-      "GooglePlus",     "<b>GooglePlus</b>",       "To Exclude/Include Google+ [Stock/Full/Mini]",                      "check",
-      "GoogleTTS",     "<b>GoogleTTS</b>",       "To Exclude/Include Google Text-to-Speech [Stock/Full/Mini/Micro]",                      "check",
-      "Hangouts",     "<b>Hangouts</b>",       "To Exclude/Include Hangouts [Stock/Full/Mini]",                      "check",
-      "Keep",     "<b>Keep</b>",       "To Exclude/Include Google Keep [Stock/Full]",                      "check",
-      "KeyboardGoogle",     "<b>KeyboardGoogle</b>",       "To Exclude/Include Google Keyboard [Stock]",                      "check",
-      "Maps",     "<b>Maps</b>",       "To Exclude/Include Maps [Stock/Full/Mini]",                      "check",
-      "Messenger",     "<b>Messenger</b>",       "To Exclude/Include Messenger (not installed on tablet devices) [Stock/Full]",                      "check",
-      "Movies",     "<b>Movies</b>",       "To Exclude/Include Google Play Movies & TV [Stock/Full]",                      "check",
-      "Music",     "<b>Music</b>",       "To Exclude/Include Google Play Music [Stock/Full]",                      "check",
-      "NewsStand",     "<b>NewsStand</b>",       "To Exclude/Include Google Play Newsstand [Stock/Full]",                      "check",
-      "NewsWidget",     "<b>NewsWidget</b>",       "To Exclude/Include Google News & Weather [Stock/Full]",                      "check",
-      "PlayGames",     "<b>PlayGames</b>",       "To Exclude/Include Google Play Games [Stock/Full]",                      "check",
-      "Sheets",     "<b>Sheets</b>",       "To Exclude/Include Google Sheets [Stock]",                      "check",
-      "Slides",     "<b>Slides</b>",       "To Exclude/Include Google Slides [Stock]",                      "check",
-      "Search",     "<b>Search</b>",       "To Exclude BOTH Google Search AND Google Now Launcher [S/F/Min/Mic/N] <#f00>OR</#> To Include Google Search [S/F/Min/Mic/N]",                      "check",
-      "Speech",     "<b>Speech</b>",       "To Exclude/Include off-line Speech files (Required for off-line 'Okay Google' support) [Stock/Full/Mini/Micro/Nano]",                      "check",
-      "Street",     "<b>Street</b>",       "To Exclude/Include Street View on Google Maps [Stock/Full/Mini]",                      "check",
-      "Photos",     "<b>Photos</b>",       "To Exclude/Include the Google Photos[Stock/Full/Mini]",                      "check",
-      "Talkback",     "<b>Talkback</b>",       "To Exclude/Include TalkBack [Stock/Full]",                      "check",
-      "Wallet",     "<b>Wallet</b>",       "To Exclude/Include Google Wallet [Stock/Full]",                      "check",
-      "WebViewGoogle",     "<b>WebViewGoogle</b>",       "To Exclude/Include Google Webview [Stock/Full]",                      "check",
-      "YouTube",     "<b>YouTube</b>",       "To Exclude/Include YouTube [Stock/Full/Mini]",                      "check"
+      "Books",     "<b>Books</b>",       "To Exclude/Include Google Play Books",                      "check",
+      "CalendarGoogle",     "<b>CalendarGoogle </b>",       "To Exclude/Include Google Calendar",                      "check",
+      "CalSync",     "<b>CalSync</b>",       "To Exclude/Include Google Calendar Sync (installed by default when Google Calendar is NOT being installed)",                      "check",
+      "CameraGoogle",     "<b>CameraGoogle</b>",       "To Exclude/Include Google Camera",                      "check",
+      "Chrome",     "<b>Chrome</b>",       "To Exclude/Include Chrome Browser",                      "check",
+      "ClockGoogle",     "<b>ClockGoogle</b>",       "To Exclude/Include Google Clock",                      "check",
+      "CloudPrint",     "<b>CloudPrint</b>",       "To Exclude/Include Cloud Print",                      "check",
+      "Docs",     "<b>Docs</b>",       "To Exclude/Include Google Docs",                      "check",
+      "Drive",     "<b>Drive</b>",       "To Exclude/Include Google Drive",                      "check",
+      "Ears",     "<b>Ears</b>",       "To Exclude/Include Sound Search for Google Play",                      "check",
+      "Earth",     "<b>Earth</b>",       "To Exclude/Include Google Earth",                      "check",
+      "ExchangeGoogle",     "<b>ExchangeGoogle</b>",       "To Exclude/Include Google Exchange Services",                      "check",
+      "FaceUnlock",     "<b>FaceUnlock</b>",       "To Exclude/Include FaceUnlock",                      "check",
+      "Fitness",     "<b>Fitness</b>",       "To Exclude/Include Fitness",                      "check",
+      "Gmail",     "<b>Gmail</b>",       "To Exclude/Include Gmail",                      "check",
+      "GoogleNow",     "<b>GoogleNow</b>",       "To Exclude/Include Google Now Launcher",                      "check",
+      "GooglePlus",     "<b>GooglePlus</b>",       "To Exclude/Include Google+",                      "check",
+      "GoogleTTS",     "<b>GoogleTTS</b>",       "To Exclude/Include Google Text-to-Speech",                      "check",
+      "Hangouts",     "<b>Hangouts</b>",       "To Exclude/Include Hangouts",                      "check",
+      "Keep",     "<b>Keep</b>",       "To Exclude/Include Google Keep",                      "check",
+      "KeyboardGoogle",     "<b>KeyboardGoogle</b>",       "To Exclude/Include Google Keyboard",                      "check",
+      "Maps",     "<b>Maps</b>",       "To Exclude/Include Maps",                      "check",
+      "Messenger",     "<b>Messenger</b>",       "To Exclude/Include Messenger (not installed on tablet devices)",                      "check",
+      "Movies",     "<b>Movies</b>",       "To Exclude/Include Google Play Movies & TV",                      "check",
+      "Music",     "<b>Music</b>",       "To Exclude/Include Google Play Music",                      "check",
+      "NewsStand",     "<b>NewsStand</b>",       "To Exclude/Include Google Play Newsstand",                      "check",
+      "NewsWidget",     "<b>NewsWidget</b>",       "To Exclude/Include Google News & Weather",                      "check",
+      "PlayGames",     "<b>PlayGames</b>",       "To Exclude/Include Google Play Games",                      "check",
+      "Sheets",     "<b>Sheets</b>",       "To Exclude/Include Google Sheets",                      "check",
+      "Slides",     "<b>Slides</b>",       "To Exclude/Include Google Slides",                      "check",
+      "Search",     "<b>Search</b>",       "To Exclude BOTH Google Search AND Google Now Launcher <#f00>OR</#> To Include Google Search",                      "check",
+      "Speech",     "<b>Speech</b>",       "To Exclude/Include off-line Speech files (Required for off-line 'Okay Google' support)",                      "check",
+      "Street",     "<b>Street</b>",       "To Exclude/Include Street View on Google Maps",                      "check",
+      "Photos",     "<b>Photos</b>",       "To Exclude/Include the Google Photos",                      "check",
+      "Talkback",     "<b>Talkback</b>",       "To Exclude/Include TalkBack",                      "check",
+      "Wallet",     "<b>Wallet</b>",       "To Exclude/Include Google Wallet",                      "check",
+      "WebViewGoogle",     "<b>WebViewGoogle</b>",       "To Exclude/Include Google Webview",                      "check",
+      "YouTube",     "<b>YouTube</b>",       "To Exclude/Include YouTube",                      "check"
 );
 #Duplicate aromagapps.prop and rename it to gapps.prop - this method is useful because the selections doesn't get erased by the complete installation (menu.prop selected ==2)
 resexec("scripts/props.sh");
@@ -245,13 +245,14 @@ form(
   #-------------+-----------------------[ Selectbox Without Group ]------------------------------#
   # PROP ID     | TITLE            |  SUBTITLE                                   |    Type       #
   #-------------+--------+-------------------------------------------------------+---------------#
-    "bypassrem",     "Bypass the automatic removal of Stock/AOSP apps [Stock ONLY]",        "",                                         "group",
-      "+Browser",     "<b>+Browser</b>",      "To bypass the automatic removal of Stock/AOSP Browser [Stock ONLY]",                      "check",
-      "+Email",     "<b>+Email</b>",      "To bypass the automatic removal of Stock/AOSP Email Application [Stock ONLY]",                      "check",
-      "+Gallery",     "<b>+Gallery</b>",      "To bypass the automatic removal of Stock/AOSP Gallery Application [Stock ONLY]",                      "check",
-      "+Launcher",     "<b>+Launcher</b>",      " To bypass the automatic removal of Stock/AOSP Launcher(s) [Stock ONLY]",                      "check",
-      "+MMS",     "<b>+MMS</b>",      "To bypass the automatic removal of Stock/AOSP SMS Application [Stock ONLY]",                      "check",
-      "+PicoTTS",     "<b>+PicoTTS</b>",      "To bypass the automatic removal of the Stock/AOSP PicoTTS app [Stock ONLY]",                      "check"
+    "bypassrem",     "Bypass the automatic removal of Stock/AOSP apps",        "",                                         "group",
+      "+Browser",     "<b>+Browser</b>",      "To bypass the automatic removal of Stock/AOSP Browser",                      "check",
+      "+Email",     "<b>+Email</b>",      "To bypass the automatic removal of Stock/AOSP Email Application",                      "check",
+      "+Gallery",     "<b>+Gallery</b>",      "To bypass the automatic removal of Stock/AOSP Gallery Application",                      "check",
+      "+Launcher",     "<b>+Launcher</b>",      " To bypass the automatic removal of Stock/AOSP Launcher(s)",                      "check",
+      "+MMS",     "<b>+MMS</b>",      "To bypass the automatic removal of Stock/AOSP SMS Application",                      "check",
+      "+PicoTTS",     "<b>+PicoTTS</b>",      "To bypass the automatic removal of the Stock/AOSP PicoTTS app",                      "check",
+      "+WebViewStock",     "<b>+WebViewStock</b>",      "To bypass the automatic removal of the Stock/AOSP WebView library",                      "check"
 );
 
 form(
@@ -847,6 +848,11 @@ if
 	prop("bypass.prop", "+PicoTTS")=="1"
 then
 	appendvar("gapps", "+PicoTTS\n");
+endif;
+if
+	prop("bypass.prop", "+WebViewStock")=="1"
+then
+	appendvar("gapps", "+WebViewStock\n");
 endif;
 
 
