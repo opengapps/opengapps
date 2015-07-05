@@ -104,7 +104,7 @@ addapk() {
 	echo "Importing "$name
 	echo "Package "$package" | VersionName "$versionname" | VersionCode "$versioncode" | API level "$sdkversion
 
-	if [ -z "$compatiblescreens" ]
+	if [ "$compatiblescreens" = "" ] # we can't use -z here, because there can be an empty space in it
 	then
 		dpis="nodpi"
 		echo "Universal DPI package"
