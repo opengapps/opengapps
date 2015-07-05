@@ -18,7 +18,7 @@ tee "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 # This Open GApps Shell Script Installer includes code derived from the TK GApps of @TKruzze and @osm0sis,
 # The TK GApps are available under the GPLv3 from http://forum.xda-developers.com/android/software/tk-gapps-t3116347
 #
-unzip -o "$3" installer.data g.prop gapps-remove.txt bkup_tail.sh app_densities.txt -d /tmp;
+unzip -o "$3" installer.data g.prop gapps-remove.txt bkup_tail.sh app_densities.txt app_sizes.txt -d /tmp;
 . /tmp/installer.data;
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
@@ -145,12 +145,10 @@ folder_extract() {
 }
 
 get_appsize() {
-	unzip -o "$ZIP" "$1.tar.xz" -d /tmp;
-	TAR="/tmp/$1.tar.xz";
 	app_name="$(basename "$1")";
     which_dpi "$app_name";
-    appsize="$(tar -tvJf "$TAR" "$1/common" "$dpiapkpath" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }')";
-	rm -f "$TAR";
+	app_density="$(basename "$dpiapkpath")";
+	appsize="$(cat /tmp/app_sizes.txt | grep -E "$app_name.*($app_density|common)" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')";
 }
 
 log() {
@@ -277,7 +275,11 @@ ui_print() {
 
 which_dpi() {
     # Calculate available densities
-	app_densities="$(cat /tmp/app_densities.txt | grep -E "$1/[0-9-]+|nodpi/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | sort)";
+	app_densities="";
+	app_densities="$(cat /tmp/app_densities.txt | grep -E "$1/([0-9-]+|nodpi)/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | sort)";
+	if [ -z "$app_densities" ]; then
+		app_densities="unknown"
+	fi;
     # Check if in the package there is a version for our density, or a universal one.
 	for densities in $app_densities; do
 		case "$densities" in
@@ -287,7 +289,7 @@ which_dpi() {
 		esac;
 	done;
 	# If there is no package for our density nor a universal one, we will look for the one with closer, but higher density.
-	if [ "$dpiapkpath" = "unknown" ]; then
+	if [ "$dpiapkpath" = "unknown" ] && [ "$app_densities" != "unknown" ]; then
 		for densities in $app_densities; do
 			all_densities="$(echo "$densities" | sed 's/-/ /g' | tr ' ' '\n' | sort | tr '\n' ' ')";
 			for d in $all_densities; do
@@ -299,7 +301,7 @@ which_dpi() {
 		done;
 	fi;
 	# If there is no package for our density nor a universal one or one for higher density, we will use the one with closer, but lower density.
-	if [ "$dpiapkpath" = "unknown" ]; then
+	if [ "$dpiapkpath" = "unknown" ] && [ "$app_densities" != "unknown" ]; then
 		for densities in $app_densities; do
 			all_densities="$(echo "$densities" | sed 's/-/ /g' | tr ' ' '\n' | sort -r | tr '\n' ' ')";
 			for d in $all_densities; do
