@@ -56,18 +56,18 @@ aromaupdatebinary() {
 
 createzip() {
 	echo "Compressing apps in tar.xz archives..."
-	cd "$build"Core
+	cd "$build/Core"
 	for f in $(ls); do # ls is safe here because there are no directories with spaces
 		echo "Compressing Core/$f"
 		XZ_OPT=-9e tar --remove-files -cJf "$f.tar.xz" "$f"
 	done
-	cd "$build"GApps
+	cd "$build/GApps"
 	for f in $(ls); do # ls is safe here because there are no directories with spaces
 		echo "Compressing GApps/$f"
 		XZ_OPT=-9e tar --remove-files -cJf "$f.tar.xz" "$f"
 	done
 	if [ "$API" -gt "19" ]; then
-		cd "$build"Optional
+		cd "$build/Optional"
 		for f in $(ls); do # ls is safe here because there are no directories with spaces
 			echo "Compressing Optional/$f"
 			XZ_OPT=-9e tar --remove-files -cJf "$f.tar.xz" "$f"
