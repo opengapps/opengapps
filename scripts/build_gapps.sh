@@ -23,6 +23,7 @@ ARCH="$1"
 API="$2"
 VARIANT="$3"
 BUILD="$TOP/build"
+CACHE="$TOP/cache"
 OUT="$TOP/out"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
@@ -38,6 +39,7 @@ SCRIPTS="$TOP/scripts"
 command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }
 #coreutils also contains the basename command
+command -v md5sum >/dev/null 2>&1 || { echo "md5sum is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v openssl >/dev/null 2>&1 || { echo "openssl is required but it's not installed.  Aborting." >&2; exit 1; }
 #necessary to use signapk
 command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not installed.  Aborting." >&2; exit 1; }

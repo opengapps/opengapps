@@ -55,6 +55,7 @@ aromaupdatebinary() {
 }
 
 createzip() {
+	find "$build" -exec touch -d "2008-02-28 21:33:46.000000000 +0100" {} \;
 	cd "$build"
 	for d in $(ls -d */ | grep -v "META-INF"); do #notice that d will end with a slash, ls is safe here because there are no directories with spaces
 		cd "$build/$d"
@@ -63,8 +64,17 @@ createzip() {
 				foldersize="$(du -ck "$f/$g/" | tail -n1 | awk '{ print $1 }')"
 				echo "$f\t$g\t$foldersize" >> "$build/app_sizes.txt"
 			done
-			echo "Compressing $d$f"
-			XZ_OPT=-9e tar --remove-files -cJf "$f.tar.xz" "$f"
+			hash="$(tar -cf - "$f" | md5sum | cut -f1 -d' ')"
+			if [ -f "$CACHE/$hash.tar.xz" ]; then #we have this xz in cache
+				echo "Fetching $d$f from the cache"
+				rm -rf "$f" #remove the folder
+				cp "$CACHE/$hash.tar.xz" "$f.tar.xz" #copy from the cache
+			else
+				echo "Compressing $d$f"
+				XZ_OPT=-9e tar --remove-files -cJf "$f.tar.xz" "$f"
+				cp "$f.tar.xz" "$CACHE/$hash.tar.xz" #copy into the cache
+			fi
+			touch -d "2008-02-28 21:33:46.000000000 +0100" "$f.tar.xz"
 		done
 	done
 

@@ -15,6 +15,7 @@ TOP="$(realpath .)"
 SOURCES="$TOP/sources"
 
 command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
+command -v md5sum >/dev/null 2>&1 || { echo "md5sum is required but it's not installed.  Aborting." >&2; exit 1; }
 
 argument(){
 	case $1 in

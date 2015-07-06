@@ -16,6 +16,7 @@ preparebuildarea() {
 	echo "Cleaning build area: $build"
 	rm -rf "$build"
 	install -d "$build"
+	install -d "$CACHE"
 }
 
 copy() {

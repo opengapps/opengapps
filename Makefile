@@ -21,6 +21,7 @@ LOWEST_API_x86 := 19
 LOWEST_API_x86_64 := 21
 VARIANTS := stock full mini micro nano pico aroma fornexus
 BUILDDIR := $(TOPDIR)/build
+CACHEDIR := $(TOPDIR)/cache
 OUTDIR := $(TOPDIR)/out
 LOG_BUILD := /tmp/gapps_log
 
@@ -62,4 +63,5 @@ $(eval $(call make-gapps,$(platform)-$(api)))\
 
 distclean:
 	@rm -fr $(BUILDDIR)
-	@echo "$(tput setaf 2)Build directory removed! Ready for a clean build$(tput sgr 0)"
+	@rm -fr $(CACHEDIR)
+	@echo "$(tput setaf 2)Build and cache directory removed! Ready for a clean build$(tput sgr 0)"
