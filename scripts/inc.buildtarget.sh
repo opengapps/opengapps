@@ -115,7 +115,7 @@ gapps="$gapps_list"
 
 
 for app in $gapps; do
-	get_package_info $app
+	get_package_info "$app"
 	if [ -n "$packagename" ]; then
 		buildapp "$packagename" "$packagetype/$app" "$packagetarget"
 	fi

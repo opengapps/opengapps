@@ -24,7 +24,7 @@ makegappsremovetxt(){
 	get_gapps_list "$supported_variants"
 	for gapp in $gapps_list; do
 		get_package_info "$gapp"
-		if [ -n $packagename ]; then
+		if [ -n "$packagename" ]; then
 			gapps_remove="/system/$packagetarget$REMOVALSUFFIX
 $gapps_remove"
 		fi
