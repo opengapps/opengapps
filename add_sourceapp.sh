@@ -30,7 +30,7 @@ getarchitectures() {
 		for lib in $libfiles
 		do
 			#this gives all files found in the lib-folder(s), check their paths for which architectures' libs are included
-			arch="`echo $lib | awk 'BEGIN { FS = "/" } ; {print $2}'`"
+			arch="$(echo "$lib" | awk 'BEGIN { FS = "/" } ; {print $2}')"
 			echo "$architectures" | grep -q "$arch"
 			if [ $? -eq 1 ] #only add if this architecture is not yet in the list
 			then
@@ -70,9 +70,9 @@ installapk() {
 	install -d "$target"
 	if stat --printf='' "$target/"* 2>/dev/null
 	then
-		existing=`find "$target/" -name "*.apk" | sort -r | cut -c1-` #we only look for lowercase .apk, since basename later assumes the same
+		existing=$(find "$target/" -name "*.apk" | sort -r | cut -c1-) #we only look for lowercase .apk, since basename later assumes the same
 		echo "Existing version $existing"
-		existingversion=`basename -s.apk "$existing"`
+		existingversion=$(basename -s.apk "$existing")
 		if [ "$versioncode" -gt "$existingversion" ]; then
 			echo "Replaced with $target/$versioncode.apk"
 			rm "$existing"
@@ -86,7 +86,7 @@ installapk() {
 	fi
 
 	if [ "$sdkversion" -le "$LOWESTAPI" ];then
-		for i in `seq 1 "$(($sdkversion - 1))"`
+		for i in $(seq 1 "$(($sdkversion - 1))")
 		do
 			remove="$SOURCES/$architecture/$type/$package/$i/"
 			if [ -e "$remove" ];then
@@ -101,8 +101,8 @@ addapk() {
 	apk="$1"
 	getapkproperties "$apk"
 
-	echo "Importing "$name
-	echo "Package "$package" | VersionName "$versionname" | VersionCode "$versioncode" | API level "$sdkversion
+	echo "Importing $name"
+	echo "Package $package | VersionName $versionname | VersionCode $versioncode | API level $sdkversion"
 
 	if [ "$compatiblescreens" = "" ] # we can't use -z here, because there can be a linecontrol character or such in it
 	then

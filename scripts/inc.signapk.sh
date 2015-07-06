@@ -35,34 +35,34 @@ if [ "x$ZIPINFO" = "x" ]; then ZIPINFO="zipinfo"; fi
 
 #######################  misc utility variables
 esc=${IFS:2:2}
-OLDIFS=$IFS
+OLDIFS="$IFS"
 PAD="                                                                                                    "
 
 #######################  debugging spew
 dprint() {
-  if [ $DEBUG ] && [ "$DEBUG" != "0" ]; then
+  if [ "$DEBUG" ] && [ "$DEBUG" != "0" ]; then
     #IFS=$OLDIFS
     echo "[DEBUG $$] $*" 1>&2
   fi
 }
 #######################  informational spew
 p () {
-  if [ ! $OPTquiet ]; then
+  if [ ! "$OPTquiet" ]; then
     printf "$*"
   fi
 }
 #######################
 ordie() {
   rc=$?
-  if [ $rc -ne 0 ]; then
-    if [ ! $2 ]; then
-      ecode=$rc
+  if [ "$rc" -ne 0 ]; then
+    if [ ! "$2" ]; then
+      ecode="$rc"
     else
-      ecode=$2
+      ecode="$2"
     fi
     IFS=" "
     echo "$1"
-    exit $ecode
+    exit "$ecode"
   fi
 }
 
@@ -101,22 +101,22 @@ mfentry() {
   local hash=$($UNZIP -p "$ORIG" "$1"|mfhash)
   ret="N"
   namepart="ame: $1"
-  lengthname=`printf "$namepart" | wc -c`
+  lengthname=$(printf "$namepart" | wc -c)
   for ((s=1; $s<$lengthname; s=$s+69)) ;
   do
-    e=`expr $s + 68`
-    ret="$ret"`printf "$namepart" | cut -b$s-$e`
+    e=$(expr $s + 68)
+    ret="$ret"$(printf "$namepart" | cut -b$s-$e)
     ret="$ret\r\n "
   done
   ret="${ret%?}" #remove the space we inserted, was only for if a next line was coming
 
   ret="${ret}S"
   hashpart="HA1-Digest: $hash"
-  lengthhash=`printf "$hashpart" | wc -c`
+  lengthhash=$(printf "$hashpart" | wc -c)
   for ((s=1; $s<$lengthhash; s=$s+69)) ;
   do
-    e=`expr $s + 68`
-    ret="$ret"`printf "$hashpart" | cut -b$s-$e`
+    e=$(expr $s + 68)
+    ret="$ret"$(printf "$hashpart" | cut -b$s-$e)
     ret="$ret\r\n "
   done
   ret="${ret%?}" #remove the space we inserted, was only for if a next line was coming
@@ -130,22 +130,22 @@ sfentry() {
   local hash=$($PRINTF "$2"|mfhash)
   ret="N"
   namepart="ame: $1"
-  lengthname=`printf "$namepart" | wc -c`
+  lengthname=$(printf "$namepart" | wc -c)
   for ((s=1; $s<$lengthname; s=$s+69)) ;
   do
-    e=`expr $s + 68`
-    ret="$ret"`printf "$namepart" | cut -b$s-$e`
+    e=$(expr $s + 68)
+    ret="$ret"$(printf "$namepart" | cut -b$s-$e)
     ret="$ret\r\n "
   done
   ret="${ret%?}" #remove the space we inserted, was only for if a next line was coming
 
   ret="${ret}S"
   hashpart="HA1-Digest: $hash"
-  lengthhash=`printf "$hashpart" | wc -c`
+  lengthhash=$(printf "$hashpart" | wc -c)
   for ((s=1; $s<$lengthhash; s=$s+69)) ;
   do
-    e=`expr $s + 68`
-    ret="$ret"`printf "$hashpart" | cut -b$s-$e`
+    e=$(expr $s + 68)
+    ret="$ret"$(printf "$hashpart" | cut -b$s-$e)
     ret="$ret\r\n "
   done
   ret="${ret%?}" #remove the space we inserted, was only for if a next line was coming
@@ -171,7 +171,7 @@ getcertid() {
   fi
   certid=$(echo "$cert"| $OPENSSL x509 -noout -serial| $SED -r "s,^(serial=),,g" )
   dprint "certid($?): '$certid'"
-  echo $certid
+  echo "$certid"
   return 0
 }
 
@@ -264,13 +264,13 @@ getop() {
 getop "$@"
 IFS="$esc";
 set -- $args
-IFS=$OLDIFS
+IFS="$OLDIFS"
 #######################
 if [ "x$1" = "xsign" ]; then
   chkcert "$OPTcert" "$OPTkey"
   if [ ! -e "$PKEY" ]; then echo "Missing private key! I looked in '$PKEY'"; exit 9 ; fi
   if [ ! -e "$CERT" ]; then echo "Missing cert! I looked in '$CERT'"; exit 9 ; fi
-  IFS=$esc
+  IFS="$esc"
   ORIG=$($READLINK -f "$2")
 
   mf="Manifest-Version: 1.0\r\nCreated-By: 1.0 (Open GApps)\r\n\r\n"
@@ -282,11 +282,11 @@ if [ "x$1" = "xsign" ]; then
     cp -a "$ORIG" "$TARGET";  ordie "Cannot write to $TARGET" 3
   else
     TARGET="$ORIG"
-    if [ ! $OPTforce ]; then
+    if [ ! "$OPTforce" ]; then
       myserial=$($OPENSSL x509 -noout -serial < "$CERT" |$SED -r "s,^(serial=),,g")
       if origkey=$(getcertid "$ORIG"); then
         if [ "x$origkey" != "x$myserial" ]; then
-          IFS=$OLDIFS
+          IFS="$OLDIFS"
           echo "$ORIG is signed with a cert ($origkey) that does not match '$CERT' ($myserial). Try"
           echo "  $0 --force $origarg"
           echo "if you wish to proceed, or"
@@ -297,10 +297,10 @@ if [ "x$1" = "xsign" ]; then
       fi
     fi
   fi
-  IFS=$esc
+  IFS="$esc"
   p "Checksumming $ORIG:\n\t"
   for file in $ZIPls; do
-    IFS=$OLDIFS
+    IFS="$OLDIFS"
     if [ $# -ge 3 ] && [ "x$1" != "x0" ]; then
       ret=""
       if [ "x$file" != "xMETA-INF/MANIFEST.MF" ] && [ "x$file" != "xMETA-INF/CERT.SF" ] && [ "x$file" != "xMETA-INF/CERT.RSA" ]; then
@@ -332,12 +332,12 @@ if [ "x$1" = "xsign" ]; then
   printf "$message" > "${TMPDIR}/zipcomment"
   printf "00" | xxd -r -p >> "${TMPDIR}/zipcomment"
   dd if="$TARGET" 2>/dev/null | $OPENSSL smime -sign -inkey "$TMPPKEY" -signer "$CERT" -binary -outform DER -noattr >> "${TMPDIR}/zipcomment"
-  sizemessage=`printf "$message" | wc -c`
-  sizeheader=`wc -c "${TMPDIR}/zipcomment" | cut -f1 -d' '`
-  sizetotal=`expr $sizeheader + 6`
+  sizemessage=$(printf "$message" | wc -c)
+  sizeheader=$(wc -c "${TMPDIR}/zipcomment" | cut -f1 -d' ')
+  sizetotal=$(expr $sizeheader + 6)
 
-  sigstart=`expr $sizetotal - $sizemessage`
-  sigstart=`expr $sigstart - 1`
+  sigstart=$(expr $sizetotal - $sizemessage)
+  sigstart=$(expr $sigstart - 1)
 
   printf "%.4x" $sigstart | sed -E 's/(..)(..)/\2\1/' | xxd -r -p >> "${TMPDIR}/zipcomment"
   printf "FFFF" | xxd -r -p >> "${TMPDIR}/zipcomment"
@@ -363,10 +363,10 @@ elif [ "x$1" = "xcert" ]; then
       real=$($READLINK -f "$i")
       out="$real$PAD"
       cert=""
-      IFS=$esc
+      IFS="$esc"
       cert=$($UNZIP -p "$i" 'META-INF/*.RSA' 'META-INF/*.DSA' 2> /dev/null |$OPENSSL pkcs7 -inform DER -print_certs 2> /dev/null)
       if [ $? -eq 0 ]; then
-        IFS=$OLDIFS
+        IFS="$OLDIFS"
         set -- $(echo "$cert"| $OPENSSL x509 -noout -serial -subject|$SED -r "s,^(serial=|subject ?=.*/O=),,g" )
         certserial=$1
         case $certserial in
