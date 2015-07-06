@@ -65,20 +65,20 @@ buildapp(){
 	then
 		baseversionname=""
 		for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
-			dpivariant="$(echo "$dpivariant"| tr '' ' ')" #and we place the spaces back again
-			versionname="$(aapt dump badging "$dpivariant" 2>/dev/null | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
+			dpivariant="$(echo "$dpivariant" | tr '' ' ')" #and we place the spaces back again
+			versionname="$(aapt dump badging "$dpivariant" 2>/dev/null | grep "versionName" | awk '{print $4}' | sed s/versionName=// | sed "s/'//g")"
 
 			versionnamehack #Some packages have a different versionname, when the actual version is equal
 
 			if [ -z "$baseversionname" ]; then
 				baseversionname=$versionname
 				buildlib "$dpivariant" "$ziplocation/common/$targetlocation" #Use the libs from this baseversion
-				printf "%44s %17s" "$package" "$baseversionname"
+				printf "%44s %22s" "$package" "$baseversionname"
 			fi
 			if [ "$versionname" = "$baseversionname" ]; then
 				density=$(basename "$(dirname "$dpivariant")")
 				buildapk "$dpivariant" "$ziplocation/$density/$targetlocation"
-				printf " $density"
+				echo -n " $density"
 				echo "$ziplocation/$density/" >> "$build/app_densities.txt"
 			fi
 		done
@@ -117,20 +117,13 @@ getsourceforapi() {
 	fi
 
 	#sed copies filename to the beginning, to compare version, and later we remove it with cut
-	for foundapk in $(echo "$(eval "$sourcearch$sourceall")"\
-			| sed 's!.*/\(.*\)!\1/&!'\
-			| sort -r -t/ -k1,1\
-			| cut -d/ -f2-\
-			| tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
+	for foundapk in $(eval "$sourcearch$sourceall" | sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2- | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
 		foundpath="$(dirname "$(dirname "$(echo "$foundapk" | tr '' ' ')")")" #and we place the spaces back again
 		api="$(basename "$foundpath")"
 		if [ "$api" -le "$API" ]
 		then
 			#We need to keep them sorted
-			sourceapks="$(find "$foundpath" -name "*.apk"\
-			| sed 's!.*/\(.*\)!\1/&!'\
-			| sort -r -t/ -k1,1\
-			| cut -d/ -f2-)"
+			sourceapks="$(find "$foundpath" -name "*.apk" | sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2-)"
 			break
 		fi
 	done

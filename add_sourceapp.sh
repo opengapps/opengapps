@@ -53,13 +53,13 @@ getarchitectures() {
 
 getapkproperties(){
 	apkproperties="$(aapt dump badging "$1" 2>/dev/null)"
-	name="$(echo "$apkproperties" | grep "application-label:" |sed 's/application-label://g' |tr -d "/'")"
+	name="$(echo "$apkproperties" | grep "application-label:" | sed 's/application-label://g' | sed "s/'//g")"
 	package="$(echo "$apkproperties" | grep package: | awk '{print $2}' | sed s/name=//g | sed s/\'//g | awk '{print tolower($0)}')"
-	versionname="$(echo "$apkproperties" | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
-	versioncode="$(echo "$apkproperties" | grep "versionCode=" |awk '{print $3}' |tr -d "/versionCode='")"
-	sdkversion="$(echo "$apkproperties" | grep "sdkVersion:" |tr -d "/sdkVersion:'")"
+	versionname="$(echo "$apkproperties" | grep "versionName" | awk '{print $4}' | sed s/versionName=// | sed "s/'//g")"
+	versioncode="$(echo "$apkproperties" | grep "versionCode=" | awk '{print $3}' | sed s/versionCode=// | sed "s/'//g")"
+	sdkversion="$(echo "$apkproperties" | grep "sdkVersion:" | sed 's/sdkVersion://' | sed "s/'//g")"
 	compatiblescreens="$(echo "$apkproperties" | grep "compatible-screens:")"
-	native="$(echo "$apkproperties" | grep "native-code:" |sed 's/native-code://g' | tr -d "'")"
+	native="$(echo "$apkproperties" | grep "native-code:" | sed 's/native-code://g' | sed "s/'//g")"
 }
 
 installapk() {
@@ -86,7 +86,7 @@ installapk() {
 	fi
 
 	if [ "$sdkversion" -le "$LOWESTAPI" ];then
-		for i in $(seq 1 "$(($sdkversion - 1))")
+		for i in $(seq 1 "$((sdkversion - 1))")
 		do
 			remove="$SOURCES/$architecture/$type/$package/$i/"
 			if [ -e "$remove" ];then
@@ -109,8 +109,8 @@ addapk() {
 		dpis="nodpi"
 		echo "Universal DPI package"
 	else
-		dpis=$(printf "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])[0-9]" | uniq | tr -d '\012\015' | tr '/' '-' | cut -c 2-)
-		echo "Package supports DPIs: $(printf "$dpis" | tr '-' ' ')"
+		dpis=$(echo "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])[0-9]" | uniq | tr -d '\012\015' | tr '/' '-' | cut -c 2-)
+		echo "Package supports DPIs: $(echo "$dpis" | tr '-' ' ')"
 	fi
 
 	if [ "$package" = "com.google.android.backuptransport" ] \
