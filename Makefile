@@ -61,7 +61,10 @@ $(foreach api,$(APIS),\
 $(eval $(call make-gapps,$(platform)-$(api)))\
 ))
 
-distclean:
+clean:
 	@rm -fr $(BUILDDIR)
+	@echo "$(tput setaf 2)Build directory removed!$(tput sgr 0)"
+
+distclean: clean
 	@rm -fr $(CACHEDIR)
-	@echo "$(tput setaf 2)Build and cache directory removed! Ready for a clean build$(tput sgr 0)"
+	@echo "$(tput setaf 2)Cache directory removed!$(tput sgr 0)"
