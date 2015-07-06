@@ -58,7 +58,7 @@ echo "=== Simple How To ===:
 * hash: If you add hash as an extra argument, the result will not be returned as human readable, but with a unique hash for the resultset
 * nohelp: If you add nohelp as an extra argument, the result will not include this helptext (not necessary if hash is used)
 * Example command: './report_sources.sh arm-22 hash'
----------------------------------------------------------------------------------------------------------"
+--------------------------------------------------------------------------------------------------------------"
 fi
 
 if [ "$buildarch" = arm64 ]; then
@@ -67,8 +67,8 @@ elif [ "$buildarch" = x86_64 ]; then
 	fallbackarch="x86"
 fi
 
-result="$(printf "%45s|%7s|%3s|%16s|%18s|%11s" "Application Name" "Arch." "SDK" "DPI" "Version Name" "Version")
----------------------------------------------------------------------------------------------------------"
+result="$(printf "%45s|%7s|%3s|%16s|%23s|%11s" "Application Name" "Arch." "SDK" "DPI" "Version Name" "Version")
+--------------------------------------------------------------------------------------------------------------"
 allapps="$(find "$SOURCES/" -iname "*.apk" | awk -F '/' '{print $(NF-3)}' | sort | uniq)"
 for appname in $allapps;do
 	appnamefiles="$(find "$SOURCES/" -iname "*.apk" -ipath "*/$appname/*")"
