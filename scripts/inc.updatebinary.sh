@@ -130,6 +130,7 @@ exxit() {
     umount /system;
     umount /data;
     umount /cache;
+    umount /persist;
     exit "$1";
 }
 
@@ -328,17 +329,18 @@ ui_print "################################################";
 ui_print " ";
 ui_print "$installer_name$gapps_version";
 ui_print " ";
-ui_print "- Mounting /system, /data, /cache";
+ui_print "- Mounting /system, /data, /cache, /persist";
 ui_print " ";
 set_progress 0.01;
 busybox mount /system;
 busybox mount /data;
 busybox mount /cache;
+busybox mount /persist;
 busybox mount -o rw,remount /system;
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
 # Locate gapps-config (if used)
-for i in "/tmp/aroma/.gapps-config" "$zip_folder/.gapps-config" "$zip_folder/gapps-config.txt" /sdcard/Open-GApps/.gapps-config /sdcard/Open-GApps/gapps-config.txt "$zip_folder/.gapps-config.txt" /sdcard/Open-GApps/.gapps-config.txt; do
+for i in "/tmp/aroma/.gapps-config" "$zip_folder/.gapps-config" "$zip_folder/gapps-config.txt" /sdcard/Open-GApps/.gapps-config /sdcard/Open-GApps/gapps-config.txt "$zip_folder/.gapps-config.txt" /sdcard/Open-GApps/.gapps-config.txt /persist/.gapps-config /persist/gapps-config.txt /persist/.gapps-config.txt; do
     if [ -r "$i" ]; then
         g_conf="$i";
         break;
