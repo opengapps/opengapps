@@ -77,23 +77,23 @@ for appname in $allapps;do
 	elif [ -n "$filterapparchs" ];then
 		apparchs="$filterapparchs"
 	else
-		apparchs="$(printf "$appnamefiles" | awk -F '/' '{print $(NF-5)}' | sort | uniq)"
+		apparchs="$(echo "$appnamefiles" | awk -F '/' '{print $(NF-5)}' | sort | uniq)"
 	fi
 
 	for arch in $apparchs;do
 		appsdkfiles="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/*")"
-		appsdks="$(printf "$appsdkfiles" | awk -F '/' '{print $(NF-2)}' | sort | uniq)"
+		appsdks="$(echo "$appsdkfiles" | awk -F '/' '{print $(NF-2)}' | sort | uniq)"
 
 		for sdk in $appsdks;do
 			if [ "$sdk" -le "$maxsdk" ];then
 				appdpifiles="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/*")"
-				appdpis="$(printf "$appdpifiles" | awk -F '/' '{print $(NF-1)}' | sort | uniq)"
+				appdpis="$(echo "$appdpifiles" | awk -F '/' '{print $(NF-1)}' | sort | uniq)"
 				for dpi in $appdpis;do
 					appversionfile="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/$dpi/*" | head -n 1)"
 					appversion="$(basename -s ".apk" "$appversionfile")"
-					appversionname="$(aapt dump badging "$appversionfile" 2>/dev/null | grep "versionName" |awk '{print $4}' |tr -d "versionName=" |tr -d "/'")"
+					appversionname="$(aapt dump badging "$appversionfile" 2>/dev/null | grep "versionName" | awk '{print $4}' | sed s/versionName=// | sed "s/'//g")"
 					result="$result
-$(printf "%45s| %6s| %2s| %15s| %17s| %10s" "$appname" "$arch" "$sdk" "$dpi" "$appversionname" "$appversion")"
+$(printf "%45s| %6s| %2s| %15s| %22s| %10s" "$appname" "$arch" "$sdk" "$dpi" "$appversionname" "$appversion")"
 				done
 				if [ -n "$buildarch" ]; then
 					break 2 #when selecting for the build of a specified architeture and sdk, only one architecture result is enough
@@ -107,5 +107,5 @@ done
 if [ -z "$hash" ]; then
 	echo "$result"
 else
-	echo "$(echo -n "$result" | md5sum | cut -f1 -d' ')"
+	echo -n "$result" | md5sum | cut -f1 -d' '
 fi

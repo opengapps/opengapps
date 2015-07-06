@@ -41,7 +41,7 @@ $gapps_remove"
 			fi
 		done
 	done
-	printf "$gapps_remove" | sort > "$build/gapps-remove.txt"
+	echo -n "$gapps_remove" | sort > "$build/gapps-remove.txt" # Use the -n switch to avoid a newline at the beginning of the file.
 }
 makeinstallerdata(){
 echo '#This file is part of The Open GApps script of @mfonville.
