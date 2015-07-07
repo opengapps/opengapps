@@ -300,10 +300,11 @@ which_dpi() {
 	fi;
 	# If there is no package for our density nor a universal one or one for higher density, we will use the one with closer, but lower density.
 	if [ "$dpiapkpath" = "unknown" ] && [ -n "$app_densities" ]; then
+		app_densities="$(echo "$app_densities" | sort -r)"
 		for densities in $app_densities; do
 			all_densities="$(echo "$densities" | sed 's/-/ /g' | tr ' ' '\n' | sort -r | tr '\n' ' ')";
 			for d in $all_densities; do
-				if [ "$d" -ge "$density" ]; then
+				if [ "$d" -le "$density" ]; then
 					dpiapkpath="$1/$densities";
 					break 2;
 				fi;
