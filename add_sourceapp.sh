@@ -155,9 +155,8 @@ addapk() {
 	fi
 }
 
-for argument in "$@"
+for file in "$@"
 do
-	file="$(readlink -f "$argument")"
 	if [ -f "$file" ]
 	then
 		if aapt dump configurations "$file" >/dev/null
