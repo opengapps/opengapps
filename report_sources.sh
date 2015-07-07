@@ -77,17 +77,17 @@ for appname in $allapps;do
 	elif [ -n "$filterapparchs" ];then
 		apparchs="$filterapparchs"
 	else
-		apparchs="$(echo "$appnamefiles" | awk -F '/' '{print $(NF-5)}' | sort | uniq)"
+		apparchs="$(echo -n "$appnamefiles" | awk -F '/' '{print $(NF-5)}' | sort | uniq)"
 	fi
 
 	for arch in $apparchs;do
 		appsdkfiles="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/*")"
-		appsdks="$(echo "$appsdkfiles" | awk -F '/' '{print $(NF-2)}' | sort | uniq)"
+		appsdks="$(echo -n "$appsdkfiles" | awk -F '/' '{print $(NF-2)}' | sort | uniq)"
 
 		for sdk in $appsdks;do
 			if [ "$sdk" -le "$maxsdk" ];then
 				appdpifiles="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/*")"
-				appdpis="$(echo "$appdpifiles" | awk -F '/' '{print $(NF-1)}' | sort | uniq)"
+				appdpis="$(echo -n "$appdpifiles" | awk -F '/' '{print $(NF-1)}' | sort | uniq)"
 				for dpi in $appdpis;do
 					appversionfile="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/$dpi/*" | head -n 1)"
 					appversion="$(basename -s ".apk" "$appversionfile")"
