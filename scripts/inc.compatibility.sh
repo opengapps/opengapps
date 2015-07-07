@@ -31,10 +31,10 @@ keybd_lib_filename2="libjni_latinime.so";'
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename2"; # create required symlink
 
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" /system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename2\"" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" /system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename2\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1\"" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/LatinIME/lib/'"$ARCH"'" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" /system/'"$LIBFOLDER"'/$keybd_lib_filename2\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" \"/system/'"$LIBFOLDER"'/$keybd_lib_filename2\"" $bkup_tail;
 fi;'
     else
         REQDLIST="/system/lib/libjni_latinime.so
