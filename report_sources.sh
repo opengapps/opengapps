@@ -82,7 +82,7 @@ for appname in $allapps;do
 
 	for arch in $apparchs;do
 		appsdkfiles="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/*")"
-		appsdks="$(echo -n "$appsdkfiles" | awk -F '/' '{print $(NF-2)}' | sort -r | uniq)"
+		appsdks="$(echo -n "$appsdkfiles" | awk -F '/' '{print $(NF-2)}' | sort -r -g | uniq)"
 
 		for sdk in $appsdks;do
 			if [ "$sdk" -le "$maxsdk" ];then
