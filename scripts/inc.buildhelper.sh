@@ -78,7 +78,7 @@ buildapp(){
 			if [ "$versionname" = "$baseversionname" ]; then
 				density=$(basename "$(dirname "$dpivariant")")
 				buildapk "$dpivariant" "$ziplocation/$density/$targetlocation"
-				echo -n " $density"
+				printf " %s" "$density"
 				echo "$ziplocation/$density/" >> "$build/app_densities.txt"
 			fi
 		done
