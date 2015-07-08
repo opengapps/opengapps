@@ -459,6 +459,19 @@ for rec_log in $rec_tmp_log $rec_cache_log; do
     esac;
 done;
 
+# Check for the presence of the tar and xz binaries
+if [ -z "$(command -v tar)" ] || [ -z "$(command -v xz)" ]; then
+    ui_print "Your recovery is missing the tar";
+    ui_print "or the xz binary. Please update";
+    ui_print "your recovery to the latest version";
+    ui_print "or switch to another one.";
+    ui_print "See:'$log_folder/open_gapps_log.txt'";
+    ui_print "for complete details and information.";
+    ui_print " ";
+    install_note="${install_note}no_xz_message"$'\n'; # make note that there is no XZ support
+	abort "$E_XZ";
+fi;
+
 # Get display density using getprop from Recovery
 density=$(getprop ro.sf.lcd_density);
 
