@@ -15,6 +15,7 @@ TOP="$(realpath .)"
 SOURCES="$TOP/sources"
 LOWESTAPI="19"
 command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
+command -v file >/dev/null 2>&1 || { echo "file is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }
 #coreutils also contains the basename command
 command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not installed.  Aborting." >&2; exit 1; }
@@ -159,12 +160,30 @@ for file in "$@"
 do
 	if [ -f "$file" ]
 	then
-		if aapt dump configurations "$file" >/dev/null
-		then
-			addapk "$file"
-		else
-			echo "ERROR: File $file not a valid APK!"
-		fi
+		filetype="$(file -b -0 "$file" | tr '[:upper:]' '[:lower:]')"
+		case "$filetype" in
+			*jar*|*zip*)
+				if aapt dump configurations "$file" >/dev/null
+				then
+					addapk "$file"
+				else
+					echo "ERROR: File $file not a valid APK!"
+				fi;;
+			*x86-64*)
+				install -D "$file" "$SOURCES/x86_64/lib64/$(basename "$file")"
+				echo "SUCCESS: Added $file to x86_64/lib64/";;
+			*aarch64*)
+				install -D "$file" "$SOURCES/arm64/lib64/$(basename "$file")"
+				echo "SUCCESS: Added $file to arm64/lib64/";;
+			*32-bit*intel*)
+				install -D "$file" "$SOURCES/x86/lib/$(basename "$file")"
+				echo "SUCCESS: Added $file to x86/lib/";;
+			*32-bit*arm*)
+				install -D "$file" "$SOURCES/arm/lib/$(basename "$file")"
+				echo "SUCCESS: Added $file to arm/lib/";;
+			*)
+				echo "ERROR: File $f has an unrecognized filetype!";;
+		esac
 	else
 		echo "ERROR: File $file does not exist!"
 	fi

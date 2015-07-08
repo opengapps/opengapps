@@ -159,10 +159,12 @@ get_package_info(){
 								fi;;
 		earth)						packagetype="GApps";packagename="com.google.earth"; packagetarget="app/GoogleEarth";;
 		exchangegoogle)				packagetype="GApps";packagename="com.google.android.gm.exchange"; packagetarget="app/PrebuiltExchange3Google";;
-		faceunlock)					packagetype="GApps";packagename="com.android.facelock"; packagetarget="app/FaceLock";
+		faceunlock)				if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
+									packagetype="GApps";packagename="com.android.facelock"; packagetarget="app/FaceLock";
 									packagetype="GApps";packagefiles="vendor/pittpatt/ $LIBFOLDER/libfacelock_jni.so $LIBFOLDER/libfilterpack_facedetect.so"
-								if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64 bit, we also need the 32 bit file
-									packagetype="GApps"; packagefiles="$packagefiles lib/libfilterpack_facedetect.so";
+									if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64 bit, we also need the 32 bit file
+										packagetype="GApps"; packagefiles="$packagefiles lib/libfilterpack_facedetect.so";
+									fi
 								fi;;
 		fitness)					packagetype="GApps";packagename="com.google.android.apps.fitness"; packagetarget="app/FitnessPrebuilt";;
 		gmail)						packagetype="GApps";packagename="com.google.android.gm"; packagetarget="app/PrebuiltGmail";;

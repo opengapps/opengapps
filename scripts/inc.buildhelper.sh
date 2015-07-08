@@ -33,14 +33,22 @@ copy() {
 }
 
 buildfile() {
-	if [ -e "$SOURCES/$ARCH/$2" ];then #check if directory or file exists
-		if [ -d "$SOURCES/$ARCH/$2" ];then #if we are handling a directory
+	if [ -z "$3" ]; then SOURCEARCH="$ARCH"
+	else SOURCEARCH="$3"; fi #allows for an override
+
+	if [ -e "$SOURCES/$SOURCEARCH/$2" ];then #check if directory or file exists
+		if [ -d "$SOURCES/$SOURCEARCH/$2" ];then #if we are handling a directory
 			targetdir="$build/$1/$2"
 		else
 			targetdir="$build/$1/$(dirname "$2")"
 		fi
+		if [ "$SOURCEARCH" = "$FALLBACKARCH" ] && [ "$SOURCEARCH" != "$ARCH" ];then
+			echo "INFO: Falling back from $ARCH to $FALLBACKARCH for file $2"
+		fi
 		install -d "$targetdir"
-		copy "$SOURCES/$ARCH/$2" "$targetdir" #if we have a file specific to this architecture
+		copy "$SOURCES/$SOURCEARCH/$2" "$targetdir" #if we have a file specific to this architecture
+	elif [ "$SOURCEARCH" != "$FALLBACKARCH" ];then #We prefer falling back to the other architecture before trying 'all'
+			buildfile "$1" "$2" "$FALLBACKARCH"
 	elif [ -e "$SOURCES/all/$2" ];then
 		if [ -d "$SOURCES/all/$2" ];then #if we are handling a directory
 			targetdir="$build/$1/$2"
@@ -50,7 +58,8 @@ buildfile() {
 		install -d "$targetdir"
 		copy "$SOURCES/all/$2" "$targetdir" #use architecure independent file
 	else
-		echo "WARNING: file $2 does not exist in the sources for $ARCH"
+		echo "ERROR: No fallback available. Failed to build file $2 on $ARCH"
+		exit 1
 	fi
 }
 
