@@ -62,7 +62,7 @@ createzip() {
 		for f in $(ls); do # ls is safe here because there are no directories with spaces
 			for g in $(ls "$f"); do
 				foldersize="$(du -ck "$f/$g/" | tail -n1 | awk '{ print $1 }')"
-				printf "%-28s %-20s %d\n" "$f" "$g" "$foldersize" >> "$build/app_sizes.txt"
+				printf "%s\t%s\t%d\n" "$f" "$g" "$foldersize" >> "$build/app_sizes.txt"
 			done
 			hash="$(tar -cf - "$f" | md5sum | cut -f1 -d' ')"
 			if [ -f "$CACHE/$hash.tar.xz" ]; then #we have this xz in cache
