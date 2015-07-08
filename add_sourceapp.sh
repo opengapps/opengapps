@@ -156,8 +156,9 @@ addapk() {
 	fi
 }
 
-for file in "$@"
+for argument in "$@"
 do
+	file="$(readlink -f "$argument")"
 	if [ -f "$file" ]
 	then
 		filetype="$(file -b -0 "$file" | tr '[:upper:]' '[:lower:]')"
