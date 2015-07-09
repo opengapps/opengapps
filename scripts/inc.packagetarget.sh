@@ -10,7 +10,7 @@
 #	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #	GNU General Public License for more details.
 #
-
+CERTIFICATES="$SCRIPTS/certificates"
 alignbuild() {
 	for f in $(find "$build" -name '*.apk'); do
 		mv "$f" "$f.orig"
@@ -100,14 +100,11 @@ signzip() {
 		rm "$signedzip"
 	fi
 
-	cd "$SCRIPTS"
-	if ./inc.signapk.sh -q sign "$unsignedzip" "$signedzip"; then #if signing did succeed
+	if java -jar "$SCRIPTS/inc.signapk.jar" -w "$CERTIFICATES/testkey.x509.pem" "$CERTIFICATES/testkey.pk8" "$unsignedzip" "$signedzip"; then #if signing did succeed
 		rm "$unsignedzip"
 	else
 		echo "ERROR: Creating Flashable ZIP-file failed"
-		cd "$TOP"
 		exit 1
 	fi
-	cd "$TOP"
 	echo "SUCCESS: Built Open GApps variation $VARIANT with API $API level for $ARCH as $signedzip"
 }
