@@ -349,7 +349,6 @@ for i in "/tmp/aroma/.gapps-config" "$zip_folder/.gapps-config" "$zip_folder/gap
 done;
 if [ "$g_conf" ]; then
     config_file="$g_conf";
-    log_folder="$(dirname "$g_conf")";
     g_conf_orig="$g_conf";
     # Create processed gapps-config with user comments stripped and user app removals removed and stored in variable for processing later
     g_conf=/tmp/proc_gconf;
@@ -359,8 +358,14 @@ if [ "$g_conf" ]; then
     sed -i '/^$/d' $g_conf; # Remove all empty lines for cleaner appearance
 else
     config_file="Not Used";
-    log_folder="$zip_folder";
 fi;
+
+# We log in the same diretory as the gapps-config file, unless it is aroma
+if [ "$g_conf" ] && [ "$g_conf" != "/tmp/aroma/.gapps-config" ]; then
+    log_folder="$(dirname "$g_conf")";
+else
+    log_folder="$zip_folder";
+fi
 
 # Unless this is a NoDebug install - create folder and take 'Before' snapshots
 if ( ! grep -qi "nodebug" "$g_conf" ); then
