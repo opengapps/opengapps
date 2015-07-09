@@ -18,7 +18,7 @@ cameracompatibilityhack(){
 }
 
 keyboardlibhack(){ #only on lollipop
-    if [ "$API" -gt "19" ]; then #only on lollipop extra gestures for AOSP keyboard:
+    if [ "$API" -gt "19" ] && [ "$FALLBACKARCH" = "arm" ]; then #only on lollipop extra gestures for AOSP keyboard:
     	buildfile "Optional/keybd_lib" "$LIBFOLDER/libjni_latinimegoogle.so"
         REQDLIST=""
         KEYBDLIBS='keybd_lib_filename1="libjni_latinimegoogle.so";
