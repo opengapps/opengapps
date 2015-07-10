@@ -24,7 +24,7 @@ keyboardlibhack(){ #only on lollipop
         KEYBDLIBS='keybd_lib_filename1="libjni_latinimegoogle.so";
 keybd_lib_filename2="libjni_latinime.so";'
         KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ); then
-    unzip -o "$ZIP" Optional/keybd_lib.tar.xz" -d /tmp;
+    unzip -o "$ZIP" "Optional/keybd_lib.tar.xz" -d /tmp;
     TAR="/tmp/Optional/keybd_lib.tar.xz";
     folder_extract "Optional/keybd_lib"; # Install Keyboard lib to add swipe capabilities to AOSP Keyboard
     rm -f "$TAR";
