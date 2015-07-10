@@ -93,15 +93,15 @@ clean_inst() {
 }
 
 extract_app() {
+    tarpath="/tmp/$1.tar.xz"
 	unzip -o "$ZIP" "$1.tar.xz" -d /tmp;
-	TAR="/tmp/$1.tar.xz";
 	app_name="$(basename "$1")";
     which_dpi "$app_name";
     if [ "$dpiapkpath" != "unknown" ]; then #technically not necessary, 'unknown' folder would not exist anyway
-        folder_extract "$dpiapkpath";
+        folder_extract "$tarpath" "$dpiapkpath";
     fi
-    folder_extract "$app_name/common";
-	rm -f "$TAR";
+    folder_extract "$tarpath" "$app_name/common";
+	rm -f "$tarpath";
 }
 
 exxit() {
@@ -139,10 +139,10 @@ file_getprop() {
 }
 
 folder_extract() {
-	tar -xJf "$TAR" -C /tmp "$1";
-    bkup_list=$'\n'"$(find "/tmp/$1/" -type f | cut -d/ -f5-)${bkup_list}";
-    cp -rf /tmp/$1/. /system/;
-    rm -rf /tmp/$1;
+	tar -xJf "$1" -C /tmp "$2";
+    bkup_list=$'\n'"$(find "/tmp/$2/" -type f | cut -d/ -f5-)${bkup_list}";
+    cp -rf /tmp/$2/. /system/;
+    rm -rf /tmp/$2;
 }
 
 get_appsize() {
@@ -907,8 +907,7 @@ for gapp_name in $core_gapps_list; do
     core_size=$((core_size + appsize));
 done;
 unzip -o "$ZIP" "Optional/keybd_lib.tar.xz" -d /tmp;
-TAR="/tmp/Optional/keybd_lib.tar.xz";
-keybd_lib_size=$(tar -tvJf "$TAR" "keybd_lib" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
+keybd_lib_size=$(tar -tvJf "/tmp/Optional/keybd_lib.tar.xz" "keybd_lib" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
 rm -f "/tmp/Optional/keybd_lib.tar.xz";
 
 # Determine final size of Core Apps
