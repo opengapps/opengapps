@@ -347,6 +347,14 @@ for i in "/tmp/aroma/.gapps-config" "$zip_folder/.gapps-config" "$zip_folder/gap
         break;
     fi;
 done;
+
+# We log in the same diretory as the gapps-config file, unless it is aroma
+if [ -n "$g_conf" ] && [ "$g_conf" != "/tmp/aroma/.gapps-config" ]; then
+    log_folder="$(dirname "$g_conf")";
+else
+    log_folder="$zip_folder";
+fi
+
 if [ "$g_conf" ]; then
     config_file="$g_conf";
     g_conf_orig="$g_conf";
@@ -359,13 +367,6 @@ if [ "$g_conf" ]; then
 else
     config_file="Not Used";
 fi;
-
-# We log in the same diretory as the gapps-config file, unless it is aroma
-if [ "$g_conf" ] && [ "$g_conf" != "/tmp/aroma/.gapps-config" ]; then
-    log_folder="$(dirname "$g_conf")";
-else
-    log_folder="$zip_folder";
-fi
 
 # Unless this is a NoDebug install - create folder and take 'Before' snapshots
 if ( ! grep -qi "nodebug" "$g_conf" ); then
