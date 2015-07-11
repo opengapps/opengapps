@@ -93,8 +93,8 @@ clean_inst() {
 }
 
 extract_app() {
-    tarpath="/tmp/$1.tar.xz"
-	unzip -o "$ZIP" "$1.tar.xz" -d /tmp;
+    tarpath="/cache/Open-GApps/$1.tar.xz"
+	unzip -o "$ZIP" "$1.tar.xz" -d /cache/Open-GApps/;
 	app_name="$(basename "$1")";
     which_dpi "$app_name";
     if [ "$dpiapkpath" != "unknown" ]; then #technically not necessary, 'unknown' folder would not exist anyway
@@ -333,10 +333,11 @@ ui_print " ";
 ui_print "- Mounting /system, /data, /cache, /persist";
 ui_print " ";
 set_progress 0.01;
+busybox mount /cache;
 busybox mount /system;
 busybox mount /data;
-busybox mount /cache;
 busybox mount /persist;
+busybox mount -o rw,remount /cache;
 busybox mount -o rw,remount /system;
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
@@ -1067,6 +1068,7 @@ done;
 #                                                  Perform Installs
 ui_print "- Installing updated GApps";
 ui_print " ";
+mkdir /cache/Open-GApps;
 set_progress 0.15;
 for gapp_name in $core_gapps_list; do
     extract_app "Core/$gapp_name";
@@ -1106,6 +1108,8 @@ tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 
 # Copy g.prop over to /system/etc
 cp -f /tmp/g.prop $g_prop;
+# Clean up the cache that is used for the tar.xz extractions
+rm -rf /cache/Open-GApps;
 # _____________________________________________________________________________________________________________________
 #                                                  Build and Install Addon.d Backup Script
 # Add 'other' Removals to addon.d script

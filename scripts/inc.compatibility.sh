@@ -24,9 +24,9 @@ keyboardlibhack(){ #only on lollipop
         KEYBDLIBS='keybd_lib_filename1="libjni_latinimegoogle.so";
 keybd_lib_filename2="libjni_latinime.so";'
         KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ); then
-    unzip -o "$ZIP" "Optional/keybd_lib.tar.xz" -d /tmp;
-    folder_extract "/tmp/Optional/keybd_lib.tar.xz" "Optional/keybd_lib"; # Install Keyboard lib to add swipe capabilities to AOSP Keyboard
-    rm -f "/tmp/Optional/keybd_lib.tar.xz";
+    unzip -o "$ZIP" "Optional/keybd_lib.tar.xz" -d /cache/Open-GApps/;
+    folder_extract "/cache/Open-GApps/Optional/keybd_lib.tar.xz" "keybd_lib"; # Install Keyboard lib to add swipe capabilities to AOSP Keyboard
+    rm -rf "/cache/Open-GApps/Optional";
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/'"$LIBFOLDER"'/$keybd_lib_filename2"; # create required symlink
     mkdir -p /system/app/LatinIME/lib/'"$ARCH"';
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1"; # create required symlink
@@ -59,8 +59,8 @@ kitkatdatahack(){
 install -d /data/app-lib/
 # Handle broken lib configuration on KitKat by putting Hangouts on /data/
 if ( contains "$gapps_list" "hangouts" ); then
-	unzip -o "$ZIP" "GApps/hangouts.tar.xz" -d /tmp;
-	tarpath="/tmp/GApps/hangouts.tar.xz";
+	unzip -o "$ZIP" "GApps/hangouts.tar.xz" -d /cache/Open-GApps/;
+	tarpath="/cache/Open-GApps/GApps/hangouts.tar.xz";
     which_dpi "hangouts";
 	tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
     cp -rf /tmp/$dpiapkpath/priv-app/Hangouts.apk /data/app/com.google.android.talk.apk;
@@ -73,8 +73,8 @@ if ( contains "$gapps_list" "hangouts" ); then
 fi;
 # Handle broken lib configuration on KitKat by putting Google+ on /data/
 if ( contains "$gapps_list" "googleplus" ); then
-	unzip -o "$ZIP" "GApps/googleplus.tar.xz" -d /tmp;
-	tarpath="/tmp/GApps/googleplus.tar.xz";
+	unzip -o "$ZIP" "GApps/googleplus.tar.xz" -d /cache/Open-GApps/;
+	tarpath="/cache/Open-GApps/GApps/googleplus.tar.xz";
     which_dpi "googleplus";
 	tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
     cp -rf /tmp/$dpiapkpath/app/PlusOne.apk /data/app/com.google.android.apps.plus.apk;
@@ -87,8 +87,8 @@ if ( contains "$gapps_list" "googleplus" ); then
 fi;
 # Handle broken lib configuration on KitKat by putting Photos on /data/
 if ( contains "$gapps_list" "photos" ); then
-	unzip -o "$ZIP" "GApps/photos.tar.xz" -d /tmp;
-	tarpath="/tmp/GApps/photos.tar.xz";
+	unzip -o "$ZIP" "GApps/photos.tar.xz" -d /cache/Open-GApps/;
+	tarpath="/cache/Open-GApps/GApps/photos.tar.xz";
     which_dpi "photos";
 	tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
     cp -rf /tmp/$dpiapkpath/app/Photos.apk /data/app/com.google.android.apps.photos.apk;
@@ -101,8 +101,8 @@ if ( contains "$gapps_list" "photos" ); then
 fi;
 # Handle broken lib configuration on KitKat by putting YouTube on /data/
 if ( contains "$gapps_list" "youtube" ); then
-	unzip -o "$ZIP" "GApps/youtube.tar.xz" -d /tmp;
-	tarpath="/tmp/GApps/youtube.tar.xz";
+	unzip -o "$ZIP" "GApps/youtube.tar.xz" -d /cache/Open-GApps/;
+	tarpath="/cache/Open-GApps/GApps/youtube.tar.xz";
     which_dpi "youtube";
 	tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
     cp -rf /tmp/$dpiapkpath/app/YouTube.apk /data/app/com.google.android.youtube.apk;
