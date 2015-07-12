@@ -20,16 +20,17 @@ alignbuild() {
 }
 
 commonscripts() {
+	copy "$SCRIPTS/bkup_tail.sh" "$build"
+	EXTRACTFILES="$EXTRACTFILES bkup_tail.sh"
+
 	install -d "$build/META-INF/com/google/android"
 	echo "# Dummy file; update-binary is a shell script.">"$build/META-INF/com/google/android/updater-script"
-	makegappsremovetxt
-	copy "$SCRIPTS/bkup_tail.sh" "$build"
-}
 
-variantscripts() {
-	makeupdatebinary
+	makegappsremovetxt
 	makegprop
 	makeinstallerdata
+	bundlexz # on arm platforms we can include our own xz binary
+	makeupdatebinary # execute as last, it contains $EXTRACTFILES from the previous commands
 }
 
 aromascripts() {
@@ -55,7 +56,10 @@ aromaupdatebinary() {
 }
 
 bundlexz() {
-	copy "$SCRIPTS/xz-resources/xzdec" "$build"
+	if [ "$FALLBACKARCH" = "arm" ]; then #For all arm-based platforms we can include our own xz-decompression binary
+		copy "$SCRIPTS/xz-resources/xzdec-arm" "$build/xzdec"
+		EXTRACTFILES="$EXTRACTFILES xzdec"
+	fi
 }
 
 createzip() {

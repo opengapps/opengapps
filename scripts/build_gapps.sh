@@ -75,9 +75,7 @@ buildtarget
 keyboardlibhack #only lollipop has gestures for the aosp keyboard possible, which impact installer.data and an extra file in the package
 alignbuild
 commonscripts
-variantscripts
 if [ "$VARIANT" = "aroma" ]; then
 	aromascripts
 fi
-bundlexz
 createzip

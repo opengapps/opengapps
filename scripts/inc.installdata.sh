@@ -17,6 +17,7 @@ ro.addon.platform=$PLATFORM
 ro.addon.open_type=$VARIANT
 ro.addon.open_version=$DATE
 # end addon properties" > "$build/g.prop"
+	EXTRACTFILES="$EXTRACTFILES g.prop"
 }
 makegappsremovetxt(){
 	gapps_remove=""
@@ -42,9 +43,10 @@ $gapps_remove"
 		done
 	done
 	printf "%s" "$gapps_remove" | sort > "$build/gapps-remove.txt"
+	EXTRACTFILES="$EXTRACTFILES gapps-remove.txt"
 }
 makeinstallerdata(){
-echo '#This file is part of The Open GApps script of @mfonville.
+	echo '#This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -84,11 +86,12 @@ removal_bypass_list="'"$REMOVALBYPASS"'
 ";
 
 # Define exit codes (returned upon exit due to an error)
+E_XZ=10; # No XZ support
+E_TAR=11; # No TAR support
 E_ROMVER=20; # Wrong ROM version
 E_NOSPACE=70; # Insufficient Space Available in System Partition
 E_NONOPEN=40; # NON-Open GApps Currently Installed
 E_ARCH=64; # Wrong Architecture Detected
-E_XZ=10; # No XZ support
 #_________________________________________________________________________________________________________________
 #                                             GApps List (Applications user can Select/Deselect)
 core_gapps_list="
@@ -413,7 +416,7 @@ oldscript_list="
 /system/etc/g.prop
 /system/addon.d/70-gapps.sh
 ";' >> "$build/installer.data"
-tee -a "$build/installer.data" > /dev/null <<'EOFILE'
+	tee -a "$build/installer.data" > /dev/null <<'EOFILE'
 
 remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript_list}";
 # _____________________________________________________________________________________________________________________
@@ -435,6 +438,8 @@ system_space_msg="INSTALLATION FAILURE: Your device does not have sufficient spa
 user_multiplefound_msg="NOTE: All User Application Removals included in gapps-config were unable to be\nprocessed as requested because multiple versions of the app were found on your\ndevice. See the log portion below for the name(s) of the application(s).\n";
 user_notfound_msg="NOTE: All User Application Removals included in gapps-config were unable to be\nremoved as requested because the files were not found on your device. See the\nlog portion below for the name(s) of the application(s).\n";
 del_conflict_msg="!!! WARNING !!! - Duplicate files were found between your ROM and this GApps\npackage. This is likely due to your ROM's dev including Google proprietary\nfiles in the ROM. The duplicate files are shown in the log portion below.\n";
-no_xz_message="INSTALLATION FAILURE: The installer detected that your recovery does not support\nthe XZ compression. Please update your recovery or switch to another one."
+no_xz_message="INSTALLATION FAILURE: The installer detected that your recovery does not support\ntar extraction. Please update your recovery or switch to another one like TWRP."
+no_tar_message="INSTALLATION FAILURE: The installer detected that your recovery does not support\nXZ decompression. Please update your recovery or switch to another one like TWRP."
 EOFILE
+	EXTRACTFILES="$EXTRACTFILES installer.data"
 }

@@ -123,6 +123,8 @@ for app in $gapps; do
 		buildfile "$packagetype/$app/common" "$file"
 	done
 done
+
+EXTRACTFILES="app_densities.txt app_sizes.txt" #is executed as first
 }
 
 get_package_info(){
