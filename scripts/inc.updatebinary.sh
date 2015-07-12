@@ -140,16 +140,14 @@ file_getprop() {
 }
 
 folder_extract() {
-    if [ "$bundled_xz" = "true" ]; then
-        /tmp/xzdec "$1" > "/tmp/uncompressed.tar"
-        tar -xf "/tmp/uncompressed.tar" -C /tmp "$2"
-        rm -rf "/tmp/uncompressed.tar"
-    else
-        tar -xJf "$1" -C /tmp "$2";
-    fi
-    bkup_list=$'\n'"$(find "/tmp/$2/" -type f | cut -d/ -f5-)${bkup_list}";
-    cp -rf /tmp/$2/. /system/;
-    rm -rf /tmp/$2;
+	if [ "$bundled_xz" = "true" ]; then
+		/tmp/xzdec "$1" | tar -x -C /tmp "$2" -f -
+	else
+		tar -xJf "$1" -C /tmp "$2";
+	fi
+	bkup_list=$'\n'"$(find "/tmp/$2/" -type f | cut -d/ -f5-)${bkup_list}";
+	cp -rf /tmp/$2/. /system/;
+	rm -rf /tmp/$2;
 }
 
 get_appsize() {
