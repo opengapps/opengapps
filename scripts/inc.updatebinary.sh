@@ -18,7 +18,8 @@ tee "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 # This Open GApps Shell Script Installer includes code derived from the TK GApps of @TKruzze and @osm0sis,
 # The TK GApps are available under the GPLv3 from http://forum.xda-developers.com/android/software/tk-gapps-t3116347
 #
-unzip -o "$3" installer.data g.prop gapps-remove.txt bkup_tail.sh app_densities.txt app_sizes.txt -d /tmp;
+unzip -o "$3" installer.data g.prop gapps-remove.txt bkup_tail.sh app_densities.txt app_sizes.txt xzdec -d /tmp;
+chmod +x /tmp/xzdec
 . /tmp/installer.data;
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
@@ -139,7 +140,13 @@ file_getprop() {
 }
 
 folder_extract() {
-	tar -xJf "$1" -C /tmp "$2";
+    if [ "$bundled_xz" = "true" ]; then
+        /tmp/xzdec "$1" > "/tmp/uncompressed.tar"
+        tar -xf "/tmp/uncompressed.tar" -C /tmp "$2"
+        rm -rf "/tmp/uncompressed.tar"
+    else
+        tar -xJf "$1" -C /tmp "$2";
+    fi
     bkup_list=$'\n'"$(find "/tmp/$2/" -type f | cut -d/ -f5-)${bkup_list}";
     cp -rf /tmp/$2/. /system/;
     rm -rf /tmp/$2;
@@ -467,15 +474,9 @@ done;
 
 # Check for the presence of the tar and xz binaries
 if [ -z "$(command -v tar)" ] || [ -z "$(command -v xz)" ] || [ -z "$(tar --help 2>&1 | grep -e "J.*xz")" ]; then
-    ui_print "Your recovery is missing the tar";
-    ui_print "or the xz binary. Please update";
-    ui_print "your recovery to the latest version";
-    ui_print "or switch to another recovery.";
-    ui_print "See:'$log_folder/open_gapps_log.txt'";
-    ui_print "for complete details and information.";
-    ui_print " ";
-    install_note="${install_note}no_xz_message"$'\n'; # make note that there is no XZ support
-	abort "$E_XZ";
+    bundled_xz=true
+else
+    bundled_xz=false
 fi;
 
 # Get display density using getprop from Recovery

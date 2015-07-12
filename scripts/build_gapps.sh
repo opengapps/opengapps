@@ -79,4 +79,5 @@ variantscripts
 if [ "$VARIANT" = "aroma" ]; then
 	aromascripts
 fi
+bundlexz
 createzip

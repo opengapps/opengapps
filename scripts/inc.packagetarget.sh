@@ -54,6 +54,10 @@ aromaupdatebinary() {
 	copy "$SCRIPTS/aroma-resources/update-binary" "$build/META-INF/com/google/android/update-binary"
 }
 
+bundlexz() {
+	copy "$SCRIPTS/xz-resources/xzdec" "$build"
+}
+
 createzip() {
 	find "$build" -exec touch -d "2008-02-28 21:33:46.000000000 +0100" {} \;
 	cd "$build"
