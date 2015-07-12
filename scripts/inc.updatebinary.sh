@@ -141,7 +141,7 @@ file_getprop() {
 
 folder_extract() {
 	if [ "$bundled_xz" = "true" ]; then
-		/tmp/xzdec "$1" | tar -x -C /tmp "$2" -f -
+		/tmp/xzdec "$1" | tar -x -C /tmp -f - "$2"
 	else
 		tar -xJf "$1" -C /tmp "$2";
 	fi
