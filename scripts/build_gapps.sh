@@ -61,7 +61,7 @@ SUPPORTEDVARIANTS="$supported_variants"
 if [ -z "$SUPPORTEDVARIANTS" ]; then
 	echo "ERROR: Unknown variant! aborting..."; exit 1
 fi
-if [ "$FALLBACKARCH" != "arm" ];then #For all non-arm(64) platforms
+if [ "$FALLBACKARCH" != "arm" ]; then #For all non-arm(64) platforms
 	case "$VARIANT" in
 		aroma|fornexus) echo "ERROR! Variant $VARIANT cannot be built on a non-arm platform";
 		exit 1;;
