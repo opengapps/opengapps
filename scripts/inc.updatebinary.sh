@@ -500,9 +500,13 @@ case "$EXTRACTFILES" in
     install_note="${install_note}no_xz_message"$'\n'; # make note that there is no XZ support
     abort "$E_XZ";'>> "$build/META-INF/com/google/android/update-binary";;
 esac
-tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+echo 'else'>> "$build/META-INF/com/google/android/update-binary"
+if [ "$VARIANT" = "aroma" ]; then
+    echo '    bundled_xz=true #aroma needs bundled xz'>> "$build/META-INF/com/google/android/update-binary" #aroma always needs to use bundled xz, otherwise it crashes
 else
-    bundled_xz=false
+    echo '    bundled_xz=false'>> "$build/META-INF/com/google/android/update-binary"
+fi
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 fi;
 
 # Get display density using getprop from Recovery
