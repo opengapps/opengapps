@@ -1,6 +1,5 @@
 makeupdatebinary(){
-tee "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
-#!/sbin/ash
+echo '#!/sbin/ash
 #This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
@@ -18,7 +17,11 @@ tee "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 # This Open GApps Shell Script Installer includes code derived from the TK GApps of @TKruzze and @osm0sis,
 # The TK GApps are available under the GPLv3 from http://forum.xda-developers.com/android/software/tk-gapps-t3116347
 #
-unzip -o "$3" installer.data g.prop gapps-remove.txt bkup_tail.sh app_densities.txt app_sizes.txt -d /tmp;
+unzip -o "$3" '"$EXTRACTFILES"' -d /tmp;'> "$build/META-INF/com/google/android/update-binary"
+case "$EXTRACTFILES" in
+    *xzdec*) echo 'chmod +x /tmp/xzdec'>> "$build/META-INF/com/google/android/update-binary";; #xz-decompression binary bundled
+esac
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 . /tmp/installer.data;
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
@@ -139,10 +142,14 @@ file_getprop() {
 }
 
 folder_extract() {
-	tar -xJf "$1" -C /tmp "$2";
-    bkup_list=$'\n'"$(find "/tmp/$2/" -type f | cut -d/ -f5-)${bkup_list}";
-    cp -rf /tmp/$2/. /system/;
-    rm -rf /tmp/$2;
+	if [ "$bundled_xz" = "true" ]; then
+		/tmp/xzdec "$1" | tar -x -C /tmp -f - "$2"
+	else
+		tar -xJf "$1" -C /tmp "$2";
+	fi
+	bkup_list=$'\n'"$(find "/tmp/$2/" -type f | cut -d/ -f5-)${bkup_list}";
+	cp -rf /tmp/$2/. /system/;
+	rm -rf /tmp/$2;
 }
 
 get_appsize() {
@@ -465,17 +472,41 @@ for rec_log in $rec_tmp_log $rec_cache_log; do
     esac;
 done;
 
-# Check for the presence of the tar and xz binaries
-if [ -z "$(command -v tar)" ] || [ -z "$(command -v xz)" ] || [ -z "$(tar --help 2>&1 | grep -e "J.*xz")" ]; then
+# Check for the presence of the tar binary
+if [ -z "$(command -v tar)" ]; then
     ui_print "Your recovery is missing the tar";
-    ui_print "or the xz binary. Please update";
-    ui_print "your recovery to the latest version";
-    ui_print "or switch to another recovery.";
+    ui_print "binary. Please update your recovery";
+    ui_print "to the latest version or switch to";
+    ui_print "another recovery like TWRP.";
+    ui_print "See:'$log_folder/open_gapps_log.txt'";
+    ui_print "for complete details and information.";
+    ui_print " ";
+    install_note="${install_note}no_tar_message"$'\n'; # make note that there is no TAR support
+    abort "$E_TAR";
+fi;
+
+# Check for the presence of the xz binary and tar parameter
+if [ -z "$(command -v xz)" ] || [ -z "$(tar --help 2>&1 | grep -e "J.*xz")" ]; then
+EOFILE
+case "$EXTRACTFILES" in
+    *xzdec*) echo '    bundled_xz=true'>> "$build/META-INF/com/google/android/update-binary";; #xz-decompression binary bundled
+    *) echo '    ui_print "Your recovery is missing the xz";
+    ui_print "binary. Please update your recovery";
+    ui_print "to the latest version or switch to";
+    ui_print "another recovery like TWRP.";
     ui_print "See:'$log_folder/open_gapps_log.txt'";
     ui_print "for complete details and information.";
     ui_print " ";
     install_note="${install_note}no_xz_message"$'\n'; # make note that there is no XZ support
-	abort "$E_XZ";
+    abort "$E_XZ";'>> "$build/META-INF/com/google/android/update-binary";;
+esac
+echo 'else'>> "$build/META-INF/com/google/android/update-binary"
+if [ "$VARIANT" = "aroma" ]; then
+    echo '    bundled_xz=true #aroma needs bundled xz'>> "$build/META-INF/com/google/android/update-binary" #aroma always needs to use bundled xz, otherwise it crashes
+else
+    echo '    bundled_xz=false'>> "$build/META-INF/com/google/android/update-binary"
+fi
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 fi;
 
 # Get display density using getprop from Recovery
