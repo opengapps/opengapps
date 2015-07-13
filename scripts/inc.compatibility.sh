@@ -28,14 +28,14 @@ keybd_lib_filename2="libjni_latinime.so";'
     folder_extract "/tmp/Optional/keybd_lib.tar.xz" "keybd_lib"; # Install Keyboard lib to add swipe capabilities to AOSP Keyboard
     rm -f "/tmp/Optional/keybd_lib.tar.xz";
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/'"$LIBFOLDER"'/$keybd_lib_filename2"; # create required symlink
-    mkdir -p /system/app/LatinIME/lib/'"$ARCH"';
+    mkdir -p "/system/app/LatinIME/lib/'"$ARCH"'";
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1"; # create required symlink
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename2"; # create required symlink
 
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename2\"" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1\"" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/LatinIME/lib/'"$ARCH"'" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/LatinIME/lib/'"$ARCH"'\"" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" \"/system/'"$LIBFOLDER"'/$keybd_lib_filename2\"" $bkup_tail;
 fi;'
     else
