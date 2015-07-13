@@ -19,14 +19,12 @@ cameracompatibilityhack(){
 
 keyboardlibhack(){ #only on lollipop
     if [ "$API" -gt "19" ] && [ "$FALLBACKARCH" = "arm" ]; then #only on lollipop extra gestures for AOSP keyboard:
-    	buildfile "Optional/keybd_lib" "$LIBFOLDER/libjni_latinimegoogle.so"
+        gappsoptional="keybdlib $gappsoptional"
         REQDLIST=""
         KEYBDLIBS='keybd_lib_filename1="libjni_latinimegoogle.so";
 keybd_lib_filename2="libjni_latinime.so";'
         KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ); then
-    unzip -o "$ZIP" "Optional/keybd_lib.tar.xz" -d /tmp;
-    folder_extract "/tmp/Optional/keybd_lib.tar.xz" "keybd_lib"; # Install Keyboard lib to add swipe capabilities to AOSP Keyboard
-    rm -f "/tmp/Optional/keybd_lib.tar.xz";
+    extract_app "Optional/keybdlib";
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/'"$LIBFOLDER"'/$keybd_lib_filename2"; # create required symlink
     mkdir -p "/system/app/LatinIME/lib/'"$ARCH"'";
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1"; # create required symlink

@@ -24,6 +24,8 @@ gsflogin
 setupwizard
 vending"
 
+gappsoptional=""
+
 gappsstock="cameragoogle
 keyboardgoogle"
 
@@ -98,7 +100,7 @@ get_supported_variants(){
 
 get_gapps_list(){
 	#Compile the list of applications that will be build for this variant
-	gapps_list="$gappscore"
+	gapps_list="$gappscore $gappsoptional"
 	for variant in $1; do
 		eval "addtogapps=\$gapps$variant"
 		gapps_list="$gapps_list $addtogapps"
@@ -195,6 +197,9 @@ get_package_info(){
 								fi;;
 		webviewgoogle)				packagetype="GApps";packagename="com.google.android.webview"; packagetarget="app/WebViewGoogle";;
 		youtube)					packagetype="GApps";packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
+
+		keybdlib)					packagetype="Optional"; packagefiles="lib/libjni_latinimegoogle.so";;
+
 		*) 		echo "ERROR! Missing build rule for application with keyword $1";exit 1;;
 	esac
 }
