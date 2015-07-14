@@ -207,13 +207,14 @@ form(
       "Music",     "<b>Music</b>",       "To Exclude/Include Google Play Music",                      "check",
       "NewsStand",     "<b>NewsStand</b>",       "To Exclude/Include Google Play Newsstand",                      "check",
       "NewsWidget",     "<b>NewsWidget</b>",       "To Exclude/Include Google News & Weather",                      "check",
+      "Photos",     "<b>Photos</b>",       "To Exclude/Include the Google Photos",                      "check",
       "PlayGames",     "<b>PlayGames</b>",       "To Exclude/Include Google Play Games",                      "check",
       "Sheets",     "<b>Sheets</b>",       "To Exclude/Include Google Sheets",                      "check",
       "Slides",     "<b>Slides</b>",       "To Exclude/Include Google Slides",                      "check",
       "Search",     "<b>Search</b>",       "To Exclude BOTH Google Search AND Google Now Launcher <#f00>OR</#> To Include Google Search",                      "check",
       "Speech",     "<b>Speech</b>",       "To Exclude/Include off-line Speech files (Required for off-line 'Okay Google' support)",                      "check",
       "Street",     "<b>Street</b>",       "To Exclude/Include Street View on Google Maps",                      "check",
-      "Photos",     "<b>Photos</b>",       "To Exclude/Include the Google Photos",                      "check",
+      "TagGoogle",     "<b>TagGoogle</b>",       "To Exclude/Include Google NFC Tags",                      "check",
       "Talkback",     "<b>Talkback</b>",       "To Exclude/Include TalkBack",                      "check",
       "Wallet",     "<b>Wallet</b>",       "To Exclude/Include Google Wallet",                      "check",
       "WebViewGoogle",     "<b>WebViewGoogle</b>",       "To Exclude/Include Google Webview",                      "check",
@@ -526,6 +527,12 @@ then
 endif;
 
 if
+	prop("gapps.prop", "Photos")=="1"
+then
+	appendvar("gapps", "Photos\n");
+endif;
+
+if
 	prop("gapps.prop", "PlayGames")=="1"
 then
 	appendvar("gapps", "PlayGames\n");
@@ -562,9 +569,9 @@ then
 endif;
 
 if
-	prop("gapps.prop", "Photos")=="1"
+	prop("gapps.prop", "TagGoogle")=="1"
 then
-	appendvar("gapps", "Photos\n");
+	appendvar("gapps", "TagGoogle\n");
 endif;
 
 if
