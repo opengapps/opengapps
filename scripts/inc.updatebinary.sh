@@ -1132,7 +1132,7 @@ if ( contains "$gapps_list" "faceunlock" ); then
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$FaceLock_lib_filename2\" \"/system/app/FaceLock/lib/'"$ARCH"'/$FaceLock_lib_filename2\"" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$FaceLock_lib_filename1\" \"/system/app/FaceLock/lib/'"$ARCH"'/$FaceLock_lib_filename1\"" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p /system/app/FaceLock/lib/arm" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/FaceLock/lib/arm\"" $bkup_tail;
 fi;' >> "$build/META-INF/com/google/android/update-binary"
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 
