@@ -122,7 +122,8 @@ addapk() {
 	|| [ "$package" = "com.google.android.launcher" ] \
 	|| [ "$package" = "com.google.android.onetimeinitializer" ] \
 	|| [ "$package" = "com.google.android.partnersetup" ] \
-	|| [ "$package" = "com.google.android.setupwizard" ]
+	|| [ "$package" = "com.google.android.setupwizard" ] \
+	|| [ "$package" = "com.google.android.tag" ]
 	then
 		type="priv-app"
 	else
@@ -180,7 +181,11 @@ do
 				install -D "$file" "$SOURCES/x86/lib/$(basename "$file")"
 				echo "SUCCESS: Added $file to x86/lib/";;
 			*32-bit*arm*)
-				install -D "$file" "$SOURCES/arm/lib/$(basename "$file")"
+				if [ "$(basename "$file")" = "libfrsdk.so" ]; then
+					install -D "$file" "$SOURCES/arm/vendor/lib/$(basename "$file")"
+				else
+					install -D "$file" "$SOURCES/arm/lib/$(basename "$file")"
+				fi
 				echo "SUCCESS: Added $file to arm/lib/";;
 			*)
 				echo "ERROR: File $f has an unrecognized filetype!";;

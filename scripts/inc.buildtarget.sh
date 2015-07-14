@@ -55,10 +55,12 @@ hangouts
 maps
 photos
 street
+taggoogle
 youtube"
 
 gappsmicro="calendargoogle
 exchangegoogle
+facedetect
 gmail
 googlenow
 googletts
@@ -163,11 +165,15 @@ get_package_info(){
 								fi;;
 		earth)						packagetype="GApps";packagename="com.google.earth"; packagetarget="app/GoogleEarth";;
 		exchangegoogle)				packagetype="GApps";packagename="com.google.android.gm.exchange"; packagetarget="app/PrebuiltExchange3Google";;
+		facedetect)					packagetype="GApps"; packagefiles="$LIBFOLDER/libfilterpack_facedetect.so"
+								if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64 bit, we also need the 32 bit file
+									packagefiles="$packagefiles lib/libfilterpack_facedetect.so";
+								fi;;
 		faceunlock)				if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
 									packagetype="GApps";packagename="com.android.facelock"; packagetarget="app/FaceLock";
-									packagetype="GApps";packagefiles="vendor/pittpatt/ $LIBFOLDER/libfacelock_jni.so $LIBFOLDER/libfilterpack_facedetect.so"
+									packagetype="GApps";packagefiles="vendor/pittpatt/ $LIBFOLDER/libfacelock_jni.so vendor/$LIBFOLDER/libfrsdk.so"
 									if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64 bit, we also need the 32 bit file
-										packagetype="GApps"; packagefiles="$packagefiles lib/libfilterpack_facedetect.so";
+										packagefiles="$packagefiles vendor/lib/libfrsdk.so";
 									fi
 								fi;;
 		fitness)					packagetype="GApps";packagename="com.google.android.apps.fitness"; packagetarget="app/FitnessPrebuilt";;
@@ -175,7 +181,7 @@ get_package_info(){
 		googlenow)					packagetype="GApps";packagename="com.google.android.launcher"; packagetarget="priv-app/GoogleHome";; #moves in android M to /app/
 		photos)						packagetype="GApps";packagename="com.google.android.apps.photos"; packagetarget="app/Photos";;
 		googleplus)					packagetype="GApps";packagename="com.google.android.apps.plus"; packagetarget="app/PlusOne";;
-		googletts)					packagetype="GApps";packagename="com.google.android.tts"; packagetarget="app/GoogleTTS";;
+		googletts)					packagetype="GApps";packagename="com.google.android.tts"; packagetarget="app/GoogleTTS" packagefiles="$LIBFOLDER/libgoogle_recognizer_jni_l.so";;
 		hangouts)					packagetype="GApps";packagename="com.google.android.talk"; packagetarget="priv-app/Hangouts";;
 		keep)						packagetype="GApps";packagename="com.google.android.keep"; packagetarget="app/PrebuiltKeep";;
 		keyboardgoogle)				packagetype="GApps";packagename="com.google.android.inputmethod.latin"; packagetarget="app/LatinImeGoogle";;
@@ -186,12 +192,13 @@ get_package_info(){
 		newsstand)					packagetype="GApps";packagename="com.google.android.apps.magazines"; packagetarget="app/Newsstand";;
 		newswidget)					packagetype="GApps";packagename="com.google.android.apps.genie.geniewidget"; packagetarget="app/PrebuiltNewsWeather";;
 		playgames) 					packagetype="GApps";packagename="com.google.android.play.games"; packagetarget="app/PlayGames";;
-		search)						packagetype="GApps";packagename="com.google.android.googlequicksearchbox"; packagetarget="priv-app/Velvet";;
+		search)						packagetype="GApps";packagename="com.google.android.googlequicksearchbox"; packagetarget="priv-app/Velvet"; packagefiles="$LIBFOLDER/libgoogle_hotword_jni.so";;
 		sheets)						packagetype="GApps";packagename="com.google.android.apps.docs.editors.sheets"; packagetarget="app/EditorsSheets";;
 		slides)						packagetype="GApps";packagename="com.google.android.apps.docs.editors.slides"; packagetarget="app/EditorsSlides";;
-		speech)						packagetype="GApps"; packagefiles="usr/srec/";;
+		speech)						packagetype="GApps";packagefiles="usr/srec/";;
 		street)						packagetype="GApps";packagename="com.google.android.street"; packagetarget="app/Street";;
 		talkback)					packagetype="GApps";packagename="com.google.android.marvin.talkback"; packagetarget="app/talkback";;
+		taggoogle)					packagetype="GApps";packagename="com.google.android.tag"; packagetarget="priv-app/TagGoogle";;
 		wallet)					if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
 									packagetype="GApps";packagename="com.google.android.apps.walletnfcrel"; packagetarget="priv-app/Wallet"
 								fi;;

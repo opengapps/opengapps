@@ -857,6 +857,17 @@ if ( contains "$gapps_list" "exchangegoogle" ) && ( ! contains "$aosp_remove_lis
     aosp_remove_list="${aosp_remove_list}exchangestock"$'\n';
 fi;
 
+# If we're installing taggoogle we must ADD tagstock to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "taggoogle" ) && ( ! contains "$aosp_remove_list" "tagstock" ); then
+    aosp_remove_list="${aosp_remove_list}tagstock"$'\n';
+fi;
+
+# If we're NOT installing taggoogle make certain 'tagstock' is NOT in $aosp_remove_list
+if ( ! contains "$gapps_list" "taggoogle" ); then
+    aosp_remove_list=${aosp_remove_list/tagstock};
+    remove_tagstock="false[NO_GoogleTag]";
+fi;
+
 # If we're NOT installing webviewgoogle make certain 'webviewstock' is NOT in $aosp_remove_list
 if ( ! contains "$gapps_list" "webviewgoogle" ); then
     aosp_remove_list=${aosp_remove_list/webviewstock};
@@ -926,6 +937,7 @@ log "Remove Stock/AOSP Gallery" "$remove_gallery";
 log "Remove Stock/AOSP Launcher" "$remove_launcher";
 log "Remove Stock/AOSP MMS App" "$remove_mms";
 log "Remove Stock/AOSP Pico TTS" "$remove_picotts";
+log "Remove Stock/AOSP WebView" "$remove_tagstock";
 log "Remove Stock/AOSP WebView" "$remove_webviewstock";
 # _____________________________________________________________________________________________________________________
 #                                                  Perform space calculations
@@ -1127,11 +1139,9 @@ EOFILE
 echo '# Create FaceLock lib symlink if FaceLock was installed
 if ( contains "$gapps_list" "faceunlock" ); then
     mkdir -p /system/app/FaceLock/lib/'"$ARCH"';
-    ln -sf "/system/'"$LIBFOLDER"'/$FaceLock_lib_filename1" "/system/app/FaceLock/lib/'"$ARCH"'/$FaceLock_lib_filename1"; # create required symlink
-    ln -sf "/system/'"$LIBFOLDER"'/$FaceLock_lib_filename2" "/system/app/FaceLock/lib/'"$ARCH"'/$FaceLock_lib_filename2"; # create required symlink
+    ln -sf "/system/'"$LIBFOLDER"'/$faceLock_lib_filename" "/system/app/FaceLock/lib/'"$ARCH"'/$faceLock_lib_filename; # create required symlink
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$FaceLock_lib_filename2\" \"/system/app/FaceLock/lib/'"$ARCH"'/$FaceLock_lib_filename2\"" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$FaceLock_lib_filename1\" \"/system/app/FaceLock/lib/'"$ARCH"'/$FaceLock_lib_filename1\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$faceLock_lib_filename\" \"/system/app/FaceLock/lib/'"$ARCH"'/$faceLock_lib_filename\"" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/FaceLock/lib/arm\"" $bkup_tail;
 fi;' >> "$build/META-INF/com/google/android/update-binary"
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'

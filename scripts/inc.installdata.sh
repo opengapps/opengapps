@@ -74,8 +74,7 @@ installer_name="Open GApps '"$VARIANT"' '"$PLATFORM"' - ";
 req_android_version="'"$PLATFORM"'";
 
 '"$KEYBDLIBS"'
-FaceLock_lib_filename1="libfacelock_jni.so";
-FaceLock_lib_filename2="libfilterpack_facedetect.so";
+faceLock_lib_filename="libfacelock_jni.so";
 
 # Buffer of extra system space to require for GApps install (9216=9MB)
 # This will allow for some ROM size expansion when GApps are restored
@@ -153,11 +152,12 @@ noisefield
 phasebeam
 photophase
 phototable
-terminal
-themes
 simtoolkit
 studio
 sykopath
+tagstock
+terminal
+themes
 visualizationwallpapers
 whisperpush
 ";
@@ -325,6 +325,10 @@ app/VideoEditor'"$REMOVALSUFFIX"'
 
 sykopath_list="
 app/Layers'"$REMOVALSUFFIX"'
+";
+
+tagstock_list="
+priv-app/Tag'"$REMOVALSUFFIX"'
 ";
 
 terminal_list="
