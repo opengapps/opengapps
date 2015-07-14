@@ -117,13 +117,16 @@ addapk() {
 	if [ "$package" = "com.google.android.backuptransport" ] \
 	|| [ "$package" = "com.google.android.feedback" ] \
 	|| [ "$package" = "com.google.android.gms" ] \
+	|| [ "$package" = "com.google.android.googlequicksearchbox" ] \
 	|| [ "$package" = "com.google.android.gsf" ] \
 	|| [ "$package" = "com.google.android.gsf.login" ] \
 	|| [ "$package" = "com.google.android.launcher" ] \
 	|| [ "$package" = "com.google.android.onetimeinitializer" ] \
 	|| [ "$package" = "com.google.android.partnersetup" ] \
 	|| [ "$package" = "com.google.android.setupwizard" ] \
-	|| [ "$package" = "com.google.android.tag" ]
+	|| [ "$package" = "com.google.android.tag" ] \
+	|| [ "$package" = "com.google.android.talk" ] \
+	|| [ "$package" = "com.google.android.apps.walletnfcrel" ]
 	then
 		type="priv-app"
 	else

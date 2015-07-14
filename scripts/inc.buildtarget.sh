@@ -181,7 +181,7 @@ get_package_info(){
 		googlenow)					packagetype="GApps";packagename="com.google.android.launcher"; packagetarget="priv-app/GoogleHome";; #moves in android M to /app/
 		photos)						packagetype="GApps";packagename="com.google.android.apps.photos"; packagetarget="app/Photos";;
 		googleplus)					packagetype="GApps";packagename="com.google.android.apps.plus"; packagetarget="app/PlusOne";;
-		googletts)					packagetype="GApps";packagename="com.google.android.tts"; packagetarget="app/GoogleTTS" packagefiles="$LIBFOLDER/libgoogle_recognizer_jni_l.so";;
+		googletts)					packagetype="GApps";packagename="com.google.android.tts"; packagetarget="app/GoogleTTS";;
 		hangouts)					packagetype="GApps";packagename="com.google.android.talk"; packagetarget="priv-app/Hangouts";;
 		keep)						packagetype="GApps";packagename="com.google.android.keep"; packagetarget="app/PrebuiltKeep";;
 		keyboardgoogle)				packagetype="GApps";packagename="com.google.android.inputmethod.latin"; packagetarget="app/LatinImeGoogle";;
@@ -192,7 +192,7 @@ get_package_info(){
 		newsstand)					packagetype="GApps";packagename="com.google.android.apps.magazines"; packagetarget="app/Newsstand";;
 		newswidget)					packagetype="GApps";packagename="com.google.android.apps.genie.geniewidget"; packagetarget="app/PrebuiltNewsWeather";;
 		playgames) 					packagetype="GApps";packagename="com.google.android.play.games"; packagetarget="app/PlayGames";;
-		search)						packagetype="GApps";packagename="com.google.android.googlequicksearchbox"; packagetarget="priv-app/Velvet"; packagefiles="$LIBFOLDER/libgoogle_hotword_jni.so";;
+		search)						packagetype="GApps";packagename="com.google.android.googlequicksearchbox"; packagetarget="priv-app/Velvet";;
 		sheets)						packagetype="GApps";packagename="com.google.android.apps.docs.editors.sheets"; packagetarget="app/EditorsSheets";;
 		slides)						packagetype="GApps";packagename="com.google.android.apps.docs.editors.slides"; packagetarget="app/EditorsSlides";;
 		speech)						packagetype="GApps";packagefiles="usr/srec/";;
