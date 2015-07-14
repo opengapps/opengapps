@@ -1138,11 +1138,11 @@ done;
 EOFILE
 echo '# Create FaceLock lib symlink if FaceLock was installed
 if ( contains "$gapps_list" "faceunlock" ); then
-    mkdir -p /system/app/FaceLock/lib/'"$ARCH"';
-    ln -sf "/system/'"$LIBFOLDER"'/$faceLock_lib_filename" "/system/app/FaceLock/lib/'"$ARCH"'/$faceLock_lib_filename; # create required symlink
+    mkdir -p "/system/app/FaceLock/lib/'"$ARCH"'";
+    ln -sf "/system/'"$LIBFOLDER"'/$faceLock_lib_filename" "/system/app/FaceLock/lib/'"$ARCH"'/$faceLock_lib_filename"; # create required symlink
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$faceLock_lib_filename\" \"/system/app/FaceLock/lib/'"$ARCH"'/$faceLock_lib_filename\"" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/FaceLock/lib/arm\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/FaceLock/lib/'"$ARCH"'\"" $bkup_tail;
 fi;' >> "$build/META-INF/com/google/android/update-binary"
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 
