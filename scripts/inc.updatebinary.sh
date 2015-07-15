@@ -542,7 +542,6 @@ done;
 if ( clean_inst ); then
     install_type="Clean[Data Wiped]";
     cameragoogle_inst=Clean;
-    clockgoogle_inst=Clean;
     keyboardgoogle_inst=Clean;
 else
     install_type="Dirty[Data NOT Wiped]";
@@ -552,13 +551,6 @@ else
         cameragoogle_inst=true;
     else
         cameragoogle_inst=false;
-    fi;
-
-    # Was Google Clock previously installed (in /system)
-    if ( sys_app DeskClockGoogle ); then
-        clockgoogle_inst=true;
-    else
-        clockgoogle_inst=false;
     fi;
 
     # Was Google Keyboard previously installed (in /system)
@@ -604,7 +596,6 @@ log "build.prop Density" "$(file_getprop $b_prop ro.sf.lcd_density)";
 log "Display Density Used" "${density}ppi";
 log "Install Type" "$install_type";
 log "Google Camera Installed¹" "$cameragoogle_inst";
-log "Google Clock Installed¹" "$clockgoogle_inst";
 log "Google Keyboard Installed¹" "$keyboardgoogle_inst";
 log "FaceUnlock Compatible" "$faceunlock_compat";
 log "Google Camera Compatible" "$cameragoogle_compat";
@@ -841,18 +832,16 @@ if ( contains "$gapps_list" "cameragoogle" ) && ( ! contains "$aosp_remove_list"
     aosp_remove_list="${aosp_remove_list}camerastock"$'\n';
 fi;
 
-# If user wants to install clockgoogle then it MUST be a Clean Install OR clockgoogle was previously installed in system partition
-if ( contains "$gapps_list" "clockgoogle" ) && ( ! clean_inst ) && [ $clockgoogle_inst = "false" ]; then
-    gapps_list=${gapps_list/clockgoogle}; # we must DISALLOW clockgoogle from being installed
-    aosp_remove_list=${aosp_remove_list/clockstock}; # and we'll prevent clockstock from being removed so user isn't left with no clock
-    remove_clockstock="false[NO_CLEAN_ClockGoogle]";
-    install_note="${install_note}clock_sys_msg"$'\n'; # make note that Google Desk Clock will NOT be installed as user requested
-fi;
-
 # If we're installing clockgoogle we must ADD clockstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "clockgoogle" ) && ( ! contains "$aosp_remove_list" "clockstock" ); then
     aosp_remove_list="${aosp_remove_list}clockstock"$'\n';
     remove_clockstock="true[YES_ClockGoogle]";
+fi;
+
+# If we're NOT installing clockgoogle make certain 'clockstock' is NOT in $aosp_remove_list
+if ( ! contains "$gapps_list" "clockgoogle" ); then
+    aosp_remove_list=${aosp_remove_list/clockstock};
+    remove_clockstock="false[NO_ClockGoogle]";
 fi;
 
 # If we're installing exchangegoogle we must ADD exchangestock to $aosp_remove_list (if it's not already there)
