@@ -938,7 +938,7 @@ log "Remove Stock/AOSP Gallery" "$remove_gallery";
 log "Remove Stock/AOSP Launcher" "$remove_launcher";
 log "Remove Stock/AOSP MMS App" "$remove_mms";
 log "Remove Stock/AOSP Pico TTS" "$remove_picotts";
-log "Remove Stock/AOSP WebView" "$remove_tagstock";
+log "Remove Stock/AOSP NFC Tag" "$remove_tagstock";
 log "Remove Stock/AOSP WebView" "$remove_webviewstock";
 # _____________________________________________________________________________________________________________________
 #                                                  Perform space calculations
