@@ -845,12 +845,14 @@ fi;
 if ( contains "$gapps_list" "clockgoogle" ) && ( ! clean_inst ) && [ $clockgoogle_inst = "false" ]; then
     gapps_list=${gapps_list/clockgoogle}; # we must DISALLOW clockgoogle from being installed
     aosp_remove_list=${aosp_remove_list/clockstock}; # and we'll prevent clockstock from being removed so user isn't left with no clock
+    remove_clockstock="false[NO_CLEAN_ClockGoogle]";
     install_note="${install_note}clock_sys_msg"$'\n'; # make note that Google Desk Clock will NOT be installed as user requested
 fi;
 
 # If we're installing clockgoogle we must ADD clockstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "clockgoogle" ) && ( ! contains "$aosp_remove_list" "clockstock" ); then
     aosp_remove_list="${aosp_remove_list}clockstock"$'\n';
+    remove_clockstock="true[YES_ClockGoogle]";
 fi;
 
 # If we're installing exchangegoogle we must ADD exchangestock to $aosp_remove_list (if it's not already there)
@@ -861,18 +863,19 @@ fi;
 # If we're installing taggoogle we must ADD tagstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "taggoogle" ) && ( ! contains "$aosp_remove_list" "tagstock" ); then
     aosp_remove_list="${aosp_remove_list}tagstock"$'\n';
+    remove_tagstock="true[YES_TagGoogle]";
 fi;
 
 # If we're NOT installing taggoogle make certain 'tagstock' is NOT in $aosp_remove_list
 if ( ! contains "$gapps_list" "taggoogle" ); then
     aosp_remove_list=${aosp_remove_list/tagstock};
-    remove_tagstock="false[NO_GoogleTag]";
+    remove_tagstock="false[NO_TagGoogle]";
 fi;
 
 # If we're NOT installing webviewgoogle make certain 'webviewstock' is NOT in $aosp_remove_list
 if ( ! contains "$gapps_list" "webviewgoogle" ); then
     aosp_remove_list=${aosp_remove_list/webviewstock};
-    remove_webviewstock="false[NO_GoogleWebView]";
+    remove_webviewstock="false[NO_WebViewGoogle]";
 fi;
 
 # Process User Application Removals for calculations and subsequent removal
@@ -933,6 +936,7 @@ log "Installing GApps Type" "$gapps_type";
 log "Config Type" "$config_type";
 log "Using gapps-config" "$config_file";
 log "Remove Stock/AOSP Browser" "$remove_browser";
+log "Remove Stock/AOSP Clock" "$remove_clockstock";
 log "Remove Stock/AOSP Email" "$remove_email";
 log "Remove Stock/AOSP Gallery" "$remove_gallery";
 log "Remove Stock/AOSP Launcher" "$remove_launcher";
