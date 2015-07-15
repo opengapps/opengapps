@@ -61,10 +61,16 @@ getapkproperties(){
 	sdkversion="$(echo "$apkproperties" | grep "sdkVersion:" | sed 's/sdkVersion://' | sed "s/'//g")"
 	compatiblescreens="$(echo "$apkproperties" | grep "compatible-screens:")"
 	native="$(echo "$apkproperties" | grep "native-code:" | sed 's/native-code://g' | sed "s/'//g")"
+	leanback="$(echo "$apkproperties" | grep "uses-feature:'android.software.leanback'" | awk -F [.\'] '{print $4}')"
 }
 
 installapk() {
 	architecture="$1"
+
+	if [ -n "$leanback" ]; then
+		package="$package.$leanback" #special leanback versions need a different packagename
+		echo "Leanback edition"
+	fi
 
 	#targetlocation: sources/platform/type/package/sdkversion/dpi1-dpi2-dpi3/versioncode.apk
 	target="$SOURCES/$1/$type/$package/$sdkversion/$dpis"
