@@ -55,7 +55,6 @@ hangouts
 maps
 photos
 street
-taggoogle
 youtube"
 
 gappsmicro="calendargoogle

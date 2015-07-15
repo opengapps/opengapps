@@ -153,6 +153,13 @@ versionnamehack(){
     esac
 }
 
+taghack(){
+	if [ "$API" -ge "21" ]; then
+		gappsmini="$gappsmini
+taggoogle"
+	fi
+}
+
 webviewhack(){
 	if [ "$API" -ge "22" ] || { [ "$API" -ge "21" ] && [ "$VARIANT" = "fornexus" ]; }; then #on AOSP we only support Webview on 5.1+, on fornexus 5.0+ is valid
 		gappsstock="$gappsstock
