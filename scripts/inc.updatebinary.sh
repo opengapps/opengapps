@@ -620,10 +620,11 @@ else
     echo '        log "Current GApps Version" "NON Open GApps Currently Installed (FAILURE)";
         ui_print "* Incompatible GApps Currently Installed *";
         ui_print " ";
-        ui_print "Open GApps can ONLY be installed on top of";
-        ui_print "an existing installation of Open GApps. You";
-        ui_print "must wipe (format) your system partition";
-        ui_print "BEFORE installing any Open GApps package.";
+        ui_print "This Open GApps package can ONLY be installed";
+        ui_print "on top of an existing installation of Open GApps";
+        ui_print "or a clean AOSP/CyanogenMod ROM installation.";
+        ui_print "You must wipe (format) your system partition";
+        ui_print "BEFORE installing the Open GApps package.";
         ui_print " ";
         ui_print "******* GApps Installation failed *******";
         ui_print " ";
