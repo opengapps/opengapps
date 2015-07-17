@@ -836,13 +836,7 @@ fi;
 # If we're installing clockgoogle we must ADD clockstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "clockgoogle" ) && ( ! contains "$aosp_remove_list" "clockstock" ); then
     aosp_remove_list="${aosp_remove_list}clockstock"$'\n';
-    remove_clockstock="true[YES_ClockGoogle]";
-fi;
-
-# If we're NOT installing clockgoogle make certain 'clockstock' is NOT in $aosp_remove_list
-if ( ! contains "$gapps_list" "clockgoogle" ); then
-    aosp_remove_list=${aosp_remove_list/clockstock};
-    remove_clockstock="false[NO_ClockGoogle]";
+    remove_clockstock="true[ClockGoogle]";
 fi;
 
 # If we're installing exchangegoogle we must ADD exchangestock to $aosp_remove_list (if it's not already there)
@@ -853,13 +847,7 @@ fi;
 # If we're installing taggoogle we must ADD tagstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "taggoogle" ) && ( ! contains "$aosp_remove_list" "tagstock" ); then
     aosp_remove_list="${aosp_remove_list}tagstock"$'\n';
-    remove_tagstock="true[YES_TagGoogle]";
-fi;
-
-# If we're NOT installing taggoogle make certain 'tagstock' is NOT in $aosp_remove_list
-if ( ! contains "$gapps_list" "taggoogle" ); then
-    aosp_remove_list=${aosp_remove_list/tagstock};
-    remove_tagstock="false[NO_TagGoogle]";
+    remove_tagstock="true[TagGoogle]";
 fi;
 
 # If we're NOT installing webviewgoogle make certain 'webviewstock' is NOT in $aosp_remove_list
