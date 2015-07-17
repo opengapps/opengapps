@@ -45,7 +45,7 @@ $1:
 			$(BUILD_GAPPS) $(platform) $(api) $$$$variant 2>&1 | tee $(LOG_BUILD);\
 		done;\
 	else\
-		echo "Illegal combination of Platform and API";\
+		echo "Illegal combination of Platform and API";exit 1;\
 	fi
 	@echo "--------------------------------------------------------------------";
 endef
