@@ -347,8 +347,23 @@ busybox mount /persist;
 busybox mount -o rw,remount /system;
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
+# Get device name any which way we can
+for field in ro.product.device ro.build.product; do
+    for file in $b_prop /default.prop; do
+        device_name=$(file_getprop $file $field);
+        if [ ${#device_name} -ge 2 ]; then
+            break 2;
+        fi;
+    done;
+    device_name="Bad ROM/Recovery";
+done;
+
 # Locate gapps-config (if used)
-for i in "/tmp/aroma/.gapps-config" "$zip_folder/.gapps-config" "$zip_folder/gapps-config.txt" /sdcard/Open-GApps/.gapps-config /sdcard/Open-GApps/gapps-config.txt "$zip_folder/.gapps-config.txt" /sdcard/Open-GApps/.gapps-config.txt /persist/.gapps-config /persist/gapps-config.txt /persist/.gapps-config.txt; do
+for i in "/tmp/aroma/.gapps-config"\
+ "$zip_folder/.gapps-config-$device_name" "$zip_folder/gapps-config-$device_name.txt" "/sdcard/Open-GApps/.gapps-config-$device_name" "/sdcard/Open-GApps/gapps-config-$device_name.txt"\
+ "$zip_folder/.gapps-config" "$zip_folder/gapps-config.txt" "/sdcard/Open-GApps/.gapps-config" "/sdcard/Open-GApps/gapps-config.txt"\
+ "$zip_folder/.gapps-config-$device_name.txt" "/sdcard/Open-GApps/.gapps-config-$device_name.txt" "$zip_folder/.gapps-config.txt" "/sdcard/Open-GApps/.gapps-config.txt"\
+ "/persist/.gapps-config-$device_name" "/persist/gapps-config-$device_name.txt" "/persist/.gapps-config" "/persist/gapps-config.txt" "/persist/.gapps-config-$device_name.txt" "/persist/.gapps-config.txt"; do
     if [ -r "$i" ]; then
         g_conf="$i";
         break;
@@ -386,17 +401,6 @@ fi;
 ui_print "- Gathering device & ROM information";
 ui_print " ";
 rom_android_version=$(file_getprop $b_prop ro.build.version.release);
-
-# Get device name any which way we can
-for field in ro.product.device ro.build.product; do
-    for file in $b_prop /default.prop; do
-        device_name=$(file_getprop $file $field);
-        if [ ${#device_name} -ge 2 ]; then
-            break 2;
-        fi;
-    done;
-    device_name="Bad ROM/Recovery";
-done;
 
 # Get Device Type (phone or tablet) from build.prop
 if echo "$(file_getprop $b_prop ro.build.characteristics)" | grep -qi "tablet"; then
