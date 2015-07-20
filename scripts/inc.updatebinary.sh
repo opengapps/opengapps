@@ -128,7 +128,7 @@ exxit() {
     fi;
     rm -rf /tmp/*;
     set_progress 1.0;
-    ui_print "- Unmounting /system, /data, /cache";
+    ui_print "- Unmounting /system, /data, /cache, /persist";
     ui_print " ";
     umount /system;
     umount /data;
@@ -348,7 +348,7 @@ busybox mount -o rw,remount /system;
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
 # Get device name any which way we can
-for field in ro.product.device ro.build.product; do
+for field in ro.product.device ro.build.product ro.product.name; do
     for file in $b_prop /default.prop; do
         device_name=$(file_getprop $file $field);
         if [ ${#device_name} -ge 2 ]; then
