@@ -108,11 +108,14 @@ signzip() {
 		rm "$signedzip"
 	fi
 
-	if java -Xmx2048m -jar "$SCRIPTS/inc.signapk.jar" -w "$CERTIFICATES/testkey.x509.pem" "$CERTIFICATES/testkey.pk8" "$unsignedzip" "$signedzip"; then #if signing did succeed
+	cd "$SCRIPTS"
+	if ./inc.signapk.sh -q sign "$unsignedzip" "$signedzip"; then #if signing did succeed
 		rm "$unsignedzip"
 	else
 		echo "ERROR: Creating Flashable ZIP-file failed, unsigned file can be found at $unsignedzip"
+		cd "$TOP"
 		exit 1
 	fi
+	cd "$TOP"
 	echo "SUCCESS: Built Open GApps variation $VARIANT with API $API level for $ARCH as $signedzip"
 }

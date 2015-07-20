@@ -38,12 +38,12 @@ SCRIPTS="$TOP/scripts"
 #####---------CHECK FOR EXISTANCE OF SOME BINARIES---------
 command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; } #coreutils also contains the basename command
-command -v java >/dev/null 2>&1 || { echo "java is required but it's not installed.  Aborting." >&2; exit 1; } #necessary to use signapk
-command -v md5sum >/dev/null 2>&1 || { echo "md5sum is required but it's not installed.  Aborting." >&2; exit 1; }
+command -v md5sum >/dev/null 2>&1 || { echo "md5sum is required but it's not installed.  Aborting." >&2; exit 1; } #signapk and xz cache
+command -v openssl >/dev/null 2>&1 || { echo "openssl is required but it's not installed.  Aborting." >&2; exit 1; } #signapk
+command -v xxd >/dev/null 2>&1 || { echo "xxd is required but it's not installed.  Aborting." >&2; exit 1; } #signapk
 command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v zip >/dev/null 2>&1 || { echo "zip is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v zipalign >/dev/null 2>&1 || { echo "zipalign is required but it's not installed.  Aborting." >&2; exit 1; }
-#necessary to compress the apps
 command -v tar >/dev/null 2>&1 || { echo "tar is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v xz >/dev/null 2>&1 || { echo "xz is required but it's not installed.  Aborting." >&2; exit 1; }
 
