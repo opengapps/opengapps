@@ -36,5 +36,5 @@ One can update the sources used with the command:
 ```
 For contributors, updated sources can be uploaded by using this command:
 ```
-./upload.sh
+./upload_sources.sh
 ```
