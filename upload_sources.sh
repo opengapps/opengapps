@@ -34,10 +34,10 @@ upload(){
 
 for arch in $(ls "$SOURCES"); do
     cd "$SOURCES/$arch"
-    apk="$(git status -suall | cut -c4- | head -n1)"
-    if [ -n "$apk" ];then
+    apks="$(git status -uall --porcelain | cut -c4-)"
+    for apk in $apks; do
         getapkproperties "$apk"
         upload "$apk"
-    fi
+    done
 done
 cd "$TOP"
