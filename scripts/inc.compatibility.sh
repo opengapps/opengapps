@@ -20,7 +20,11 @@ cameracompatibilityhack(){
 keyboardlibhack(){ #only on lollipop
     if [ "$API" -gt "19" ] && [ "$FALLBACKARCH" = "arm" ]; then #only on lollipop extra gestures for AOSP keyboard:
         gappsoptional="keybdlib $gappsoptional"
-        REQDLIST=""
+        REQDLIST="/system/lib/libjni_latinime.so
+/system/lib/libjni_latinimegoogle.so
+/system/lib64/libjni_latinimegoogle.so
+/system/app/LatinIME/lib/$ARCH/libjni_latinime.so
+/system/app/LatinIME/lib/$ARCH/libjni_latinimegoogle.so"
         KEYBDLIBS='keybd_lib_filename1="libjni_latinimegoogle.so";
 keybd_lib_filename2="libjni_latinime.so";'
         KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ); then
@@ -37,11 +41,7 @@ keybd_lib_filename2="libjni_latinime.so";'
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" \"/system/'"$LIBFOLDER"'/$keybd_lib_filename2\"" $bkup_tail;
 fi;'
     else
-        REQDLIST="/system/lib/libjni_latinime.so
-/system/lib/libjni_latinimegoogle.so
-/system/lib64/libjni_latinimegoogle.so
-/system/app/LatinIME/lib/$ARCH/libjni_latinime.so
-/system/app/LatinIME/lib/$ARCH/libjni_latinimegoogle.so"
+        REQDLIST=""
         KEYBDLIBS=""
         KEYBDINSTALLCODE=""
     fi
