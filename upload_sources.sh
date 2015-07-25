@@ -18,14 +18,12 @@ SOURCES="$TOP/sources"
 command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v basename >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }
 
-getapkproperties(){
+createcommit(){
     dpis="$(printf "$1" | awk -F/ '{print $(NF-1)}')"
     apkproperties="$(aapt dump badging "$1" 2>/dev/null)"
     name="$(echo "$apkproperties" | grep "application-label:" | sed 's/application-label://g' | sed "s/'//g")"
     versionname="$(echo "$apkproperties" | grep "versionName" | awk '{print $4}' | sed s/versionName=// | sed "s/'//g")"
-}
 
-upload(){
     git rm -r --ignore-unmatch "$(dirname "$1")"
     git add "$1"
     git commit -m"$name $versionname ($dpis)"
@@ -34,10 +32,9 @@ upload(){
 
 for arch in $(ls "$SOURCES"); do
     cd "$SOURCES/$arch"
-    apks="$(git status -uall --porcelain | cut -c4-)"
+    apks="$(git status -uall --porcelain | grep ".apk" | grep -e "?? " | cut -c4-)" #get the new apks
     for apk in $apks; do
-        getapkproperties "$apk"
-        upload "$apk"
+        createcommit "$apk"
     done
 done
 cd "$TOP"
