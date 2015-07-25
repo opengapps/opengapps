@@ -26,7 +26,7 @@ createcommit(){
 
     git rm -r --ignore-unmatch "$(dirname "$1")"
     git add "$1"
-    git commit -m"$name $versionname ($dpis)"
+    git commit -m"$name $2 $versionname ($dpis)"
     #git push origin HEAD:master
 }
 
@@ -34,7 +34,7 @@ for arch in $(ls "$SOURCES"); do
     cd "$SOURCES/$arch"
     apks="$(git status -uall --porcelain | grep ".apk" | grep -e "?? " | cut -c4-)" #get the new apks
     for apk in $apks; do
-        createcommit "$apk"
+        createcommit "$apk" "$arch"
     done
 done
 cd "$TOP"
