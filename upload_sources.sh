@@ -19,22 +19,40 @@ command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not install
 command -v basename >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }
 
 createcommit(){
-    dpis="$(printf "$1" | awk -F/ '{print $(NF-1)}')"
+    dpis="$(printf "%s" "$1" | awk -F/ '{print $(NF-1)}')"
     apkproperties="$(aapt dump badging "$1" 2>/dev/null)"
     name="$(echo "$apkproperties" | grep "application-label:" | sed 's/application-label://g' | sed "s/'//g")"
     versionname="$(echo "$apkproperties" | grep "versionName" | awk '{print $4}' | sed s/versionName=// | sed "s/'//g")"
 
-    git rm -r --ignore-unmatch "$(dirname "$1")"
+    git rm -q -r --ignore-unmatch "$(dirname "$1")"
     git add "$1"
-    git commit -m"$name $2 $versionname ($dpis)"
-    #git push origin HEAD:master
+    git status -s -uno
+    echo "Do you want to commit these changes as $name $2 $versionname ($dpis)?"
+    IFS= read -r REPLY
+    case "$REPLY" in
+        y*|Y*)  git commit -q -m"$name $2 $versionname ($dpis)"
+                echo "Committed $1";;
+            *)  git reset -q HEAD
+                echo "Did NOT commit $1";;
+    esac
 }
 
 for arch in $(ls "$SOURCES"); do
     cd "$SOURCES/$arch"
+    git reset HEAD #make sure we are not including any other files are already tracked, output is allowed, to inform the user
     apks="$(git status -uall --porcelain | grep ".apk" | grep -e "?? " | cut -c4-)" #get the new apks
     for apk in $apks; do
         createcommit "$apk" "$arch"
     done
+    changes="$(git shortlog origin/master..HEAD)"
+    if [ -n "$changes" ]; then
+        echo "$changes"
+        echo "Do you want to push these commits to the $arch repository? "
+        IFS= read -r REPLY
+        case "$REPLY" in
+            y*|Y*)  git push origin HEAD:master;;
+                *)  echo "Did NOT push $arch";;
+        esac
+    fi
 done
 cd "$TOP"
