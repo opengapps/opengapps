@@ -17,6 +17,7 @@ SOURCES="$TOP/sources"
 
 command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v basename >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }
+command -v git >/dev/null 2>&1 || { echo "git is required but it's not installed.  Aborting." >&2; exit 1; }
 
 createcommit(){
     dpis="$(printf "%s" "$1" | awk -F/ '{print $(NF-1)}')"
