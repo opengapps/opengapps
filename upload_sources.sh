@@ -27,7 +27,7 @@ createcommit(){
     git rm -q -r --ignore-unmatch "$(dirname "$1")"
     git add "$1"
     git status -s -uno
-    echo "Do you want to commit these changes as $name $2 $versionname ($dpis)?"
+    echo "Do you want to commit these changes as $name $2 $versionname ($dpis)? [y/N]"
     IFS= read -r REPLY
     case "$REPLY" in
         y*|Y*)  git commit -q -m"$name $2 $versionname ($dpis)"
@@ -47,7 +47,7 @@ for arch in $(ls "$SOURCES"); do
     changes="$(git shortlog origin/master..HEAD)"
     if [ -n "$changes" ]; then
         echo "$changes"
-        echo "Do you want to push these commits to the $arch repository? "
+        echo "Do you want to push these commits to the $arch repository? [y/N]"
         IFS= read -r REPLY
         case "$REPLY" in
             y*|Y*)  git push origin HEAD:master;;
