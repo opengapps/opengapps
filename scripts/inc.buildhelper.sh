@@ -158,7 +158,15 @@ buildapk() {
 		rm "$targetapk"
 	fi
 
-	zip -q -b "$targetdir" -U "$sourceapk" -O "$targetapk" --exclude "lib*"
+	zip -q -b "$targetdir" -U "$sourceapk" -O "$targetapk" --exclude "lib*" #unfortunately we cannot include within an exclude, so crazy libraries have to be done separate
+	if (unzip -qql "$sourceapk" | grep -q -E "lib/.*crazy"); then #only if the crazy library files exist
+		unzip -q -o "$sourceapk" -d "$targetdir" "lib/*crazy*"
+		CURRENTPWD="$(realpath .)" #if we ever switch to bash, make this a pushd-popd trick
+		cd "$targetdir"
+		zip -q -r -D -Z store -b "$targetdir" "$targetapk" "lib/" #no parameter for output and mode, we are in 'add and update existing' mode which is default. Crazy files have to be stored without compression.
+		cd "$CURRENTPWD"
+		rm -rf "$targetdir/lib/"
+	fi
 }
 buildlib() {
 	sourceapk="$1"
@@ -188,18 +196,21 @@ buildlib() {
 		if [ -n "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 		then
 			install -d "$targetdir/lib"
-			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/" "$libsearchpath"
+			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/" "$libsearchpath" #unfortunately we cannot exclude crazy path here, exclude does not work nice in conjunction with junkpaths
+			rm -rf "$targetdir/lib/"*crazy* #so we do here an ugly removal of all crazy libs instead
 		fi
 	else #This is Lollipop, much more nice :-)
 		if [ -n "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 		then
 			install -d "$targetdir/lib/$SOURCEARCH"
-			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$SOURCEARCH" "$libsearchpath"
+			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$SOURCEARCH" "$libsearchpath" #unfortunately we cannot exclude crazy path here, exclude does not work nice in conjunction with junkpaths
+			rm -rf "$targetdir/lib/$SOURCEARCH/"*crazy* #so we do here an ugly removal of all crazy libs instead
 		fi
 		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ -n "$(unzip -qql "$sourceapk" "$libfallbacksearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 		then
 			install -d "$targetdir/lib/$FALLBACKARCH"
-			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$FALLBACKARCH" "$libfallbacksearchpath"
+			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$FALLBACKARCH" "$libfallbacksearchpath" #unfortunately we cannot exclude crazy path here, exclude does not work nice in conjunction with junkpaths
+			rm -rf "$targetdir/lib/$FALLBACKARCH/"*crazy* #so we do here an ugly removal of all crazy libs instead
 		fi
 	fi
 }
