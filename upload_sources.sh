@@ -24,14 +24,15 @@ createcommit(){
     apkproperties="$(aapt dump badging "$1" 2>/dev/null)"
     name="$(echo "$apkproperties" | grep "application-label:" | sed 's/application-label://g' | sed "s/'//g")"
     versionname="$(echo "$apkproperties" | grep "versionName" | awk '{print $4}' | sed s/versionName=// | sed "s/'//g")"
+    sdkversion="$(echo "$apkproperties" | grep "sdkVersion:" | sed 's/sdkVersion://' | sed "s/'//g")"
 
     git rm -q -r --ignore-unmatch "$(dirname "$1")"
     git add "$1"
     git status -s -uno
-    echo "Do you want to commit these changes as $name $2 $versionname ($dpis)? [y/N]"
+    echo "Do you want to commit these changes as $name $2 $sdkversion $versionname ($dpis)? [y/N]"
     IFS= read -r REPLY
     case "$REPLY" in
-        y*|Y*)  git commit -q -m"$name $2 $versionname ($dpis)"
+        y*|Y*)  git commit -q -m"$name $2 $sdkversion $versionname ($dpis)"
                 echo "Committed $1";;
             *)  git reset -q HEAD
                 echo "Did NOT commit $1";;
