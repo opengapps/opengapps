@@ -346,6 +346,7 @@ app/VisualizationWallpapers'"$REMOVALSUFFIX"'
 
 webviewstock_list="
 app/webview'"$REMOVALSUFFIX"'
+lib/libwebviewchromium.so
 ";
 
 whisperpush_list="
