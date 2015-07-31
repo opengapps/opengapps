@@ -703,7 +703,7 @@ else
 fi;
 
 # Prepare list of AOSP/ROM files that will be deleted using gapps-config
-# We will look for +Browser, +Email, +Gallery, +Launcher, +MMS, +PicoTTS and +WebViewStock to prevent their removal
+# We will look for +Browser, +Email, +Gallery, +Launcher, +MMS and +PicoTTS to prevent their removal
 set_progress 0.03;
 if [ "$g_conf" ]; then
     for default_name in $default_aosp_remove_list; do
@@ -859,10 +859,16 @@ if ( contains "$gapps_list" "taggoogle" ) && ( ! contains "$aosp_remove_list" "t
     remove_tagstock="true[TagGoogle]";
 fi;
 
-# If we're NOT installing webviewgoogle make certain 'webviewstock' is NOT in $aosp_remove_list
-if ( ! contains "$gapps_list" "webviewgoogle" ); then
-    aosp_remove_list=${aosp_remove_list/webviewstock};
+# If we're installing webviewgoogle we MUST ADD webviewstock to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$aosp_remove_list" "webviewstock" ); then
+    aosp_remove_list="${aosp_remove_list}webviewstock"$'\n';
+fi;
+
+# If we're NOT installing webviewgoogle and webviewstock is in $aosp_remove_list then user must override removal protection
+if ( ! contains "$gapps_list" "webviewgoogle" ) && ( contains "$aosp_remove_list" "webviewstock" ) && ( ! grep -qi "override" "$g_conf" ); then
+    aosp_remove_list=${aosp_remove_list/webviewstock}; # we'll prevent webviewstock from being removed so user isn't left with no WebView
     remove_webviewstock="false[NO_WebViewGoogle]";
+    install_note="${install_note}nowebview_msg"$'\n'; # make note that Stock Webview can't be removed unless user Overrides
 fi;
 
 # Process User Application Removals for calculations and subsequent removal
@@ -1135,6 +1141,23 @@ if ( contains "$gapps_list" "faceunlock" ); then
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$faceLock_lib_filename\" \"/system/app/FaceLock/lib/'"$ARCH"'/$faceLock_lib_filename\"" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/FaceLock/lib/'"$ARCH"'\"" $bkup_tail;
+fi;
+
+# Create WebView lib symlink if WebView was installed
+if ( contains "$gapps_list" "webviewgoogle" ); then
+    mkdir -p "/system/app/WebViewGoogle/lib/'"$ARCH"'";
+    ln -sf "/system/'"$LIBFOLDER"'/$WebView_lib_filename" "/system/app/WebViewGoogle/lib/'"$ARCH"'/$WebView_lib_filename"; # create required symlink' >> "$build/META-INF/com/google/android/update-binary"
+if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64bit we also need to add 32 bit libs
+	echo '    mkdir -p "/system/app/WebViewGoogle/lib/'"$FALLBACKARCH"'";
+    ln -sf "/system/lib/$WebView_lib_filename" "/system/app/WebViewGoogle/lib/'"$FALLBACKARCH"'/$WebView_lib_filename"; # create required symlink' >> "$build/META-INF/com/google/android/update-binary"
+fi
+echo '    # Add same code to backup script to insure symlinks are recreated on addon.d restore' >> "$build/META-INF/com/google/android/update-binary"
+if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64bit we also need to add 32 bit libs
+	echo '    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/lib/$WebView_lib_filename\" \"/system/app/WebViewGoogle/lib/'"$FALLBACKARCH"'/$WebView_lib_filename\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/WebViewGoogle/lib/'"$FALLBACKARCH"'\"" $bkup_tail;' >> "$build/META-INF/com/google/android/update-binary"
+fi
+echo '    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$WebView_lib_filename\" \"/system/app/WebViewGoogle/lib/'"$ARCH"'/$WebView_lib_filename\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/WebViewGoogle/lib/'"$ARCH"'\"" $bkup_tail;
 fi;' >> "$build/META-INF/com/google/android/update-binary"
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 

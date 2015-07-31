@@ -75,6 +75,7 @@ req_android_version="'"$PLATFORM"'";
 
 '"$KEYBDLIBS"'
 faceLock_lib_filename="libfacelock_jni.so";
+WebView_lib_filename="libwebviewchromium.so";
 
 # Buffer of extra system space to require for GApps install (9216=9MB)
 # This will allow for some ROM size expansion when GApps are restored
@@ -346,7 +347,9 @@ app/VisualizationWallpapers'"$REMOVALSUFFIX"'
 
 webviewstock_list="
 app/webview'"$REMOVALSUFFIX"'
-lib/libwebviewchromium.so
+app/WebView'"$REMOVALSUFFIX"'
+lib/$WebView_lib_filename
+lib64/$WebView_lib_filename
 ";
 
 whisperpush_list="
@@ -435,6 +438,7 @@ keyboard_sys_msg="WARNING: Google Keyboard has/will not be installed as requeste
 nokeyboard_msg="NOTE: The Stock/AOSP keyboard was NOT removed as requested to ensure your device\nwas not accidentally left with no keyboard installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
 nolauncher_msg="NOTE: The Stock/AOSP Launcher was NOT removed as requested to ensure your device\nwas not accidentally left with no Launcher. If this was your intention, you can\nadd 'Override' to your gapps-config to override this protection.\n";
 nomms_msg="NOTE: The Stock/AOSP MMS app was NOT removed as requested to ensure your device\nwas not accidentally left with no way to receive text messages. If this WAS\nintentional, add 'Override' to your gapps-config to override this protection.\n";
+nowebview_msg="NOTE: The Stock/AOSP WebView was NOT removed as requested to ensure your device\nwas not accidentally left with no WebView installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
 non_open_gapps_msg="INSTALLATION FAILURE: Open GApps can only be installed on top of an existing\nOpen GApps installation. Since you are currently using another GApps package, you\nwill need to wipe (format) your system partition before installing Open GApps.\n";
 rom_version_msg="INSTALLATION FAILURE: This GApps package can only be installed on a $req_android_version.x ROM.\n";
 simulation_msg="TEST INSTALL: This was only a simulated install. NO CHANGES WERE MADE TO YOUR\nDEVICE. To complete the installation remove 'Test' from your gapps-config.\n";

@@ -134,6 +134,15 @@ kitkatpathshack(){
 	fi
 }
 
+systemlibhack(){
+    case "$package" in
+        #webview should have its library in /system/lib and /system/lib64 instead of /system/app/WebViewGoogle/lib/ARCH
+        com.google.android.webview) systemlib="true";;
+	*) systemlib="false";;
+    esac
+}
+
+
 universalremoverhack(){
     if [ "$API" -le "19" ]; then
         tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
