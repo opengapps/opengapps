@@ -252,8 +252,7 @@ form(
       "+Gallery",     "<b>+Gallery</b>",      "To bypass the automatic removal of Stock/AOSP Gallery Application",                      "check",
       "+Launcher",     "<b>+Launcher</b>",      " To bypass the automatic removal of Stock/AOSP Launcher(s)",                      "check",
       "+MMS",     "<b>+MMS</b>",      "To bypass the automatic removal of Stock/AOSP SMS Application",                      "check",
-      "+PicoTTS",     "<b>+PicoTTS</b>",      "To bypass the automatic removal of the Stock/AOSP PicoTTS app",                      "check",
-      "+WebViewStock",     "<b>+WebViewStock</b>",      "To bypass the automatic removal of the Stock/AOSP WebView library",                      "check"
+      "+PicoTTS",     "<b>+PicoTTS</b>",      "To bypass the automatic removal of the Stock/AOSP PicoTTS app",                      "check"
 );
 
 form(
@@ -856,12 +855,6 @@ if
 then
 	appendvar("gapps", "+PicoTTS\n");
 endif;
-if
-	prop("bypass.prop", "+WebViewStock")=="1"
-then
-	appendvar("gapps", "+WebViewStock\n");
-endif;
-
 
 #WRITE GAPPS-CONFIG TO TEMP/AROMA AND DISPLAY IT
 writetmpfile(".gapps-config", getvar("gapps"));

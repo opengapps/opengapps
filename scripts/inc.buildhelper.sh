@@ -76,12 +76,17 @@ buildapp(){
 		for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
 			dpivariant="$(echo "$dpivariant" | tr '' ' ')" #and we place the spaces back again
 			versionname="$(aapt dump badging "$dpivariant" 2>/dev/null | grep "versionName" | awk '{print $4}' | sed s/versionName=// | sed "s/'//g")"
-
 			versionnamehack #Some packages have a different versionname, when the actual version is equal
+			systemlibhack #Some packages want their libs installed as system libs
+			if [ "$API" -le "19" ] || [ "$systemlib" = "true" ]; then
+				liblocation="$ziplocation/common"
+			else
+				liblocation="$ziplocation/common/$targetlocation"
+			fi
 
 			if [ -z "$baseversionname" ]; then
 				baseversionname=$versionname
-				buildlib "$dpivariant" "$ziplocation/common/$targetlocation" #Use the libs from this baseversion
+				buildlib "$dpivariant" "$liblocation" #Use the libs from this baseversion
 				printf "%44s %22s" "$package" "$baseversionname"
 			fi
 			if [ "$versionname" = "$baseversionname" ]; then
@@ -191,26 +196,23 @@ buildlib() {
 		libsearchpath="lib/mips64/*"
 		libfallbacksearchpath="lib/mips/*"
 	fi
-	if [ "$API" -le "19" ]; then #We will do this as long as we support KitKat
-		targetdir=$(dirname "$(dirname "$targetdir")")
-		if [ -n "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
-		then
-			install -d "$targetdir/lib"
-			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/" "$libsearchpath" #unfortunately we cannot exclude crazy path here, exclude does not work nice in conjunction with junkpaths
-			rm -rf "$targetdir/lib/"*crazy* #so we do here an ugly removal of all crazy libs instead
-		fi
-	else #This is Lollipop, much more nice :-)
-		if [ -n "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
-		then
-			install -d "$targetdir/lib/$SOURCEARCH"
-			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$SOURCEARCH" "$libsearchpath" #unfortunately we cannot exclude crazy path here, exclude does not work nice in conjunction with junkpaths
-			rm -rf "$targetdir/lib/$SOURCEARCH/"*crazy* #so we do here an ugly removal of all crazy libs instead
-		fi
-		if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ -n "$(unzip -qql "$sourceapk" "$libfallbacksearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
-		then
-			install -d "$targetdir/lib/$FALLBACKARCH"
-			unzip -q -j -o "$sourceapk" -d "$targetdir/lib/$FALLBACKARCH" "$libfallbacksearchpath" #unfortunately we cannot exclude crazy path here, exclude does not work nice in conjunction with junkpaths
-			rm -rf "$targetdir/lib/$FALLBACKARCH/"*crazy* #so we do here an ugly removal of all crazy libs instead
-		fi
+	if [ "$(basename "$targetdir")" = "common" ]; then	#if we are installing systemwide libs
+		libpath="$LIBFOLDER"
+		fallbacklibpath="lib"
+	else							#Lollipop-style libs bundled in the APK's folder
+		libpath="lib/$SOURCEARCH"
+		fallbacklibpath="lib/$FALLBACKARCH"
+	fi
+	if [ -n "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
+	then
+		install -d "$targetdir/$libpath"
+		unzip -q -j -o "$sourceapk" -d "$targetdir/$libpath" "$libsearchpath" #unfortunately we cannot exclude crazy path here, exclude does not work nice in conjunction with junkpath
+		rm -rf "$targetdir/$libpath/"*crazy* #so we do here an ugly removal of all crazy libs instead
+	fi
+	if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ -n "$(unzip -qql "$sourceapk" "$libfallbacksearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
+	then
+		install -d "$targetdir/$fallbacklibpath"
+		unzip -q -j -o "$sourceapk" -d "$targetdir/$fallbacklibpath" "$libfallbacksearchpath" #unfortunately we cannot exclude crazy path here, exclude does not work nice in conjunction with junkpaths
+		rm -rf "$targetdir/$fallbacklibpath/"*crazy* #so we do here an ugly removal of all crazy libs instead
 	fi
 }
