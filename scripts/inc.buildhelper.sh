@@ -157,20 +157,14 @@ buildapk() {
 		targetapk="$targetdir.apk"
 		targetdir="$(dirname "$targetapk")"
 	fi
-	install -d "$targetdir"
 	if [ -f "$targetapk" ]
 		then
 		rm "$targetapk"
 	fi
 
-	zip -q -b "$targetdir" -U "$sourceapk" -O "$targetapk" --exclude "lib*" #unfortunately we cannot include within an exclude, so crazy libraries have to be done separate
-	if (unzip -qql "$sourceapk" | grep -q -E "lib/.*crazy"); then #only if the crazy library files exist
-		unzip -q -o "$sourceapk" -d "$targetdir" "lib/*crazy*"
-		CURRENTPWD="$(realpath .)" #if we ever switch to bash, make this a pushd-popd trick
-		cd "$targetdir"
-		zip -q -r -D -Z store -b "$targetdir" "$targetapk" "lib/" #no parameter for output and mode, we are in 'add and update existing' mode which is default. Crazy files have to be stored without compression.
-		cd "$CURRENTPWD"
-		rm -rf "$targetdir/lib/"
+	install -D "$sourceapk" "$targetapk"
+	if (unzip -qql "$targetapk" | grep -q "lib/"); then #only if the lib folder exists
+		zipinfo -1 "$targetapk" | grep "lib/" | grep -v "/crazy." | xargs zip -q -d "$targetapk" #delete all libs, except crazy-linked
 	fi
 }
 buildlib() {
@@ -206,13 +200,11 @@ buildlib() {
 	if [ -n "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 	then
 		install -d "$targetdir/$libpath"
-		unzip -q -j -o "$sourceapk" -d "$targetdir/$libpath" "$libsearchpath" #unfortunately we cannot exclude crazy path here, exclude does not work nice in conjunction with junkpath
-		rm -rf "$targetdir/$libpath/"*crazy* #so we do here an ugly removal of all crazy libs instead
+		unzip -qq -j -o "$sourceapk" "$libsearchpath" -x "lib/*/crazy.*" -d "$targetdir/$libpath" 2>/dev/null
 	fi
 	if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ -n "$(unzip -qql "$sourceapk" "$libfallbacksearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
 	then
 		install -d "$targetdir/$fallbacklibpath"
-		unzip -q -j -o "$sourceapk" -d "$targetdir/$fallbacklibpath" "$libfallbacksearchpath" #unfortunately we cannot exclude crazy path here, exclude does not work nice in conjunction with junkpaths
-		rm -rf "$targetdir/$fallbacklibpath/"*crazy* #so we do here an ugly removal of all crazy libs instead
+		unzip -qq -j -o "$sourceapk" "$libfallbacksearchpath" -x "lib/*/crazy.*" -d "$targetdir/$fallbacklibpath" 2>/dev/null
 	fi
 }
