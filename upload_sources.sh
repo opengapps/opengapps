@@ -41,7 +41,8 @@ createcommit(){
 
 for arch in $(ls "$SOURCES"); do
     cd "$SOURCES/$arch"
-    git reset HEAD #make sure we are not including any other files are already tracked, output is allowed, to inform the user
+    echo "Resetting $arch to HEAD before staging new commits..."
+    git reset -q HEAD #make sure we are not including any other files are already tracked, output is silenced, not to confuse the user with the next output
     apks="$(git status -uall --porcelain | grep ".apk" | grep -e "?? " | cut -c4-)" #get the new apks
     for apk in $apks; do
         createcommit "$apk" "$arch"
@@ -52,7 +53,7 @@ for arch in $(ls "$SOURCES"); do
         echo "Do you want to push these commits to the $arch repository? [y/N]"
         IFS= read -r REPLY
         case "$REPLY" in
-            y*|Y*)  git push origin HEAD:master;;
+            y*|Y*)  git push origin HEAD:master ;;
                 *)  echo "Did NOT push $arch";;
         esac
     fi
