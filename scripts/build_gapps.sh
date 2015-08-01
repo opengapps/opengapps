@@ -42,7 +42,6 @@ command -v java >/dev/null 2>&1 || { echo "java is required but it's not install
 command -v md5sum >/dev/null 2>&1 || { echo "md5sum is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v zip >/dev/null 2>&1 || { echo "zip is required but it's not installed.  Aborting." >&2; exit 1; }
-command -v zipinfo >/dev/null 2>&1 || { echo "zipinfo is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v zipalign >/dev/null 2>&1 || { echo "zipalign is required but it's not installed.  Aborting." >&2; exit 1; }
 #necessary to compress the apps
 command -v tar >/dev/null 2>&1 || { echo "tar is required but it's not installed.  Aborting." >&2; exit 1; }

@@ -164,7 +164,7 @@ buildapk() {
 
 	install -D "$sourceapk" "$targetapk"
 	if (unzip -qql "$targetapk" | grep -q "lib/"); then #only if the lib folder exists
-		zipinfo -1 "$targetapk" | grep "lib/" | grep -v "/crazy." | xargs zip -q -d "$targetapk" #delete all libs, except crazy-linked
+		unzip -Z -1 "$targetapk" | grep "lib/" | grep -v "/crazy." | xargs zip -q -d "$targetapk" #delete all libs, except crazy-linked
 	fi
 }
 buildlib() {
@@ -197,12 +197,12 @@ buildlib() {
 		libpath="lib/$SOURCEARCH"
 		fallbacklibpath="lib/$FALLBACKARCH"
 	fi
-	if [ -n "$(unzip -qql "$sourceapk" "$libsearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
+	if [ -n "$(unzip -Z -1 "$sourceapk" "$libsearchpath" 2>/dev/null)" ]
 	then
 		install -d "$targetdir/$libpath"
 		unzip -qq -j -o "$sourceapk" "$libsearchpath" -x "lib/*/crazy.*" -d "$targetdir/$libpath" 2>/dev/null
 	fi
-	if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ -n "$(unzip -qql "$sourceapk" "$libfallbacksearchpath" | cut -c1- | tr -s ' ' | cut -d' ' -f5-)" ]
+	if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ -n "$(unzip -Z -1 "$sourceapk" "$libfallbacksearchpath" 2>/dev/null)" ]
 	then
 		install -d "$targetdir/$fallbacklibpath"
 		unzip -qq -j -o "$sourceapk" "$libfallbacksearchpath" -x "lib/*/crazy.*" -d "$targetdir/$fallbacklibpath" 2>/dev/null
