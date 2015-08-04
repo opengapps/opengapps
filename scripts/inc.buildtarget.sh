@@ -204,7 +204,7 @@ get_package_info(){
 		webviewgoogle)				packagetype="GApps";packagename="com.google.android.webview"; packagetarget="app/WebViewGoogle";;
 		youtube)					packagetype="GApps";packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
 
-		keybdlib)					packagetype="Optional"; packagefiles="lib/libjni_latinimegoogle.so";;
+		keybdlib)					packagetype="Optional"; packagefiles="$LIBFOLDER/libjni_latinimegoogle.so";;
 
 		*) 		echo "ERROR! Missing build rule for application with keyword $1";exit 1;;
 	esac
