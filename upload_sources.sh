@@ -25,6 +25,11 @@ createcommit(){
     name="$(echo "$apkproperties" | grep "application-label:" | sed 's/application-label://g' | sed "s/'//g")"
     versionname="$(echo "$apkproperties" | grep "versionName" | awk '{print $4}' | sed s/versionName=// | sed "s/'//g")"
     sdkversion="$(echo "$apkproperties" | grep "sdkVersion:" | sed 's/sdkVersion://' | sed "s/'//g")"
+    leanback="$(echo "$apkproperties" | grep "uses-feature:'android.software.leanback'" | awk -F [.\'] '{print $4}')"
+
+    if [ -n "$leanback" ]; then
+  		name="$name ($leanback)" #special leanback versions should be named like that in their commit
+  	fi
 
     git rm -q -r --ignore-unmatch "$(dirname "$1")"
     git add "$1"
