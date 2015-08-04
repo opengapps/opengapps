@@ -11,42 +11,42 @@
 #    GNU General Public License for more details.
 #
 makegprop(){
-	echo "# begin addon properties
+  echo "# begin addon properties
 ro.addon.type=gapps
 ro.addon.platform=$PLATFORM
 ro.addon.open_type=$VARIANT
 ro.addon.open_version=$DATE
 # end addon properties" > "$build/g.prop"
-	EXTRACTFILES="$EXTRACTFILES g.prop"
+  EXTRACTFILES="$EXTRACTFILES g.prop"
 }
 makegappsremovetxt(){
-	gapps_remove=""
-	get_supported_variants "stock"
-	get_gapps_list "$supported_variants"
-	for gapp in $gapps_list; do
-		get_package_info "$gapp"
-		if [ -n "$packagetarget" ]; then
-			gapps_remove="/system/$packagetarget$REMOVALSUFFIX
+  gapps_remove=""
+  get_supported_variants "stock"
+  get_gapps_list "$supported_variants"
+  for gapp in $gapps_list; do
+    get_package_info "$gapp"
+    if [ -n "$packagetarget" ]; then
+      gapps_remove="/system/$packagetarget$REMOVALSUFFIX
 $gapps_remove"
-		fi
-		for file in $packagefiles; do
-			if [ "$file" = "etc" ];then
-				gapps_remove="$(find "$SOURCES/all/" -mindepth 3 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^#/system/#' | sort | uniq)
+    fi
+    for file in $packagefiles; do
+      if [ "$file" = "etc" ];then
+        gapps_remove="$(find "$SOURCES/all/" -mindepth 3 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^#/system/#' | sort | uniq)
 $gapps_remove"
-			elif [ "$file" = "framework" ];then
-				gapps_remove="$(find "$SOURCES/all/" -mindepth 2 -printf "%P\n" -name "*" | grep "framework/" | sed 's#^#/system/#' | sort | uniq)
+      elif [ "$file" = "framework" ];then
+        gapps_remove="$(find "$SOURCES/all/" -mindepth 2 -printf "%P\n" -name "*" | grep "framework/" | sed 's#^#/system/#' | sort | uniq)
 $gapps_remove"
-			else
-				gapps_remove="/system/$file
+      else
+        gapps_remove="/system/$file
 $gapps_remove"
-			fi
-		done
-	done
-	printf "%s" "$gapps_remove" | sort > "$build/gapps-remove.txt"
-	EXTRACTFILES="$EXTRACTFILES gapps-remove.txt"
+      fi
+    done
+  done
+  printf "%s" "$gapps_remove" | sort > "$build/gapps-remove.txt"
+  EXTRACTFILES="$EXTRACTFILES gapps-remove.txt"
 }
 makeinstallerdata(){
-	echo '#This file is part of The Open GApps script of @mfonville.
+  echo '#This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -424,7 +424,7 @@ oldscript_list="
 /system/etc/g.prop
 /system/addon.d/70-gapps.sh
 ";' >> "$build/installer.data"
-	tee -a "$build/installer.data" > /dev/null <<'EOFILE'
+  tee -a "$build/installer.data" > /dev/null <<'EOFILE'
 
 remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript_list}";
 # _____________________________________________________________________________________________________________________
@@ -449,5 +449,5 @@ del_conflict_msg="!!! WARNING !!! - Duplicate files were found between your ROM 
 no_tar_message="INSTALLATION FAILURE: The installer detected that your recovery does not support\ntar extraction. Please update your recovery or switch to another one like TWRP."
 no_xz_message="INSTALLATION FAILURE: The installer detected that your recovery does not support\nXZ decompression. Please update your recovery or switch to another one like TWRP."
 EOFILE
-	EXTRACTFILES="$EXTRACTFILES installer.data"
+  EXTRACTFILES="$EXTRACTFILES installer.data"
 }
