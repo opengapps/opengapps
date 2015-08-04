@@ -13,11 +13,14 @@
 #
 TOP="$(realpath .)"
 SOURCES="$TOP/sources"
-LOWESTAPI="19"
+LOWESTAPI_all="19"
+LOWESTAPI_arm="19"
+LOWESTAPI_arm64="21"
+LOWESTAPI_x86="19"
+LOWESTAPI_x86_64="21"
 command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v file >/dev/null 2>&1 || { echo "file is required but it's not installed.  Aborting." >&2; exit 1; }
-command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }
-#coreutils also contains the basename command
+command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; } #coreutils also contains the basename command
 command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not installed.  Aborting." >&2; exit 1; }
 
 getarchitectures() {
@@ -61,10 +64,22 @@ getapkproperties(){
 
 installapk() {
   architecture="$1"
+  eval "lowestapi=\$LOWESTAPI_$architecture"
 
   if [ -n "$leanback" ]; then
     package="$package.$leanback" #special leanback versions need a different packagename
     echo "Leanback edition"
+  fi
+
+  if [ "$sdkversion" -lt "$lowestapi" ]; then
+    for i in $(seq "$(($sdkversion + 1))" "$lowestapi")
+    do
+      existing="$SOURCES/$architecture/$type/$package/$i/$dpis"
+      if [ -e "$existing" ];then
+        echo "ERROR: API level is lower than minimum level $lowestapi and lower than existing level $i of the same package"
+        return 1;
+      fi
+    done
   fi
 
   #targetlocation: sources/platform/type/package/sdkversion/dpi1-dpi2-dpi3/versioncode.apk
@@ -86,7 +101,7 @@ installapk() {
     echo "SUCCESS: Added $target/$versioncode.apk"
   fi
 
-  if [ "$sdkversion" -le "$LOWESTAPI" ]; then
+  if [ "$sdkversion" -le "$lowestapi" ]; then
     for i in $(seq 1 "$((sdkversion - 1))")
     do
       remove="$SOURCES/$architecture/$type/$package/$i/"
