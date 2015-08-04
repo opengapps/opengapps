@@ -104,9 +104,10 @@ installapk() {
   if [ "$sdkversion" -le "$lowestapi" ]; then
     for i in $(seq 1 "$((sdkversion - 1))")
     do
-      remove="$SOURCES/$architecture/$type/$package/$i/"
+      remove="$SOURCES/$architecture/$type/$package/$i/$dpis"
       if [ -e "$remove" ];then
         rm -rf "$remove"
+        rmdir --ignore-fail-on-non-empty "$(dirname "$remove")"
         echo "Cleaned up old API: $remove"
       fi
     done
