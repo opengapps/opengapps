@@ -38,3 +38,7 @@ For contributors, updated sources can be uploaded by using this command:
 ```
 ./upload_sources.sh
 ```
+If you want an overview of the locally available sources:
+```
+./report_sources.sh
+```
