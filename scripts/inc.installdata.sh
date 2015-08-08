@@ -11,42 +11,42 @@
 #    GNU General Public License for more details.
 #
 makegprop(){
-	echo "# begin addon properties
+  echo "# begin addon properties
 ro.addon.type=gapps
 ro.addon.platform=$PLATFORM
 ro.addon.open_type=$VARIANT
 ro.addon.open_version=$DATE
 # end addon properties" > "$build/g.prop"
-	EXTRACTFILES="$EXTRACTFILES g.prop"
+  EXTRACTFILES="$EXTRACTFILES g.prop"
 }
 makegappsremovetxt(){
-	gapps_remove=""
-	get_supported_variants "stock"
-	get_gapps_list "$supported_variants"
-	for gapp in $gapps_list; do
-		get_package_info "$gapp"
-		if [ -n "$packagetarget" ]; then
-			gapps_remove="/system/$packagetarget$REMOVALSUFFIX
+  gapps_remove=""
+  get_supported_variants "stock"
+  get_gapps_list "$supported_variants"
+  for gapp in $gapps_list; do
+    get_package_info "$gapp"
+    if [ -n "$packagetarget" ]; then
+      gapps_remove="/system/$packagetarget$REMOVALSUFFIX
 $gapps_remove"
-		fi
-		for file in $packagefiles; do
-			if [ "$file" = "etc" ];then
-				gapps_remove="$(find "$SOURCES/all/" -mindepth 3 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^#/system/#' | sort | uniq)
+    fi
+    for file in $packagefiles; do
+      if [ "$file" = "etc" ];then
+        gapps_remove="$(find "$SOURCES/all/" -mindepth 3 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^#/system/#' | sort | uniq)
 $gapps_remove"
-			elif [ "$file" = "framework" ];then
-				gapps_remove="$(find "$SOURCES/all/" -mindepth 2 -printf "%P\n" -name "*" | grep "framework/" | sed 's#^#/system/#' | sort | uniq)
+      elif [ "$file" = "framework" ];then
+        gapps_remove="$(find "$SOURCES/all/" -mindepth 2 -printf "%P\n" -name "*" | grep "framework/" | sed 's#^#/system/#' | sort | uniq)
 $gapps_remove"
-			else
-				gapps_remove="/system/$file
+      else
+        gapps_remove="/system/$file
 $gapps_remove"
-			fi
-		done
-	done
-	printf "%s" "$gapps_remove" | sort > "$build/gapps-remove.txt"
-	EXTRACTFILES="$EXTRACTFILES gapps-remove.txt"
+      fi
+    done
+  done
+  printf "%s" "$gapps_remove" | sort > "$build/gapps-remove.txt"
+  EXTRACTFILES="$EXTRACTFILES gapps-remove.txt"
 }
 makeinstallerdata(){
-	echo '#This file is part of The Open GApps script of @mfonville.
+  echo '#This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -75,6 +75,7 @@ req_android_version="'"$PLATFORM"'";
 
 '"$KEYBDLIBS"'
 faceLock_lib_filename="libfacelock_jni.so";
+WebView_lib_filename="libwebviewchromium.so";
 
 # Buffer of extra system space to require for GApps install (9216=9MB)
 # This will allow for some ROM size expansion when GApps are restored
@@ -346,6 +347,9 @@ app/VisualizationWallpapers'"$REMOVALSUFFIX"'
 
 webviewstock_list="
 app/webview'"$REMOVALSUFFIX"'
+app/WebView'"$REMOVALSUFFIX"'
+lib/$WebView_lib_filename
+lib64/$WebView_lib_filename
 ";
 
 whisperpush_list="
@@ -420,7 +424,7 @@ oldscript_list="
 /system/etc/g.prop
 /system/addon.d/70-gapps.sh
 ";' >> "$build/installer.data"
-	tee -a "$build/installer.data" > /dev/null <<'EOFILE'
+  tee -a "$build/installer.data" > /dev/null <<'EOFILE'
 
 remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript_list}";
 # _____________________________________________________________________________________________________________________
@@ -434,6 +438,7 @@ keyboard_sys_msg="WARNING: Google Keyboard has/will not be installed as requeste
 nokeyboard_msg="NOTE: The Stock/AOSP keyboard was NOT removed as requested to ensure your device\nwas not accidentally left with no keyboard installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
 nolauncher_msg="NOTE: The Stock/AOSP Launcher was NOT removed as requested to ensure your device\nwas not accidentally left with no Launcher. If this was your intention, you can\nadd 'Override' to your gapps-config to override this protection.\n";
 nomms_msg="NOTE: The Stock/AOSP MMS app was NOT removed as requested to ensure your device\nwas not accidentally left with no way to receive text messages. If this WAS\nintentional, add 'Override' to your gapps-config to override this protection.\n";
+nowebview_msg="NOTE: The Stock/AOSP WebView was NOT removed as requested to ensure your device\nwas not accidentally left with no WebView installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
 non_open_gapps_msg="INSTALLATION FAILURE: Open GApps can only be installed on top of an existing\nOpen GApps installation. Since you are currently using another GApps package, you\nwill need to wipe (format) your system partition before installing Open GApps.\n";
 rom_version_msg="INSTALLATION FAILURE: This GApps package can only be installed on a $req_android_version.x ROM.\n";
 simulation_msg="TEST INSTALL: This was only a simulated install. NO CHANGES WERE MADE TO YOUR\nDEVICE. To complete the installation remove 'Test' from your gapps-config.\n";
@@ -444,5 +449,5 @@ del_conflict_msg="!!! WARNING !!! - Duplicate files were found between your ROM 
 no_tar_message="INSTALLATION FAILURE: The installer detected that your recovery does not support\ntar extraction. Please update your recovery or switch to another one like TWRP."
 no_xz_message="INSTALLATION FAILURE: The installer detected that your recovery does not support\nXZ decompression. Please update your recovery or switch to another one like TWRP."
 EOFILE
-	EXTRACTFILES="$EXTRACTFILES installer.data"
+  EXTRACTFILES="$EXTRACTFILES installer.data"
 }
