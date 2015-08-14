@@ -35,7 +35,7 @@ createcommit(){
   git add "$1"
   git status -s -uno
   echo "Do you want to commit these changes as $name $2 $sdkversion $versionname ($dpis)? [y/N]"
-  IFS= read -r REPLY
+  IFS= read -n 1 -r REPLY
   case "$REPLY" in
     y*|Y*)  git commit -q -m"$name $2 $sdkversion $versionname ($dpis)"
             echo "Committed $1";;
