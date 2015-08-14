@@ -188,6 +188,8 @@ app/Camera'"$REMOVALSUFFIX"'
 app/Camera2'"$REMOVALSUFFIX"'
 priv-app/Camera'"$REMOVALSUFFIX"'
 priv-app/Camera2'"$REMOVALSUFFIX"'
+app/MotCamera'"$REMOVALSUFFIX"'
+priv-app/MotCamera'"$REMOVALSUFFIX"'
 ";
 
 clockstock_list="
@@ -250,6 +252,10 @@ app/Gallery'"$REMOVALSUFFIX"'
 priv-app/Gallery'"$REMOVALSUFFIX"'
 app/Gallery2'"$REMOVALSUFFIX"'
 priv-app/Gallery2'"$REMOVALSUFFIX"'
+app/MotGallery'"$REMOVALSUFFIX"'
+priv-app/MotGallery'"$REMOVALSUFFIX"'
+app/MediaShortcuts'"$REMOVALSUFFIX"'
+priv-app/MediaShortcuts'"$REMOVALSUFFIX"'
 ";
 
 holospiral_list="
