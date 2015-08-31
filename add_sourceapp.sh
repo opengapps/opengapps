@@ -60,6 +60,9 @@ getapkproperties(){
   compatiblescreens="$(echo "$apkproperties" | grep "compatible-screens:")"
   native="$(echo "$apkproperties" | grep "native-code:" | sed 's/native-code://g' | sed "s/'//g")"
   leanback="$(echo "$apkproperties" | grep "android.software.leanback" | awk -F [.\'] '{print $(NF-1)}')"
+  case "$versionname" in
+    *leanback*) leanback="leanback";;
+  esac
 }
 
 installapk() {
