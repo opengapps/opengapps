@@ -14,6 +14,12 @@
 
 TOP="$(realpath .)"
 SOURCES="$TOP/sources"
+LOWESTAPI_all="19"
+LOWESTAPI_arm="19"
+LOWESTAPI_arm64="21"
+LOWESTAPI_x86="19"
+LOWESTAPI_x86_64="21"
+# We should avoid duplicated entries for the same thing, but making a new include file just for 5 rows looked unnecessary.
 
 command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v basename >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; }
@@ -23,15 +29,28 @@ createcommit(){
   dpis="$(printf "%s" "$1" | awk -F/ '{print $(NF-1)}')"
   apkproperties="$(aapt dump badging "$1" 2>/dev/null)"
   name="$(echo "$apkproperties" | grep "application-label:" | sed 's/application-label://g' | sed "s/'//g")"
+  package="$(echo "$apkproperties" | grep package: | awk '{print $2}' | sed s/name=//g | sed s/\'//g | awk '{print tolower($0)}')"
   versionname="$(echo "$apkproperties" | grep "versionName" | awk '{print $4}' | sed s/versionName=// | sed "s/'//g")"
   sdkversion="$(echo "$apkproperties" | grep "sdkVersion:" | sed 's/sdkVersion://' | sed "s/'//g")"
   leanback="$(echo "$apkproperties" | grep "uses-feature:'android.software.leanback'" | awk -F [.\'] '{print $4}')"
 
   if [ -n "$leanback" ]; then
     name="$name ($leanback)" #special leanback versions should be named like that in their commit
+	package="$package.$leanback" #special leanback versions need a different packagename
   fi
 
   git rm -q -r --ignore-unmatch "$(dirname "$1")"
+  eval "lowestapi=\$LOWESTAPI_$2"
+  if [ "$sdkversion" -le "$lowestapi" ]; then
+    for i in $(seq 1 "$((sdkversion - 1))")
+    do
+      remove="$SOURCES/$2/app/$package/$i/$dpis"
+      git rm -q -r --ignore-unmatch "$remove"
+      remove="$SOURCES/$2/priv-app/$package/$i/$dpis"
+      git rm -q -r --ignore-unmatch "$remove"
+    done
+  fi
+  # We don't have to care about empty direcories with git (see http://stackoverflow.com/a/10075480/3315861 for more details.)
   git add "$1"
   git status -s -uno
   echo "Do you want to commit these changes as $name $2 $sdkversion $versionname ($dpis)? [y/N]"
