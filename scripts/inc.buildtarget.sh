@@ -175,7 +175,7 @@ get_package_info(){
                     fi;;
     fitness)        packagetype="GApps";packagename="com.google.android.apps.fitness"; packagetarget="app/FitnessPrebuilt";;
     gmail)          packagetype="GApps";packagename="com.google.android.gm"; packagetarget="app/PrebuiltGmail";;
-    googlenow)      packagetype="GApps";packagename="com.google.android.launcher"; packagetarget="priv-app/GoogleHome";; #moves in android M to /app/
+    googlenow)      packagetype="GApps";packagename="com.google.android.launcher"; packagetarget="app/GoogleHome";;
     photos)         packagetype="GApps";packagename="com.google.android.apps.photos"; packagetarget="app/Photos";;
     googleplus)     packagetype="GApps";packagename="com.google.android.apps.plus"; packagetarget="app/PlusOne";;
     googletts)      packagetype="GApps";packagename="com.google.android.tts"; packagetarget="app/GoogleTTS";;

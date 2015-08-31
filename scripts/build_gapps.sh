@@ -50,6 +50,7 @@ case "$API" in
   19) PLATFORM="4.4";;
   21) PLATFORM="5.0";;
   22) PLATFORM="5.1";;
+  23) PLATFORM="6.0";;
   *)  echo "ERROR: Unknown API version! Aborting..."
   exit 1;;
 esac
@@ -69,9 +70,9 @@ fi
 
 kitkatpathshack	#kitkat has different apk and lib paths which impact installer.data
 kitkatdatahack #kitkat installs some applications on /data/ instead of /system/
-taghack #only lollipop supports google tag
-webviewhack #only lollipop (but not AOSP 5.0) support google webview
-keyboardlibhack #only lollipop has gestures for the aosp keyboard possible, which impact installer.data and an extra file in the package
+taghack #only 5.0+ supports google tag
+webviewhack #only 5.1+ supports google webview (but fornexus 5.0 does too)
+keyboardlibhack #only 5.0+ has gestures for the aosp keyboard possible, which impact installer.data and an extra file in the package
 buildtarget
 alignbuild
 commonscripts

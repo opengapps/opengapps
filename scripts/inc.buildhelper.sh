@@ -154,7 +154,7 @@ buildapk() {
   fi
 
   install -D "$sourceapk" "$targetapk"
-  if (unzip -qql "$targetapk" | grep -q "lib/"); then #only if the lib folder exists
+  if [ "$API" -lt "23" ] && (unzip -qql "$targetapk" | grep -q "lib/"); then #only if pre-Marshmallow and the lib folder exists
     unzip -Z -1 "$targetapk" | grep "lib/" | grep -v "/crazy." | xargs zip -q -d "$targetapk" #delete all libs, except crazy-linked
   fi
 }
@@ -188,14 +188,16 @@ buildlib() {
     libpath="lib/$SOURCEARCH"
     fallbacklibpath="lib/$FALLBACKARCH"
   fi
-  if [ -n "$(unzip -Z -1 "$sourceapk" "$libsearchpath" 2>/dev/null)" ]
-  then
-    install -d "$targetdir/$libpath"
-    unzip -qq -j -o "$sourceapk" "$libsearchpath" -x "lib/*/crazy.*" -d "$targetdir/$libpath" 2>/dev/null
-  fi
-  if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ -n "$(unzip -Z -1 "$sourceapk" "$libfallbacksearchpath" 2>/dev/null)" ]
-  then
-    install -d "$targetdir/$fallbacklibpath"
-    unzip -qq -j -o "$sourceapk" "$libfallbacksearchpath" -x "lib/*/crazy.*" -d "$targetdir/$fallbacklibpath" 2>/dev/null
+  if [ "$API" -lt "23" ]; then #libextraction is only necessary on pre-Marshmallow
+    if [ -n "$(unzip -Z -1 "$sourceapk" "$libsearchpath" 2>/dev/null)" ]
+    then
+      install -d "$targetdir/$libpath"
+      unzip -qq -j -o "$sourceapk" "$libsearchpath" -x "lib/*/crazy.*" -d "$targetdir/$libpath" 2>/dev/null
+    fi
+    if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ -n "$(unzip -Z -1 "$sourceapk" "$libfallbacksearchpath" 2>/dev/null)" ]
+    then
+      install -d "$targetdir/$fallbacklibpath"
+      unzip -qq -j -o "$sourceapk" "$libfallbacksearchpath" -x "lib/*/crazy.*" -d "$targetdir/$fallbacklibpath" 2>/dev/null
+    fi
   fi
 }

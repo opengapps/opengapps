@@ -398,7 +398,6 @@ other_list="
 privapp_list="
 /system/app/GoogleBackupTransport'"$REMOVALSUFFIX"'
 /system/app/GoogleFeedback'"$REMOVALSUFFIX"'
-/system/app/GoogleHome'"$REMOVALSUFFIX"'
 /system/app/GoogleLoginService'"$REMOVALSUFFIX"'
 /system/app/GoogleOneTimeInitializer'"$REMOVALSUFFIX"'
 /system/app/GooglePartnerSetup'"$REMOVALSUFFIX"'
@@ -417,8 +416,9 @@ reqd_list="
 '"$REQDLIST"'
 ";
 
-# Remove talkback from priv-app since it was moved to app in 5.1
+# Remove from priv-app since it was moved to app
 obsolete_list="
+/system/priv-app/GoogleHome'"$REMOVALSUFFIX"'
 /system/priv-app/talkback'"$REMOVALSUFFIX"'
 ";
 

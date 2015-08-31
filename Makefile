@@ -13,7 +13,7 @@
 TOPDIR := .
 BUILD_SYSTEM := $(TOPDIR)/scripts
 BUILD_GAPPS := $(BUILD_SYSTEM)/build_gapps.sh
-APIS := 19 21 22
+APIS := 19 21 22 23
 PLATFORMS := arm arm64 x86 x86_64
 LOWEST_API_arm := 19
 LOWEST_API_arm64 := 21
