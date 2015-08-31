@@ -602,7 +602,7 @@ log "Device CPU" "$device_architecture";
 log "getprop Density" "$(getprop ro.sf.lcd_density)";
 log "default.prop Density" "$(file_getprop /default.prop ro.sf.lcd_density)";
 log "build.prop Density" "$(file_getprop $b_prop ro.sf.lcd_density)";
-log "Display Density Used" "${density}ppi";
+log "Display Density Used" "${density}dpi";
 log "Install Type" "$install_type";
 log "Google Camera Installed¹" "$cameragoogle_inst";
 log "Google Keyboard Installed¹" "$keyboardgoogle_inst";
