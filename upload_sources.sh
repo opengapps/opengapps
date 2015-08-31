@@ -36,7 +36,7 @@ createcommit(){
 
   if [ -n "$leanback" ]; then
     name="$name ($leanback)" #special leanback versions should be named like that in their commit
-	package="$package.$leanback" #special leanback versions need a different packagename
+    package="$package.$leanback" #special leanback versions need a different packagename
   fi
 
   git rm -q -r --ignore-unmatch "$(dirname "$1")"
