@@ -59,7 +59,7 @@ getapkproperties(){
   sdkversion="$(echo "$apkproperties" | grep "sdkVersion:" | sed 's/sdkVersion://' | sed "s/'//g")"
   compatiblescreens="$(echo "$apkproperties" | grep "compatible-screens:")"
   native="$(echo "$apkproperties" | grep "native-code:" | sed 's/native-code://g' | sed "s/'//g")"
-  leanback="$(echo "$apkproperties" | grep "uses-feature:'android.software.leanback'" | awk -F [.\'] '{print $4}')"
+  leanback="$(echo "$apkproperties" | grep "android.software.leanback" | awk -F [.\'] '{print $(NF-1)}')"
 }
 
 installapk() {
