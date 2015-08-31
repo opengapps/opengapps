@@ -414,7 +414,8 @@ privapp_list="
 
 # Stock/AOSP Keyboard lib (and symlink) that are always removed since they are always replaced
 reqd_list="
-'"$REQDLIST"'";
+'"$REQDLIST"'
+";
 
 # Remove talkback from priv-app since it was moved to app in 5.1
 obsolete_list="
