@@ -626,7 +626,7 @@ if [ -e /system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk -a 
     ui_print " ";
     ui_print "The installer detected that other GApps are";
     ui_print "already installed. If you are flashing over a";
-    ui_print "Stock ROM there is no ploblem, but if you are";
+    ui_print "Stock ROM there is no problem, but if you are";
     ui_print "flashing over a custom ROM, you may want to";
     ui_print "contact the developer to request the removal of";
     ui_print "the included GApps. The installation will now";
