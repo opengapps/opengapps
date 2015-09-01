@@ -32,10 +32,7 @@ createcommit(){
   if [ "$sdkversion" -le "$lowestapi" ]; then
     for i in $(seq 1 "$((sdkversion - 1))")
     do
-      remove="$SOURCES/$2/app/$package/$i/$dpis"
-      git rm -q -r --ignore-unmatch "$remove"
-      remove="$SOURCES/$2/priv-app/$package/$i/$dpis"
-      git rm -q -r --ignore-unmatch "$remove"
+      git rm -q -r --ignore-unmatch "$SOURCES/$2/$type/$package/$i/$dpis"
     done
   fi
   # We don't have to care about empty direcories with git (see http://stackoverflow.com/a/10075480/3315861 for more details.)
