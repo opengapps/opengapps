@@ -148,6 +148,7 @@ universalremoverhack(){
   if [ "$API" -le "19" ]; then
     tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
                     1)  user_remove_folder_list="${user_remove_folder_list}$(find "$folder" -type f -iname "$testapk")"$'\n'; # Add found file to list
+                        user_remove_folder_list="${user_remove_folder_list}$(printf "$(find "$folder" -type f -iname "$testapk")" | rev | cut -c 4- | rev)odex"$'\n'; # Add odex to list
 EOFILE
   else
     tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
