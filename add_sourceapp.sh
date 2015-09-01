@@ -13,66 +13,16 @@
 #
 TOP="$(realpath .)"
 SOURCES="$TOP/sources"
-LOWESTAPI_all="19"
-LOWESTAPI_arm="19"
-LOWESTAPI_arm64="21"
-LOWESTAPI_x86="19"
-LOWESTAPI_x86_64="21"
+SCRIPTS="$TOP/scripts"
+. "$SCRIPTS/inc.sourceshelper.sh"
 command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v file >/dev/null 2>&1 || { echo "file is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; } #coreutils also contains the basename command
 command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not installed.  Aborting." >&2; exit 1; }
 
-getarchitectures() {
-  architectures=""
-  if [ -z "$native" ]; then
-    echo "No native-code specification defined"
-    #Some packages don't have native-code specified, but are still depending on it.
-    #So an extra check is necessary before declaring it suitable for all platforms
-    libfiles=$(unzip -qql "$1" lib/* | tr -s ' ' | cut -d ' ' -f5-)
-    for lib in $libfiles; do
-      #this gives all files found in the lib-folder(s), check their paths for which architectures' libs are included
-      arch="$(echo "$lib" | awk 'BEGIN { FS = "/" } ; {print $2}')"
-      echo "$architectures" | grep -q "$arch"
-      if [ $? -eq 1 ]; then #only add if this architecture is not yet in the list
-        architectures="$architectures$arch "
-        echo "Manually found native code for: $arch"
-      fi
-    done
-    if [ -z "$architectures" ]; then #If the package really has no native code
-      architectures="all"
-    fi
-  else
-    for arch in $native; do
-      architectures="$architectures$arch "
-    done
-  fi
-  echo "Native code for architecture(s): $architectures"
-}
-
-getapkproperties(){
-  apkproperties="$(aapt dump badging "$1" 2>/dev/null)"
-  name="$(echo "$apkproperties" | grep "application-label:" | sed 's/application-label://g' | sed "s/'//g")"
-  package="$(echo "$apkproperties" | grep package: | awk '{print $2}' | sed s/name=//g | sed s/\'//g | awk '{print tolower($0)}')"
-  versionname="$(echo "$apkproperties" | grep "versionName" | awk '{print $4}' | sed s/versionName=// | sed "s/'//g")"
-  versioncode="$(echo "$apkproperties" | grep "versionCode=" | awk '{print $3}' | sed s/versionCode=// | sed "s/'//g")"
-  sdkversion="$(echo "$apkproperties" | grep "sdkVersion:" | sed 's/sdkVersion://' | sed "s/'//g")"
-  compatiblescreens="$(echo "$apkproperties" | grep "compatible-screens:")"
-  native="$(echo "$apkproperties" | grep "native-code:" | sed 's/native-code://g' | sed "s/'//g")"
-  leanback="$(echo "$apkproperties" | grep "android.software.leanback" | awk -F [.\'] '{print $(NF-1)}')"
-  case "$versionname" in
-    *leanback*) leanback="leanback";;
-  esac
-}
-
 installapk() {
   architecture="$1"
   eval "lowestapi=\$LOWESTAPI_$architecture"
-
-  if [ -n "$leanback" ]; then
-    package="$package.$leanback" #special leanback versions need a different packagename
-    echo "Leanback edition"
-  fi
 
   if [ "$sdkversion" -lt "$lowestapi" ]; then
     for i in $(seq "$(($sdkversion + 1))" "$lowestapi")
@@ -123,33 +73,14 @@ addapk() {
 
   echo "Importing $name"
   echo "Package $package | VersionName $versionname | VersionCode $versioncode | API level $sdkversion"
-
-  if [ "$compatiblescreens" = "" ]; then # we can't use -z here, because there can be a linecontrol character or such in it
-    dpis="nodpi"
+  if [ "$dpis" = "nodpi" ]; then
     echo "Universal DPI package"
   else
-    dpis=$(echo "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])[0-9]" | uniq | tr -d '\012\015' | tr '/' '-' | cut -c 2-)
     echo "Package supports DPIs: $(echo "$dpis" | tr '-' ' ')"
   fi
 
-  if [ "$package" = "com.google.android.backuptransport" ] \
-  || [ "$package" = "com.google.android.feedback" ] \
-  || [ "$package" = "com.google.android.gms" ] \
-  || [ "$package" = "com.google.android.googlequicksearchbox" ] \
-  || [ "$package" = "com.google.android.gsf" ] \
-  || [ "$package" = "com.google.android.gsf.login" ] \
-  || [ "$package" = "com.google.android.onetimeinitializer" ] \
-  || [ "$package" = "com.google.android.partnersetup" ] \
-  || [ "$package" = "com.google.android.setupwizard" ] \
-  || [ "$package" = "com.google.android.tag" ] \
-  || [ "$package" = "com.google.android.talk" ] \
-  || [ "$package" = "com.google.android.apps.walletnfcrel" ]; then
-    type="priv-app"
-  else
-    type="app"
-  fi
-
   getarchitectures "$apk"
+  echo "Native code for architecture(s): $architectures"
   #We manually check for each of our set of supported architectures
   #We assume NO universal packages for 32vs64 bit, so start with the 'highest' architectures first, if it matches one of those, we will NOT add it to a lower architecture
   if echo "$architectures" | grep -q "arm64"; then #no space, all arm64 types are valid
