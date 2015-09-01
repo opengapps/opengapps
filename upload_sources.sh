@@ -32,7 +32,7 @@ createcommit(){
   if [ "$sdkversion" -le "$lowestapi" ]; then
     for i in $(seq 1 "$((sdkversion - 1))")
     do
-      if [ "$(git ls-tree -r --name-only master "$type/$package/$i")" != "" ]; then
+      if [ -n "$(git ls-tree -r --name-only master "$type/$package/$i")" ]; then
         git rm -q -r --ignore-unmatch "$type/$package/$i/$dpis" # We are already in "$SOURCES/$arch"
       fi
     done
