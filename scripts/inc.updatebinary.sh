@@ -621,27 +621,19 @@ if [ -e /system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk -a 
       log "Current Open GApps Package" "Unknown";
     fi;
   else
-EOFILE
-
-if [ "$VARIANT" = "fornexus" ]; then
-  echo '    log "Current GApps Version" "NON Open GApps Currently Installed";'>> "$build/META-INF/com/google/android/update-binary"
-else
-  echo '    log "Current GApps Version" "NON Open GApps Currently Installed (FAILURE)";
-    ui_print "* Incompatible GApps Currently Installed *";
+    log "Current GApps Version" "NON Open GApps Currently Installed (NOTICE)";
+    ui_print "* Other GApps Currently Installed *";
     ui_print " ";
-    ui_print "This Open GApps package can ONLY be installed";
-    ui_print "on top of an existing installation of Open GApps";
-    ui_print "or a clean AOSP/CyanogenMod ROM installation.";
-    ui_print "You must wipe (format) your system partition";
-    ui_print "BEFORE installing the Open GApps package.";
+    ui_print "The installer detected that other GApps are";
+    ui_print "already installed. If you are flashing over a";
+    ui_print "Stock ROM there is no ploblem, but if you are";
+    ui_print "flashing over a custom ROM, you may want to";
+    ui_print "contact the developer to request the removal of";
+    ui_print "the included GApps. The installation will now";
+    ui_print "continue, but please be aware that any problem";
+    ui_print "that may occur depends on your ROM.";
     ui_print " ";
-    ui_print "******* GApps Installation failed *******";
-    ui_print " ";
-    install_note="${install_note}non_open_gapps_msg"'"$'\n'"'; # make note that currently installed GApps are non-Open
-    abort "$E_NONOPEN";'>> "$build/META-INF/com/google/android/update-binary"
-fi
-
-tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+    install_note="${install_note}non_open_gapps_msg"$'\n'; # make note that currently installed GApps are non-Open
   fi;
 else
   # User does NOT have a GApps package installed on their device
@@ -691,7 +683,7 @@ else # User is not using a gapps-config and we're doing the 'full monty'
 fi;
 
 # Configure default removal of Stock/AOSP apps - if we're installing Stock GApps
-if [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ] || [ "$gapps_type" = "fornexus" ]; then
+if [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
   for default_name in $default_aosp_remove_list; do
     eval "remove_${default_name}=true[default]";
   done;
@@ -709,7 +701,7 @@ if [ "$g_conf" ]; then
   for default_name in $default_aosp_remove_list; do
     if ( grep -qi "+$default_name" "$g_conf" ); then
       eval "remove_${default_name}=false[gapps-config]";
-    elif [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ] || [ "$gapps_type" = "fornexus" ]; then
+    elif [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
       aosp_remove_list="$aosp_remove_list$default_name"$'\n';
       if ( grep -qi "$default_name" "$g_conf" ); then
         eval "remove_${default_name}=true[gapps-config]";
@@ -728,7 +720,7 @@ if [ "$g_conf" ]; then
     fi;
   done;
 else
-  if [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ] || [ "$gapps_type" = "fornexus" ]; then
+  if [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
       aosp_remove_list=$default_aosp_remove_list;
   fi;
 fi;
@@ -900,10 +892,6 @@ tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
   done;
 fi;
 
-EOFILE
-
-if [ "$VARIANT" = "fornexus" ]; then
-  tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 # Removing old Chrome libraries
 obsolete_libs_list="";
 for f in $(find /system/lib /system/lib64 -name 'libchrome*.so' 2>/dev/null); do
@@ -911,13 +899,7 @@ for f in $(find /system/lib /system/lib64 -name 'libchrome*.so' 2>/dev/null); do
 done;
 # Read in gapps removal list from file and append old Chrome libs
 full_removal_list=$(cat $gapps_removal_list)$'\n'"${obsolete_libs_list}";
-EOFILE
-else
-  echo '# Read in gapps removal list from file
-full_removal_list=$(cat $gapps_removal_list);'>> "$build/META-INF/com/google/android/update-binary"
-fi
 
-tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 # Clean up and sort our lists for space calculations and installation
 set_progress 0.04;
 gapps_list=$(echo "${gapps_list}" | sort | sed '/^$/d'); # sort GApps list & remove empty lines

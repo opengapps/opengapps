@@ -89,7 +89,7 @@ esac
 
 get_supported_variants(){
   case "$1" in
-    stock|aroma|fornexus) supported_variants="pico nano micro mini full stock";;
+    stock|aroma)          supported_variants="pico nano micro mini full stock";;
     full)                 supported_variants="pico nano micro mini full";;
     mini)                 supported_variants="pico nano micro mini";;
     micro)                supported_variants="pico nano micro";;

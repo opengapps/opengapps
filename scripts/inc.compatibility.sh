@@ -172,7 +172,7 @@ taggoogle"
 }
 
 webviewhack(){
-  if [ "$API" -ge "22" ] || { [ "$API" -ge "21" ] && [ "$VARIANT" = "fornexus" ]; }; then #on AOSP we only support Webview on 5.1+, on fornexus 5.0+ is valid
+  if [ "$API" -ge "22" ]; then # On AOSP we only support Webview on 5.1+, stock Google ROMs support it on 5.0 too, but we're merging stock and fornexus
     gappsstock="$gappsstock
 webviewgoogle"
     stockremove="$stockremove
