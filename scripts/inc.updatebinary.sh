@@ -627,7 +627,7 @@ if [ -e /system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk -a 
     ui_print "This Open GApps package can ONLY be installed";
     ui_print "on top of an existing installation of Open GApps";
     ui_print "or a clean AOSP/CyanogenMod ROM installation,";
-    ui_print "or a stock ROM that confirms to Nexus standards.";
+    ui_print "or a Stock ROM that confirms to Nexus standards.";
     ui_print "You must wipe (format) your system partition";
     ui_print "and flash your ROM BEFORE installing Open GApps.";
     ui_print " ";
