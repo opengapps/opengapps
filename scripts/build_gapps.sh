@@ -43,6 +43,7 @@ command -v md5sum >/dev/null 2>&1 || { echo "md5sum is required but it's not ins
 command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v zip >/dev/null 2>&1 || { echo "zip is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v zipalign >/dev/null 2>&1 || { echo "zipalign is required but it's not installed.  Aborting." >&2; exit 1; }
+zipalign 2>&1 | grep -q "page align stored shared object files" || { echo "zipalign is outdated. Install a recent version from the Android SDK.  Aborting." >&2; exit 1; }
 command -v tar >/dev/null 2>&1 || { echo "tar is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v xz >/dev/null 2>&1 || { echo "xz is required but it's not installed.  Aborting." >&2; exit 1; }
 

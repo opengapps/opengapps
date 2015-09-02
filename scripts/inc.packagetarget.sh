@@ -14,7 +14,7 @@ CERTIFICATES="$SCRIPTS/certificates"
 alignbuild() {
   for f in $(find "$build" -name '*.apk'); do
     mv "$f" "$f.orig"
-    zipalign 4 "$f.orig" "$f"
+    zipalign -f -p 4 "$f.orig" "$f" #consider recompression with Zopfli using -z for production use
     rm "$f.orig"
   done
 }
