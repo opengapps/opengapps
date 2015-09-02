@@ -620,7 +620,7 @@ if [ -e /system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk -a 
     else
       log "Current Open GApps Package" "Unknown";
     fi;
-  elif [ -e /system/etc/g.prop ]
+  elif [ -e /system/etc/g.prop ]; then
     log "Current GApps Version" "NON Open GApps Package Currently Installed (FAILURE)";
     ui_print "* Incompatible GApps Currently Installed *";
     ui_print " ";
