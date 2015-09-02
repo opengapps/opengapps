@@ -503,10 +503,10 @@ case "$EXTRACTFILES" in
   ui_print "binary. Please update your recovery";
   ui_print "to the latest version or switch to";
   ui_print "another recovery like TWRP.";
-  ui_print "See:'$log_folder/open_gapps_log.txt'";
+  ui_print "See:'"'$log_folder/open_gapps_log.txt'"'";
   ui_print "for complete details and information.";
   ui_print " ";
-  install_note="${install_note}no_xz_message"$'\n'; # make note that there is no XZ support
+  install_note="${install_note}no_xz_message"$'"'\n'"'; # make note that there is no XZ support
   abort "$E_XZ";'>> "$build/META-INF/com/google/android/update-binary";;
 esac
 echo 'else'>> "$build/META-INF/com/google/android/update-binary"
@@ -912,7 +912,7 @@ for f in $(find /system/lib /system/lib64 -name 'libchrome*.so' 2>/dev/null); do
   obsolete_libs_list="${obsolete_libs_list}$f"$'\n';
 done;
 # Read in gapps removal list from file and append old Chrome libs
-full_removal_list=$(cat $gapps_removal_list)$'\n'"${obsolete_libs_list}";
+full_removal_list="$(cat $gapps_removal_list)"$'\n'"${obsolete_libs_list}";
 
 # Clean up and sort our lists for space calculations and installation
 set_progress 0.04;
@@ -1184,7 +1184,7 @@ done;
 
 # Create final addon.d script in system
 bkup_header="#!/sbin/sh\n# \n# /system/addon.d/70-gapps.sh\n#\n. /tmp/backuptool.functions\n\nlist_files() {\ncat <<EOF"
-bkup_list="$bkup_list"$'\n'etc/g.prop; # add g.prop to backup list
+bkup_list="$bkup_list"$'\n'"etc/g.prop"; # add g.prop to backup list
 bkup_list=$(echo "${bkup_list}" | sort -u| sed '/^$/d'); # sort list & remove duplicates and empty lines
 mkdir -p /system/addon.d;
 echo -e "$bkup_header" > /system/addon.d/70-gapps.sh;
