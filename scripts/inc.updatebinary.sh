@@ -503,7 +503,7 @@ case "$EXTRACTFILES" in
   ui_print "binary. Please update your recovery";
   ui_print "to the latest version or switch to";
   ui_print "another recovery like TWRP.";
-  ui_print "See:'"'$log_folder/open_gapps_log.txt'"'";
+  ui_print "See:'"'"'$log_folder/open_gapps_log.txt'"'"'";
   ui_print "for complete details and information.";
   ui_print " ";
   install_note="${install_note}no_xz_message"$'"'\n'"'; # make note that there is no XZ support
