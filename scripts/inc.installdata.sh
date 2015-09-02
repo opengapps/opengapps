@@ -90,7 +90,7 @@ E_XZ=10; # No XZ support
 E_TAR=11; # No TAR support
 E_ROMVER=20; # Wrong ROM version
 E_NOSPACE=70; # Insufficient Space Available in System Partition
-E_NONOPEN=40; # NON-Open GApps Currently Installed
+E_NONOPEN=40; # NON Open GApps Currently Installed
 E_ARCH=64; # Wrong Architecture Detected
 #_________________________________________________________________________________________________________________
 #                                             GApps List (Applications user can Select/Deselect)
@@ -446,7 +446,8 @@ nokeyboard_msg="NOTE: The Stock/AOSP keyboard was NOT removed as requested to en
 nolauncher_msg="NOTE: The Stock/AOSP Launcher was NOT removed as requested to ensure your device\nwas not accidentally left with no Launcher. If this was your intention, you can\nadd 'Override' to your gapps-config to override this protection.\n";
 nomms_msg="NOTE: The Stock/AOSP MMS app was NOT removed as requested to ensure your device\nwas not accidentally left with no way to receive text messages. If this WAS\nintentional, add 'Override' to your gapps-config to override this protection.\n";
 nowebview_msg="NOTE: The Stock/AOSP WebView was NOT removed as requested to ensure your device\nwas not accidentally left with no WebView installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
-non_open_gapps_msg="NOTE: The installer detected that you already have other GApps installed. The\ninstaller will now continue, but please be aware that there could be problems.";
+non_open_gapps_msg="INSTALLATION FAILURE: Open GApps can only be installed on top of an existing\nOpen GApps installation. Since you are currently using another GApps package, you\nwill need to wipe (format) your system partition before installing Open GApps.\n";
+fornexus_open_gapps_msg="NOTE: The installer detected that you already have Stock ROM GApps installed.\nThe installer will now continue, but please be aware that there could be problems.";
 rom_version_msg="INSTALLATION FAILURE: This GApps package can only be installed on a $req_android_version.x ROM.\n";
 simulation_msg="TEST INSTALL: This was only a simulated install. NO CHANGES WERE MADE TO YOUR\nDEVICE. To complete the installation remove 'Test' from your gapps-config.\n";
 system_space_msg="INSTALLATION FAILURE: Your device does not have sufficient space available in\nthe system partition to install this GApps package as currently configured.\nYou will need to switch to a smaller GApps package or use gapps-config to\nreduce the installed size.\n";

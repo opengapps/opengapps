@@ -620,25 +620,39 @@ if [ -e /system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk -a 
     else
       log "Current Open GApps Package" "Unknown";
     fi;
+  elif [ -e /system/etc/g.prop ]
+    log "Current GApps Version" "NON Open GApps Package Currently Installed (FAILURE)";
+    ui_print "* Incompatible GApps Currently Installed *";
+    ui_print " ";
+    ui_print "This Open GApps package can ONLY be installed";
+    ui_print "on top of an existing installation of Open GApps";
+    ui_print "or a clean AOSP/CyanogenMod ROM installation,";
+    ui_print "or a stock ROM that confirms to Nexus standards.";
+    ui_print "You must wipe (format) your system partition";
+    ui_print "and flash your ROM BEFORE installing Open GApps.";
+    ui_print " ";
+    ui_print "******* GApps Installation failed *******";
+    ui_print " ";
+    install_note="${install_note}non_open_gapps_msg"'"$'\n'"'; # make note that currently installed GApps are non-Open
+    abort "$E_NONOPEN";'>> "$build/META-INF/com/google/android/update-binary"
   else
-    log "Current GApps Version" "NON Open GApps Currently Installed (NOTICE)";
-    ui_print "* Other GApps Currently Installed *";
+    log "Current GApps Version" "Stock ROM GApps Currently Installed (NOTICE)";
+    ui_print "* Stock ROM GApps Currently Installed *";
     ui_print " ";
-    ui_print "The installer detected that other GApps are";
+    ui_print "The installer detected that Stock ROM GApps are";
     ui_print "already installed. If you are flashing over a";
-    ui_print "Stock ROM there is no problem, but if you are";
-    ui_print "flashing over a custom ROM, you may want to";
-    ui_print "contact the developer to request the removal of";
+    ui_print "Nexus-compatible ROM there is no problem, but if";
+    ui_print "you are flashing over a custom ROM, you may want";
+    ui_print "to contact the developer to request the removal of";
     ui_print "the included GApps. The installation will now";
-    ui_print "continue, but please be aware that any problem";
-    ui_print "that may occur depends on your ROM.";
+    ui_print "continue, but please be aware that any problems";
+    ui_print "that may occur depend on your ROM.";
     ui_print " ";
-    install_note="${install_note}non_open_gapps_msg"$'\n'; # make note that currently installed GApps are non-Open
+    install_note="${install_note}fornexus_open_gapps_msg"$'\n'; # make note that currently installed GApps are Stock ROM
   fi;
 else
   # User does NOT have a GApps package installed on their device
-  log "Current GApps Version" "NO GApps Installed";
-  log "Current Open GApps Package" "NO GApps Installed";
+  log "Current GApps Version" "No GApps Installed";
 
   # Use the opportunity of No GApps installed to check for potential ROM conflicts when deleting existing GApps files
   while read gapps_file; do
