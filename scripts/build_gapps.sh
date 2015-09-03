@@ -64,7 +64,7 @@ if [ -z "$SUPPORTEDVARIANTS" ]; then
 fi
 if [ "$FALLBACKARCH" != "arm" ]; then #For all non-arm(64) platforms
   case "$VARIANT" in
-    aroma|fornexus) echo "ERROR! Variant $VARIANT cannot be built on a non-arm platform";
+    aroma) echo "ERROR! Variant $VARIANT cannot be built on a non-arm platform";
     exit 1;;
   esac
 fi
@@ -72,7 +72,7 @@ fi
 kitkatpathshack	#kitkat has different apk and lib paths which impact installer.data
 kitkatdatahack #kitkat installs some applications on /data/ instead of /system/
 taghack #only 5.0+ supports google tag
-webviewhack #only 5.1+ supports google webview (but fornexus 5.0 does too)
+webviewhack #only 5.1+ supports google webview (Stock Google 5.0 ROMs too, but we merged stock and fornexus)
 keyboardlibhack #only 5.0+ has gestures for the aosp keyboard possible, which impact installer.data and an extra file in the package
 buildtarget
 alignbuild
