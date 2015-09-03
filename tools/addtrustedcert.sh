@@ -26,6 +26,6 @@ if [ -z "$1" ]; then
 fi
 
 unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | grep -E "$GOOGLECERT" || { echo "Certificate is not issued by Google.  Aborting." >&2; exit 1; }
-alias="$(unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | grep -E "$GOOGLECERT" | awk -F'=' '{print $NF}')"
+alias="$(unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | grep "Serial Number:" | awk -F' ' '{print $(NF-1)}')"
 unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | keytool -importcert -keystore "$CERTIFICATES/opengapps.keystore" -storepass "opengapps" -noprompt -alias "$alias"
 echo "with alias $alias"
