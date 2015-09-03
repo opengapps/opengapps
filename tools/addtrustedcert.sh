@@ -14,7 +14,9 @@
 TOP="$(realpath ../)"
 SCRIPTS="$TOP/scripts"
 CERTIFICATES="$SCRIPTS/certificates"
+GOOGLECERT="(Issuer: C=US, ST=CA, L=Mountain View, O=Google, Inc, OU=Google, Inc, CN=)|(Issuer: C=US, ST=California, L=Mountain View, O=Google Inc., OU=Android, CN=Android)"
 
+command -v keytool >/dev/null 2>&1 || { echo "openssl is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v openssl >/dev/null 2>&1 || { echo "openssl is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not installed.  Aborting." >&2; exit 1; }
 
@@ -23,4 +25,7 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | keytool -importcert -keystore "$CERTIFICATES/opengapps.keystore" -storepass opengapps -noprompt -alias googlecert
+unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | grep -E "$GOOGLECERT" || { echo "Certificate is not issued by Google.  Aborting." >&2; exit 1; }
+alias="$(unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | grep -E "$GOOGLECERT" | awk -F'=' '{print $NF}')"
+unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | keytool -importcert -keystore "$CERTIFICATES/opengapps.keystore" -storepass "opengapps" -noprompt -alias "$alias"
+echo "with alias $alias"
