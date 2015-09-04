@@ -15,7 +15,7 @@ LOWESTAPI_arm="19"
 LOWESTAPI_arm64="21"
 LOWESTAPI_x86="19"
 LOWESTAPI_x86_64="21"
-GOOGLECERT="Issuer: C=US, ST=C(A|alifornia), L=Mountain View, O=Google(|,) Inc(|.), OU=(Google, Inc|Android), CN="
+GOOGLECERT="Issuer: C=US, ST=C(A|alifornia), L=Mountain View, O=Google(|,) Inc(|.), OU=(Google(|,) Inc(|.)|Android), CN="
 
 getapkproperties(){
   apkproperties="$(aapt dump badging "$1" 2>/dev/null)"
