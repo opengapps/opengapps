@@ -14,10 +14,14 @@
 TOP="$(realpath .)"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
+CERTIFICATES="$SCRIPTS/certificates"
 . "$SCRIPTS/inc.sourceshelper.sh"
 command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v file >/dev/null 2>&1 || { echo "file is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; } #coreutils also contains the basename command
+command -v jarsigner >/dev/null 2>&1 || { echo "jarsigner is required but it's not installed.  Aborting." >&2; exit 1; }
+command -v keytool >/dev/null 2>&1 || { echo "openssl is required but it's not installed.  Aborting." >&2; exit 1; }
+command -v openssl >/dev/null 2>&1 || { echo "openssl is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not installed.  Aborting." >&2; exit 1; }
 
 installapk() {
@@ -81,6 +85,12 @@ addapk() {
 
   getarchitectures "$apk"
   echo "Native code for architecture(s): $architectures"
+
+  if ! verifyapk "$apk"; then
+    echo "ERROR: Unsigned or incomplete APKs are not allowed. APK is not imported."
+    return 1
+  fi
+
   #We manually check for each of our set of supported architectures
   #We assume NO universal packages for 32vs64 bit, so start with the 'highest' architectures first, if it matches one of those, we will NOT add it to a lower architecture
   if echo "$architectures" | grep -q "arm64"; then #no space, all arm64 types are valid

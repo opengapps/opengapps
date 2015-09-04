@@ -10,7 +10,6 @@
 #	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #	GNU General Public License for more details.
 #
-CERTIFICATES="$SCRIPTS/certificates"
 alignbuild() {
   for f in $(find "$build" -name '*.apk'); do
     mv "$f" "$f.orig"

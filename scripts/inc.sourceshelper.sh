@@ -15,6 +15,7 @@ LOWESTAPI_arm="19"
 LOWESTAPI_arm64="21"
 LOWESTAPI_x86="19"
 LOWESTAPI_x86_64="21"
+GOOGLECERT="Issuer: C=US, ST=C(A, L=Mountain View, O=Google, Inc, OU=Google, Inc, CN=|alifornia, L=Mountain View, O=Google Inc., OU=Android, CN=)"
 
 getapkproperties(){
   apkproperties="$(aapt dump badging "$1" 2>/dev/null)"
@@ -41,6 +42,7 @@ getapkproperties(){
     "com.google.android.backuptransport" |\
     "com.google.android.feedback" |\
     "com.google.android.gms" |\
+    "com.google.android.gms.leanback" |\
     "com.google.android.googlequicksearchbox" |\
     "com.google.android.gsf" |\
     "com.google.android.gsf.login" |\
@@ -82,4 +84,33 @@ getarchitectures() {
       architectures="$architectures$arch "
     done
   fi
+}
+
+verifyapk() {
+  if importcert "$1"; then #always import, because sometimes new certificates are supplied but it would never be detected because the exitcode of jarsigner -verify would be 0, because the existing certificates would suffice
+    jarsigner -verify -keystore "$CERTIFICATES/opengapps.keystore" -strict "$1" 1>/dev/null 2>&1
+  else
+    echo "ERROR: $1 has no valid Google certificate. Certificate and APK not imported"; return 1
+  fi
+  if [ ! "$?" ]; then
+    echo "ERROR: $1 contains files not signed by Google. APK not imported"; return 1
+  fi
+
+  manifestlist="$(unzip -p "$1" "META-INF/MANIFEST.MF" | sed ':a;N;$!ba;s/\r\n //g' | tr -d '\r' | grep "Name: " | awk -F' ' '{print $NF}')"
+  ziplist="$(unzip -Z -1 "$1")"
+  notinzip="$(printf "$manifestlist\n$ziplist" | grep -v -e "META-INF/CERT.RSA" -e "META-INF/CERT.SF" -e "META-INF/MANIFEST.MF" | sort | uniq -u)"
+  if [ -n "$notinzip" ]; then
+    echo "ERROR: The following files were mentioned in the signed manifest of $1 but are not present in the APK:
+$notinzip"
+    return 1
+  fi
+  echo "APK is complete, certificate is valid and signed by Google"
+}
+
+importcert() {
+  unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | grep -q -E "$GOOGLECERT" || { echo "Certificate is not issued by Google."; return 1; }
+  alias="$(unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | grep "Serial Number:" | awk -F' ' '{print $(NF-1)}')"
+  unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | keytool -importcert -keystore "$CERTIFICATES/opengapps.keystore" -storepass "opengapps" -noprompt -alias "$alias" 1>/dev/null 2>&1
+  #echo "Certificate with alias $alias is signed by Google and added to the keystore"
+  return 0
 }

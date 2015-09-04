@@ -27,6 +27,7 @@ CACHE="$TOP/cache"
 OUT="$TOP/out"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
+CERTIFICATES="$SCRIPTS/certificates"
 . "$SCRIPTS/inc.aromadata.sh"
 . "$SCRIPTS/inc.buildhelper.sh"
 . "$SCRIPTS/inc.buildtarget.sh"
@@ -39,6 +40,7 @@ SCRIPTS="$TOP/scripts"
 command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; } #coreutils also contains the basename command
 command -v java >/dev/null 2>&1 || { echo "java is required but it's not installed.  Aborting." >&2; exit 1; } #necessary to use signapk
+command -v jarsigner >/dev/null 2>&1 || { echo "jarsigner is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v md5sum >/dev/null 2>&1 || { echo "md5sum is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not installed.  Aborting." >&2; exit 1; }
 command -v zip >/dev/null 2>&1 || { echo "zip is required but it's not installed.  Aborting." >&2; exit 1; }
