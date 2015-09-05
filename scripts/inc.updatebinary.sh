@@ -293,8 +293,17 @@ which_dpi() {
       *)            dpiapkpath="unknown";;
     esac;
   done;
+  # Check if density is unknown or set to nopdi and there is not a universal package and select the package with higher density.
+  if { [ "$density" = "unknown" ] || [ "$density" = "nopdi" ]; } && [ "$dpiapkpath" = "unknown" ] && [ -n "$app_densities" ]; then
+    app_densities="$(echo "$app_densities" | sort -r)"
+    for densities in $app_densities; do
+      dpiapkpath="$1/$densities";
+      break;
+    done;
+  fi;
   # If there is no package for our density nor a universal one, we will look for the one with closer, but higher density.
   if [ "$dpiapkpath" = "unknown" ] && [ -n "$app_densities" ]; then
+    app_densities="$(echo "$app_densities" | sort)"
     for densities in $app_densities; do
       all_densities="$(echo "$densities" | sed 's/-/ /g' | tr ' ' '\n' | sort | tr '\n' ' ')";
       for d in $all_densities; do
@@ -534,8 +543,8 @@ case $density in
 esac;
 
 # Check for DPI Override in gapps-config
-if ( grep -qiE "forcedpi(120|160|213|240|280|320|400|480|560|640)" $g_conf ); then # user wants to override the DPI selection
-  density=$( grep -iEo "forcedpi(120|160|213|240|280|320|400|480|560|640)" $g_conf | tr '[:upper:]'  '[:lower:]' );
+if ( grep -qiE "forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi)" $g_conf ); then # user wants to override the DPI selection
+  density=$( grep -iEo "forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi)" $g_conf | tr '[:upper:]'  '[:lower:]' );
   density=${density#forcedpi};
 fi;
 
