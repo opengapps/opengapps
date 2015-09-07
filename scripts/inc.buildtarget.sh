@@ -46,6 +46,7 @@ newswidget
 playgames
 sheets
 slides
+street
 talkback
 wallet"
 
@@ -54,7 +55,6 @@ googleplus
 hangouts
 maps
 photos
-street
 youtube"
 
 gappsmicro="calendargoogle
