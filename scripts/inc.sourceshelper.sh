@@ -39,6 +39,8 @@ getapkproperties(){
   fi
 
   case $package in
+    "com.android.vending" |\
+    "com.android.vending.leanback" |\
     "com.google.android.backuptransport" |\
     "com.google.android.feedback" |\
     "com.google.android.gms" |\
@@ -46,9 +48,11 @@ getapkproperties(){
     "com.google.android.googlequicksearchbox" |\
     "com.google.android.gsf" |\
     "com.google.android.gsf.login" |\
+    "com.google.android.katniss.leanback" |\
     "com.google.android.onetimeinitializer" |\
     "com.google.android.partnersetup" |\
     "com.google.android.setupwizard" |\
+    "com.google.android.tungsten.setupwraith" |\
     "com.google.android.tag" |\
     "com.google.android.talk" |\
     "com.google.android.apps.walletnfcrel") type="priv-app";;
