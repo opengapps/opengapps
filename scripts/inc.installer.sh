@@ -24,10 +24,10 @@ ro.addon.open_version=$DATE
 
 makegappsremovetxt(){
   gapps_remove=""
-  if [ "$API" -ge "22" ]; then
-    get_supported_variants "super"
+  if [ "$API" -le "21" ] && [ "$GAPPSREMOVEVARIANT" = "super" ]; then
+    get_supported_variants "stock"  # On 5.0 and lower the largest package is stock instead of super for the "regular" package-type
   else
-    get_supported_variants "stock"
+    get_supported_variants "$GAPPSREMOVEVARIANT"  # Retrieve the largest package of the package-type branch
   fi
   get_gapps_list "$supported_variants"
   for gapp in $gapps_list; do
@@ -137,6 +137,7 @@ req_android_version="'"$PLATFORM"'";
 
 '"$KEYBDLIBS"'
 faceLock_lib_filename="libfacelock_jni.so";
+atvremote_lib_filename="libatv_uinputbridge.so"
 WebView_lib_filename="libwebviewchromium.so";
 
 # Buffer of extra system space to require for GApps install (9216=9MB)
@@ -1320,7 +1321,7 @@ log_close="                  ¹ Previously installed with Open GApps\n$log_close
 
 # Determine if a GApps package is installed and
 # the version, type, and whether it's an Open GApps package
-if [ -e "/system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ] && [ -e "/system/priv-app/GoogleLoginService/GoogleLoginService.apk" ]; then
+if [ -e "/system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ]; then
   openversion="$(get_prop "ro.addon.open_version")"
   if [ -n "$openversion" ]; then
     log "Current GApps Version" "$openversion"
@@ -1998,13 +1999,22 @@ for gapp_name in $gapps_list; do
 done;
 
 EOFILE
-echo '# Create FaceLock lib symlink if FaceLock was installed
+echo '# Create FaceLock lib symlink if installed
 if ( contains "$gapps_list" "faceunlock" ); then
   install -d "/system/app/FaceLock/lib/'"$ARCH"'";
   ln -sfn "/system/'"$LIBFOLDER"'/$faceLock_lib_filename" "/system/app/FaceLock/lib/'"$ARCH"'/$faceLock_lib_filename"; # create required symlink
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$faceLock_lib_filename\" \"/system/app/FaceLock/lib/'"$ARCH"'/$faceLock_lib_filename\"" $bkup_tail;
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/FaceLock/lib/'"$ARCH"'\"" $bkup_tail;
+fi;
+' >> "$build/$1"
+echo '# Create TVRemote lib symlink if installed
+if ( contains "$gapps_list" "tvremote" ); then
+  install -d "/system/app/AtvRemoteService/lib/'"$ARCH"'";
+  ln -sfn "/system/'"$LIBFOLDER"'/$atvremote_lib_filename" "/system/app/AtvRemoteService/lib/'"$ARCH"'/$atvremote_lib_filename"; # create required symlink
+  # Add same code to backup script to insure symlinks are recreated on addon.d restore
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$atvremote_lib_filename\" \"/system/app/AtvRemoteService/lib/'"$ARCH"'/$atvremote_lib_filename\"" $bkup_tail;
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/AtvRemoteService/lib/'"$ARCH"'\"" $bkup_tail;
 fi;
 ' >> "$build/$1"
 if [ "$API" -lt "23" ]; then

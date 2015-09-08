@@ -61,6 +61,7 @@ esac
 
 get_supported_variants "$VARIANT"
 SUPPORTEDVARIANTS="$supported_variants"
+GAPPSREMOVEVARIANT="$gappsremove_variant"
 
 if [ -z "$SUPPORTEDVARIANTS" ]; then
   echo "ERROR: Unknown variant! aborting..."; exit 1
@@ -76,7 +77,7 @@ if [ "$ARCH" != "arm" ] && [ "$ARCH" != "arm64" ]; then #For all non-arm(64) pla
 fi
 if [ "$API" -lt "22" ]; then
   case "$VARIANT" in
-    super)  echo "ERROR! Variant $VARIANT cannot be built on API level $API"; exit 1;;
+    super|tvstock)  echo "ERROR! Variant $VARIANT cannot be built on API level $API"; exit 1;;
   esac
 fi;
 

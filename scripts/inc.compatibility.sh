@@ -381,12 +381,21 @@ dialergoogle"
 lib64/$WebView_lib_filename
 ' #on Marshmallow the AOSP WebViewlibs must be removed, since they are embedded in the Google WebView APK; this assumes also any pre-bundled Google WebView with the ROM uses embedded libs; use single quote to not replace variable names
     webviewgappsremove=""
+
+  # On Marshmallow the regular Packageinstaller is used
+  gappstvstock="$gappstvstock
+packageinstallergoogle"
   else
     gappsmicro="$gappsmicro
 googletts"
     webviewstocklibs="" # on non-Marshmallow the WebViewlibs should not be considered part of the Stock/AOSP WebView, since they are shared with the Google WebView
     webviewgappsremove="lib/libwebviewchromium.so
 lib64/libwebviewchromium.so" #on non-Marshmallow the WebViewlibs are to be explictly included as a Google WebView file in gapps-remove.txt
+
+  # On pre-Marshmallow TV Voiceinput and TV Packageinstaller exist
+  gappstvstock="$gappstvstock
+tvpackageinstallergoogle
+tvvoiceinput"
   fi
 }
 
