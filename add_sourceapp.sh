@@ -87,9 +87,16 @@ addapk() {
   echo "Native code for architecture(s): $architectures"
 
   if ! verifyapk "$apk"; then
+    if [ -n "$notinzip" ]; then
+      echo "ERROR: The following files were mentioned in the signed manifest of $1 but are not present in the APK:
+$notinzip"
+    else
+      echo "ERROR: $1 contains files or a certificate not signed by Google. APK not imported";
+    fi
     echo "ERROR: Unsigned or incomplete APKs are not allowed. APK is not imported."
     return 1
   fi
+  echo "APK is complete, certificate is valid and signed by Google"
 
   #We manually check for each of our set of supported architectures
   #We assume NO universal packages for 32vs64 bit, so start with the 'highest' architectures first, if it matches one of those, we will NOT add it to a lower architecture
