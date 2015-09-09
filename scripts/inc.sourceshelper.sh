@@ -110,7 +110,7 @@ verifyapk() {
 
 importcert() {
   unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | grep -q -E "$GOOGLECERT" || return 1 #Certificate is not issued by Google.
-  alias="$(unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | awk -F' ' '/Serial Number:/ {print $(NF-1)}')"
+  alias="$(unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | awk -F' ' '/Serial Number:/ {if(NF==2){getline nextline;gsub(/[ \t:]/,"",nextline);print "ibase=16;",toupper(nextline)}else{print "ibase=10;",$(NF-1)}}' | bc)"
   unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | keytool -importcert -keystore "$CERTIFICATES/opengapps.keystore" -storepass "opengapps" -noprompt -alias "$alias" 1>/dev/null 2>&1
   #echo "Certificate with alias $alias is signed by Google and added to the keystore"
   return 0
