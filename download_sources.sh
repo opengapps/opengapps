@@ -1,5 +1,5 @@
 #!/bin/sh
-#This file is part of The Open GApps script of @mfonville.
+# This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -12,13 +12,9 @@
 #    GNU General Public License for more details.
 #
 command -v git >/dev/null 2>&1 || { echo "git is required but it's not installed.  Aborting." >&2; exit 1; }
-git pull --recurse-submodules 
-if [ $? -eq 1 ]; then
-	echo "ERROR during git execution, aborted!"
-	exit 1
-fi
+
 git submodule update --init --remote --rebase
-if [ $? -eq 1 ]; then
-	echo "ERROR during git execution, aborted!"
-        exit 1
+if [ $? -ne 0 ]; then
+  echo "ERROR during git execution, aborted!"
+  exit 1
 fi

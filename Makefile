@@ -13,13 +13,13 @@
 TOPDIR := .
 BUILD_SYSTEM := $(TOPDIR)/scripts
 BUILD_GAPPS := $(BUILD_SYSTEM)/build_gapps.sh
-APIS := 19 21 22
+APIS := 19 21 22 23
 PLATFORMS := arm arm64 x86 x86_64
 LOWEST_API_arm := 19
 LOWEST_API_arm64 := 21
 LOWEST_API_x86 := 19
 LOWEST_API_x86_64 := 21
-VARIANTS := stock full mini micro nano pico aroma fornexus
+VARIANTS := stock full mini micro nano pico aroma
 BUILDDIR := $(TOPDIR)/build
 CACHEDIR := $(TOPDIR)/cache
 OUTDIR := $(TOPDIR)/out
@@ -45,7 +45,7 @@ $1:
 			$(BUILD_GAPPS) $(platform) $(api) $$$$variant 2>&1 | tee $(LOG_BUILD);\
 		done;\
 	else\
-		echo "Illegal combination of Platform and API";\
+		echo "Illegal combination of Platform and API";exit 1;\
 	fi
 	@echo "--------------------------------------------------------------------";
 endef

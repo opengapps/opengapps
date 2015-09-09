@@ -1,0 +1,5 @@
+To compile xzdec for arm, fetch the source of XZ from http://tukaani.org/xz/, and execute the following commands
+./configure --host=arm-linux-androideabi --enable-static --disable-shared LDFLAGS=-static
+make LDFLAGS=-all-static
+
+xzdec is in the public domain and no license or copyright applies
