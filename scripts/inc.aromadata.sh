@@ -180,6 +180,7 @@ form(
   "0",     "Exclude",        "Choose the apps you DON'T WANT installed from the list below.",                                         "select",
 
     "gapps",     "Choose GApps which you want to add on install/exclude list",        "",                                         "group",
+      "Android Pay",     "<b>AndroidPay</b>",       "To Exclude/Include Android Pay",                      "check",
       "Books",     "<b>Books</b>",       "To Exclude/Include Google Play Books",                      "check",
       "CalendarGoogle",     "<b>CalendarGoogle </b>",       "To Exclude/Include Google Calendar",                      "check",
       "CalSync",     "<b>CalSync</b>",       "To Exclude/Include Google Calendar Sync (installed by default when Google Calendar is NOT being installed)",                      "check",
@@ -216,7 +217,6 @@ form(
       "Street",     "<b>Street</b>",       "To Exclude/Include Street View on Google Maps",                      "check",
       "TagGoogle",     "<b>TagGoogle</b>",       "To Exclude/Include Google NFC Tags",                      "check",
       "Talkback",     "<b>Talkback</b>",       "To Exclude/Include TalkBack",                      "check",
-      "Wallet",     "<b>Wallet</b>",       "To Exclude/Include Google Wallet",                      "check",
       "WebViewGoogle",     "<b>WebViewGoogle</b>",       "To Exclude/Include Google Webview",                      "check",
       "YouTube",     "<b>YouTube</b>",       "To Exclude/Include YouTube",                      "check"
 );
@@ -362,6 +362,12 @@ endif;
 
 #APPS TO INCLUDE/EXCLUDE
 appendvar("gapps", "\n\n");
+
+if
+  prop("gapps.prop", "AndroidPay")=="1"
+then
+  appendvar("gapps", "AndroidPay\n");
+endif;
 
 if
   prop("gapps.prop", "Books")=="1"
@@ -578,13 +584,6 @@ if
 then
   appendvar("gapps", "Talkback\n");
 endif;
-
-if
-  prop("gapps.prop", "Wallet")=="1"
-then
-  appendvar("gapps", "Wallet\n");
-endif;
-
 
 if
   prop("gapps.prop", "WebViewGoogle")=="1"

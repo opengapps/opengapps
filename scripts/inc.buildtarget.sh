@@ -29,7 +29,8 @@ gappsoptional=""
 gappsstock="cameragoogle
 keyboardgoogle"
 
-gappsfull="books
+gappsfull="androidpay
+books
 chrome
 cloudprint
 docs
@@ -47,8 +48,7 @@ playgames
 sheets
 slides
 street
-talkback
-wallet"
+talkback"
 
 gappsmini="clockgoogle
 googleplus
@@ -146,6 +146,9 @@ get_package_info(){
     setupwizard)              packagetype="Core"; packagename="com.google.android.setupwizard"; packagetarget="priv-app/SetupWizard";;
     vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
 
+    androidpay)     if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
+                      packagetype="GApps";packagename="com.google.android.apps.walletnfcrel"; packagetarget="priv-app/Wallet"
+                    fi;;
     books)          packagetype="GApps";packagename="com.google.android.apps.books"; packagetarget="app/Books";;
     calendargoogle) packagetype="GApps";packagename="com.google.android.calendar"; packagetarget="app/CalendarGooglePrebuilt";;
     calsync)        packagetype="GApps";packagename="com.google.android.syncadapters.calendar"; packagetarget="app/GoogleCalendarSyncAdapter";;
@@ -196,9 +199,6 @@ get_package_info(){
     street)         packagetype="GApps";packagename="com.google.android.street"; packagetarget="app/Street";;
     talkback)       packagetype="GApps";packagename="com.google.android.marvin.talkback"; packagetarget="app/talkback";;
     taggoogle)      packagetype="GApps";packagename="com.google.android.tag"; packagetarget="priv-app/TagGoogle";;
-    wallet)         if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
-                      packagetype="GApps";packagename="com.google.android.apps.walletnfcrel"; packagetarget="priv-app/Wallet"
-                    fi;;
     webviewgoogle)  packagetype="GApps";packagename="com.google.android.webview"; packagetarget="app/WebViewGoogle";;
     youtube)        packagetype="GApps";packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
 
