@@ -218,6 +218,7 @@ priv-app/CMUpdater'"$REMOVALSUFFIX"'
 
 cmsetupwizard_list="
 app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
+priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
 ";
 
 cmwallpapers_list="
