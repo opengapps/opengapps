@@ -347,14 +347,17 @@ ui_print '##############################';
 ui_print " ";
 ui_print "$installer_name$gapps_version";
 ui_print " ";
-ui_print "- Mounting /system, /data, /cache, /persist";
+ui_print "- Mounting /system, /cache, /data, /persist";
 ui_print " ";
 set_progress 0.01;
-busybox mount /system;
-busybox mount /data;
-busybox mount /cache;
-busybox mount /persist;
-busybox mount -o rw,remount /system;
+mount /system;
+mount /cache;
+mount /data;
+mount /persist;
+mount -o rw,remount /system;
+mount -o rw,remount /system /system;
+mount -o rw,remount /;
+mount -o rw,remount / /;
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
 # Get device name any which way we can
