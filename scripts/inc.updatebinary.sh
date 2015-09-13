@@ -272,10 +272,6 @@ sys_app() {
   return 1;
 }
 
-is_in_system() {
-  { [ -n "$(find /system/app -name "$1.apk" 2>/dev/null)" ] || [ -n "$(find /system/priv-app -name "$1.apk" 2>/dev/null)" ]; };
-}
-
 ui_print() {
   echo "ui_print $1" > "$OUTFD";
   echo "ui_print" > "$OUTFD";
