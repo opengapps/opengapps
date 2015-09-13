@@ -60,10 +60,10 @@ youtube"
 gappsmicro="calendargoogle
 exchangegoogle
 facedetect
+faceunlock
 gmail
 googlenow
-googletts
-faceunlock"
+googletts"
 
 gappsnano="search
 speech"
