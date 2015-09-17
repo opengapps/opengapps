@@ -360,6 +360,22 @@ mount -o rw,remount /;
 mount -o rw,remount / /;
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
+# Check if build.prop is not compressed and thus unprocessable
+if [ "$(head -c6 "$b_prop")" = "zzzz" ]; then
+  ui_print "*** Recovery does not support transparent compression ***";
+  ui_print " ";
+  ui_print "Your ROM uses transparent compression, but your recovery";
+  ui_print "does not support this feature, resulting in corrupt files.";
+  ui_print " ";
+  ui_print "BEFORE INSTALLING ANYTHING ANYMORE YOU SHOULD UPDATE YOUR";
+  ui_print "RECOVERY AS SOON AS POSSIBLE, TO PREVENT FILE CORRUPTION.";
+  ui_print " ";
+  ui_print "******* GApps Installation failed *******";
+  ui_print " ";
+  install_note="${install_note}recovery_compression_msg"$'\n'; # make note that recovery does not support transparent compression
+  abort "$E_RECCOMPR";
+fi
+
 # Get device name any which way we can
 for field in ro.product.device ro.build.product ro.product.name; do
   for file in $b_prop /default.prop; do
