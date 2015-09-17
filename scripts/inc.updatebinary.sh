@@ -361,7 +361,7 @@ mount -o rw,remount / /;
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
 # Check if build.prop is not compressed and thus unprocessable
-if [ "$(head -c6 "$b_prop")" = "zzzz" ]; then
+if [ "$(head -c4 "$b_prop")" = "zzzz" ]; then
   ui_print "*** Recovery does not support transparent compression ***";
   ui_print " ";
   ui_print "Your ROM uses transparent compression, but your recovery";
