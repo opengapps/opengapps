@@ -541,6 +541,18 @@ else
 fi
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 fi;
+# Check for the -f - tar support
+if [ -z "$(tar --help 2>&1 | grep -e "f.*stdin")" ]; then
+  ui_print "Your recovery does not support stdin";
+  ui_print "for the tar binary. Please update your";
+  ui_print "recovery to the latest version or";
+  ui_print "switch to another recovery like TWRP.";
+  ui_print "See:'"'"'$log_folder/open_gapps_log.txt'"'"'";
+  ui_print "for complete details and information.";
+  ui_print " ";
+  install_note="${install_note}no_stdin_message"$'"'\n'"'; # make note that there is no stdin tar support
+  abort "$E_STDIN";
+fi;
 
 # Get display density using getprop from Recovery
 density=$(getprop ro.sf.lcd_density);

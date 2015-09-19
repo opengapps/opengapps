@@ -88,6 +88,7 @@ removal_bypass_list="'"$REMOVALBYPASS"'
 # Define exit codes (returned upon exit due to an error)
 E_XZ=10; # No XZ support
 E_TAR=11; # No TAR support
+E_STDIN=12; # No TAR stdin support
 E_ROMVER=20; # Wrong ROM version
 E_RECCOMPR=30; # Recovery without transparent compression
 E_NOSPACE=70; # Insufficient Space Available in System Partition
@@ -450,7 +451,7 @@ nomms_msg="NOTE: The Stock/AOSP MMS app was NOT removed as requested to ensure y
 nowebview_msg="NOTE: The Stock/AOSP WebView was NOT removed as requested to ensure your device\nwas not accidentally left with no WebView installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
 non_open_gapps_msg="INSTALLATION FAILURE: Open GApps can only be installed on top of an existing\nOpen GApps installation. Since you are currently using another GApps package, you\nwill need to wipe (format) your system partition before installing Open GApps.\n";
 fornexus_open_gapps_msg="NOTE: The installer detected that you already have Stock ROM GApps installed.\nThe installer will now continue, but please be aware that there could be problems.\n";
-recovery_compression_msg="INSTALLATION FAILURE: Your ROM uses transparent compression, but your recovery\does not support this feature, resulting in corrupt files.\n Please update your recovery before flashing ANY package to prevent corruption.\n";
+recovery_compression_msg="INSTALLATION FAILURE: Your ROM uses transparent compression, but your recovery\ndoes not support this feature, resulting in corrupt files.\nPlease update your recovery before flashing ANY package to prevent corruption.\n";
 rom_version_msg="INSTALLATION FAILURE: This GApps package can only be installed on a $req_android_version.x ROM.\n";
 simulation_msg="TEST INSTALL: This was only a simulated install. NO CHANGES WERE MADE TO YOUR\nDEVICE. To complete the installation remove 'Test' from your gapps-config.\n";
 system_space_msg="INSTALLATION FAILURE: Your device does not have sufficient space available in\nthe system partition to install this GApps package as currently configured.\nYou will need to switch to a smaller GApps package or use gapps-config to\nreduce the installed size.\n";
@@ -459,6 +460,7 @@ user_notfound_msg="NOTE: All User Application Removals included in gapps-config 
 del_conflict_msg="!!! WARNING !!! - Duplicate files were found between your ROM and this GApps\npackage. This is likely due to your ROM's dev including Google proprietary\nfiles in the ROM. The duplicate files are shown in the log portion below.\n";
 no_tar_message="INSTALLATION FAILURE: The installer detected that your recovery does not support\ntar extraction. Please update your recovery or switch to another one like TWRP."
 no_xz_message="INSTALLATION FAILURE: The installer detected that your recovery does not support\nXZ decompression. Please update your recovery or switch to another one like TWRP."
+no_stdin_message="INSTALLATION FAILURE: The installer detected that your recovery\ndoes not support stdin for the tar binary. Please update your recovery\nor switch to another one like TWRP."
 EOFILE
   EXTRACTFILES="$EXTRACTFILES installer.data"
 }
