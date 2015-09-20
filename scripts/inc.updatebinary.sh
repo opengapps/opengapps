@@ -89,7 +89,7 @@ contains() {
 }
 
 clean_inst() {
-  if [ -f /data/system/packages.xml ]; then
+  if [ -f /data/system/packages.xml ] && [ "$forceclean" != "true" ]; then
     return 1;
   fi;
   return 0;
@@ -575,6 +575,20 @@ if ( grep -qiE "forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi)" $g_conf
   density=${density#forcedpi};
 fi;
 
+# Check for Clean Override in gapps-config
+if ( grep -qiE "^forceclean$" $g_conf ); then # true or false to override the default selection
+  forceclean="true"
+else
+  forceclean="false"
+fi;
+
+# Check for keybdlib Override in gapps-config
+if ( grep -qiE "^skipkeybdlib$" $g_conf ); then # true or false to override the default selection
+  skipkeybdlib="true"
+else
+  skipkeybdlib="false"
+fi;
+
 # Set density to unknown if it's still empty
 test -z "$density" && density=unknown;
 
@@ -982,13 +996,19 @@ for gapp_name in $core_gapps_list; do
   get_appsize "Core/$gapp_name";
   core_size=$((core_size + appsize));
 done;
-unzip -o "$ZIP" "Optional/keybd_lib.tar.xz" -d /tmp;
-keybd_lib_size=$(tar -tvJf "/tmp/Optional/keybd_lib.tar.xz" "keybd_lib" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
-rm -f "/tmp/Optional/keybd_lib.tar.xz";
 
-# Determine final size of Core Apps
+# Add Keyboard Lib size to core, if it exists
 if ( ! contains "$gapps_list" "keyboardgoogle" ); then
+  unzip -o "$ZIP" "Optional/keybd_lib.tar.xz" -d /tmp;
+  keybd_lib_size=$(tar -tvJf "/tmp/Optional/keybd_lib.tar.xz" "keybd_lib" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
+  rm -f "/tmp/Optional/keybd_lib.tar.xz";
   core_size=$((core_size + keybd_lib_size)); # Add Keyboard Lib size to core, if it exists
+fi
+
+# Do not touch AOSP keyboard if it's neither removed or replaced by Google's one
+if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! contains "$gapps_removal_list" "keyboardstock" ) && [ "$skipkeybdlib" = "true" ]; then
+  reqd_list=$(echo "${reqd_list}" | grep -v "latinime.so");
+  remove_list=$(echo "${remove_list}" | grep -v "latinime.so");
 fi
 
 # Read and save system partition size details
