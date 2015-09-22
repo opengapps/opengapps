@@ -85,7 +85,7 @@ buildapp(){
       if [ -z "$baseversionname" ]; then
         baseversionname=$versionname
         buildlib "$dpivariant" "$liblocation" #Use the libs from this baseversion
-        printf "%44s %22s" "$package" "$baseversionname"
+        printf "%44s %27s" "$package" "$baseversionname"
       fi
       if [ "$versionname" = "$baseversionname" ]; then
         density=$(basename "$(dirname "$dpivariant")")
