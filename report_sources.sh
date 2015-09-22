@@ -75,7 +75,7 @@ elif [ "$buildarch" = x86_64 ]; then
   fallbackarch="x86"
 fi
 
-result="$(printf "%45s|%6s|%3s|%15s|%22s|%10s|%4s" "Application Name" "Arch." "SDK" "DPI" "Version Name" "Version" "Sig.")
+result="$(printf "%45s|%6s|%3s|%15s|%27s|%10s|%4s" "Application Name" "Arch." "SDK" "DPI" "Version Name" "Version" "Sig.")
 ---------------------------------------------------------------------------------------------------------------"
 allapps="$(find "$SOURCES/" -iname "*.apk" | awk -F '/' '{print $(NF-3)}' | sort | uniq)"
 for appname in $allapps;do
@@ -110,7 +110,7 @@ for appname in $allapps;do
             signed="skip"
           fi
           result="$result
-$(printf "%45s|%6s|%3s|%15s|%22s|%10s|%4s" "$appname" "$arch" "$sdk" "$dpi" "$appversionname" "$appversion" "$signed")"
+$(printf "%45s|%6s|%3s|%15s|%27s|%10s|%4s" "$appname" "$arch" "$sdk" "$dpi" "$appversionname" "$appversion" "$signed")"
         done
         if [ -n "$buildarch" ]; then
           break 2 #when selecting for the build of a specified architeture and sdk, only one architecture result is enough
