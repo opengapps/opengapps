@@ -31,6 +31,8 @@ SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 CERTIFICATES="$SCRIPTS/certificates"
 : ${THREADS:="$(($(cat /proc/cpuinfo | grep "^processor" | wc -l) / 4 * 3))"}
+: ${MEMORY:="$(($(grep "MemAvailable:" /proc/meminfo | awk '{print $2}') / 4))"}
+: ${MEMORY_MIN:=800000} # Minimum of RAM required (for single thread) on x86_64 machine [~701MB for xz, 2*25KB for bash and some spare]
 . "$SCRIPTS/inc.aromadata.sh"
 . "$SCRIPTS/inc.buildhelper.sh"
 . "$SCRIPTS/inc.buildtarget.sh"
