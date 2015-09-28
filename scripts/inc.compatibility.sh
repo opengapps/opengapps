@@ -27,7 +27,8 @@ keyboardlibhack(){ #only on lollipop and higher
 /system/app/LatinIME/lib/$ARCH/libjni_latinimegoogle.so"
     KEYBDLIBS='keybd_lib_filename1="libjni_latinimegoogle.so";
 keybd_lib_filename2="libjni_latinime.so";'
-    KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ); then
+    # Do not touch AOSP keyboard if it's neither removed or replaced by Google's one
+    KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! contains "$gapps_removal_list" "keyboardstock" ) && [ "$skipkeybdlib" = "false" ]; then
     extract_app "Optional/keybdlib";
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/'"$LIBFOLDER"'/$keybd_lib_filename2"; # create required symlink
     mkdir -p "/system/app/LatinIME/lib/'"$ARCH"'";
