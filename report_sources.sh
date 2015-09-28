@@ -11,16 +11,17 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
-command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; } #coreutils also contains the basename and realpath command
-command -v jarsigner >/dev/null 2>&1 || { echo "jarsigner is required but it's not installed.  Aborting." >&2; exit 1; } #part of JDK
-command -v md5sum >/dev/null 2>&1 || { echo "md5sum is required but it's not installed.  Aborting." >&2; exit 1; }
 
+command -v realpath >/dev/null 2>&1 || { echo "realpath is required but it's not installed, aborting." >&2; exit 1; }
 TOP="$(realpath .)"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 CERTIFICATES="$SCRIPTS/certificates"
 . "$SCRIPTS/inc.sourceshelper.sh"
+. "$SCRIPTS/inc.tools.sh"
+
+# Check tools
+checktools aapt coreutils jarsigner
 
 argument(){
   case $1 in

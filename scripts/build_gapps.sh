@@ -17,6 +17,8 @@ if { [ "$1" != "arm" ] && [ "$1" != "arm64" ] && [ "$1" != "x86" ] && [ "$1" != 
   echo "Usage: $0 (arm|arm64|x86|x86_64) API_LEVEL"
   exit 1
 fi
+
+command -v realpath >/dev/null 2>&1 || { echo "realpath is required but it's not installed, aborting." >&2; exit 1; }
 DATE=$(date +"%Y%m%d")
 TOP="$(realpath .)"
 ARCH="$1"
@@ -28,6 +30,7 @@ OUT="$TOP/out"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 CERTIFICATES="$SCRIPTS/certificates"
+: ${THREADS:="$(($(cat /proc/cpuinfo | grep "^processor" | wc -l) / 4 * 3))"}
 . "$SCRIPTS/inc.aromadata.sh"
 . "$SCRIPTS/inc.buildhelper.sh"
 . "$SCRIPTS/inc.buildtarget.sh"
@@ -35,19 +38,10 @@ CERTIFICATES="$SCRIPTS/certificates"
 . "$SCRIPTS/inc.installdata.sh"
 . "$SCRIPTS/inc.packagetarget.sh"
 . "$SCRIPTS/inc.updatebinary.sh"
+. "$SCRIPTS/inc.tools.sh"
 
-#####---------CHECK FOR EXISTANCE OF SOME BINARIES---------
-command -v aapt >/dev/null 2>&1 || { echo "aapt is required but it's not installed.  Aborting." >&2; exit 1; }
-command -v install >/dev/null 2>&1 || { echo "coreutils is required but it's not installed.  Aborting." >&2; exit 1; } #coreutils also contains the basename command
-command -v java >/dev/null 2>&1 || { echo "java is required but it's not installed.  Aborting." >&2; exit 1; } #necessary to use signapk
-command -v jarsigner >/dev/null 2>&1 || { echo "jarsigner is required but it's not installed.  Aborting." >&2; exit 1; } #part of JDK
-command -v md5sum >/dev/null 2>&1 || { echo "md5sum is required but it's not installed.  Aborting." >&2; exit 1; }
-command -v unzip >/dev/null 2>&1 || { echo "unzip is required but it's not installed.  Aborting." >&2; exit 1; }
-command -v zip >/dev/null 2>&1 || { echo "zip is required but it's not installed.  Aborting." >&2; exit 1; }
-command -v zipalign >/dev/null 2>&1 || { echo "zipalign is required but it's not installed.  Aborting." >&2; exit 1; }
-zipalign 2>&1 | grep -q "page align stored shared object files" || { echo "zipalign is outdated. Install a recent version from the Android SDK.  Aborting." >&2; exit 1; }
-command -v tar >/dev/null 2>&1 || { echo "tar is required but it's not installed.  Aborting." >&2; exit 1; }
-command -v xz >/dev/null 2>&1 || { echo "xz is required but it's not installed.  Aborting." >&2; exit 1; }
+# Check tools
+checktools aapt coreutils java jarsigner unzip zip tar xz realpath zipalign
 
 case "$API" in
   19) PLATFORM="4.4";;
