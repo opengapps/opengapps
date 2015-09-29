@@ -41,6 +41,10 @@ getapkproperties(){
   case $package in
     "com.android.vending" |\
     "com.android.vending.leanback" |\
+    "com.google.android.apps.mediashell.leanback" |\
+    "com.google.android.apps.walletnfcrel" |\
+    "com.google.android.athome.remotecontrol" |\
+    "com.google.android.atv.customization" |\
     "com.google.android.backuptransport" |\
     "com.google.android.feedback" |\
     "com.google.android.gms" |\
@@ -49,13 +53,18 @@ getapkproperties(){
     "com.google.android.gsf" |\
     "com.google.android.gsf.login" |\
     "com.google.android.katniss.leanback" |\
+    "com.google.android.leanbacklauncher" |\
     "com.google.android.onetimeinitializer" |\
     "com.google.android.partnersetup" |\
     "com.google.android.setupwizard" |\
     "com.google.android.tungsten.setupwraith" |\
     "com.google.android.tag" |\
     "com.google.android.talk" |\
-    "com.google.android.apps.walletnfcrel") type="priv-app";;
+    "com.google.android.tungsten.overscan" |\
+    "com.google.android.tungsten.setupwraith" |\
+    "com.google.android.tv.leanback" |\
+    "com.google.android.tv.remote" |\
+    "com.google.android.tv.remotepairing") type="priv-app";;
     *) type="app";;
   esac
 
