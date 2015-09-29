@@ -77,15 +77,20 @@ launcher
 mms
 picotts"
 
-# Static definitions, libraries and fallbacks per architecture
 case "$ARCH" in
-  arm64)  LIBFOLDER="lib64"
-        FALLBACKARCH="arm";;
-  x86_64) LIBFOLDER="lib64"
-          FALLBACKARCH="x86";;
-  *)      LIBFOLDER="lib"
-          FALLBACKARCH="$ARCH";;
+  arm64|x86_64)  LIBFOLDER="lib64";;
+  *)             LIBFOLDER="lib";;
 esac
+
+get_fallback_arch(){
+  case "$1" in
+    arm)    fallback_arch="all";;
+    arm64)  fallback_arch="arm";;
+    x86)    fallback_arch="arm";; #by using libhoudini
+    x86_64) fallback_arch="x86";; #e.g. chain: x86_64->x86->arm->all
+    *)      fallback_arch="$1";; #return original arch if no fallback available
+  esac
+}
 
 get_supported_variants(){
   case "$1" in
@@ -146,33 +151,27 @@ get_package_info(){
     setupwizard)              packagetype="Core"; packagename="com.google.android.setupwizard"; packagetarget="priv-app/SetupWizard";;
     vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
 
-    androidpay)     if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
-                      packagetype="GApps";packagename="com.google.android.apps.walletnfcrel"; packagetarget="app/Wallet"
-                    fi;;
+    androidpay)     packagetype="GApps";packagename="com.google.android.apps.walletnfcrel"; packagetarget="app/Wallet";;
     books)          packagetype="GApps";packagename="com.google.android.apps.books"; packagetarget="app/Books";;
     calendargoogle) packagetype="GApps";packagename="com.google.android.calendar"; packagetarget="app/CalendarGooglePrebuilt";;
     calsync)        packagetype="GApps";packagename="com.google.android.syncadapters.calendar"; packagetarget="app/GoogleCalendarSyncAdapter";;
-    cameragoogle)   if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
-                      packagetype="GApps";packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera"
-                    fi;;
+    cameragoogle)   packagetype="GApps";packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera";;
     chrome)         packagetype="GApps";packagename="com.android.chrome"; packagetarget="app/Chrome";;
     clockgoogle)    packagetype="GApps";packagename="com.google.android.deskclock"; packagetarget="app/PrebuiltDeskClockGoogle";;
     cloudprint)     packagetype="GApps";packagename="com.google.android.apps.cloudprint"; packagetarget="app/CloudPrint2";;
     docs)           packagetype="GApps";packagename="com.google.android.apps.docs.editors.docs"; packagetarget="app/EditorsDocs";;
     drive)          packagetype="GApps";packagename="com.google.android.apps.docs"; packagetarget="app/Drive";;
-    ears)           if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
-                      packagetype="GApps";packagename="com.google.android.ears"; packagetarget="app/GoogleEars"
-                    fi;;
+    ears)           packagetype="GApps";packagename="com.google.android.ears"; packagetarget="app/GoogleEars";;
     earth)          packagetype="GApps";packagename="com.google.earth"; packagetarget="app/GoogleEarth";;
     exchangegoogle) packagetype="GApps";packagename="com.google.android.gm.exchange"; packagetarget="app/PrebuiltExchange3Google";;
     facedetect)     packagetype="GApps"; packagefiles="$LIBFOLDER/libfilterpack_facedetect.so"
-                    if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64 bit, we also need the 32 bit file
+                    if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib
                       packagefiles="$packagefiles lib/libfilterpack_facedetect.so";
                     fi;;
-    faceunlock)     if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
+    faceunlock)     if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then #both arm and arm64
                       packagetype="GApps";packagename="com.android.facelock"; packagetarget="app/FaceLock";
                       packagetype="GApps";packagefiles="vendor/pittpatt/ $LIBFOLDER/libfacelock_jni.so vendor/$LIBFOLDER/libfrsdk.so"
-                      if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64 bit, we also need the 32 bit file
+                      if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib
                         packagefiles="$packagefiles vendor/lib/libfrsdk.so";
                       fi
                     fi;;

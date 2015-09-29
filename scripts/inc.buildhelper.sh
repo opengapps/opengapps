@@ -31,33 +31,28 @@ copy() {
 }
 
 buildfile() {
-  if [ -z "$3" ]; then SOURCEARCH="$ARCH"
-  else SOURCEARCH="$3"; fi #allows for an override
+  if [ -z "$3" ]; then usearch="$ARCH"
+  else usearch="$3"; fi #allows for an override
 
-  if [ -e "$SOURCES/$SOURCEARCH/$2" ]; then #check if directory or file exists
-    if [ -d "$SOURCES/$SOURCEARCH/$2" ]; then #if we are handling a directory
+  if [ -e "$SOURCES/$usearch/$2" ]; then #check if directory or file exists
+    if [ -d "$SOURCES/$usearch/$2" ]; then #if we are handling a directory
       targetdir="$build/$1/$2"
     else
       targetdir="$build/$1/$(dirname "$2")"
     fi
-    if [ "$SOURCEARCH" = "$FALLBACKARCH" ] && [ "$SOURCEARCH" != "$ARCH" ]; then
-      echo "INFO: Falling back from $ARCH to $FALLBACKARCH for file $2"
+    if [ "$usearch" != "$ARCH" ]; then
+      echo "INFO: Falling back from $ARCH to $usearch for file $2"
     fi
     install -d "$targetdir"
-    copy "$SOURCES/$SOURCEARCH/$2" "$targetdir" #if we have a file specific to this architecture
-  elif [ "$SOURCEARCH" != "$FALLBACKARCH" ]; then #We prefer falling back to the other architecture before trying 'all'
-      buildfile "$1" "$2" "$FALLBACKARCH"
-  elif [ -e "$SOURCES/all/$2" ]; then
-    if [ -d "$SOURCES/all/$2" ]; then #if we are handling a directory
-      targetdir="$build/$1/$2"
-    else
-      targetdir="$build/$1/$(dirname "$2")"
-    fi
-    install -d "$targetdir"
-    copy "$SOURCES/all/$2" "$targetdir" #use architecure independent file
+    copy "$SOURCES/$usearch/$2" "$targetdir" #if we have a file specific to this architecture
   else
-    echo "ERROR: No fallback available. Failed to build file $2 on $ARCH"
-    exit 1
+    get_fallback_arch "$usearch"
+    if [ "$usearch" != "$fallback_arch" ]; then
+      buildfile "$1" "$2" "$fallback_arch"
+    else
+      echo "ERROR: No fallback available. Failed to build file $2"
+      exit 1
+    fi
   fi
 }
 
@@ -65,10 +60,10 @@ buildapp(){
   package="$1"
   ziplocation="$2"
   targetlocation="$3"
-  if [ -z "$4" ]; then SOURCEARCH="$ARCH"
-  else SOURCEARCH="$4"; fi #allows for an override
+  if [ -z "$4" ]; then usearch="$ARCH"
+  else usearch="$4"; fi #allows for an override
 
-  if getsourceforapi "$package"
+  if getsourceforapi "$package" "$usearch"
   then
     baseversionname=""
     for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
@@ -84,8 +79,8 @@ buildapp(){
 
       if [ -z "$baseversionname" ]; then
         baseversionname=$versionname
-        buildlib "$dpivariant" "$liblocation" #Use the libs from this baseversion
-        printf "%44s %27s" "$package" "$baseversionname"
+        buildlib "$dpivariant" "$liblocation" "$usearch" #Use the libs from this baseversion
+        printf "%44s %6s %27s" "$package" "$usearch" "$baseversionname"
       fi
       if [ "$versionname" = "$baseversionname" ]; then
         density=$(basename "$(dirname "$dpivariant")")
@@ -96,36 +91,23 @@ buildapp(){
     done
     printf "\n"
   else
-    if [ "$SOURCEARCH" != "$FALLBACKARCH" ]; then
-      echo "WARNING: Falling back from $ARCH to $FALLBACKARCH for package $package"
-      buildapp "$package" "$ziplocation" "$targetlocation" "$FALLBACKARCH"
+    get_fallback_arch "$usearch"
+    if [ "$usearch" != "$fallback_arch" ]; then
+      buildapp "$package" "$ziplocation" "$targetlocation" "$fallback_arch"
     else
-      echo "ERROR: No fallback available. Failed to build package $package on $ARCH"
+      echo "ERROR: No fallback available. Failed to build package $package"
       exit 1
     fi
   fi
 }
 getsourceforapi() {
-  appname="$1"
-  #loop over all source-instances and find the highest available acceptable api level
-  sourcearch=""
-  sourceall=""
-  sourceapks=""
-  if stat --printf='' "$SOURCES/$SOURCEARCH/"*"app/$appname" 2>/dev/null; then
-    sourcearch="find $SOURCES/$SOURCEARCH/*app/$appname -iname '*.apk'"
-    sourceall=" & " #glue
-  fi
-  if stat --printf='' "$SOURCES/all/"*"app/$appname" 2>/dev/null; then
-    sourceall="${sourceall}find $SOURCES/all/*app/$appname -iname '*.apk'"
-  else
-    sourceall="" #undo glue
-  fi
-  if [ -z "$sourcearch" ] && [ -z "$sourceall" ]; then
+  #this functions finds the highest available acceptable api level for the given architeture
+  if ! stat --printf='' "$SOURCES/$2/"*"app/$1" 2>/dev/null; then
     return 1 #appname is not there, error!?
   fi
 
   #sed copies filename to the beginning, to compare version, and later we remove it with cut
-  for foundapk in $(eval "$sourcearch$sourceall" | sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2- | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
+  for foundapk in $(find $SOURCES/$2/*app/$1 -iname '*.apk' | sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2- | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
     foundpath="$(dirname "$(dirname "$(echo "$foundapk" | tr '' ' ')")")" #and we place the spaces back again
     api="$(basename "$foundpath")"
     if [ "$api" -le "$API" ]; then
@@ -135,7 +117,7 @@ getsourceforapi() {
     fi
   done
   if [ -z "$sourceapks" ]; then
-    echo "WARNING: No APK found compatible with API level $API for package $appname on $SOURCEARCH, lowest found: $api"
+    echo "WARNING: No APK found compatible with API level $API for package $appname on $2, lowest found: $api"
     return 1 #error
   fi
   #$sourceapks has the useful returnvalue
@@ -161,32 +143,34 @@ buildapk() {
 buildlib() {
   sourceapk="$1"
   targetdir="$build/$2"
+  apkarch="$3"
   libsearchpath="lib/*" #default that should never happen: all libs
-  if [ "$SOURCEARCH" = "arm" ]; then
+  if [ "$apkarch" = "arm" ]; then
     libsearchpath="lib/armeabi*/*" #mind the wildcard
     libfallbacksearchpath=""
-  elif [ "$SOURCEARCH" = "arm64" ]; then
+  elif [ "$apkarch" = "arm64" ]; then
     libsearchpath="lib/arm64*/*" #mind the wildcard
     libfallbacksearchpath="lib/armeabi*/*" #mind the wildcard
-  elif [ "$SOURCEARCH" = "x86" ]; then
+  elif [ "$apkarch" = "x86" ]; then
     libsearchpath="lib/x86/*"
     libfallbacksearchpath=""
-  elif [ "$SOURCEARCH" = "x86_64" ]; then
+  elif [ "$apkarch" = "x86_64" ]; then
     libsearchpath="lib/x86_64/*"
     libfallbacksearchpath="lib/x86/*"
-  elif [ "$SOURCEARCH" = "mips" ]; then
+  elif [ "$apkarch" = "mips" ]; then
     libsearchpath="lib/mips/*"
     libfallbacksearchpath=""
-  elif [ "$SOURCEARCH" = "mips64" ]; then
+  elif [ "$apkarch" = "mips64" ]; then
     libsearchpath="lib/mips64/*"
     libfallbacksearchpath="lib/mips/*"
   fi
+  get_fallback_arch "$apkarch"
   if [ "$(basename "$targetdir")" = "common" ]; then	#if we are installing systemwide libs
     libpath="$LIBFOLDER"
     fallbacklibpath="lib"
-  else							#Lollipop-style libs bundled in the APK's folder
-    libpath="lib/$SOURCEARCH"
-    fallbacklibpath="lib/$FALLBACKARCH"
+  else #Lollipop-style libs bundled in the APK's folder
+    libpath="lib/$apkarch"
+    fallbacklibpath="lib/$fallback_arch" #notice that this sometimes gives 'illegal' paths like 'lib/all', but the path is not used in those situations
   fi
   if [ "$API" -lt "23" ]; then #libextraction is only necessary on pre-Marshmallow
     if [ -n "$(unzip -Z -1 "$sourceapk" "$libsearchpath" 2>/dev/null)" ]
@@ -194,7 +178,7 @@ buildlib() {
       install -d "$targetdir/$libpath"
       unzip -qq -j -o "$sourceapk" "$libsearchpath" -x "lib/*/crazy.*" -d "$targetdir/$libpath" 2>/dev/null
     fi
-    if [ "$SOURCEARCH" != "$FALLBACKARCH" ] && [ -n "$(unzip -Z -1 "$sourceapk" "$libfallbacksearchpath" 2>/dev/null)" ]
+    if [ "$apkarch" != "$fallback_arch" ] && [ -n "$(unzip -Z -1 "$sourceapk" "$libfallbacksearchpath" 2>/dev/null)" ]
     then
       install -d "$targetdir/$fallbacklibpath"
       unzip -qq -j -o "$sourceapk" "$libfallbacksearchpath" -x "lib/*/crazy.*" -d "$targetdir/$fallbacklibpath" 2>/dev/null

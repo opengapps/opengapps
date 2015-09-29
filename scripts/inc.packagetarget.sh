@@ -55,7 +55,7 @@ aromaupdatebinary() {
 }
 
 bundlexz() {
-  if [ "$FALLBACKARCH" = "arm" ]; then #For all arm-based platforms we can include our own xz-decompression binary
+  if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then #For all arm-based platforms we can include our own xz-decompression binary
     copy "$SCRIPTS/xz-resources/xzdec-arm" "$build/xzdec"
     EXTRACTFILES="$EXTRACTFILES xzdec"
   fi
