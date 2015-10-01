@@ -172,6 +172,7 @@ vendor/bundled-app/Boxer'"$REMOVALSUFFIX"'
 
 browser_list="
 app/Browser'"$REMOVALSUFFIX"'
+app/BrowserProviderProxy'"$REMOVALSUFFIX"'
 ";
 
 basicdreams_list="
@@ -368,7 +369,6 @@ app/WhisperPush'"$REMOVALSUFFIX"'
 #                                             Permanently Removed Folders
 # Pieces that may be left over from AIO ROMs that can/will interfere with these GApps
 other_list="
-/system/app/BrowserProviderProxy'"$REMOVALSUFFIX"'
 /system/app/CalendarGoogle'"$REMOVALSUFFIX"'
 /system/app/CloudPrint'"$REMOVALSUFFIX"'
 /system/app/EditorsDocsStub'"$REMOVALSUFFIX"'
