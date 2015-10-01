@@ -53,7 +53,7 @@ getapkproperties(){
     "com.google.android.gsf" |\
     "com.google.android.gsf.login" |\
     "com.google.android.katniss.leanback" |\
-    "com.google.android.leanbacklauncher" |\
+    "com.google.android.leanbacklauncher.leanback" |\
     "com.google.android.onetimeinitializer" |\
     "com.google.android.partnersetup" |\
     "com.google.android.setupwizard" |\
