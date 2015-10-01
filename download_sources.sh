@@ -30,6 +30,7 @@ argument() {
   esac
 }
 
+depth=""
 modules="all arm arm64 x86 x86_64"
 
 for arg in "$@"; do
