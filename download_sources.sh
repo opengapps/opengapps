@@ -13,8 +13,33 @@
 #
 command -v git >/dev/null 2>&1 || { echo "git is required but it's not installed.  Aborting." >&2; exit 1; }
 
-git submodule update --init --remote --rebase
-if [ $? -ne 0 ]; then
-  echo "ERROR during git execution, aborted!"
-  exit 1
-fi
+argument() {
+  case $1 in
+    arm)
+      modules="all $1"
+    ;;
+    arm64|x86)
+      modules="all arm $1"
+    ;;
+    x86_64)
+      modules="all arm x86 $1"
+    ;;
+    --shallow)
+      depth="--depth 1"
+    ;;
+  esac
+}
+
+modules="all arm arm64 x86 x86_64"
+
+for arg in "$@"; do
+  argument $arg
+done
+
+for module in $modules; do
+  git submodule update --init --remote --rebase $depth -- sources/$module
+  if [ $? -ne 0 ]; then
+    echo "ERROR during git execution, aborted!"
+    exit 1
+  fi
+done
