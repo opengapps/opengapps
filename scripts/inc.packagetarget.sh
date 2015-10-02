@@ -64,22 +64,19 @@ bundlexz() {
 createxz() {
       hash="$(tar -cf - "$f" | md5sum | cut -f1 -d' ')"
 
-      echo "Resource report: FreeRAM[$memory], InitialFreeRAM[$MEMORY], MinimumFreeRAM[$MEMORY_MIN], Threads[$threads], CPUs[$THREADS], XZ RAM[`for p in $(pgrep xz); do echo -n "$(awk '/VmSize/ { print $2 }' /proc/$p/status) "; done`]"
-
       if [ -f "$CACHE/$hash.tar.xz" ]; then #we have this xz in cache
         echo "Fetching $d$f from the cache"
         rm -rf "$f" #remove the folder
         cp "$CACHE/$hash.tar.xz" "$f.tar.xz" #copy from the cache
       else
-        echo "Compressing $d$f"
+        echo "Thread: $threads | FreeRAM: $memory | Compressing Package: $d$f"
         XZ_OPT=-9e tar --remove-files -cJf "$f.tar.xz" "$f"
         if [ $? != 0 ]; then
-          echo "Seems like compression failed, aborting."
+          echo "ERROR: XZ compression failed, aborting."
           exit 1
         fi
         cp "$f.tar.xz" "$CACHE/$hash.tar.xz" #copy into the cache
       fi
-      echo "Done with $d$f"
       touch -d "2008-02-28 21:33:46.000000000 +0100" "$f.tar.xz"
       sync
 }
