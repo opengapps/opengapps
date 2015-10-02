@@ -104,7 +104,7 @@ createzip() {
         echo "Total load: RAM[$memory]/[$MEMORY], CPU[$threads]/[$THREADS], PROC[`for p in $(pgrep xz); do echo -n "$(awk '/VmSize/ { print $2 }' /proc/$p/status) "; done`]"
 
         # Check if reached our limits (3/4 of RAM or THREADS), wait if we are
-        if [ $threads -gt $THREADS ] || [ $MEMORY -gt $memory ] || [ $memory -lt $MEMORY_MIN ]; then
+        if [ $threads -ge $THREADS ] || [ $MEMORY -ge $memory ] || [ $memory -lt $MEMORY_MIN ]; then
           sleep 5
           # Update tries counter
           tries=$((tries+1))
