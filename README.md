@@ -13,8 +13,11 @@ git clone git@github.com:opengapps/opengapps.git
 Then sync the submodules to get the original APK sources as provided by Google.
 You can also use this command to update at a later moment the sources to the most recent version
 ```
-./download_sources.sh
+./download_sources.sh [--shallow] [arch]
 ```
+Where:
+"--shallow" will order to fetch only last snapshot of the binaries (reduces space used by git when no history data is required)
+"arch" can be one of the following "arm, arm64, x86, x86_64" to fetch only data required for specified architecture (for some architectures other architectures might be fetched to support runtime fallback)
 
 To build Open GApps for all platforms and all android releases:
 ```
