@@ -63,6 +63,9 @@ bundlexz() {
 
 createxz() {
       hash="$(tar -cf - "$f" | md5sum | cut -f1 -d' ')"
+
+      echo "Resource report: FreeRAM[$memory], InitialFreeRAM[$MEMORY], MinimumFreeRAM[$MEMORY_MIN], Threads[$threads], CPUs[$THREADS], XZ RAM[`for p in $(pgrep xz); do echo -n "$(awk '/VmSize/ { print $2 }' /proc/$p/status) "; done`]"
+
       if [ -f "$CACHE/$hash.tar.xz" ]; then #we have this xz in cache
         echo "Fetching $d$f from the cache"
         rm -rf "$f" #remove the folder
@@ -85,6 +88,21 @@ createzip() {
   find "$build" -exec touch -d "2008-02-28 21:33:46.000000000 +0100" {} \;
   cd "$build"
 
+  MEMORY_MIN=800000 # Minimum of RAM required (for single thread) on x86_64 machine [~701MB for xz, 2*25KB for bash and some spare]
+  THREADS="$(($(cat /proc/cpuinfo | grep "^processor" | wc -l)))"
+
+  if ! grep -q "MemAvailable:" /proc/meminfo; then
+    MEMORY=0
+  else
+    MEMORY="$(($(grep "MemAvailable:" /proc/meminfo | awk '{print $2}') / 4))"
+  fi
+
+  if [ $MEMORY = 0 ] || [ $MEMORY -lt $MEMORY_MIN ]; then
+    echo "WARNING: Can't establish if enough free memory is available: parallel compression mode disabled."
+    MEMORY=0
+    THREADS=1
+  fi
+
   pidlist=""
   for d in $(ls -d */ | grep -v "META-INF"); do #notice that d will end with a slash, ls is safe here because there are no directories with spaces
     cd "$build/$d"
@@ -94,35 +112,38 @@ createzip() {
         printf "%s\t%s\t%d\n" "$f" "$g" "$foldersize" >> "$build/app_sizes.txt"
       done
 
-      # Wait if we reached RAM or THREADS limit
-      tries=0; while true; do
-        # Count still running createxz instances
-        threads=0; for p in $pidlist; do test -d /proc/$p && threads=$((threads+1)); done
+      # Use parallel mode only if we have memory metric and have more then 1 CPU
+      if [ $THREADS -gt 1 ] && [ $MEMORY -gt 0 ]; then
+        # Wait if we reached RAM or THREADS limit
+        tries=0; while true; do
+          # Count still running createxz instances
+          threads=0; for p in $pidlist; do test -d /proc/$p && threads=$((threads+1)); done
+          memory=$(grep "MemAvailable:" /proc/meminfo | awk '{print $2}')
 
-        # Fetch "commitable" memory
-        memory=$(grep "MemAvailable:" /proc/meminfo | awk '{print $2}')
-        echo "Total load: RAM[$memory]/[$MEMORY], CPU[$threads]/[$THREADS], PROC[`for p in $(pgrep xz); do echo -n "$(awk '/VmSize/ { print $2 }' /proc/$p/status) "; done`]"
+          # Check if reached our limits (3/4 of RAM or THREADS), wait if we are
+          if [ $threads -ge $THREADS ] || [ $MEMORY -ge $memory ] || [ $memory -lt $MEMORY_MIN ]; then
+            sleep 5
+            # Update tries counter
+            tries=$((tries+1))
+            # If we are trying for more then 180*5 seconds, we bail out (in case machine is to low on memory or CPU we won't run forever!)
+            if [ $tries -gt 180 ]; then
+              echo "Seems like this machine is too slow or was unable to collect enought usable memory for compression, aborting."
+              exit 1
+            fi
+            continue
+          else
+            break
+         fi
+        done
 
-        # Check if reached our limits (3/4 of RAM or THREADS), wait if we are
-        if [ $threads -ge $THREADS ] || [ $MEMORY -ge $memory ] || [ $memory -lt $MEMORY_MIN ]; then
-          sleep 5
-          # Update tries counter
-          tries=$((tries+1))
-          # If we are trying for more then 180*5 seconds, we bail out (in case machine is to low on memory or CPU we won't run forever!)
-          if [ $tries -gt 180 ]; then
-            echo "Seems like this machine is too slow or was unable to collect enought usable memory for compression, aborting."
-            exit 1
-          fi
-          continue
-        else
-          break
-       fi
-      done
-
-      # Spawn xz creation
-      createxz $d &
-      # Collect resulting PID
-      pidlist="$pidlist $!"
+        # Spawn xz creation
+        createxz $d &
+        # Collect resulting PID
+        pidlist="$pidlist $!"
+      else
+        # Call xz creation
+        createxz $d
+      fi
     done
   done
 
