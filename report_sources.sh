@@ -44,7 +44,6 @@ nohelp=""
 nosig=""
 filterapparchs=""
 buildarch=""
-fallbackarch=""
 maxsdk="99"
 
 for arg in "$@"; do
@@ -70,11 +69,11 @@ if [ -z "$hash" ] && [ -z "$nohelp" ]; then
 ---------------------------------------------------------------------------------------------------------------"
 fi
 
-if [ "$buildarch" = arm64 ]; then
-  fallbackarch="arm"
-elif [ "$buildarch" = x86_64 ]; then
-  fallbackarch="x86"
-fi
+case "$buildarch" in
+  arm64|x86)  fallbackarchs="arm";;
+  x86_64) fallbackarchs="x86 arm";;
+  *)      fallbackarchs="";;
+esac
 
 result="$(printf "%45s|%6s|%3s|%15s|%27s|%10s|%4s" "Application Name" "Arch." "SDK" "DPI" "Version Name" "Version" "Sig.")
 ---------------------------------------------------------------------------------------------------------------"
@@ -82,7 +81,7 @@ allapps="$(find "$SOURCES/" -iname "*.apk" | awk -F '/' '{print $(NF-3)}' | sort
 for appname in $allapps;do
   appnamefiles="$(find "$SOURCES/" -iname "*.apk" -ipath "*/$appname/*")"
   if [ -n "$buildarch" ]; then
-    apparchs="$buildarch $fallbackarch all"
+    apparchs="$buildarch $fallbackarchs all"
   elif [ -n "$filterapparchs" ];then
     apparchs="$filterapparchs"
   else
