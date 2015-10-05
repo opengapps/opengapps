@@ -417,6 +417,8 @@ if [ "$g_conf" ]; then
   sed -i '/^$/d' $g_conf; # Remove all empty lines for cleaner appearance
 else
   config_file="Not Used";
+  g_conf=/tmp/proc_gconf;
+  touch "$g_conf";
 fi;
 
 # Unless this is a NoDebug install - create folder and take 'Before' snapshots
