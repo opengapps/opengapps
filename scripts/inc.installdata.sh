@@ -429,10 +429,8 @@ obsolete_list="
 /system/priv-app/Wallet'"$REMOVALSUFFIX"'
 ";
 
-# Obsolete files from old apps, configs and frameworks no longer included
+# Obsolete files from old configs and frameworks no longer included
 obsolete_list="${obsolete_list}
-/system/app/GoogleEarth'"$REMOVALSUFFIX"'
-/system/app/Street'"$REMOVALSUFFIX"'
 /system/etc/permissions/com.google.android.camera2.xml
 /system/framework/com.google.android.camera2.jar
 ";

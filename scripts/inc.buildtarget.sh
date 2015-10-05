@@ -36,6 +36,7 @@ cloudprint
 docs
 drive
 ears
+earth
 fitness
 keep
 messenger
@@ -46,6 +47,7 @@ newswidget
 playgames
 sheets
 slides
+street
 talkback"
 
 gappsmini="clockgoogle
@@ -161,6 +163,7 @@ get_package_info(){
     ears)           if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
                       packagetype="GApps";packagename="com.google.android.ears"; packagetarget="app/GoogleEars"
                     fi;;
+    earth)          packagetype="GApps";packagename="com.google.earth"; packagetarget="app/GoogleEarth";;
     exchangegoogle) packagetype="GApps";packagename="com.google.android.gm.exchange"; packagetarget="app/PrebuiltExchange3Google";;
     facedetect)     packagetype="GApps"; packagefiles="$LIBFOLDER/libfilterpack_facedetect.so"
                     if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64 bit, we also need the 32 bit file
@@ -193,6 +196,7 @@ get_package_info(){
     sheets)         packagetype="GApps";packagename="com.google.android.apps.docs.editors.sheets"; packagetarget="app/EditorsSheets";;
     slides)         packagetype="GApps";packagename="com.google.android.apps.docs.editors.slides"; packagetarget="app/EditorsSlides";;
     speech)         packagetype="GApps";packagefiles="usr/srec/";;
+    street)         packagetype="GApps";packagename="com.google.android.street"; packagetarget="app/Street";;
     talkback)       packagetype="GApps";packagename="com.google.android.marvin.talkback"; packagetarget="app/talkback";;
     taggoogle)      packagetype="GApps";packagename="com.google.android.tag"; packagetarget="priv-app/TagGoogle";;
     webviewgoogle)  packagetype="GApps";packagename="com.google.android.webview"; packagetarget="app/WebViewGoogle";;
