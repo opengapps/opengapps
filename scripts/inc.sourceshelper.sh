@@ -42,7 +42,6 @@ getapkproperties(){
     "com.android.vending" |\
     "com.android.vending.leanback" |\
     "com.google.android.apps.mediashell.leanback" |\
-    "com.google.android.apps.walletnfcrel" |\
     "com.google.android.athome.remotecontrol" |\
     "com.google.android.atv.customization" |\
     "com.google.android.backuptransport" |\
@@ -61,7 +60,6 @@ getapkproperties(){
     "com.google.android.setupwizard" |\
     "com.google.android.tungsten.setupwraith" |\
     "com.google.android.tag" |\
-    "com.google.android.talk" |\
     "com.google.android.tungsten.overscan" |\
     "com.google.android.tungsten.setupwraith" |\
     "com.google.android.tv.leanback" |\

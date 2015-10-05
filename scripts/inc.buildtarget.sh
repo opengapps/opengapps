@@ -36,7 +36,6 @@ cloudprint
 docs
 drive
 ears
-earth
 fitness
 keep
 messenger
@@ -47,7 +46,6 @@ newswidget
 playgames
 sheets
 slides
-street
 talkback"
 
 gappsmini="clockgoogle
@@ -147,7 +145,7 @@ get_package_info(){
     vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
 
     androidpay)     if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
-                      packagetype="GApps";packagename="com.google.android.apps.walletnfcrel"; packagetarget="priv-app/Wallet"
+                      packagetype="GApps";packagename="com.google.android.apps.walletnfcrel"; packagetarget="app/Wallet"
                     fi;;
     books)          packagetype="GApps";packagename="com.google.android.apps.books"; packagetarget="app/Books";;
     calendargoogle) packagetype="GApps";packagename="com.google.android.calendar"; packagetarget="app/CalendarGooglePrebuilt";;
@@ -156,14 +154,14 @@ get_package_info(){
                       packagetype="GApps";packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera"
                     fi;;
     chrome)         packagetype="GApps";packagename="com.android.chrome"; packagetarget="app/Chrome";;
-    clockgoogle)    packagetype="GApps";packagename="com.google.android.deskclock"; packagetarget="app/DeskClockGoogle";;
+    clockgoogle)    packagetype="GApps";packagename="com.google.android.deskclock"; packagetarget="app/PrebuiltDeskClockGoogle";;
     cloudprint)     packagetype="GApps";packagename="com.google.android.apps.cloudprint"; packagetarget="app/CloudPrint2";;
     docs)           packagetype="GApps";packagename="com.google.android.apps.docs.editors.docs"; packagetarget="app/EditorsDocs";;
     drive)          packagetype="GApps";packagename="com.google.android.apps.docs"; packagetarget="app/Drive";;
     ears)           if [ "$FALLBACKARCH" = "arm" ]; then #this covers both arm and arm64
                       packagetype="GApps";packagename="com.google.android.ears"; packagetarget="app/GoogleEars"
                     fi;;
-    earth)          packagetype="GApps";packagename="com.google.earth"; packagetarget="app/GoogleEarth";;
+    #earth)          packagetype="GApps";packagename="com.google.earth"; packagetarget="app/GoogleEarth";;
     exchangegoogle) packagetype="GApps";packagename="com.google.android.gm.exchange"; packagetarget="app/PrebuiltExchange3Google";;
     facedetect)     packagetype="GApps"; packagefiles="$LIBFOLDER/libfilterpack_facedetect.so"
                     if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64 bit, we also need the 32 bit file
@@ -182,7 +180,7 @@ get_package_info(){
     photos)         packagetype="GApps";packagename="com.google.android.apps.photos"; packagetarget="app/Photos";;
     googleplus)     packagetype="GApps";packagename="com.google.android.apps.plus"; packagetarget="app/PlusOne";;
     googletts)      packagetype="GApps";packagename="com.google.android.tts"; packagetarget="app/GoogleTTS";;
-    hangouts)       packagetype="GApps";packagename="com.google.android.talk"; packagetarget="priv-app/Hangouts";;
+    hangouts)       packagetype="GApps";packagename="com.google.android.talk"; packagetarget="app/Hangouts";;
     keep)           packagetype="GApps";packagename="com.google.android.keep"; packagetarget="app/PrebuiltKeep";;
     keyboardgoogle) packagetype="GApps";packagename="com.google.android.inputmethod.latin"; packagetarget="app/LatinImeGoogle";;
     maps)           packagetype="GApps";packagename="com.google.android.apps.maps"; packagetarget="app/Maps";;
@@ -196,7 +194,7 @@ get_package_info(){
     sheets)         packagetype="GApps";packagename="com.google.android.apps.docs.editors.sheets"; packagetarget="app/EditorsSheets";;
     slides)         packagetype="GApps";packagename="com.google.android.apps.docs.editors.slides"; packagetarget="app/EditorsSlides";;
     speech)         packagetype="GApps";packagefiles="usr/srec/";;
-    street)         packagetype="GApps";packagename="com.google.android.street"; packagetarget="app/Street";;
+    #street)         packagetype="GApps";packagename="com.google.android.street"; packagetarget="app/Street";;
     talkback)       packagetype="GApps";packagename="com.google.android.marvin.talkback"; packagetarget="app/talkback";;
     taggoogle)      packagetype="GApps";packagename="com.google.android.tag"; packagetarget="priv-app/TagGoogle";;
     webviewgoogle)  packagetype="GApps";packagename="com.google.android.webview"; packagetarget="app/WebViewGoogle";;

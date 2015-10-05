@@ -371,6 +371,7 @@ app/WhisperPush'"$REMOVALSUFFIX"'
 other_list="
 /system/app/CalendarGoogle'"$REMOVALSUFFIX"'
 /system/app/CloudPrint'"$REMOVALSUFFIX"'
+/system/app/DeskClockGoogle'"$REMOVALSUFFIX"'
 /system/app/EditorsDocsStub'"$REMOVALSUFFIX"'
 /system/app/EditorsSheetsStub'"$REMOVALSUFFIX"'
 /system/app/EditorsSlidesStub'"$REMOVALSUFFIX"'
@@ -408,13 +409,11 @@ privapp_list="
 /system/app/GoogleOneTimeInitializer'"$REMOVALSUFFIX"'
 /system/app/GooglePartnerSetup'"$REMOVALSUFFIX"'
 /system/app/GoogleServicesFramework'"$REMOVALSUFFIX"'
-/system/app/Hangouts'"$REMOVALSUFFIX"'
 /system/app/OneTimeInitializer'"$REMOVALSUFFIX"'
 /system/app/Phonesky'"$REMOVALSUFFIX"'
 /system/app/PrebuiltGmsCore'"$REMOVALSUFFIX"'
 /system/app/SetupWizard'"$REMOVALSUFFIX"'
 /system/app/Velvet'"$REMOVALSUFFIX"'
-/system/app/Wallet'"$REMOVALSUFFIX"'
 ";
 
 # Stock/AOSP Keyboard lib (and symlink) that are always removed since they are always replaced
@@ -425,12 +424,18 @@ reqd_list="
 # Remove from priv-app since it was moved to app
 obsolete_list="
 /system/priv-app/GoogleHome'"$REMOVALSUFFIX"'
+/system/priv-app/Hangouts'"$REMOVALSUFFIX"'
 /system/priv-app/talkback'"$REMOVALSUFFIX"'
+/system/priv-app/Wallet'"$REMOVALSUFFIX"'
 ";
 
-# Obsolete files from xxxx
-#obsolete_list="${obsolete_list}
-#";
+# Obsolete files from old apps, configs and frameworks no longer included
+obsolete_list="${obsolete_list}
+/system/app/GoogleEarth'"$REMOVALSUFFIX"'
+/system/app/Street'"$REMOVALSUFFIX"'
+/system/etc/permissions/com.google.android.camera2.xml
+/system/framework/com.google.android.camera2.jar
+";
 
 # Old addon.d backup scripts as we will be replacing with updated version during install
 oldscript_list="
