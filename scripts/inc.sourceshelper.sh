@@ -46,6 +46,7 @@ getapkproperties(){
     "com.google.android.athome.remotecontrol" |\
     "com.google.android.atv.customization" |\
     "com.google.android.backuptransport" |\
+    "com.google.android.contacts" |\
     "com.google.android.feedback" |\
     "com.google.android.gms" |\
     "com.google.android.gms.leanback" |\
@@ -55,6 +56,7 @@ getapkproperties(){
     "com.google.android.katniss.leanback" |\
     "com.google.android.leanbacklauncher.leanback" |\
     "com.google.android.onetimeinitializer" |\
+    "com.google.android.packageinstaller" |\
     "com.google.android.partnersetup" |\
     "com.google.android.setupwizard" |\
     "com.google.android.tungsten.setupwraith" |\
