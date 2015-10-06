@@ -1,4 +1,5 @@
 makeupdatebinary(){
+get_fallback_arch "$ARCH" #make sure that $fallback_arch will be available
 echo '#!/sbin/ash
 #This file is part of The Open GApps script of @mfonville.
 #
@@ -1203,14 +1204,14 @@ fi;
 if ( contains "$gapps_list" "webviewgoogle" ); then
   mkdir -p "/system/app/WebViewGoogle/lib/'"$ARCH"'";
   ln -sf "/system/'"$LIBFOLDER"'/$WebView_lib_filename" "/system/app/WebViewGoogle/lib/'"$ARCH"'/$WebView_lib_filename"; # create required symlink' >> "$build/META-INF/com/google/android/update-binary"
-if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64bit we also need to add 32 bit libs
-  echo '  mkdir -p "/system/app/WebViewGoogle/lib/'"$FALLBACKARCH"'";
-  ln -sf "/system/lib/$WebView_lib_filename" "/system/app/WebViewGoogle/lib/'"$FALLBACKARCH"'/$WebView_lib_filename"; # create required symlink' >> "$build/META-INF/com/google/android/update-binary"
+if [ "$LIBFOLDER" = "lib64" ]; then #on 64bit we also need to add 32 bit libs
+  echo '  mkdir -p "/system/app/WebViewGoogle/lib/'"$fallback_arch"'";
+  ln -sf "/system/lib/$WebView_lib_filename" "/system/app/WebViewGoogle/lib/'"$fallback_arch"'/$WebView_lib_filename"; # create required symlink' >> "$build/META-INF/com/google/android/update-binary"
 fi
 echo '  # Add same code to backup script to insure symlinks are recreated on addon.d restore' >> "$build/META-INF/com/google/android/update-binary"
-if [ "$FALLBACKARCH" != "$ARCH" ]; then #on 64bit we also need to add 32 bit libs
-  echo '  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/lib/$WebView_lib_filename\" \"/system/app/WebViewGoogle/lib/'"$FALLBACKARCH"'/$WebView_lib_filename\"" $bkup_tail;
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/WebViewGoogle/lib/'"$FALLBACKARCH"'\"" $bkup_tail;' >> "$build/META-INF/com/google/android/update-binary"
+if [ "$LIBFOLDER" = "lib64" ]; then #on 64bit we also need to add 32 bit libs
+  echo '  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/lib/$WebView_lib_filename\" \"/system/app/WebViewGoogle/lib/'"$fallback_arch"'/$WebView_lib_filename\"" $bkup_tail;
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/WebViewGoogle/lib/'"$fallback_arch"'\"" $bkup_tail;' >> "$build/META-INF/com/google/android/update-binary"
 fi
 echo '  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$WebView_lib_filename\" \"/system/app/WebViewGoogle/lib/'"$ARCH"'/$WebView_lib_filename\"" $bkup_tail;
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/WebViewGoogle/lib/'"$ARCH"'\"" $bkup_tail;

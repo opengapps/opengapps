@@ -57,10 +57,10 @@ SUPPORTEDVARIANTS="$supported_variants"
 if [ -z "$SUPPORTEDVARIANTS" ]; then
   echo "ERROR: Unknown variant! aborting..."; exit 1
 fi
-if [ "$FALLBACKARCH" != "arm" ]; then #For all non-arm(64) platforms
+if [ "$ARCH" != "arm" ] && [ "$ARCH" != "arm64" ]; then #For all non-arm(64) platforms
   case "$VARIANT" in
-    aroma) echo "ERROR! Variant $VARIANT cannot be built on a non-arm platform";
-    exit 1;;
+    aroma) echo "ERROR! Variant $VARIANT cannot be built on a non-arm platform";exit 1;;
+    stock|full) if [ "$API" -lt "21" ];then echo "ERROR! Variant $VARIANT cannot be built on a non-arm < 5.0 platform";exit 1;fi;; #because system wide libs will probably not work with libhoudini
   esac
 fi
 
