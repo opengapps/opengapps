@@ -86,7 +86,7 @@ createzip() {
   cd "$build"
 
   MEMORY_MIN=800000 # Minimum of RAM required (for single thread) on x86_64 machine [~701MB for xz, 2*25KB for bash and some spare]
-  THREADS="$(($(cat /proc/cpuinfo | grep "^processor" | wc -l)))"
+  THREADS="$(($(nproc)))"
 
   if ! grep -q "MemAvailable:" /proc/meminfo; then
     MEMORY=0
