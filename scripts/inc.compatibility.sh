@@ -162,6 +162,8 @@ versionnamehack(){
   case "$package" in
     #the Drive/Docs/Sheets/Slides variate even the last two different digits of the versionName per DPI variant, so we only take the first 10 chars
     com.google.android.apps.docs*) versionname="$(echo "$versionname" | cut -c 1-10)";;
+    #the Fitness variate the last 3 digits per DPI variant
+    com.google.android.apps.fitness) versionname="$(echo "$versionname" | cut -c 1-7)";;
   esac
 }
 
