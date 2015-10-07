@@ -21,7 +21,11 @@ ro.addon.open_version=$DATE
 }
 makegappsremovetxt(){
   gapps_remove=""
-  get_supported_variants "super"
+  if [ "$API" -ge "22" ]; then
+    get_supported_variants "super"
+  else
+    get_supported_variants "stock"
+  fi
   get_gapps_list "$supported_variants"
   for gapp in $gapps_list; do
     get_package_info "$gapp"

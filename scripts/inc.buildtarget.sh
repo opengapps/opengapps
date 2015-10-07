@@ -23,7 +23,6 @@ gmscore
 gsfcore
 gsflogin
 setupwizard
-street
 vending"
 
 gappsoptional=""
@@ -37,7 +36,8 @@ hindi
 japanese
 korean
 pinyin
-projectfi"
+projectfi
+street"
 
 gappsstock="cameragoogle
 keyboardgoogle"
