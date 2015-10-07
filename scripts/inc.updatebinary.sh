@@ -964,6 +964,12 @@ if ( contains "$gapps_list" "packageinstaller" ) && ( ! contains "$aosp_remove_l
   aosp_remove_list="${aosp_remove_list}packageinstallerstock"$'\n';
 fi;
 
+# If we're NOT installing gcs then we MUST REMOVE projectfi from  $gapps_list (if it's currently there)
+if ( ! contains "$gapps_list" "gcs" ) && ( contains "$gapps_list" "projectfi" ); then
+  gapps_list=${gapps_list/projectfi};
+  install_note="${install_note}projectfi_msg"$'\n'; # make note that Project Fi will NOT be installed as user requested
+fi;
+
 # Process User Application Removals for calculations and subsequent removal
 if [ -n "$user_remove_list" ]; then
   for remove_apk in $user_remove_list; do
