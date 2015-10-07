@@ -189,3 +189,14 @@ webviewgoogle"
 webviewstock"
   fi
 }
+
+api23hack(){
+  if [ "$API" -ge "23" ]; then
+    gappsmini="$gappsmini
+calculatorgoogle"
+    gappssuper="$gappssuper
+contactsgoogle
+dialergoogle
+packageinstaller"
+  fi
+}

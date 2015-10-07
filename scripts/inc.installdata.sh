@@ -21,7 +21,7 @@ ro.addon.open_version=$DATE
 }
 makegappsremovetxt(){
   gapps_remove=""
-  get_supported_variants "stock"
+  get_supported_variants "super"
   get_gapps_list "$supported_variants"
   for gapp in $gapps_list; do
     get_package_info "$gapp"
@@ -98,6 +98,10 @@ E_ARCH=64; # Wrong Architecture Detected
 #                                             GApps List (Applications user can Select/Deselect)
 core_gapps_list="
 '"$gappscore"'
+";
+
+super_gapps_list="
+'"$gappssuper"'
 ";
 
 stock_gapps_list="
@@ -179,6 +183,11 @@ basicdreams_list="
 app/BasicDreams'"$REMOVALSUFFIX"'
 ";
 
+# Must be used when GoogleCalculator is installed
+calculatorstock_list="
+app/Calculator'"$REMOVALSUFFIX"'
+";
+
 # Must be used when GoogleCalendar is installed
 calendarstock_list="
 app/Calendar'"$REMOVALSUFFIX"'
@@ -228,8 +237,18 @@ cmwallpapers_list="
 app/CMWallpapers'"$REMOVALSUFFIX"'
 ";
 
+# Must be used when Google Contacts is installed
+contactsstock_list="
+priv-app/Contacts'"$REMOVALSUFFIX"'
+";
+
 dashclock_list="
 app/DashClock'"$REMOVALSUFFIX"'
+";
+
+# Must be used when Google Dialer is installed
+dialerstock_list="
+priv-app/Dialer'"$REMOVALSUFFIX"'
 ";
 
 email_list="
@@ -304,6 +323,11 @@ priv-app/Mms'"$REMOVALSUFFIX"'
 
 noisefield_list="
 app/NoiseField'"$REMOVALSUFFIX"'
+";
+
+# Must be used when Google PackageInstaller is installed
+packageinstallerstock_list="
+app/PackageInstaller'"$REMOVALSUFFIX"'
 ";
 
 phasebeam_list="
@@ -403,6 +427,7 @@ other_list="
 
 # Apps from app that need to be installed in priv-app
 privapp_list="
+/system/app/ConfigUpdater'"$REMOVALSUFFIX"'
 /system/app/GoogleBackupTransport'"$REMOVALSUFFIX"'
 /system/app/GoogleFeedback'"$REMOVALSUFFIX"'
 /system/app/GoogleLoginService'"$REMOVALSUFFIX"'

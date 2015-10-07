@@ -12,7 +12,8 @@
 #
 
 # Static definitions, lists of packages per variant and in the core
-gappscore="framework
+gappscore="configupdater
+framework
 googlebackuptransport
 googlecontactssync
 googlefeedback
@@ -22,21 +23,31 @@ gmscore
 gsfcore
 gsflogin
 setupwizard
+street
 vending"
 
 gappsoptional=""
 
+gappssuper="androidforwork
+androidpay
+dmagent
+earth
+gcs
+hindi
+japanese
+korean
+pinyin
+projectfi"
+
 gappsstock="cameragoogle
 keyboardgoogle"
 
-gappsfull="androidpay
-books
+gappsfull="books
 chrome
 cloudprint
 docs
 drive
 ears
-earth
 fitness
 keep
 messenger
@@ -47,7 +58,6 @@ newswidget
 playgames
 sheets
 slides
-street
 talkback"
 
 gappsmini="clockgoogle
@@ -94,13 +104,19 @@ get_fallback_arch(){
 
 get_supported_variants(){
   case "$1" in
-    stock|aroma)          supported_variants="pico nano micro mini full stock";;
-    full)                 supported_variants="pico nano micro mini full";;
-    mini)                 supported_variants="pico nano micro mini";;
-    micro)                supported_variants="pico nano micro";;
-    nano)                 supported_variants="pico nano";;
-    pico)                 supported_variants="pico";;
-    *)                    supported_variants="";;
+    aroma)          if [ "$API" -ge "22" ]; then
+                      supported_variants="pico nano micro mini full stock super";
+                    else
+                      supported_variants="pico nano micro mini full stock";
+                    fi;;
+    super)          supported_variants="pico nano micro mini full stock super";;
+    stock)          supported_variants="pico nano micro mini full stock";;
+    full)           supported_variants="pico nano micro mini full";;
+    mini)           supported_variants="pico nano micro mini";;
+    micro)          supported_variants="pico nano micro";;
+    nano)           supported_variants="pico nano";;
+    pico)           supported_variants="pico";;
+    *)              supported_variants="";;
   esac
 }
 
@@ -151,58 +167,74 @@ get_package_info(){
     setupwizard)              packagetype="Core"; packagename="com.google.android.setupwizard"; packagetarget="priv-app/SetupWizard";;
     vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
 
-    androidpay)     packagetype="GApps";packagename="com.google.android.apps.walletnfcrel"; packagetarget="app/Wallet";;
-    books)          packagetype="GApps";packagename="com.google.android.apps.books"; packagetarget="app/Books";;
-    calendargoogle) packagetype="GApps";packagename="com.google.android.calendar"; packagetarget="app/CalendarGooglePrebuilt";;
-    calsync)        packagetype="GApps";packagename="com.google.android.syncadapters.calendar"; packagetarget="app/GoogleCalendarSyncAdapter";;
-    cameragoogle)   packagetype="GApps";packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera";;
-    chrome)         packagetype="GApps";packagename="com.android.chrome"; packagetarget="app/Chrome";;
-    clockgoogle)    packagetype="GApps";packagename="com.google.android.deskclock"; packagetarget="app/PrebuiltDeskClockGoogle";;
-    cloudprint)     packagetype="GApps";packagename="com.google.android.apps.cloudprint"; packagetarget="app/CloudPrint2";;
-    docs)           packagetype="GApps";packagename="com.google.android.apps.docs.editors.docs"; packagetarget="app/EditorsDocs";;
-    drive)          packagetype="GApps";packagename="com.google.android.apps.docs"; packagetarget="app/Drive";;
-    ears)           packagetype="GApps";packagename="com.google.android.ears"; packagetarget="app/GoogleEars";;
-    earth)          packagetype="GApps";packagename="com.google.earth"; packagetarget="app/GoogleEarth";;
-    exchangegoogle) packagetype="GApps";packagename="com.google.android.gm.exchange"; packagetarget="app/PrebuiltExchange3Google";;
-    facedetect)     packagetype="GApps"; packagefiles="$LIBFOLDER/libfilterpack_facedetect.so"
+    configupdater)            packagetype="Core"; packagename="com.google.android.configupdater"; packagetarget="priv-app/ConfigUpdater";;
+
+    books)          packagetype="GApps"; packagename="com.google.android.apps.books"; packagetarget="app/Books";;
+    calendargoogle) packagetype="GApps"; packagename="com.google.android.calendar"; packagetarget="app/CalendarGooglePrebuilt";;
+    calsync)        packagetype="GApps"; packagename="com.google.android.syncadapters.calendar"; packagetarget="app/GoogleCalendarSyncAdapter";;
+    cameragoogle)   packagetype="GApps"; packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera";;
+    chrome)         packagetype="GApps"; packagename="com.android.chrome"; packagetarget="app/Chrome";;
+    clockgoogle)    packagetype="GApps"; packagename="com.google.android.deskclock"; packagetarget="app/PrebuiltDeskClockGoogle";;
+    cloudprint)     packagetype="GApps"; packagename="com.google.android.apps.cloudprint"; packagetarget="app/CloudPrint2";;
+    docs)           packagetype="GApps"; packagename="com.google.android.apps.docs.editors.docs"; packagetarget="app/EditorsDocs";;
+    drive)          packagetype="GApps"; packagename="com.google.android.apps.docs"; packagetarget="app/Drive";;
+    ears)           packagetype="GApps"; packagename="com.google.android.ears"; packagetarget="app/GoogleEars";;
+    exchangegoogle) packagetype="GApps"; packagename="com.google.android.gm.exchange"; packagetarget="app/PrebuiltExchange3Google";;
+    facedetect)     packagetype="GApps"; packagefiles="$LIBFOLDER/libfilterpack_facedetect.so";
                     if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib
                       packagefiles="$packagefiles lib/libfilterpack_facedetect.so";
                     fi;;
     faceunlock)     if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then #both arm and arm64
-                      packagetype="GApps";packagename="com.android.facelock"; packagetarget="app/FaceLock";
-                      packagetype="GApps";packagefiles="vendor/pittpatt/ $LIBFOLDER/libfacelock_jni.so vendor/$LIBFOLDER/libfrsdk.so"
+                      packagetype="GApps"; packagename="com.android.facelock"; packagetarget="app/FaceLock";
+                      packagetype="GApps"; packagefiles="vendor/pittpatt/ $LIBFOLDER/libfacelock_jni.so vendor/$LIBFOLDER/libfrsdk.so";
                       if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib
                         packagefiles="$packagefiles vendor/lib/libfrsdk.so";
-                      fi
+                      fi;
                     fi;;
-    fitness)        packagetype="GApps";packagename="com.google.android.apps.fitness"; packagetarget="app/FitnessPrebuilt";;
-    gmail)          packagetype="GApps";packagename="com.google.android.gm"; packagetarget="app/PrebuiltGmail";;
-    googlenow)      packagetype="GApps";packagename="com.google.android.launcher"; packagetarget="app/GoogleHome";;
-    photos)         packagetype="GApps";packagename="com.google.android.apps.photos"; packagetarget="app/Photos";;
-    googleplus)     packagetype="GApps";packagename="com.google.android.apps.plus"; packagetarget="app/PlusOne";;
-    googletts)      packagetype="GApps";packagename="com.google.android.tts"; packagetarget="app/GoogleTTS";;
-    hangouts)       packagetype="GApps";packagename="com.google.android.talk"; packagetarget="app/Hangouts";;
-    keep)           packagetype="GApps";packagename="com.google.android.keep"; packagetarget="app/PrebuiltKeep";;
-    keyboardgoogle) packagetype="GApps";packagename="com.google.android.inputmethod.latin"; packagetarget="app/LatinImeGoogle";;
-    maps)           packagetype="GApps";packagename="com.google.android.apps.maps"; packagetarget="app/Maps";;
-    messenger)      packagetype="GApps";packagename="com.google.android.apps.messaging"; packagetarget="app/PrebuiltBugle";;
-    movies)         packagetype="GApps";packagename="com.google.android.videos"; packagetarget="app/Videos";;
-    music)          packagetype="GApps";packagename="com.google.android.music"; packagetarget="app/Music2";;
-    newsstand)      packagetype="GApps";packagename="com.google.android.apps.magazines"; packagetarget="app/Newsstand";;
-    newswidget)     packagetype="GApps";packagename="com.google.android.apps.genie.geniewidget"; packagetarget="app/PrebuiltNewsWeather";;
-    playgames)      packagetype="GApps";packagename="com.google.android.play.games"; packagetarget="app/PlayGames";;
-    search)         packagetype="GApps";packagename="com.google.android.googlequicksearchbox"; packagetarget="priv-app/Velvet";;
-    sheets)         packagetype="GApps";packagename="com.google.android.apps.docs.editors.sheets"; packagetarget="app/EditorsSheets";;
-    slides)         packagetype="GApps";packagename="com.google.android.apps.docs.editors.slides"; packagetarget="app/EditorsSlides";;
-    speech)         packagetype="GApps";packagefiles="usr/srec/";;
-    street)         packagetype="GApps";packagename="com.google.android.street"; packagetarget="app/Street";;
-    talkback)       packagetype="GApps";packagename="com.google.android.marvin.talkback"; packagetarget="app/talkback";;
-    taggoogle)      packagetype="GApps";packagename="com.google.android.tag"; packagetarget="priv-app/TagGoogle";;
-    webviewgoogle)  packagetype="GApps";packagename="com.google.android.webview"; packagetarget="app/WebViewGoogle";;
-    youtube)        packagetype="GApps";packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
+    fitness)        packagetype="GApps"; packagename="com.google.android.apps.fitness"; packagetarget="app/FitnessPrebuilt";;
+    gmail)          packagetype="GApps"; packagename="com.google.android.gm"; packagetarget="app/PrebuiltGmail";;
+    googlenow)      packagetype="GApps"; packagename="com.google.android.launcher"; packagetarget="app/GoogleHome";;
+    photos)         packagetype="GApps"; packagename="com.google.android.apps.photos"; packagetarget="app/Photos";;
+    googleplus)     packagetype="GApps"; packagename="com.google.android.apps.plus"; packagetarget="app/PlusOne";;
+    googletts)      packagetype="GApps"; packagename="com.google.android.tts"; packagetarget="app/GoogleTTS";;
+    hangouts)       packagetype="GApps"; packagename="com.google.android.talk"; packagetarget="app/Hangouts";;
+    keep)           packagetype="GApps"; packagename="com.google.android.keep"; packagetarget="app/PrebuiltKeep";;
+    keyboardgoogle) packagetype="GApps"; packagename="com.google.android.inputmethod.latin"; packagetarget="app/LatinImeGoogle";;
+    maps)           packagetype="GApps"; packagename="com.google.android.apps.maps"; packagetarget="app/Maps";;
+    messenger)      packagetype="GApps"; packagename="com.google.android.apps.messaging"; packagetarget="app/PrebuiltBugle";;
+    movies)         packagetype="GApps"; packagename="com.google.android.videos"; packagetarget="app/Videos";;
+    music)          packagetype="GApps"; packagename="com.google.android.music"; packagetarget="app/Music2";;
+    newsstand)      packagetype="GApps"; packagename="com.google.android.apps.magazines"; packagetarget="app/Newsstand";;
+    newswidget)     packagetype="GApps"; packagename="com.google.android.apps.genie.geniewidget"; packagetarget="app/PrebuiltNewsWeather";;
+    playgames)      packagetype="GApps"; packagename="com.google.android.play.games"; packagetarget="app/PlayGames";;
+    search)         packagetype="GApps"; packagename="com.google.android.googlequicksearchbox"; packagetarget="priv-app/Velvet";;
+    sheets)         packagetype="GApps"; packagename="com.google.android.apps.docs.editors.sheets"; packagetarget="app/EditorsSheets";;
+    slides)         packagetype="GApps"; packagename="com.google.android.apps.docs.editors.slides"; packagetarget="app/EditorsSlides";;
+    speech)         packagetype="GApps"; packagefiles="usr/srec/";;
+    talkback)       packagetype="GApps"; packagename="com.google.android.marvin.talkback"; packagetarget="app/talkback";;
+    taggoogle)      packagetype="GApps"; packagename="com.google.android.tag"; packagetarget="priv-app/TagGoogle";;
+    webviewgoogle)  packagetype="GApps"; packagename="com.google.android.webview"; packagetarget="app/WebViewGoogle";;
+    youtube)        packagetype="GApps"; packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
+
+    androidforwork) packagetype="GApps"; packagename="com.google.android.androidforwork"; packagetarget="priv-app/AndroidForWork";;
+    androidpay)     packagetype="GApps"; packagename="com.google.android.apps.walletnfcrel"; packagetarget="app/Wallet";;
+    dmagent)        packagetype="GApps"; packagename="com.google.android.apps.enterprise.dmagent"; packagetarget="app/DMAgent";;
+    earth)          packagetype="GApps"; packagename="com.google.earth"; packagetarget="app/GoogleEarth";;
+    gcs)            packagetype="GApps"; packagename="com.google.android.apps.gcs"; packagetarget="priv-app/GCS";;
+    hindi)          packagetype="GApps"; packagename="com.google.android.apps.inputmethod.hindi"; packagetarget="app/GoogleHindiIME";;
+    japanese)       packagetype="GApps"; packagename="com.google.android.inputmethod.japanese"; packagetarget="app/GoogleJapaneseInput";;
+    korean)         packagetype="GApps"; packagename="com.google.android.inputmethod.korean"; packagetarget="app/KoreanIME";;
+    pinyin)         packagetype="GApps"; packagename="com.google.android.inputmethod.pinyin"; packagetarget="app/GooglePinyinIME";;
+    projectfi)      packagetype="GApps"; packagename="com.google.android.apps.tycho"; packagetarget="app/Tycho";;
+    street)         packagetype="GApps"; packagename="com.google.android.street"; packagetarget="app/Street";;
+
+    calculatorgoogle) packagetype="GApps"; packagename="com.google.android.calculator"; packagetarget="app/CalculatorGoogle";;
+    contactsgoogle)   packagetype="GApps"; packagename="com.google.android.contacts"; packagetarget="priv-app/GoogleContacts";;
+    dialergoogle)     packagetype="GApps"; packagename="com.google.android.dialer"; packagetarget="priv-app/GoogleDialer";;
+    packageinstaller) packagetype="GApps"; packagename="com.google.android.packageinstaller"; packagetarget="priv-app/GooglePackageInstaller";;
 
     keybdlib)       packagetype="Optional"; packagefiles="$LIBFOLDER/libjni_latinimegoogle.so";;
 
-    *)              echo "ERROR! Missing build rule for application with keyword $1";exit 1;;
+    *)              echo "ERROR! Missing build rule for application with keyword $1"; exit 1;;
   esac
 }

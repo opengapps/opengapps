@@ -42,11 +42,15 @@ getapkproperties(){
   case $package in
     "com.android.vending" |\
     "com.android.vending.leanback" |\
+    "com.google.android.androidforwork" |\
     "com.google.android.apps.mediashell.leanback" |\
+    "com.google.android.apps.gcs" |\
     "com.google.android.athome.remotecontrol" |\
     "com.google.android.atv.customization" |\
     "com.google.android.backuptransport" |\
+    "com.google.android.configupdater" |\
     "com.google.android.contacts" |\
+    "com.google.android.dialer" |\
     "com.google.android.feedback" |\
     "com.google.android.gms" |\
     "com.google.android.gms.leanback" |\

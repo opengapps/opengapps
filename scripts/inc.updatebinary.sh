@@ -390,10 +390,24 @@ done;
 
 # Locate gapps-config (if used)
 for i in "/tmp/aroma/.gapps-config"\
- "$zip_folder/.gapps-config-$device_name" "$zip_folder/gapps-config-$device_name.txt" "/sdcard/Open-GApps/.gapps-config-$device_name" "/sdcard/Open-GApps/gapps-config-$device_name.txt"\
- "$zip_folder/.gapps-config" "$zip_folder/gapps-config.txt" "/sdcard/Open-GApps/.gapps-config" "/sdcard/Open-GApps/gapps-config.txt"\
- "$zip_folder/.gapps-config-$device_name.txt" "/sdcard/Open-GApps/.gapps-config-$device_name.txt" "$zip_folder/.gapps-config.txt" "/sdcard/Open-GApps/.gapps-config.txt"\
- "/persist/.gapps-config-$device_name" "/persist/gapps-config-$device_name.txt" "/persist/.gapps-config" "/persist/gapps-config.txt" "/persist/.gapps-config-$device_name.txt" "/persist/.gapps-config.txt"; do
+ "$zip_folder/.gapps-config-$device_name"\
+ "$zip_folder/gapps-config-$device_name.txt"\
+ "/sdcard/Open-GApps/.gapps-config-$device_name"\
+ "/sdcard/Open-GApps/gapps-config-$device_name.txt"\
+ "$zip_folder/.gapps-config"\
+ "$zip_folder/gapps-config.txt"\
+ "/sdcard/Open-GApps/.gapps-config"\
+ "/sdcard/Open-GApps/gapps-config.txt"\
+ "$zip_folder/.gapps-config-$device_name.txt"\
+ "/sdcard/Open-GApps/.gapps-config-$device_name.txt"\
+ "$zip_folder/.gapps-config.txt"\
+ "/sdcard/Open-GApps/.gapps-config.txt"\
+ "/persist/.gapps-config-$device_name"\
+ "/persist/gapps-config-$device_name.txt"\
+ "/persist/.gapps-config"\
+ "/persist/gapps-config.txt"\
+ "/persist/.gapps-config-$device_name.txt"\
+ "/persist/.gapps-config.txt"; do
   if [ -r "$i" ]; then
     g_conf="$i";
     break;
@@ -750,7 +764,7 @@ else # User is not using a gapps-config and we're doing the 'full monty'
 fi;
 
 # Configure default removal of Stock/AOSP apps - if we're installing Stock GApps
-if [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
+if [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
   for default_name in $default_aosp_remove_list; do
     eval "remove_${default_name}=true[default]";
   done;
@@ -762,13 +776,13 @@ else
 fi;
 
 # Prepare list of AOSP/ROM files that will be deleted using gapps-config
-# We will look for +Browser, +Email, +Gallery, +Launcher, +MMS and +PicoTTS to prevent their removal
+# We will look for +Browser, +Email, +Gallery, +Launcher, +MMS, +PicoTTS and more to prevent their removal
 set_progress 0.03;
 if [ "$g_conf" ]; then
   for default_name in $default_aosp_remove_list; do
     if ( grep -qi "+$default_name" "$g_conf" ); then
       eval "remove_${default_name}=false[gapps-config]";
-    elif [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
+    elif [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
       aosp_remove_list="$aosp_remove_list$default_name"$'\n';
       if ( grep -qi "$default_name" "$g_conf" ); then
         eval "remove_${default_name}=true[gapps-config]";
@@ -787,7 +801,7 @@ if [ "$g_conf" ]; then
     fi;
   done;
 else
-  if [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
+  if [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
       aosp_remove_list=$default_aosp_remove_list;
   fi;
 fi;
@@ -928,6 +942,26 @@ if ( ! contains "$gapps_list" "webviewgoogle" ) && ( contains "$aosp_remove_list
   aosp_remove_list=${aosp_remove_list/webviewstock}; # we'll prevent webviewstock from being removed so user isn't left with no WebView
   remove_webviewstock="false[NO_WebViewGoogle]";
   install_note="${install_note}nowebview_msg"$'\n'; # make note that Stock Webview can't be removed unless user Overrides
+fi;
+
+# If we're installing calculatorgoogle we MUST ADD calculatorstock to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "calculatorgoogle" ) && ( ! contains "$aosp_remove_list" "calculatorstock" ); then
+  aosp_remove_list="${aosp_remove_list}calculatorstock"$'\n';
+fi;
+
+# If we're installing contactsgoogle we MUST ADD contactsstock to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "contactsgoogle" ) && ( ! contains "$aosp_remove_list" "contactsstock" ); then
+  aosp_remove_list="${aosp_remove_list}contactsstock"$'\n';
+fi;
+
+# If we're installing dialergoogle we MUST ADD dialerstock to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "dialergoogle" ) && ( ! contains "$aosp_remove_list" "dialerstock" ); then
+  aosp_remove_list="${aosp_remove_list}dialerstock"$'\n';
+fi;
+
+# If we're installing packageinstaller we MUST ADD packageinstallerstock to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "packageinstaller" ) && ( ! contains "$aosp_remove_list" "packageinstallerstock" ); then
+  aosp_remove_list="${aosp_remove_list}packageinstallerstock"$'\n';
 fi;
 
 # Process User Application Removals for calculations and subsequent removal
