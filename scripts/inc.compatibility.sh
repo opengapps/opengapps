@@ -182,12 +182,12 @@ taggoogle"
 }
 
 webviewhack(){
-  if [ "$API" -ge "22" ]; then # On AOSP we only support Webview on 5.1+, stock Google ROMs support it on 5.0 too, but we're merging stock and fornexus
-    gappsstock="$gappsstock
-webviewgoogle"
-    stockremove="$stockremove
-webviewstock"
-  fi
+  case "$VARIANT" in # We prevent the removal of WebViewGoogle on packages smaller than stock
+    aroma|super|stock)  if [ "$API" -ge "22" ]; then # On AOSP we only support Webview on 5.1+, stock Google ROMs support it on 5.0 too, but we're merging stock and fornexus
+                          gappsstock="$gappsstock"$'\n'"webviewgoogle";
+                          stockremove="$stockremove"$'\n'"webviewstock";
+                        fi;;
+  esac
 }
 
 api23hack(){
