@@ -33,6 +33,7 @@ getapkproperties(){
 
   if [ -n "$leanback" ]; then
     case "$package" in
+      *inputmethod*) ;; #if package is an inputmethod, it will have leanback as feature described, but we don't want it recognized as such
       *.leanback) ;; #if package already has leanback at the end of its name, we don't need to add it ourselves
       *) package="$package.$leanback";; #special leanback versions need a different packagename
     esac
