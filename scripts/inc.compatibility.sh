@@ -192,11 +192,12 @@ webviewhack(){
 
 api23hack(){
   if [ "$API" -ge "23" ]; then
+    gappscore="$gappscore
+packageinstaller"
     gappsmini="$gappsmini
 calculatorgoogle"
-    gappssuper="$gappssuper
+    gappsstock="$gappsstock
 contactsgoogle
-dialergoogle
-packageinstaller"
+dialergoogle"
   fi
 }
