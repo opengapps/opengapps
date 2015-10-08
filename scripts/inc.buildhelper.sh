@@ -80,7 +80,7 @@ buildapp(){
       if [ -z "$baseversionname" ]; then
         baseversionname=$versionname
         buildlib "$dpivariant" "$liblocation" "$usearch" #Use the libs from this baseversion
-        printf "%44s %6s %27s" "$package" "$usearch" "$baseversionname"
+        printf "%44s %6s-%s %27s" "$package" "$usearch" "$api" "$baseversionname"
       fi
       if [ "$versionname" = "$baseversionname" ]; then
         density=$(basename "$(dirname "$dpivariant")")
@@ -120,7 +120,7 @@ getsourceforapi() {
     echo "WARNING: No APK found compatible with API level $API for package $appname on $2, lowest found: $api"
     return 1 #error
   fi
-  #$sourceapks has the useful returnvalue
+  #$sourceapks and $api have the useful returnvalues
   return 0 #return that it was a success
 }
 buildapk() {
