@@ -18,28 +18,35 @@ cameracompatibilityhack(){
 }
 
 keyboardlibhack(){ #only on lollipop arm and arm64
-  if [ "$API" -gt "19" ] && [ "$API" -lt "23" ] && { [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ];}; then
+  if [ "$API" -ge "21" ] && { [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ];}; then
     gappsoptional="keybdlib $gappsoptional"
-    REQDLIST="/system/lib/libjni_latinime.so
+    REQDLIST="/system/lib/libjni_keyboarddecoder.so
+/system/lib/libjni_latinime.so
 /system/lib/libjni_latinimegoogle.so
+/system/lib64/libjni_latinime.so
+/system/lib64/libjni_keyboarddecoder.so
 /system/lib64/libjni_latinimegoogle.so
+/system/app/LatinIME/lib/$ARCH/libjni_keyboarddecoder.so
 /system/app/LatinIME/lib/$ARCH/libjni_latinime.so
 /system/app/LatinIME/lib/$ARCH/libjni_latinimegoogle.so"
-    KEYBDLIBS='keybd_lib_filename1="libjni_latinimegoogle.so";
-keybd_lib_filename2="libjni_latinime.so";'
+    KEYBDLIBS='keybd_lib_dec="libjni_keyboarddecoder.so";
+keybd_lib_google="libjni_latinimegoogle.so";
+keybd_lib_aosp="libjni_latinime.so";'
     # Do not touch AOSP keyboard if it's neither removed or replaced by Google's one
     KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! contains "$gapps_removal_list" "keyboardstock" ) && [ "$skipkeybdlib" = "false" ]; then
     extract_app "Optional/keybdlib";
-    ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/'"$LIBFOLDER"'/$keybd_lib_filename2"; # create required symlink
+    ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/'"$LIBFOLDER"'/$keybd_lib_aosp"; # create required symlink
     mkdir -p "/system/app/LatinIME/lib/'"$ARCH"'";
-    ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1"; # create required symlink
-    ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_filename1" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename2"; # create required symlink
+    ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_dec" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_dec"; # create required symlink
+    ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google"; # create required symlink
+    ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_aosp"; # create required symlink
 
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename2\"" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_filename1\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_aosp\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_dec\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_dec\"" $bkup_tail;
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/LatinIME/lib/'"$ARCH"'\"" $bkup_tail;
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_filename1\" \"/system/'"$LIBFOLDER"'/$keybd_lib_filename2\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/'"$LIBFOLDER"'/$keybd_lib_aosp\"" $bkup_tail;
 fi;'
   else
     REQDLIST=""
