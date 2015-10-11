@@ -322,6 +322,7 @@ app/LockClock'"$REMOVALSUFFIX"'
 ";
 
 mms_list="
+app/messaging'"$REMOVALSUFFIX"'
 priv-app/Mms'"$REMOVALSUFFIX"'
 ";
 
