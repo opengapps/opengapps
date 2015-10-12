@@ -38,7 +38,8 @@ korean
 pinyin
 projectfi
 street
-translate"
+translate
+zhuyin"
 
 gappsstock="cameragoogle
 keyboardgoogle"
@@ -229,6 +230,7 @@ get_package_info(){
     projectfi)      packagetype="GApps"; packagename="com.google.android.apps.tycho"; packagetarget="app/Tycho";;
     street)         packagetype="GApps"; packagename="com.google.android.street"; packagetarget="app/Street";;
     translate)      packagetype="GApps"; packagename="com.google.android.apps.translate"; packagetarget="app/TranslatePrebuilt";;
+    zhuyin)         packagetype="GApps"; packagename="com.google.android.apps.inputmethod.zhuyin"; packagetarget="app/GoogleZhuyinIME";;
 
     calculatorgoogle) packagetype="GApps"; packagename="com.google.android.calculator"; packagetarget="app/CalculatorGoogle";;
     contactsgoogle)   packagetype="GApps"; packagename="com.google.android.contacts"; packagetarget="priv-app/GoogleContacts";;
