@@ -77,7 +77,6 @@ installer_name="Open GApps '"$VARIANT"' '"$PLATFORM"' - ";
 
 req_android_version="'"$PLATFORM"'";
 
-'"$KEYBDLIBS"'
 faceLock_lib_filename="libfacelock_jni.so";
 WebView_lib_filename="libwebviewchromium.so";
 
@@ -447,11 +446,6 @@ privapp_list="
 /system/app/Velvet'"$REMOVALSUFFIX"'
 ";
 
-# Stock/AOSP Keyboard lib (and symlink) that are always removed since they are always replaced
-reqd_list="
-'"$REQDLIST"'
-";
-
 # Remove from priv-app since it was moved to app
 obsolete_list="
 /system/priv-app/GoogleHome'"$REMOVALSUFFIX"'
@@ -482,7 +476,6 @@ camera_compat_msg="WARNING: Google Camera has/will not be installed as requested
 faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";
 googlenow_msg="WARNING: Google Now Launcher has/will not be installed as requested. Google\nSearch must be added to the GApps installation if you want to install the Google\nNow Launcher.\n";
 projectfi_msg="WARNING: Project Fi has/will not be installed as requested. GCS must be\nadded to the GApps installation if you want to install the Project Fi app.\n";
-keyboard_sys_msg="WARNING: Google Keyboard has/will not be installed as requested. Google Keyboard\ncan only be installed during a Clean Install or as an update to an existing\nGApps Installation.\n";
 nokeyboard_msg="NOTE: The Stock/AOSP keyboard was NOT removed as requested to ensure your device\nwas not accidentally left with no keyboard installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
 nolauncher_msg="NOTE: The Stock/AOSP Launcher was NOT removed as requested to ensure your device\nwas not accidentally left with no Launcher. If this was your intention, you can\nadd 'Override' to your gapps-config to override this protection.\n";
 nomms_msg="NOTE: The Stock/AOSP MMS app was NOT removed as requested to ensure your device\nwas not accidentally left with no way to receive text messages. If this WAS\nintentional, add 'Override' to your gapps-config to override this protection.\n";

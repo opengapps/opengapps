@@ -599,13 +599,6 @@ else
   forceclean="false"
 fi;
 
-# Check for keybdlib Override in gapps-config
-if ( grep -qiE "^skipkeybdlib$" $g_conf ); then # true or false to override the default selection
-  skipkeybdlib="true"
-else
-  skipkeybdlib="false"
-fi;
-
 # Set density to unknown if it's still empty
 test -z "$density" && density=unknown;
 
@@ -618,7 +611,6 @@ done;
 if ( clean_inst ); then
   install_type="Clean[Data Wiped]";
   cameragoogle_inst=Clean;
-  keyboardgoogle_inst=Clean;
 else
   install_type="Dirty[Data NOT Wiped]";
 
@@ -629,12 +621,6 @@ else
     cameragoogle_inst=false;
   fi;
 
-  # Was Google Keyboard previously installed (in /system)
-  if ( sys_app LatinImeGoogle ); then
-    keyboardgoogle_inst=true;
-  else
-    keyboardgoogle_inst=false;
-  fi;
 fi;
 
 # Is device FaceUnlock compatible
@@ -672,7 +658,6 @@ log "build.prop Density" "$(file_getprop $b_prop ro.sf.lcd_density)";
 log "Display Density Used" "${density}dpi";
 log "Install Type" "$install_type";
 log "Google Camera Installed¹" "$cameragoogle_inst";
-log "Google Keyboard Installed¹" "$keyboardgoogle_inst";
 log "FaceUnlock Compatible" "$faceunlock_compat";
 log "Google Camera Compatible" "$cameragoogle_compat";
 log_close="                  ¹ Previously installed with Open GApps\n$log_close";
@@ -879,13 +864,6 @@ if ( contains "$gapps_list" "calendargoogle" ) && ( ! contains "$aosp_remove_lis
   gapps_list=${gapps_list/calsync};
 fi;
 
-# If user wants to install keyboardgoogle then it MUST be a Clean Install OR keyboardgoogle was previously installed in system partition
-if ( contains "$gapps_list" "keyboardgoogle" ) && ( ! clean_inst ) && [ $keyboardgoogle_inst = "false" ]; then
-  gapps_list=${gapps_list/keyboardgoogle}; # we must DISALLOW keyboardgoogle from being installed
-  aosp_remove_list=${aosp_remove_list/keyboardstock}; # and we'll prevent keyboardstock from being removed so user isn't left with no keyboard
-  install_note="${install_note}keyboard_sys_msg"$'\n'; # make note that Google Keyboard will NOT be installed as user requested
-fi;
-
 # If we're installing keyboardgoogle we must ADD keyboardstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "keyboardgoogle" ) && ( ! contains "$aosp_remove_list" "keyboardstock" ); then
   aosp_remove_list="${aosp_remove_list}keyboardstock"$'\n';
@@ -1039,20 +1017,6 @@ for gapp_name in $core_gapps_list; do
   get_appsize "Core/$gapp_name";
   core_size=$((core_size + appsize));
 done;
-
-# Add Keyboard Lib size to core, if it exists
-if ( ! contains "$gapps_list" "keyboardgoogle" ); then
-  unzip -o "$ZIP" "Optional/keybd_lib.tar.xz" -d /tmp;
-  keybd_lib_size=$(tar -tvJf "/tmp/Optional/keybd_lib.tar.xz" "keybd_lib" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
-  rm -f "/tmp/Optional/keybd_lib.tar.xz";
-  core_size=$((core_size + keybd_lib_size)); # Add Keyboard Lib size to core, if it exists
-fi
-
-# Do not touch AOSP keyboard if it's neither removed or replaced by Google's one
-if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! contains "$gapps_removal_list" "keyboardstock" ) && [ "$skipkeybdlib" = "true" ]; then
-  reqd_list=$(echo "${reqd_list}" | grep -v "latinime.so");
-  remove_list=$(echo "${remove_list}" | grep -v "latinime.so");
-fi
 
 # Read and save system partition size details
 df=$(busybox df -k /system | tail -n 1);
@@ -1213,7 +1177,6 @@ done;
 set_progress 0.25;
 
 EOFILE
-echo "$KEYBDINSTALLCODE" >> "$build/META-INF/com/google/android/update-binary"
 echo "$DATAINSTALLCODE" >> "$build/META-INF/com/google/android/update-binary"
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 # Progress Bar increment calculations for GApps Install process

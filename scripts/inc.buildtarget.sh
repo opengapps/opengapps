@@ -237,8 +237,6 @@ get_package_info(){
     dialergoogle)     packagetype="GApps"; packagename="com.google.android.dialer"; packagetarget="priv-app/GoogleDialer";;
     packageinstaller) packagetype="GApps"; packagename="com.google.android.packageinstaller"; packagetarget="priv-app/GooglePackageInstaller";;
 
-    keybdlib)       packagetype="Optional"; packagefiles="$LIBFOLDER/libjni_latinimegoogle.so";;
-
     *)              echo "ERROR! Missing build rule for application with keyword $1"; exit 1;;
   esac
 }
