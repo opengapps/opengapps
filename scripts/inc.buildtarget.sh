@@ -42,7 +42,8 @@ translate
 zhuyin"
 
 gappsstock="cameragoogle
-keyboardgoogle"
+keyboardgoogle
+messenger"
 
 gappsfull="books
 chrome
@@ -52,7 +53,6 @@ drive
 ears
 fitness
 keep
-messenger
 movies
 music
 newsstand
