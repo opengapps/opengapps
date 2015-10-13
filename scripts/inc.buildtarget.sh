@@ -69,13 +69,13 @@ youtube"
 
 gappsmicro="calendargoogle
 exchangegoogle
-facedetect
-faceunlock
 gmail
 googlenow
 googletts"
 
-gappsnano="search
+gappsnano="facedetect
+faceunlock
+search
 speech"
 
 gappspico="calsync"
