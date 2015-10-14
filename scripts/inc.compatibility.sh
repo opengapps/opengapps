@@ -147,6 +147,8 @@ api22hack(){
   if [ "$API" -ge "22" ]; then
     # Starting from API 22 we add GCS to the core apps
     #gappscore="$gappscore"$'\n'"gcs"
+    gappscore="$gappscore
+configupdater"
 
     # On AOSP we only support Webview on 5.1+, stock Google ROMs support it on 5.0 too, but we're merging stock and fornexus
     case "$VARIANT" in # We prevent the removal of WebViewGoogle on packages smaller than stock

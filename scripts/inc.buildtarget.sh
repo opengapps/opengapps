@@ -12,8 +12,7 @@
 #
 
 # Static definitions, lists of packages per variant and in the core
-gappscore="configupdater
-framework
+gappscore="framework
 googlebackuptransport
 googlecontactssync
 googlefeedback
