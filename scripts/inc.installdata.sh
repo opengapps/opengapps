@@ -77,6 +77,7 @@ installer_name="Open GApps '"$VARIANT"' '"$PLATFORM"' - ";
 
 req_android_version="'"$PLATFORM"'";
 
+'"$KEYBDLIBS"'
 faceLock_lib_filename="libfacelock_jni.so";
 WebView_lib_filename="libwebviewchromium.so";
 
@@ -444,6 +445,11 @@ privapp_list="
 /system/app/PrebuiltGmsCore'"$REMOVALSUFFIX"'
 /system/app/SetupWizard'"$REMOVALSUFFIX"'
 /system/app/Velvet'"$REMOVALSUFFIX"'
+";
+
+# Stock/AOSP Keyboard lib (and symlink) that are always removed since they are always replaced
+reqd_list="
+'"$REQDLIST"'
 ";
 
 # Remove from priv-app since it was moved to app
