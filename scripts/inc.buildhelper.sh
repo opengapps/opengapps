@@ -100,6 +100,7 @@ buildapp(){
     fi
   fi
 }
+
 getsourceforapi() {
   #this functions finds the highest available acceptable api level for the given architeture
   if ! stat --printf='' "$SOURCES/$2/"*"app/$1" 2>/dev/null; then
@@ -123,6 +124,7 @@ getsourceforapi() {
   #$sourceapks and $api have the useful returnvalues
   return 0 #return that it was a success
 }
+
 buildapk() {
   sourceapk="$1"
   targetdir="$build/$2"
@@ -140,6 +142,7 @@ buildapk() {
     unzip -Z -1 "$targetapk" | grep "lib/" | grep -v "/crazy." | xargs zip -q -d "$targetapk" #delete all libs, except crazy-linked
   fi
 }
+
 buildlib() {
   sourceapk="$1"
   targetdir="$build/$2"

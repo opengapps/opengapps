@@ -599,6 +599,15 @@ else
   forceclean="false"
 fi;
 
+# Check for swypelibs in gapps-config or if current aosp lib is already a symlink (which indicates to an already replaced lib)
+EOFILE
+echo 'if ( grep -qiE "^swypelibs$" $g_conf ) || [ -h "/system/'"$LIBFOLDER"'/$keybd_lib_aosp" ] ; then # true or false to override the default selection'>> "$build/META-INF/com/google/android/update-binary" 
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+  swypelibs="true"
+else
+  swypelibs="false"
+fi;
+
 # Set density to unknown if it's still empty
 test -z "$density" && density=unknown;
 
@@ -1018,6 +1027,20 @@ for gapp_name in $core_gapps_list; do
   core_size=$((core_size + appsize));
 done;
 
+# Add swypelibs size to core, if it exists
+if [ $swypelibs = "true" ]; then
+  unzip -o "$ZIP" "Optional/swypelibs.tar.xz" -d /tmp;
+  keybd_lib_size=$(tar -tvJf "/tmp/Optional/swypelibs.tar.xz" "swypelibs" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
+  rm -f "/tmp/Optional/swypelibs.tar.xz";
+  core_size=$((core_size + keybd_lib_size)); # Add Keyboard Lib size to core, if it exists
+fi
+
+# Do not touch AOSP keyboard if the swypelibs are not replaced
+if [ $swypelibs = "false" ]; then
+  reqd_list=$(echo "${reqd_list}" | grep -v "latinime.so");
+  remove_list=$(echo "${remove_list}" | grep -v "latinime.so");
+fi
+
 # Read and save system partition size details
 df=$(busybox df -k /system | tail -n 1);
 case $df in
@@ -1177,6 +1200,7 @@ done;
 set_progress 0.25;
 
 EOFILE
+echo "$KEYBDINSTALLCODE" >> "$build/META-INF/com/google/android/update-binary"
 echo "$DATAINSTALLCODE" >> "$build/META-INF/com/google/android/update-binary"
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 # Progress Bar increment calculations for GApps Install process

@@ -17,6 +17,38 @@ cameracompatibilityhack(){
   fi
 }
 
+keyboardlibhack(){ #only on lollipop arm and arm64
+  if [ "$API" -gt "19" ] && [ "$API" -lt "23" ] && { [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ];}; then
+    gappsoptional="swypelibs $gappsoptional"
+    REQDLIST="/system/lib/libjni_latinime.so
+/system/lib/libjni_latinimegoogle.so
+/system/lib64/libjni_latinime.so
+/system/lib64/libjni_latinimegoogle.so
+/system/app/LatinIME/lib/$ARCH/libjni_latinime.so
+/system/app/LatinIME/lib/$ARCH/libjni_latinimegoogle.so"
+    KEYBDLIBS='keybd_lib_google="libjni_latinimegoogle.so";
+keybd_lib_aosp="libjni_latinime.so";'
+    # Do not touch AOSP keyboard only if swypelibs should be installed
+    KEYBDINSTALLCODE='if [ $swypelibs = "true" ]; then
+    extract_app "Optional/keybdlib";
+    ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/'"$LIBFOLDER"'/$keybd_lib_aosp"; # create required symlink
+    mkdir -p "/system/app/LatinIME/lib/'"$ARCH"'";
+    ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google"; # create required symlink
+    ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_aosp"; # create required symlink
+
+    # Add same code to backup script to insure symlinks are recreated on addon.d restore
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_aosp\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/LatinIME/lib/'"$ARCH"'\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/'"$LIBFOLDER"'/$keybd_lib_aosp\"" $bkup_tail;
+fi;'
+  else
+    REQDLIST=""
+    KEYBDLIBS=""
+    KEYBDINSTALLCODE=""
+  fi
+}
+
 kitkatdatahack(){
   if [ "$API" -le "19" ]; then
     DATASIZESCODE='    # Broken lib configuration on KitKat, so some apps do not count for the /system space because they are on /data
