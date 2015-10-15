@@ -106,7 +106,7 @@ get_fallback_arch(){
 get_supported_variants(){
   case "$1" in
     aroma)          if [ "$API" -ge "22" ]; then
-                      supported_variants="pico nano micro mini full stock super";
+                      supported_variants="pico nano micro mini full stock";
                     else
                       supported_variants="pico nano micro mini full stock";
                     fi;;
