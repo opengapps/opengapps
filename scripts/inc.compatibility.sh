@@ -30,7 +30,7 @@ keyboardlibhack(){ #only on lollipop arm and arm64
 keybd_lib_aosp="libjni_latinime.so";'
     # Do not touch AOSP keyboard only if swypelibs should be installed
     KEYBDINSTALLCODE='if [ $swypelibs = "true" ]; then
-    extract_app "Optional/keybdlib";
+    extract_app "Optional/swypelibs";
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/'"$LIBFOLDER"'/$keybd_lib_aosp"; # create required symlink
     mkdir -p "/system/app/LatinIME/lib/'"$ARCH"'";
     ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google"; # create required symlink
