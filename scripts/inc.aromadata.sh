@@ -181,7 +181,7 @@ form(
 
     "gapps",     "Choose GApps which you want to add on install/exclude list",        "",                                         "group",
       "AndroidPay",     "<b>Android Pay</b>",       "To Exclude/Include",                      "check",
-      "AndroidForWOrk",     "<b>Android For Work</b>",       "To Exclude/Include",                      "check",
+      "AndroidForWork",     "<b>Android For Work</b>",       "To Exclude/Include",                      "check",
       "Books",     "<b>Google Play Books</b>",       "To Exclude/Include",                      "check",
       "CalendarGoogle",     "<b>Google Calendar</b>",       "To Exclude/Include",                      "check",
       "CalSync",     "<b>Google Calendar Sync</b>",       "To Exclude/Include (installed by default when Google Calendar is NOT being installed)",                      "check",
@@ -385,9 +385,9 @@ then
 endif;
 
 if
-  prop("gapps.prop", "AndroidForWOrk")=="1"
+  prop("gapps.prop", "AndroidForWork")=="1"
 then
-  appendvar("gapps", "AndroidForWOrk\n");
+  appendvar("gapps", "AndroidForWork\n");
 endif;
 
 if
