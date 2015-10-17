@@ -77,7 +77,7 @@ viewbox(
     "   Supported devices: <b><#scrollbar>Any!</#></b>\n"+
     "   Supported Android: <b><#scrollbar>"+zipprop("g.prop", "ro.addon.platform")+"</#></b>\n"+
     "   Build date\t: <b><#scrollbar>" + ini_get("rom_date") + " </#></b>\n\n"+
-    "<b>For support and updates visit the official thread on XDA! <#scrollbar>(bit.ly/opengappsxda)</#></b>"+"\n\n\n\n",
+    "<b>For support and updates visit our site! <#scrollbar>(http://opengapps.org)</#></b>"+"\n\n\n\n",
 
 
   "@welcome"
@@ -180,45 +180,54 @@ form(
   "0",     "Exclude",        "Choose the apps you DON'T WANT installed from the list below.",                                         "select",
 
     "gapps",     "Choose GApps which you want to add on install/exclude list",        "",                                         "group",
-      "Android Pay",     "<b>AndroidPay</b>",       "To Exclude/Include Android Pay",                      "check",
-      "Books",     "<b>Books</b>",       "To Exclude/Include Google Play Books",                      "check",
-      "CalendarGoogle",     "<b>CalendarGoogle </b>",       "To Exclude/Include Google Calendar",                      "check",
-      "CalSync",     "<b>CalSync</b>",       "To Exclude/Include Google Calendar Sync (installed by default when Google Calendar is NOT being installed)",                      "check",
-      "CameraGoogle",     "<b>CameraGoogle</b>",       "To Exclude/Include Google Camera",                      "check",
-      "Chrome",     "<b>Chrome</b>",       "To Exclude/Include Chrome Browser",                      "check",
-      "ClockGoogle",     "<b>ClockGoogle</b>",       "To Exclude/Include Google Clock",                      "check",
-      "CloudPrint",     "<b>CloudPrint</b>",       "To Exclude/Include Cloud Print",                      "check",
-      "Docs",     "<b>Docs</b>",       "To Exclude/Include Google Docs",                      "check",
-      "Drive",     "<b>Drive</b>",       "To Exclude/Include Google Drive",                      "check",
-      "Ears",     "<b>Ears</b>",       "To Exclude/Include Sound Search for Google Play",                      "check",
-      "Earth",     "<b>Earth</b>",       "To Exclude/Include Google Earth",                      "check",
-      "ExchangeGoogle",     "<b>ExchangeGoogle</b>",       "To Exclude/Include Google Exchange Services",                      "check",
-      "FaceUnlock",     "<b>FaceUnlock</b>",       "To Exclude/Include FaceUnlock",                      "check",
-      "Fitness",     "<b>Fitness</b>",       "To Exclude/Include Fitness",                      "check",
-      "Gmail",     "<b>Gmail</b>",       "To Exclude/Include Gmail",                      "check",
-      "GoogleNow",     "<b>GoogleNow</b>",       "To Exclude/Include Google Now Launcher",                      "check",
-      "GooglePlus",     "<b>GooglePlus</b>",       "To Exclude/Include Google+",                      "check",
-      "GoogleTTS",     "<b>GoogleTTS</b>",       "To Exclude/Include Google Text-to-Speech",                      "check",
-      "Hangouts",     "<b>Hangouts</b>",       "To Exclude/Include Hangouts",                      "check",
-      "Keep",     "<b>Keep</b>",       "To Exclude/Include Google Keep",                      "check",
-      "KeyboardGoogle",     "<b>KeyboardGoogle</b>",       "To Exclude/Include Google Keyboard",                      "check",
-      "Maps",     "<b>Maps</b>",       "To Exclude/Include Maps",                      "check",
-      "Messenger",     "<b>Messenger</b>",       "To Exclude/Include Messenger (not installed on tablet devices)",                      "check",
-      "Movies",     "<b>Movies</b>",       "To Exclude/Include Google Play Movies & TV",                      "check",
-      "Music",     "<b>Music</b>",       "To Exclude/Include Google Play Music",                      "check",
-      "NewsStand",     "<b>NewsStand</b>",       "To Exclude/Include Google Play Newsstand",                      "check",
-      "NewsWidget",     "<b>NewsWidget</b>",       "To Exclude/Include Google News & Weather",                      "check",
-      "Photos",     "<b>Photos</b>",       "To Exclude/Include the Google Photos",                      "check",
-      "PlayGames",     "<b>PlayGames</b>",       "To Exclude/Include Google Play Games",                      "check",
-      "Sheets",     "<b>Sheets</b>",       "To Exclude/Include Google Sheets",                      "check",
-      "Slides",     "<b>Slides</b>",       "To Exclude/Include Google Slides",                      "check",
-      "Search",     "<b>Search</b>",       "To Exclude BOTH Google Search AND Google Now Launcher <#f00>OR</#> To Include Google Search",                      "check",
+      "AndroidPay",     "<b>Android Pay</b>",       "To Exclude/Include",                      "check",
+      "AndroidForWOrk",     "<b>Android For Work</b>",       "To Exclude/Include",                      "check",
+      "Books",     "<b>Google Play Books</b>",       "To Exclude/Include",                      "check",
+      "CalendarGoogle",     "<b>Google Calendar</b>",       "To Exclude/Include",                      "check",
+      "CalSync",     "<b>Google Calendar Sync</b>",       "To Exclude/Include (installed by default when Google Calendar is NOT being installed)",                      "check",
+      "CameraGoogle",     "<b>Google Camera</b>",       "To Exclude/Include",                      "check",
+      "Chrome",     "<b>Google Chrome</b>",       "To Exclude/Include",                      "check",
+      "ClockGoogle",     "<b>Google Clock</b>",       "To Exclude/Include",                      "check",
+      "CloudPrint",     "<b>Google Cloud Print</b>",       "To Exclude/Include",                      "check",
+      "DMAgent",     "<b>Google Apps Device Policy</b>",       "To Exclude/Include",                      "check",
+      "Docs",     "<b>Google Docs</b>",       "To Exclude/Include",                      "check",
+      "Drive",     "<b>Google Drive</b>",       "To Exclude/Include",                      "check",
+      "Ears",     "<b>Sound Search for Google Play</b>",       "To Exclude/Include",                      "check",
+      "Earth",     "<b>Google Earth</b>",       "To Exclude/Include",                      "check",
+      "ExchangeGoogle",     "<b>Google Exchange Services</b>",       "To Exclude/Include",                      "check",
+      "FaceUnlock",     "<b>Face Unlock</b>",       "To Exclude/Include",                      "check",
+      "Fitness",     "<b>Google Fit</b>",       "To Exclude/Include",                      "check",
+      "GCS",     "<b>Google Connectivity Services</b>",       "To Exclude BOTH Google Connectivity Services AND Project Fi by Google <#f00>OR</#> To Include Google Connectivity Services",                      "check",
+      "Gmail",     "<b>Gmail</b>",       "To Exclude/Include",                      "check",
+      "GoogleNow",     "<b>Google Now Launcher</b>",       "To Exclude/Include",                      "check",
+      "GooglePlus",     "<b>Google+</b>",       "To Exclude/Include",                      "check",
+      "GoogleTTS",     "<b>Google Text-to-Speech</b>",       "To Exclude/Include",                      "check",
+      "Hangouts",     "<b>Google Hangouts</b>",       "To Exclude/Include",                      "check",
+      "Japanese",     "<b>Google Japanese Input</b>",       "To Exclude/Include",                      "check",
+      "Keep",     "<b>Google Keep</b>",       "To Exclude/Include",                      "check",
+      "KeyboardGoogle",     "<b>Google Keyboard</b>",       "To Exclude/Include",                      "check",
+      "Korean",     "<b>Google Korean Input</b>",       "To Exclude/Include",                      "check",
+      "Maps",     "<b>Google Maps</b>",       "To Exclude/Include",                      "check",
+      "Messenger",     "<b>Messenger</b>",       "To Exclude/Include (not installed on tablet devices)",                      "check",
+      "Movies",     "<b>Google Play Movies & TV</b>",       "To Exclude/Include",                      "check",
+      "Music",     "<b>Google Play Music</b>",       "To Exclude/Include",                      "check",
+      "NewsStand",     "<b>Google Play Newsstand</b>",       "To Exclude/Include",                      "check",
+      "NewsWidget",     "<b>Google News & Weather</b>",       "To Exclude/Include",                      "check",
+      "Pinyin",     "<b>Google Pinyin Input</b>",       "To Exclude/Include",                      "check",
+      "Photos",     "<b>Google Photos</b>",       "To Exclude/Include",                      "check",
+      "Google Play Games",     "<b>PlayGames</b>",       "To Exclude/Include",                      "check",
+      "Project Fi by Google",     "<b>ProjectFI</b>",       "To Exclude/Include",                      "check",
+      "Sheets",     "<b>Google Sheets</b>",       "To Exclude/Include",                      "check",
+      "Slides",     "<b>Google Slides</b>",       "To Exclude/Include",                      "check",
+      "Search",     "<b>Google Search</b>",       "To Exclude BOTH Google Search AND Google Now Launcher <#f00>OR</#> To Include Google Search",                      "check",
       "Speech",     "<b>Speech</b>",       "To Exclude/Include off-line Speech files (Required for off-line 'Okay Google' support)",                      "check",
-      "Street",     "<b>Street</b>",       "To Exclude/Include Street View on Google Maps",                      "check",
-      "TagGoogle",     "<b>TagGoogle</b>",       "To Exclude/Include Google NFC Tags",                      "check",
-      "Talkback",     "<b>Talkback</b>",       "To Exclude/Include TalkBack",                      "check",
-      "WebViewGoogle",     "<b>WebViewGoogle</b>",       "To Exclude/Include Google Webview",                      "check",
-      "YouTube",     "<b>YouTube</b>",       "To Exclude/Include YouTube",                      "check"
+      "Street",     "<b>Google Street View</b>",       "To Exclude/Include",                      "check",
+      "TagGoogle",     "<b>Google NFC Tags</b>",       "To Exclude/Include",                      "check",
+      "Talkback",     "<b>Talkback</b>",       "To Exclude/Include",                      "check",
+      "Translate",     "<b>Google Translate</b>",       "To Exclude/Include",                      "check",
+      "WebViewGoogle",     "<b>Android System WebView</b>",       "To Exclude/Include",                      "check",
+      "YouTube",     "<b>YouTube</b>",       "To Exclude/Include",                      "check",
+      "Google Zhuyin Input",     "<b>Google Zhuyin Input</b>",       "To Exclude/Include",                      "check"
 );
 #Duplicate aromagapps.prop and rename it to gapps.prop - this method is useful because the selections doesn't get erased by the complete installation (menu.prop selected ==2)
 resexec("scripts/props.sh");
@@ -273,42 +282,42 @@ form(
   # PROP ID     | TITLE            |  SUBTITLE                                   |    Type       #
   #-------------+--------+-------------------------------------------------------+---------------#
     "remove",     "Choose apps which you want to remove",        "",                                         "group",
-      "BasicDreams",     "<b>BasicDreams</b>",       "To remove the Stock Basic Dreams Wallpaper",                      "check",
-      "Browser",     "<b>Browser</b>",       "To remove the Stock/AOSP Browser",                      "check",
-      "CalendarStock",     "<b>CalendarStock</b>",       "To remove the Stock/AOSP Calendar Application (automatically removed when Google Calendar is installed)",                      "check",
-      "ClockStock",     "<b>ClockStock</b>",       "To remove the Stock/AOSP Desk Clock Application (automatically removed when Google Desk Clock is installed)",                      "check",
-      "CameraStock",     "<b>CameraStock</b>",       "To remove the Stock/AOSP Camera Application (automatically removed when Google Camera is installed)",                      "check",
-      "CMAccount",     "<b>CMAccount</b>",       "To remove the Stock CM Account Application",                      "check",
-      "CMAudioFX",     "<b>CMAudioFX</b>",       "To remove the Stock CM AudioFX Application",                      "check",
-      "CMEleven",     "<b>CMEleven</b>",       "To remove the Stock CM Music Application",                      "check",
-      "CMFileManager",     "<b>CMFileManager</b>",       "To remove the Stock CM File Manager",                      "check",
-      "CMSetupWizard",     "<b>CMSetupWizard</b>",       "To remove the Stock CM Setup Wizard Application",                      "check",
-      "CMUpdater",     "<b>CMUpdater</b>",       "To remove the Stock CM Updater Application",                      "check",
-      "CMWallpapers",     "<b>CMWallpapers</b>",       "To remove the Stock CM Wallpapers",                      "check",
-      "DashClock",     "<b>DashClock</b>",       "To remove the Stock DashClock Application (a widget found in certain ROMs)",                      "check",
-      "Email",     "<b>Email</b>",       "To remove the Stock/AOSP Email Application",                      "check",
-      "ExchangeStock",     "<b>ExchangeStock</b>",       "To remove the Stock/AOSP Exchange Services (automatically removed when Google Exchange Services is installed)",                      "check",
-      "FMRadio",     "<b>FMRadio</b>",       "To remove the Stock FM Radio Application (not found on all devices or ROM's)",                      "check",
-      "Galaxy",     "<b>Galaxy</b>",       "To remove the Stock Galaxy Wallpaper",                      "check",
-      "Gallery",     "<b>Gallery</b>",       "To remove the Stock/AOSP Gallery",                      "check",
-      "HoloSpiral",     "<b>HoloSpiral</b>",       "To remove the Stock Holo Spiral Wallpaper",                      "check",
-      "KeyboardStock",     "<b>KeyboardStock </b>",       "To remove the Stock/AOSP Keyboard (automatically removed when Google Keyboard is installed)",                      "check",
-      "Launcher",     "<b>Launcher</b>",       "To remove the Stock/AOSP Launcher(s)",                      "check",
-      "LiveWallpapers",     "<b>LiveWallpapers</b>",       "To remove the Stock Live Wallpapers",                      "check",
-      "LockClock",     "<b>LockClock</b>",       "To remove the Stock Lock Clock Application",                      "check",
-      "MMS",     "<b>MMS</b>",       "To remove the Stock/AOSP SMS Application",                      "check",
-      "NoiseField",     "<b>NoiseField</b>",       "To remove the Stock Noise Field Wallpaper",                      "check",
-      "Phasebeam",     "<b>Phasebeam</b>",       "To remove the Stock Phasebeam Wallpaper",                      "check",
-      "PhotoPhase",     "<b>PhotoPhase</b>",       "To remove the Stock Photo Phase Wallpaper",                      "check",
-      "PhotoTable",     "<b>PhotoTable</b>",       "To remove the Stock Photo Table Wallpaper",                      "check",
-      "PicoTTS",     "<b>PicoTTS</b>",       "To remove the Stock/AOSP PicoTTS",                      "check",
-      "SimToolKit",     "<b>SimToolKit</b>",       "To remove the Stock/AOSP SimToolKit Application",                      "check",
-      "Studio",     "<b>Studio</b>",       "To remove the Stock/AOSP Movie Studio Application",                      "check",
-      "SykoPath",     "<b>SykoPath</b>",       "To remove SykoPath OverlayManager (found in certain ROM's)",                      "check",
-      "Terminal",     "<b>Terminal</b>",       "To remove the Stock Terminal Application",                      "check",
-      "Themes",     "<b>Themes</b>",       "To remove the Stock Themes Application (Will break the link in Settings to Themes)",                      "check",
-      "VisualizationWallpapers",     "<b>VisualizationWallpapers</b>",       "To remove VisualizationWallpapers",                      "check",
-      "WhisperPush",     "<b>WhisperPush</b>",       "To remove the Stock WhisperPush support ",                      "check"
+      "BasicDreams",     "<b>Basic Dreams Live Wallpaper</b>",       "",                      "check",
+      "Browser",     "<b>Stock/AOSP Browser</b>",       "",                      "check",
+      "CalendarStock",     "<b>Stock/AOSP Calendar</b>",       "(automatically removed when Google Calendar is installed)",                      "check",
+      "CameraStock",     "<b>Stock/AOSP/Moto Camera</b>",       "(automatically removed when Google Camera is installed)",                      "check",
+      "ClockStock",     "<b>Stock/AOSP Clock</b>",       "(automatically removed when Google Clock is installed)",                      "check",
+      "CMAccount",     "<b>CyanogenMod Account</b>",       "",                      "check",
+      "CMAudioFX",     "<b>CyanogenMod AudioFX</b>",       "",                      "check",
+      "CMEleven",     "<b>CyanogenMod Music</b>",       "",                      "check",
+      "CMFileManager",     "<b>CyanogenMod File Manager</b>",       "",                      "check",
+      "CMSetupWizard",     "<b>CyanogenMod SetupWizard</b>",       "To remove the Stock CM Setup Wizard Application",                      "check",
+      "CMUpdater",     "<b>CyanogenMod Updater</b>",       "",                      "check",
+      "CMWallpapers",     "<b>CyanogenMod Wallpapers</b>",       "",                      "check",
+      "DashClock",     "<b>DashClock Widget</b>",       "(a widget found in certain ROMs)",                      "check",
+      "Email",     "<b>Stock/AOSP Email</b>",       "",                      "check",
+      "ExchangeStock",     "<b>Stock/AOSP Exchange Services</b>",       "(automatically removed when Google Exchange Services is installed)",                      "check",
+      "FMRadio",     "<b>Stock/AOSP FM Radio</b>",       "(not found on all devices or ROM's)",                      "check",
+      "Galaxy",     "<b>Galaxy Live Wallpaper</b>",       "",                      "check",
+      "Gallery",     "<b>Stock/AOSP Gallery</b>",       "",                      "check",
+      "HoloSpiral",     "<b>Holo Spiral Live Wallpaper</b>",       "To remove the Stock Holo Spiral Wallpaper",                      "check",
+      "KeyboardStock",     "<b>Stock/AOSP Keyboard</b>",       "(automatically removed when Google Keyboard is installed)",                      "check",
+      "Launcher",     "<b>Stock/AOSP Launcher(s)</b>",       "",                      "check",
+      "LiveWallpapers",     "<b>Live Wallpapers</b>",       "",                      "check",
+      "LockClock",     "<b>Lock Clock</b>",       "(a widget found in certain ROMs)",                      "check",
+      "MMS",     "<b>Stock/AOSP MMS</b>",       "",                      "check",
+      "NoiseField",     "<b>NoiseField Live Wallpaper</b>",       "",                      "check",
+      "Phasebeam",     "<b>Phasebeam Live Wallpaper</b>",       "",                      "check",
+      "PhotoPhase",     "<b>PhotoPhase Live Wallpaper</b>",       "",                      "check",
+      "PhotoTable",     "<b>PhotoTable Live Wallpaper</b>",       "",                      "check",
+      "PicoTTS",     "<b>Stock/AOSP Text-to-Speech</b>",       "",                      "check",
+      "SimToolKit",     "<b>Stock/AOSP Sim ToolKit</b>",       "",                      "check",
+      "Studio",     "<b>Stock/AOSP Movie Studio</b>",       "",                      "check",
+      "SykoPath",     "<b>SykoPath Layers Manager</b>",       "(found in certain ROM's)",                      "check",
+      "Terminal",     "<b>Terminal</b>",       "",                      "check",
+      "Themes",     "<b>CyanogenMod Theme Engine</b>",       "(Will break the link in Settings to Themes)",                      "check",
+      "VisualizationWallpapers",     "<b>Visualization Live Wallpaper</b>",       "",                      "check",
+      "WhisperPush",     "<b>WhisperPush</b>",       "",                      "check"
 );
 form(
     "Extra",
@@ -328,8 +337,9 @@ form(
   # PROP ID     | TITLE            |  SUBTITLE                                   |    Type       #
   #-------------+--------+-------------------------------------------------------+---------------#
     "extra",     "Extra key words.",        "",                                         "group",
-      "ex1",     "<b>NoDebug</b>",       "To disable the debug log.",                      "check",
-      "ex2",     "<b>Test</b>",       "To perform a install simulation and generate a detailed log, but <u>WILL NOT MAKE ANY CHANGES</u> to your device.",                      "check"
+      "ex1",     "<b>No Debug Log</b>",       "To disable the debug log.",                      "check",
+      "ex2",     "<b>Test</b>",       "To perform a install simulation and generate a detailed log, but <u>WILL NOT MAKE ANY CHANGES</u> to your device.",                      "check",
+      "ex3",     "<b>Swype Libs</b>",       "The AOSP keyboard does normally not support gesture typing. This feature can be added on some ROMs by replacing the AOSP libs with Google's libs.",                      "check"
 );
 
 ##############################################
@@ -350,6 +360,11 @@ if
 then
   appendvar("gapps", "Test\n");
 endif;
+if
+  prop("extra.prop", "ex3")=="1"
+then
+  appendvar("gapps", "swypelibs\n");
+endif;
 
 #INCLUDE OR EXCLUDE
 if
@@ -367,6 +382,12 @@ if
   prop("gapps.prop", "AndroidPay")=="1"
 then
   appendvar("gapps", "AndroidPay\n");
+endif;
+
+if
+  prop("gapps.prop", "AndroidForWOrk")=="1"
+then
+  appendvar("gapps", "AndroidForWOrk\n");
 endif;
 
 if
@@ -412,6 +433,12 @@ then
 endif;
 
 if
+  prop("gapps.prop", "DMAgent")=="1"
+then
+  appendvar("gapps", "DMAgent\n");
+endif;
+
+if
   prop("gapps.prop", "Docs")=="1"
 then
   appendvar("gapps", "Docs\n");
@@ -454,6 +481,12 @@ then
 endif;
 
 if
+  prop("gapps.prop", "GCS")=="1"
+then
+  appendvar("gapps", "GCS\n");
+endif;
+
+if
   prop("gapps.prop", "Gmail")=="1"
 then
   appendvar("gapps", "Gmail\n");
@@ -484,6 +517,12 @@ then
 endif;
 
 if
+  prop("gapps.prop", "Japanese")=="1"
+then
+  appendvar("gapps", "Japanese\n");
+endif;
+
+if
   prop("gapps.prop", "Keep")=="1"
 then
   appendvar("gapps", "Keep\n");
@@ -493,6 +532,12 @@ if
   prop("gapps.prop", "KeyboardGoogle")=="1"
 then
   appendvar("gapps", "KeyboardGoogle\n");
+endif;
+
+if
+  prop("gapps.prop", "Korean")=="1"
+then
+  appendvar("gapps", "Korean\n");
 endif;
 
 if
@@ -532,6 +577,12 @@ then
 endif;
 
 if
+  prop("gapps.prop", "Pinyin")=="1"
+then
+  appendvar("gapps", "Pinyin\n");
+endif;
+
+if
   prop("gapps.prop", "Photos")=="1"
 then
   appendvar("gapps", "Photos\n");
@@ -541,6 +592,12 @@ if
   prop("gapps.prop", "PlayGames")=="1"
 then
   appendvar("gapps", "PlayGames\n");
+endif;
+
+if
+  prop("gapps.prop", "ProjectFI")=="1"
+then
+  appendvar("gapps", "ProjectFI\n");
 endif;
 
 if
@@ -586,6 +643,12 @@ then
 endif;
 
 if
+  prop("gapps.prop", "Translate")=="1"
+then
+  appendvar("gapps", "Translate\n");
+endif;
+
+if
   prop("gapps.prop", "WebViewGoogle")=="1"
 then
   appendvar("gapps", "WebViewGoogle\n");
@@ -595,6 +658,12 @@ if
   prop("gapps.prop", "YouTube")=="1"
 then
   appendvar("gapps", "YouTube\n");
+endif;
+
+if
+  prop("gapps.prop", "Zhuyin")=="1"
+then
+  appendvar("gapps", "Zhuyin\n");
 endif;
 
 
