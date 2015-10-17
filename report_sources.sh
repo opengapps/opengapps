@@ -99,7 +99,7 @@ for appname in $allapps;do
         for dpi in $appdpis;do
           appversionfile="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/$dpi/*" | head -n 1)"
           appversion="$(basename -s ".apk" "$appversionfile")"
-          appversionname="$(aapt dump badging "$appversionfile" 2>/dev/null | grep "versionName" | awk '{print $4}' | sed s/versionName=// | sed "s/'//g")"
+          appversionname="$(aapt dump badging "$appversionfile" 2>/dev/null | awk '/versionName=/ {print $4}' | sed s/versionName=// | sed "s/'//g")"
           if [ -z "$nosig" ];then
             if verifyapk "$appversionfile";then
               signed="pass"

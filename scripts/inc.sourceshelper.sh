@@ -19,14 +19,14 @@ GOOGLECERT="Issuer: C=US, ST=C(A|alifornia), L=Mountain View, O=Google((|,) Inc(
 
 getapkproperties(){
   apkproperties="$(aapt dump badging "$1" 2>/dev/null)"
-  name="$(echo "$apkproperties" | grep "application-label:" | sed 's/application-label://g' | sed "s/'//g")"
+  name="$(echo "$apkproperties" | grep -a "application-label:" | sed 's/application-label://g' | sed "s/'//g")"
   package="$(echo "$apkproperties" | awk '/package:/ {print $2}' | sed s/name=//g | sed s/\'//g | awk '{print tolower($0)}')"
   versionname="$(echo "$apkproperties" | awk '/versionName=/ {print $4}' | sed s/versionName=// | sed "s/'//g")"
   versioncode="$(echo "$apkproperties" | awk '/versionCode=/ {print $3}' | sed s/versionCode=// | sed "s/'//g")"
-  sdkversion="$(echo "$apkproperties" | grep "sdkVersion:" | sed 's/sdkVersion://' | sed "s/'//g")"
-  compatiblescreens="$(echo "$apkproperties" | grep "compatible-screens:")"
-  native="$(echo "$apkproperties" | grep "native-code:" | sed 's/native-code://g' | sed "s/'//g")"
-  leanback="$(echo "$apkproperties" | grep "android.software.leanback" | awk -F [.\'] '{print $(NF-1)}')"
+  sdkversion="$(echo "$apkproperties" | grep -a "sdkVersion:" | sed 's/sdkVersion://' | sed "s/'//g")"
+  compatiblescreens="$(echo "$apkproperties" | grep -a "compatible-screens:")"
+  native="$(echo "$apkproperties" | grep -a "native-code:" | sed 's/native-code://g' | sed "s/'//g")"
+  leanback="$(echo "$apkproperties" | grep -a "android.software.leanback" | awk -F [.\'] '{print $(NF-1)}')"
   case "$versionname" in
     *leanback*) leanback="leanback";;
   esac
