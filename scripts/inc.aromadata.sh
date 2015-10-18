@@ -595,9 +595,9 @@ then
 endif;
 
 if
-  prop("gapps.prop", "ProjectFI")=="1"
+  prop("gapps.prop", "ProjectFi")=="1"
 then
-  appendvar("gapps", "ProjectFI\n");
+  appendvar("gapps", "ProjectFi\n");
 endif;
 
 if
