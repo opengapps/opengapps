@@ -63,7 +63,7 @@ buildapp(){
   if [ -z "$4" ]; then usearch="$ARCH"
   else usearch="$4"; fi #allows for an override
 
-  if getsourceforapi "$package" "$usearch"
+  if getsourceforapi "$package" "$usearch" "$(basename "$ziplocation")" # Third parameter is the app name
   then
     baseversionname=""
     for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
@@ -106,7 +106,8 @@ getsourceforapi() {
   if ! stat --printf='' "$SOURCES/$2/"*"app/$1" 2>/dev/null; then
     return 1 #appname is not there, error!?
   fi
-
+  appname="$3"
+  sourceapks=""
   #sed copies filename to the beginning, to compare version, and later we remove it with cut
   for foundapk in $(find $SOURCES/$2/*app/$1 -iname '*.apk' | sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2- | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
     foundpath="$(dirname "$(dirname "$(echo "$foundapk" | tr '' ' ')")")" #and we place the spaces back again
