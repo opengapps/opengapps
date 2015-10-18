@@ -216,7 +216,7 @@ form(
       "Pinyin",     "<b>Google Pinyin Input</b>",       "To Exclude/Include",                      "check",
       "Photos",     "<b>Google Photos</b>",       "To Exclude/Include",                      "check",
       "PlayGames",     "<b>Google Play Games</b>",       "To Exclude/Include",                      "check",
-      "ProjectFI",     "<b>Project Fi by Google</b>",       "To Exclude/Include",                      "check",
+      "ProjectFi",     "<b>Project Fi by Google</b>",       "To Exclude/Include",                      "check",
       "Sheets",     "<b>Google Sheets</b>",       "To Exclude/Include",                      "check",
       "Slides",     "<b>Google Slides</b>",       "To Exclude/Include",                      "check",
       "Search",     "<b>Google Search</b>",       "To Exclude BOTH Google Search AND Google Now Launcher <#f00>OR</#> To Include Google Search",                      "check",
