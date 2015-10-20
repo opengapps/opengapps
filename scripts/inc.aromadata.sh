@@ -227,7 +227,7 @@ form(
       "Translate",     "<b>Google Translate</b>",       "To Exclude/Include",                      "check",
       "WebViewGoogle",     "<b>Android System WebView</b>",       "To Exclude/Include",                      "check",
       "YouTube",     "<b>YouTube</b>",       "To Exclude/Include",                      "check",
-      "Google Zhuyin Input",     "<b>Google Zhuyin Input</b>",       "To Exclude/Include",                      "check"
+      "Zhuyin",     "<b>Google Zhuyin Input</b>",       "To Exclude/Include",                      "check"
 );
 #Duplicate aromagapps.prop and rename it to gapps.prop - this method is useful because the selections doesn't get erased by the complete installation (menu.prop selected ==2)
 resexec("scripts/props.sh");
