@@ -203,6 +203,7 @@ form(
       "GooglePlus",     "<b>Google+</b>",       "To Exclude/Include",                      "check",
       "GoogleTTS",     "<b>Google Text-to-Speech</b>",       "To Exclude/Include",                      "check",
       "Hangouts",     "<b>Google Hangouts</b>",       "To Exclude/Include",                      "check",
+      "Hindi",     "<b>Google Hindi Input</b>",       "To Exclude/Include",                      "check",
       "Japanese",     "<b>Google Japanese Input</b>",       "To Exclude/Include",                      "check",
       "Keep",     "<b>Google Keep</b>",       "To Exclude/Include",                      "check",
       "KeyboardGoogle",     "<b>Google Keyboard</b>",       "To Exclude/Include",                      "check",
@@ -514,6 +515,12 @@ if
   prop("gapps.prop", "Hangouts")=="1"
 then
   appendvar("gapps", "Hangouts\n");
+endif;
+
+if
+  prop("gapps.prop", "Hindi")=="1"
+then
+  appendvar("gapps", "Hindi\n");
 endif;
 
 if
