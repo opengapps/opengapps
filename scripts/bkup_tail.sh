@@ -4,7 +4,7 @@ EOF
 # Backup/Restore using /sdcard if the installed GApps size plus a buffer for other addon.d backups (204800=200MB) is larger than /tmp
 installed_gapps_size_kb=$(grep "^installed_gapps_size_kb" /tmp/gapps.prop | cut -d= -f2)
 if [ ! "$installed_gapps_size_kb" ]; then
-  installed_gapps_size_kb=$(cd /system; du -ak "$(list_files)" | awk '{ i+=$1 } END { print i }')
+  installed_gapps_size_kb=$(cd /system; du -ak $(list_files) | awk '{ i+=$1 } END { print i }')
   echo "installed_gapps_size_kb=$installed_gapps_size_kb" >> /tmp/gapps.prop
 fi
 
