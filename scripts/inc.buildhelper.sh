@@ -102,7 +102,7 @@ buildapp(){
 }
 
 getapksforapi() {
-  #this functions finds the highest available acceptable api level for the given architeture
+  #this functions finds the highest available acceptable apk for a given api and architeture
   #$1 package, $2 arch, $3 api
   if ! stat --printf='' "$SOURCES/$2/"*"app/$1" 2>/dev/null; then
     return 1 #appname is not there, error!?
@@ -117,7 +117,7 @@ getapksforapi() {
     api="$(basename "$foundpath")"
     if [ "$api" -le "$3" ]; then
       #We need to keep them sorted
-      sourceapks="$(find "$foundpath" -name "*.apk" | sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2-)"
+      sourceapks="$(find "$foundpath" -iname '*.apk' | sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2-)"
       break
     fi
   done
@@ -127,6 +127,30 @@ getapksforapi() {
     return 1 #error
   fi
   #$sourceapks and $api have the useful returnvalues
+  return 0 #return that it was a success
+}
+
+getlibforapi() {
+  #this functions finds the highest available acceptable lib for a given api and architeture
+  #$1 libname, $2 arch, $3 api
+  sourcelib=""
+  OLDIFS="$IFS"
+  IFS="
+"  #We set IFS to newline here so that spaces can survive the for loop
+  for foundlibs in $(find $SOURCES/$2/lib*/ -iname "$1.so" | sort -r); do
+    foundpath="$(dirname "$foundlibs")"
+    api="$(basename "$foundpath")"
+    if [ "$api" -le "$3" ]; then
+      sourcelib="$(find "$foundpath" -iname "$1.so" | sort -r)"
+      break
+    fi
+  done
+  IFS="$OLDIFS"
+  if [ -z "$sourcelib" ]; then
+    echo "WARNING: No lib found compatible with API level $3 for lib $1 on $2, lowest found: $api"
+    return 1 #error
+  fi
+  #$sourcelib and $api have the useful returnvalues
   return 0 #return that it was a success
 }
 
