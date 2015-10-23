@@ -137,11 +137,10 @@ getlibforapi() {
   OLDIFS="$IFS"
   IFS="
 "  #We set IFS to newline here so that spaces can survive the for loop
-  for foundlibs in $(find $SOURCES/$2/lib*/ -iname "$1.so" | sort -r); do
-    foundpath="$(dirname "$foundlibs")"
-    api="$(basename "$foundpath")"
+  for foundlib in $(find $SOURCES/$2/lib*/ -iname "$1.so" | sort -r); do
+    api="$(basename "$(dirname "$foundlib")")"
     if [ "$api" -le "$3" ]; then
-      sourcelib="$(find "$foundpath" -iname "$1.so" | sort -r)"
+      sourcelib="$foundlib"
       break
     fi
   done
