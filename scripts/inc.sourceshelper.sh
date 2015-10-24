@@ -24,7 +24,7 @@ getapkproperties(){
   versionname="$(echo "$apkproperties" | awk '/versionName=/ {print $4}' | sed s/versionName=// | sed "s/'//g")"
   versioncode="$(echo "$apkproperties" | awk '/versionCode=/ {print $3}' | sed s/versionCode=// | sed "s/'//g")"
   sdkversion="$(echo "$apkproperties" | grep -a "sdkVersion:" | sed 's/sdkVersion://' | sed "s/'//g")"
-  compatiblescreens="$(echo "$apkproperties" | grep -a "compatible-screens:")"
+  compatiblescreens="$(echo "$apkproperties" | grep -a "compatible-screens:'")" #the ' is added to prevent detection of lines that only have compatiblescreens but without any values
   native="$(echo "$apkproperties" | grep -a "native-code:" | sed 's/native-code://g' | sed "s/'//g")"
   leanback="$(echo "$apkproperties" | grep -a "android.software.leanback" | awk -F [.\'] '{print $(NF-1)}')"
   case "$versionname" in
