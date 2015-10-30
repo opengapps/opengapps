@@ -51,6 +51,7 @@ docs
 drive
 ears
 fitness
+googleplus
 keep
 movies
 music
@@ -62,7 +63,6 @@ slides
 talkback"
 
 gappsmini="clockgoogle
-googleplus
 hangouts
 maps
 photos
