@@ -177,8 +177,7 @@ taggoogle"
 
 api22hack(){
   if [ "$API" -ge "22" ]; then
-    # Starting from API 22 we add GCS to the core apps
-    #gappscore="$gappscore"$'\n'"gcs"
+    # Starting from API 22 configupdater is part of the core apps
     gappscore="$gappscore
 configupdater"
 
