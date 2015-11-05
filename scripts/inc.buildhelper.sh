@@ -168,6 +168,14 @@ buildapk() {
   install -D "$sourceapk" "$targetapk"
   if [ "$API" -lt "23" ] && (unzip -qql "$targetapk" | grep -q "lib/"); then #only if pre-Marshmallow and the lib folder exists
     unzip -Z -1 "$targetapk" | grep "lib/" | grep -v "/crazy." | xargs zip -q -d "$targetapk" #delete all libs, except crazy-linked
+  elif (unzip -qql "$sourceapk" | grep -q -E "lib/*"); then #Marshmallow needs (if any exist) libs to be stored without compression within the APK
+    zip -q -d "$targetapk" "lib/*" #delete all libs
+    unzip -q -o "$sourceapk" -d "$targetdir" "lib/*"
+    CURRENTPWD="$(realpath .)" #if we ever switch to bash, make this a pushd-popd trick
+    cd "$targetdir"
+    zip -q -r -D -Z store -b "$targetdir" "$targetapk" "lib/" #no parameter for output and mode, we are in 'add and update existing' mode which is default. Lib files have to be stored without compression.
+    cd "$CURRENTPWD"
+    rm -rf "$targetdir/lib/"
   fi
 }
 
