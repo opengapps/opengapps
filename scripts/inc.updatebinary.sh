@@ -29,9 +29,7 @@ tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 ZIP="$3";
 zip_folder="$(dirname "$ZIP")";
 OUTFD=/proc/self/fd/$2;
-
 g_prop=/system/etc/g.prop;
-b_prop=/system/build.prop;
 bkup_tail=/tmp/bkup_tail.sh;
 gapps_removal_list=/tmp/gapps-remove.txt;
 g_log=/tmp/g.log;
@@ -361,6 +359,20 @@ mount -o rw,remount /;
 mount -o rw,remount / /;
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
+if [ -e "/system/build.prop" ]; then
+  b_prop=/system/build.prop;
+elif [ -e "/system/default.prop" ]; then
+  b_prop=/system/default.prop;
+else
+  ui_print "*** No build.prop ***";
+  ui_print " ";
+  ui_print "Your ROM has no build.prop or default.prop";
+  ui_print " ";
+  ui_print "******* GApps Installation failed *******";
+  ui_print " ";
+  install_note="${install_note}nobuildprop"$'\n'; # make note that there is no build.prop
+  abort "$E_NOBUILDPROP";
+fi
 # Check if build.prop is not compressed and thus unprocessable
 if [ "$(head -c4 "$b_prop")" = "zzzz" ]; then
   ui_print "*** Recovery does not support transparent compression ***";
@@ -601,7 +613,7 @@ fi;
 
 # Check for swypelibs in gapps-config or if current aosp lib is already a symlink (which indicates to an already replaced lib)
 EOFILE
-echo 'if ( grep -qiE "^swypelibs$" $g_conf ) || [ -h "/system/'"$LIBFOLDER"'/$keybd_lib_aosp" ] ; then # true or false to override the default selection'>> "$build/META-INF/com/google/android/update-binary" 
+echo 'if ( grep -qiE "^swypelibs$" $g_conf ) || [ -h "/system/'"$LIBFOLDER"'/$keybd_lib_aosp" ] ; then # true or false to override the default selection'>> "$build/META-INF/com/google/android/update-binary"
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
   swypelibs="true"
 else
