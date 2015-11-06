@@ -25,7 +25,7 @@ tee "$build/META-INF/com/google/android/aroma-config" > /dev/null <<'EOFILE'
 #    GNU General Public License for more details.
 #
 
-#ROM Info
+# ROM Info
 ini_set("rom_name", "Open GApps");
 ini_set("rom_author", "Open GApps Team");
 ini_set("rom_date", zipprop("g.prop", "ro.addon.open_version"));
@@ -33,38 +33,19 @@ ini_set("text_quit", "Exit");
 ini_set("text_next", "Next");
 
 ##############################################
-#
-#Set colorspace to RGBA in order to obtain proper splash screen colors
-#
+# UI/Font/Splash
 ##############################################
 ini_set("force_colorspace", "rgba");
 splash(
     3000,
     "open"
 );
-
-
-##############################################
-#
-#Font
-#
-##############################################
 fontresload("0", "ttf/Roboto-Regular.ttf", "12");
 fontresload("1", "ttf/Roboto-Regular.ttf", "14");
-
-
-##############################################
-#
-#UI
-#
-##############################################
 theme("material_green");
 
-
 ##############################################
-#
-#Welcome box
-#
+# Welcome
 ##############################################
 viewbox(
   "Welcome",
@@ -79,33 +60,19 @@ viewbox(
     "   Build date\t: <b><#scrollbar>" + ini_get("rom_date") + " </#></b>\n\n"+
     "<b>For support and updates visit our site! <#scrollbar>(http://opengapps.org)</#></b>"+"\n\n\n\n",
 
-
   "@welcome"
 );
+
 ##############################################
-#
 # MENU
-#
 ##############################################
 menubox(
-  #-- Title
     "Open GApps",
-
-  #-- Sub Title
     "Please select one of the choices below",
-
-  #-- Icon
     "@apps",
-
-  #-- Will be saved in /tmp/aroma/demo.prop
     "menu.prop",
-
-  #-------------------------+-----------------[ Menubox Items ]-------------------------+---------------#
-  # TITLE                   |  SUBTITLE                                                 |   Item Icons  #
-  #-------------------------+-----------------------------------------------------------+---------------#
-
-    "Customized installation",      "Select yourself which GApps to install",       "@personalize",      #-- selected = 1
-    "Complete installation",       "Install complete GApps package",                "@default",         #-- selected = 2
+    "Customized installation",   "Select which apps you want",     "@personalize",      #-- selected = 1
+    "Complete installation",     "Install the Super package",      "@default",         #-- selected = 2
     "Exit",              "Exit to recovery",    "@alert"      #-- selected = 3
 );
 
@@ -125,16 +92,14 @@ if prop("menu.prop", "selected")=="3" then
 endif;
 
 ##############################################
-#
-#Load selections from previous installation
-#
+# Load Previous Choices
 ##############################################
 checkviewbox(
-  "Load selections",
-  "Load selections from the previous installation\n\n\n\n\n<b>Do you want to load the selections from the previous installation?</b>\n\n",
+  "Load Previous Choices",
+  "Load Previous Choices\n\n\n\n\n<b>Do you want to load your choices from a previous install?</b>\n\n",
   "@welcome",
 
-  "Load selections.", "1", "loadselections"
+  "Load choices.", "1", "loadselections"
 );
 
 if
@@ -152,85 +117,69 @@ endif;
 
 if prop("menu.prop", "selected")=="1" then
 ##############################################
-#
-#Customized installation
-#
+# Customized installation
 ##############################################
-
-
 form(
     "Apps",
-    "Please select which GApps you want to add on include/exclude list</#>",
+    "Please select which apps you want to include or exclude</#>",
     "@default",
     aromagapps.prop,
-  #
-  # Type:
-  #  - group              = Group
-  #  - select             = Select Item
-  #  - select.selected    = Selected Select Item
-  #  - check              = Checkbox Item
-  #  - check.checked      = Checked Checkbox Item
-  #  - hide               = Hidden
-  #
-  #-------------+-----------------------[ Selectbox Without Group ]------------------------------#
-  # PROP ID     | TITLE            |  SUBTITLE                                   |    Type       #
-  #-------------+--------+-------------------------------------------------------+---------------#
-    "inclorexcl",     "Choose to include or exclude the apps below",        "",                                         "group",
-  "1",     "Include",        "Choose the apps you WANT installed from the list below.",                                         "select.selected",
-  "0",     "Exclude",        "Choose the apps you DON'T WANT installed from the list below.",                                         "select",
+    "inclorexcl",     "Choose to include or exclude the apps below",        "",                    "group",
+      "1",     "Include",   "Choose the apps you WANT installed from the list below.",             "select.selected",
+      "0",     "Exclude",   "Choose the apps you DON'T WANT installed from the list below.",       "select",
 
     "gapps",     "Choose GApps which you want to add on install/exclude list",        "",                                         "group",
-      "AndroidPay",     "<b>Android Pay</b>",       "To Exclude/Include",                      "check",
-      "AndroidForWork",     "<b>Android For Work</b>",       "To Exclude/Include",                      "check",
-      "Books",     "<b>Google Play Books</b>",       "To Exclude/Include",                      "check",
-      "CalendarGoogle",     "<b>Google Calendar</b>",       "To Exclude/Include",                      "check",
-      "CalSync",     "<b>Google Calendar Sync</b>",       "To Exclude/Include (installed by default when Google Calendar is NOT being installed)",                      "check",
-      "CameraGoogle",     "<b>Google Camera</b>",       "To Exclude/Include",                      "check",
-      "Chrome",     "<b>Google Chrome</b>",       "To Exclude/Include",                      "check",
-      "ClockGoogle",     "<b>Google Clock</b>",       "To Exclude/Include",                      "check",
-      "CloudPrint",     "<b>Google Cloud Print</b>",       "To Exclude/Include",                      "check",
-      "DMAgent",     "<b>Google Apps Device Policy</b>",       "To Exclude/Include",                      "check",
-      "Docs",     "<b>Google Docs</b>",       "To Exclude/Include",                      "check",
-      "Drive",     "<b>Google Drive</b>",       "To Exclude/Include",                      "check",
-      "Ears",     "<b>Sound Search for Google Play</b>",       "To Exclude/Include",                      "check",
-      "Earth",     "<b>Google Earth</b>",       "To Exclude/Include",                      "check",
-      "ExchangeGoogle",     "<b>Google Exchange Services</b>",       "To Exclude/Include",                      "check",
-      "FaceUnlock",     "<b>Face Unlock</b>",       "To Exclude/Include",                      "check",
-      "Fitness",     "<b>Google Fit</b>",       "To Exclude/Include",                      "check",
+      "AndroidPay",     "<b>Android Pay</b>",       "",                      "check",
+      "AndroidForWork",     "<b>Android For Work</b>",       "",                      "check",
+      "Books",     "<b>Google Play Books</b>",       "",                      "check",
+      "CalendarGoogle",     "<b>Google Calendar</b>",       "",                      "check",
+      "CalSync",     "<b>Google Calendar Sync</b>",       "(installed by default when Google Calendar is NOT being installed)",                      "check",
+      "CameraGoogle",     "<b>Google Camera</b>",       "",                      "check",
+      "Chrome",     "<b>Google Chrome</b>",       "",                      "check",
+      "ClockGoogle",     "<b>Google Clock</b>",       "",                      "check",
+      "CloudPrint",     "<b>Google Cloud Print</b>",       "",                      "check",
+      "DMAgent",     "<b>Google Apps Device Policy</b>",       "",                      "check",
+      "Docs",     "<b>Google Docs</b>",       "",                      "check",
+      "Drive",     "<b>Google Drive</b>",       "",                      "check",
+      "Ears",     "<b>Sound Search for Google Play</b>",       "",                      "check",
+      "Earth",     "<b>Google Earth</b>",       "",                      "check",
+      "ExchangeGoogle",     "<b>Google Exchange Services</b>",       "",                      "check",
+      "FaceUnlock",     "<b>Face Unlock</b>",       "",                      "check",
+      "Fitness",     "<b>Google Fit</b>",       "",                      "check",
       "GCS",     "<b>Google Connectivity Services</b>",       "To Exclude BOTH Google Connectivity Services AND Project Fi by Google <#f00>OR</#> To Include Google Connectivity Services",                      "check",
-      "Gmail",     "<b>Gmail</b>",       "To Exclude/Include",                      "check",
-      "GoogleNow",     "<b>Google Now Launcher</b>",       "To Exclude/Include",                      "check",
-      "GooglePlus",     "<b>Google+</b>",       "To Exclude/Include",                      "check",
-      "GoogleTTS",     "<b>Google Text-to-Speech</b>",       "To Exclude/Include",                      "check",
-      "Hangouts",     "<b>Google Hangouts</b>",       "To Exclude/Include",                      "check",
-      "Hindi",     "<b>Google Hindi Input</b>",       "To Exclude/Include",                      "check",
-      "Japanese",     "<b>Google Japanese Input</b>",       "To Exclude/Include",                      "check",
-      "Keep",     "<b>Google Keep</b>",       "To Exclude/Include",                      "check",
-      "KeyboardGoogle",     "<b>Google Keyboard</b>",       "To Exclude/Include",                      "check",
-      "Korean",     "<b>Google Korean Input</b>",       "To Exclude/Include",                      "check",
-      "Maps",     "<b>Google Maps</b>",       "To Exclude/Include",                      "check",
-      "Messenger",     "<b>Messenger</b>",       "To Exclude/Include (not installed on tablet devices)",                      "check",
-      "Movies",     "<b>Google Play Movies & TV</b>",       "To Exclude/Include",                      "check",
-      "Music",     "<b>Google Play Music</b>",       "To Exclude/Include",                      "check",
-      "NewsStand",     "<b>Google Play Newsstand</b>",       "To Exclude/Include",                      "check",
-      "NewsWidget",     "<b>Google News & Weather</b>",       "To Exclude/Include",                      "check",
-      "Pinyin",     "<b>Google Pinyin Input</b>",       "To Exclude/Include",                      "check",
-      "Photos",     "<b>Google Photos</b>",       "To Exclude/Include",                      "check",
-      "PlayGames",     "<b>Google Play Games</b>",       "To Exclude/Include",                      "check",
-      "ProjectFi",     "<b>Project Fi by Google</b>",       "To Exclude/Include",                      "check",
-      "Sheets",     "<b>Google Sheets</b>",       "To Exclude/Include",                      "check",
-      "Slides",     "<b>Google Slides</b>",       "To Exclude/Include",                      "check",
+      "Gmail",     "<b>Gmail</b>",       "",                      "check",
+      "GoogleNow",     "<b>Google Now Launcher</b>",       "",                      "check",
+      "GooglePlus",     "<b>Google+</b>",       "",                      "check",
+      "GoogleTTS",     "<b>Google Text-to-Speech</b>",       "",                      "check",
+      "Hangouts",     "<b>Google Hangouts</b>",       "",                      "check",
+      "Hindi",     "<b>Google Indic Input</b>",       "",                      "check",
+      "Japanese",     "<b>Google Japanese Input</b>",       "",                      "check",
+      "Keep",     "<b>Google Keep</b>",       "",                      "check",
+      "KeyboardGoogle",     "<b>Google Keyboard</b>",       "",                      "check",
+      "Korean",     "<b>Google Korean Input</b>",       "",                      "check",
+      "Maps",     "<b>Google Maps</b>",       "",                      "check",
+      "Messenger",     "<b>Messenger</b>",       "(not installed on tablet devices)",                      "check",
+      "Movies",     "<b>Google Play Movies & TV</b>",       "",                      "check",
+      "Music",     "<b>Google Play Music</b>",       "",                      "check",
+      "NewsStand",     "<b>Google Play Newsstand</b>",       "",                      "check",
+      "NewsWidget",     "<b>Google News & Weather</b>",       "",                      "check",
+      "Pinyin",     "<b>Google Pinyin Input</b>",       "",                      "check",
+      "Photos",     "<b>Google Photos</b>",       "",                      "check",
+      "PlayGames",     "<b>Google Play Games</b>",       "",                      "check",
+      "ProjectFi",     "<b>Project Fi by Google</b>",       "",                      "check",
+      "Sheets",     "<b>Google Sheets</b>",       "",                      "check",
+      "Slides",     "<b>Google Slides</b>",       "",                      "check",
       "Search",     "<b>Google Search</b>",       "To Exclude BOTH Google Search AND Google Now Launcher <#f00>OR</#> To Include Google Search",                      "check",
-      "Speech",     "<b>Speech</b>",       "To Exclude/Include off-line Speech files (Required for off-line 'Okay Google' support)",                      "check",
-      "Street",     "<b>Google Street View</b>",       "To Exclude/Include",                      "check",
-      "TagGoogle",     "<b>Google NFC Tags</b>",       "To Exclude/Include",                      "check",
-      "Talkback",     "<b>Talkback</b>",       "To Exclude/Include",                      "check",
-      "Translate",     "<b>Google Translate</b>",       "To Exclude/Include",                      "check",
-      "WebViewGoogle",     "<b>Android System WebView</b>",       "To Exclude/Include",                      "check",
-      "YouTube",     "<b>YouTube</b>",       "To Exclude/Include",                      "check",
-      "Zhuyin",     "<b>Google Zhuyin Input</b>",       "To Exclude/Include",                      "check"
+      "Speech",     "<b>Offline Speech Files</b>",       "(Required for offline voice dicatation support)",                      "check",
+      "Street",     "<b>Google Street View</b>",       "",                      "check",
+      "TagGoogle",     "<b>Google NFC Tags</b>",       "",                      "check",
+      "Talkback",     "<b>Talkback</b>",       "",                      "check",
+      "Translate",     "<b>Google Translate</b>",       "",                      "check",
+      "WebViewGoogle",     "<b>Android System WebView</b>",       "",                      "check",
+      "YouTube",     "<b>YouTube</b>",       "",                      "check",
+      "Zhuyin",     "<b>Google Zhuyin Input</b>",       "",                      "check"
 );
-#Duplicate aromagapps.prop and rename it to gapps.prop - this method is useful because the selections doesn't get erased by the complete installation (menu.prop selected ==2)
+# Duplicate aromagapps.prop and rename it to gapps.prop - this is useful because the selections won't be erased by the complete installation (menu.prop selected ==2)
 resexec("scripts/props.sh");
 endif;
 
@@ -244,44 +193,20 @@ form(
     "Careful, you can override the default removal of Stock/AOSP applications below. Please only select if you are sure you want them installed alongside the Google replacement.",
     "@default",
     bypass.prop,
-  #
-  # Type:
-  #  - group              = Group
-  #  - select             = Select Item
-  #  - select.selected    = Selected Select Item
-  #  - check              = Checkbox Item
-  #  - check.checked      = Checked Checkbox Item
-  #  - hide               = Hidden
-  #
-  #-------------+-----------------------[ Selectbox Without Group ]------------------------------#
-  # PROP ID     | TITLE            |  SUBTITLE                                   |    Type       #
-  #-------------+--------+-------------------------------------------------------+---------------#
-    "bypassrem",     "Bypass the automatic removal of Stock/AOSP apps",        "",                                         "group",
-      "+Browser",     "<b>+Browser</b>",      "To bypass the automatic removal of Stock/AOSP Browser",                      "check",
-      "+Email",     "<b>+Email</b>",      "To bypass the automatic removal of Stock/AOSP Email Application",                      "check",
-      "+Gallery",     "<b>+Gallery</b>",      "To bypass the automatic removal of Stock/AOSP Gallery Application",                      "check",
-      "+Launcher",     "<b>+Launcher</b>",      " To bypass the automatic removal of Stock/AOSP Launcher(s)",                      "check",
-      "+MMS",     "<b>+MMS</b>",      "To bypass the automatic removal of Stock/AOSP SMS Application",                      "check",
-      "+PicoTTS",     "<b>+PicoTTS</b>",      "To bypass the automatic removal of the Stock/AOSP PicoTTS app",                      "check"
+    "bypassrem",     "Bypass the automatic removal of Stock/AOSP apps",        "",     "group",
+      "+Browser",     "<b>+Browser</b>",      "",    "check",
+      "+Email",     "<b>+Email</b>",      "",        "check",
+      "+Gallery",     "<b>+Gallery</b>",      "",    "check",
+      "+Launcher",     "<b>+Launcher</b>",      "",  "check",
+      "+MMS",     "<b>+MMS</b>",      "",            "check",
+      "+PicoTTS",     "<b>+PicoTTS</b>",      "",    "check"
 );
 
 form(
     "Remove",
-    "Please select which Stock/AOSP apps you want to add on remove list\n</#>",
+    "Please select which Stock/AOSP apps you want to remove\n</#>",
     "@default",
     rem.prop,
-  #
-  # Type:
-  #  - group              = Group
-  #  - select             = Select Item
-  #  - select.selected    = Selected Select Item
-  #  - check              = Checkbox Item
-  #  - check.checked      = Checked Checkbox Item
-  #  - hide               = Hidden
-  #
-  #-------------+-----------------------[ Selectbox Without Group ]------------------------------#
-  # PROP ID     | TITLE            |  SUBTITLE                                   |    Type       #
-  #-------------+--------+-------------------------------------------------------+---------------#
     "remove",     "Choose apps which you want to remove",        "",                                         "group",
       "BasicDreams",     "<b>Basic Dreams Live Wallpaper</b>",       "",                      "check",
       "Browser",     "<b>Stock/AOSP Browser</b>",       "",                      "check",
@@ -292,7 +217,7 @@ form(
       "CMAudioFX",     "<b>CyanogenMod AudioFX</b>",       "",                      "check",
       "CMEleven",     "<b>CyanogenMod Music</b>",       "",                      "check",
       "CMFileManager",     "<b>CyanogenMod File Manager</b>",       "",                      "check",
-      "CMSetupWizard",     "<b>CyanogenMod SetupWizard</b>",       "To remove the Stock CM Setup Wizard Application",                      "check",
+      "CMSetupWizard",     "<b>CyanogenMod Setup Wizard</b>",       "",                      "check",
       "CMUpdater",     "<b>CyanogenMod Updater</b>",       "",                      "check",
       "CMWallpapers",     "<b>CyanogenMod Wallpapers</b>",       "",                      "check",
       "DashClock",     "<b>DashClock Widget</b>",       "(a widget found in certain ROMs)",                      "check",
@@ -301,7 +226,7 @@ form(
       "FMRadio",     "<b>Stock/AOSP FM Radio</b>",       "(not found on all devices or ROM's)",                      "check",
       "Galaxy",     "<b>Galaxy Live Wallpaper</b>",       "",                      "check",
       "Gallery",     "<b>Stock/AOSP Gallery</b>",       "",                      "check",
-      "HoloSpiral",     "<b>Holo Spiral Live Wallpaper</b>",       "To remove the Stock Holo Spiral Wallpaper",                      "check",
+      "HoloSpiral",     "<b>Holo Spiral Live Wallpaper</b>",       "",                      "check",
       "KeyboardStock",     "<b>Stock/AOSP Keyboard</b>",       "(automatically removed when Google Keyboard is installed)",                      "check",
       "Launcher",     "<b>Stock/AOSP Launcher(s)</b>",       "",                      "check",
       "LiveWallpapers",     "<b>Live Wallpapers</b>",       "",                      "check",
@@ -316,41 +241,27 @@ form(
       "Studio",     "<b>Stock/AOSP Movie Studio</b>",       "",                      "check",
       "SykoPath",     "<b>SykoPath Layers Manager</b>",       "(found in certain ROM's)",                      "check",
       "Terminal",     "<b>Terminal</b>",       "",                      "check",
-      "Themes",     "<b>CyanogenMod Theme Engine</b>",       "(Will break the link in Settings to Themes)",                      "check",
+      "Themes",     "<b>CyanogenMod Theme Engine</b>",       "(Will break the link in Settings to Themes!)",                      "check",
       "VisualizationWallpapers",     "<b>Visualization Live Wallpaper</b>",       "",                      "check",
       "WhisperPush",     "<b>WhisperPush</b>",       "",                      "check"
 );
 form(
-    "Extra",
-    "Extra Key Words.\n</#>",
+    "Advanced Options",
+    "Some advanced options that most likely don't need to be used.\n</#>",
     "@default",
     extra.prop,
-  #
-  # Type:
-  #  - group              = Group
-  #  - select             = Select Item
-  #  - select.selected    = Selected Select Item
-  #  - check              = Checkbox Item
-  #  - check.checked      = Checked Checkbox Item
-  #  - hide               = Hidden
-  #
-  #-------------+-----------------------[ Selectbox Without Group ]------------------------------#
-  # PROP ID     | TITLE            |  SUBTITLE                                   |    Type       #
-  #-------------+--------+-------------------------------------------------------+---------------#
-    "extra",     "Extra key words.",        "",                                         "group",
-      "ex1",     "<b>No Debug Log</b>",       "To disable the debug log.",                      "check",
-      "ex2",     "<b>Test</b>",       "To perform a install simulation and generate a detailed log, but <u>WILL NOT MAKE ANY CHANGES</u> to your device.",                      "check",
-      "ex3",     "<b>Swype Libs</b>",       "The AOSP keyboard does normally not support gesture typing. This feature can be added on some ROMs by replacing the AOSP libs with Google's libs.",                      "check"
+    "extra",     "Advanced Options",        "",                                         "group",
+      "ex1",     "<b>No Debug Log</b>",       "To disable debugging",                      "check",
+      "ex2",     "<b>Test</b>",       "To perform a simulation generating a detailed log, but <u>WILL NOT MAKE ANY CHANGES</u> to your device.",                      "check",
+      "ex3",     "<b>Swype Libs</b>",       "The AOSP keyboard does normally not support gesture typing but can be added on some ROMs by using Google's libs.",                      "check"
 );
 
 ##############################################
-#
-#Write the gapps-config file
-#
+# Write the gapps-config file
 ##############################################
 setvar("gapps","");
 
-#EXTRA KEY WORDS
+# ADVANCED OPTIONS
 if
   prop("extra.prop", "ex1")=="1"
 then
@@ -367,7 +278,7 @@ then
   appendvar("gapps", "swypelibs\n");
 endif;
 
-#INCLUDE OR EXCLUDE
+# INCLUDE/EXCLUDE
 if
   prop("gapps.prop", "inclorexcl")=="1"
 then
@@ -376,7 +287,7 @@ else
   appendvar("gapps", "Exclude");
 endif;
 
-#APPS TO INCLUDE/EXCLUDE
+# APP CHOICES
 appendvar("gapps", "\n\n");
 
 if
@@ -673,11 +584,7 @@ then
   appendvar("gapps", "Zhuyin\n");
 endif;
 
-
-
 appendvar("gapps", "\n");
-
-
 
 # REMOVALS
 if
@@ -898,7 +805,7 @@ endif;
 
 
 
-#BYPASS THE DEFAULT REMOVAL
+# BYPASS REMOVALS
 appendvar("gapps", "\n\n");
 if
   prop("bypass.prop", "+Browser")=="1"
@@ -931,7 +838,7 @@ then
   appendvar("gapps", "+PicoTTS\n");
 endif;
 
-#WRITE GAPPS-CONFIG TO TEMP/AROMA AND DISPLAY IT
+# WRITE CONFIG TO TEMP AND DISPLAY IT
 writetmpfile(".gapps-config", getvar("gapps"));
 
 textbox(
@@ -942,16 +849,14 @@ textbox(
 );
 
 ##############################################
-#
-#Save selections
-#
+# Save Choices
 ##############################################
 checkviewbox(
-  "Save selections",
-  "Save selections on sdcard or emualted storage: /sdcard/Open-GApps\n\n\n\n\n<b>Do you want to save the selections on sdcard? They will save time in future installations.</b>\n\n",
+  "Save Choices",
+  "Save Choices: /sdcard/Open-GApps\n\n\n\n\n<b>Do you want to save your choices? It will save time in future installations.</b>\n\n",
   "@welcome",
 
-  "Save selections.", "1", "saveselections"
+  "Save Choices", "1", "saveselections"
 );
 if
     getvar("saveselections")=="1"
@@ -959,31 +864,31 @@ if
     resexec("scripts/tools.sh", "save");
 endif;
 
-#PreInstall
+# Pre-Install
 ini_set("text_next", "Install GApps");
 viewbox(
-  "Save gapps-config and perform GApps installation.",
-  "Ready install GApps based on your preferences.\n\n\n\n\n" +
-  "Press <b>Install GApps</b> to perform the GApps installation.\n\n" +
+  "Save config and perform GApps install.",
+  "Are you ready to install GApps based on your preferences?\n\n\n\n\n" +
+  "Press <b>Install GApps</b> to perform the install.\n\n" +
   "If you want to review or change any of your settings, press <b>Back</b>.",
   "@install"
 );
 
-#Install
+# Install
 ini_set("text_next", "Next");
 install(
   "Installing",
-  "<b>GApps</b> are being installed.\n\n" +
+  "<b>Open GApps</b> are being installed.\n\n" +
   "Please wait until the process is finished",
   "@install",
   "Press Next to continue."
 );
 
-#PostInstall
+# Post-Install
 ini_set("text_next", "Finish");
 checkviewbox(
-  "All done!",
-  "<b>Congratulation...</b>\n\n\n\n\n" +
+  "Installed",
+  "<b>Congratulations!</b>\n\n\n\n\n" +
   "Open GApps has been installed into your device.",
   "@welcome",
 
