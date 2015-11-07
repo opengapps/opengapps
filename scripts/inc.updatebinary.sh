@@ -959,7 +959,7 @@ if ( contains "$gapps_list" "dialergoogle" ) && ( ! contains "$aosp_remove_list"
 fi;
 
 # If we're installing packageinstaller we MUST ADD packageinstallerstock to $aosp_remove_list (if it's not already there)
-if ( contains "$gapps_list" "packageinstaller" ) && ( ! contains "$aosp_remove_list" "packageinstallerstock" ); then
+if ( contains "$core_gapps_list" "packageinstaller" ) && ( ! contains "$aosp_remove_list" "packageinstallerstock" ); then
   aosp_remove_list="${aosp_remove_list}packageinstallerstock"$'\n';
 fi;
 
