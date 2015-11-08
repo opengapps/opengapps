@@ -334,6 +334,7 @@ app/NoiseField'"$REMOVALSUFFIX"'
 # Must be used when Google PackageInstaller is installed
 packageinstallerstock_list="
 app/PackageInstaller'"$REMOVALSUFFIX"'
+priv-app/PackageInstaller'"$REMOVALSUFFIX"'
 ";
 
 phasebeam_list="
