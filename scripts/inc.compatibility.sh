@@ -198,7 +198,7 @@ packageinstaller"
     gappsmini="$gappsmini
 calculatorgoogle"
     gappsstock="$gappsstock
-contactsgoogle
-dialergoogle"
+contactsgoogle"
+#dialergoogle"
   fi
 }
