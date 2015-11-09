@@ -152,7 +152,7 @@ form(
       "GooglePlus",     "<b>Google+</b>",       "",                      "check",
       "GoogleTTS",     "<b>Google Text-to-Speech</b>",       "",                      "check",
       "Hangouts",     "<b>Google Hangouts</b>",       "",                      "check",
-      "Hindi",     "<b>Google Indic Input</b>",       "",                      "check",
+      "Indic",     "<b>Google Indic Keyboard</b>",       "",                      "check",
       "Japanese",     "<b>Google Japanese Input</b>",       "",                      "check",
       "Keep",     "<b>Google Keep</b>",       "",                      "check",
       "KeyboardGoogle",     "<b>Google Keyboard</b>",       "",                      "check",
@@ -429,9 +429,9 @@ then
 endif;
 
 if
-  prop("gapps.prop", "Hindi")=="1"
+  prop("gapps.prop", "Indic")=="1"
 then
-  appendvar("gapps", "Hindi\n");
+  appendvar("gapps", "Indic\n");
 endif;
 
 if

@@ -31,7 +31,7 @@ androidpay
 dmagent
 earth
 gcs
-hindi
+indic
 japanese
 korean
 pinyin
@@ -223,7 +223,7 @@ get_package_info(){
     dmagent)        packagetype="GApps"; packagename="com.google.android.apps.enterprise.dmagent"; packagetarget="app/DMAgent";;
     earth)          packagetype="GApps"; packagename="com.google.earth"; packagetarget="app/GoogleEarth";;
     gcs)            packagetype="GApps"; packagename="com.google.android.apps.gcs"; packagetarget="priv-app/GCS";;
-    hindi)          packagetype="GApps"; packagename="com.google.android.apps.inputmethod.hindi"; packagetarget="app/GoogleHindiIME";;
+    indic)          packagetype="GApps"; packagename="com.google.android.apps.inputmethod.hindi"; packagetarget="app/GoogleHindiIME";;
     japanese)       packagetype="GApps"; packagename="com.google.android.inputmethod.japanese"; packagetarget="app/GoogleJapaneseInput";;
     korean)         packagetype="GApps"; packagename="com.google.android.inputmethod.korean"; packagetarget="app/KoreanIME";;
     pinyin)         packagetype="GApps"; packagename="com.google.android.inputmethod.pinyin"; packagetarget="app/GooglePinyinIME";;
