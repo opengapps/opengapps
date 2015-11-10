@@ -191,6 +191,7 @@ app/BasicDreams'"$REMOVALSUFFIX"'
 # Must be used when GoogleCalculator is installed
 calculatorstock_list="
 app/Calculator'"$REMOVALSUFFIX"'
+app/ExactCalculator'"$REMOVALSUFFIX"'
 ";
 
 # Must be used when GoogleCalendar is installed
