@@ -195,10 +195,15 @@ api23hack(){
   if [ "$API" -ge "23" ]; then
     gappscore="$gappscore
 packageinstaller"
+    gappspico="$gappspico
+googletts"
     gappsmini="$gappsmini
 calculatorgoogle"
     gappsstock="$gappsstock
 contactsgoogle"
 #dialergoogle"
+  else
+    gappsmicro="$gappsmicro
+googletts"
   fi
 }

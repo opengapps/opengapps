@@ -68,11 +68,11 @@ maps
 photos
 youtube"
 
+#googletts for micro is defined in inc.compatibility.sh api23hack
 gappsmicro="calendargoogle
 exchangegoogle
 gmail
-googlenow
-googletts"
+googlenow"
 
 gappsnano="facedetect
 faceunlock
@@ -156,6 +156,7 @@ get_package_info(){
   packagetarget=""
   packagefiles=""
   case "$1" in
+    configupdater)            packagetype="Core"; packagename="com.google.android.configupdater"; packagetarget="priv-app/ConfigUpdater";;
     framework)                packagetype="Core"; packagefiles="etc framework";;
     gmscore)                  packagetype="Core"; packagename="com.google.android.gms"; packagetarget="priv-app/PrebuiltGmsCore";;
     googlecontactssync)       packagetype="Core"; packagename="com.google.android.syncadapters.contacts"; packagetarget="app/GoogleContactsSyncAdapter";;
@@ -165,19 +166,19 @@ get_package_info(){
     gsflogin)                 packagetype="Core"; packagename="com.google.android.gsf.login"; packagetarget="priv-app/GoogleLoginService";;
     googleonetimeinitializer) packagetype="Core"; packagename="com.google.android.onetimeinitializer"; packagetarget="priv-app/GoogleOneTimeInitializer";;
     googlepartnersetup)       packagetype="Core"; packagename="com.google.android.partnersetup"; packagetarget="priv-app/GooglePartnerSetup";;
+    packageinstaller)         packagetype="Core"; packagename="com.google.android.packageinstaller"; packagetarget="priv-app/GooglePackageInstaller";;
     setupwizard)              packagetype="Core"; packagename="com.google.android.setupwizard"; packagetarget="priv-app/SetupWizard";;
     vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
 
-    configupdater)            packagetype="Core"; packagename="com.google.android.configupdater"; packagetarget="priv-app/ConfigUpdater";;
-    packageinstaller)         packagetype="Core"; packagename="com.google.android.packageinstaller"; packagetarget="priv-app/GooglePackageInstaller";;
-
     books)          packagetype="GApps"; packagename="com.google.android.apps.books"; packagetarget="app/Books";;
+    calculatorgoogle) packagetype="GApps"; packagename="com.google.android.calculator"; packagetarget="app/CalculatorGoogle";;
     calendargoogle) packagetype="GApps"; packagename="com.google.android.calendar"; packagetarget="app/CalendarGooglePrebuilt";;
     calsync)        packagetype="GApps"; packagename="com.google.android.syncadapters.calendar"; packagetarget="app/GoogleCalendarSyncAdapter";;
     cameragoogle)   packagetype="GApps"; packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera";;
     chrome)         packagetype="GApps"; packagename="com.android.chrome"; packagetarget="app/Chrome";;
     clockgoogle)    packagetype="GApps"; packagename="com.google.android.deskclock"; packagetarget="app/PrebuiltDeskClockGoogle";;
     cloudprint)     packagetype="GApps"; packagename="com.google.android.apps.cloudprint"; packagetarget="app/CloudPrint2";;
+    contactsgoogle) packagetype="GApps"; packagename="com.google.android.contacts"; packagetarget="priv-app/GoogleContacts";;
     docs)           packagetype="GApps"; packagename="com.google.android.apps.docs.editors.docs"; packagetarget="app/EditorsDocs";;
     drive)          packagetype="GApps"; packagename="com.google.android.apps.docs"; packagetarget="app/Drive";;
     ears)           packagetype="GApps"; packagename="com.google.android.ears"; packagetarget="app/GoogleEars";;
@@ -232,11 +233,9 @@ get_package_info(){
     translate)      packagetype="GApps"; packagename="com.google.android.apps.translate"; packagetarget="app/TranslatePrebuilt";;
     zhuyin)         packagetype="GApps"; packagename="com.google.android.apps.inputmethod.zhuyin"; packagetarget="app/GoogleZhuyinIME";;
 
-    calculatorgoogle) packagetype="GApps"; packagename="com.google.android.calculator"; packagetarget="app/CalculatorGoogle";;
-    contactsgoogle)   packagetype="GApps"; packagename="com.google.android.contacts"; packagetarget="priv-app/GoogleContacts";;
-    dialergoogle)     packagetype="GApps"; packagename="com.google.android.dialer"; packagetarget="priv-app/GoogleDialer";;
+    dialergoogle)   packagetype="GApps"; packagename="com.google.android.dialer"; packagetarget="priv-app/GoogleDialer";;
 
-    swypelibs)       packagetype="Optional"; packagefiles="$LIBFOLDER/libjni_latinimegoogle.so";;
+    swypelibs)      packagetype="Optional"; packagefiles="$LIBFOLDER/libjni_latinimegoogle.so";;
 
     *)              echo "ERROR! Missing build rule for application with keyword $1"; exit 1;;
   esac
