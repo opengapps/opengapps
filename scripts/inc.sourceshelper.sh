@@ -80,8 +80,8 @@ getapkproperties(){
   fi
 
   beta="" #make sure value is initialized
-  case "$package" in
-    *.beta) beta="beta";; #report beta status as a property
+  case "$1" in
+    *.beta/*) beta="beta";; #report beta status as a property
   esac
 
   if [ "$compatiblescreens" = "" ]; then # we can't use -z here, because there can be a linecontrol character or such in it
