@@ -253,9 +253,9 @@ app/DashClock'"$REMOVALSUFFIX"'
 ";
 
 # Must be used when Google Dialer is installed
-dialerstock_list="
-priv-app/Dialer'"$REMOVALSUFFIX"'
-";
+#dialerstock_list="
+#priv-app/Dialer'"$REMOVALSUFFIX"'
+#";
 
 email_list="
 app/Email'"$REMOVALSUFFIX"'
