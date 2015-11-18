@@ -29,6 +29,10 @@ createcommit(){
     name="$name ($leanback)" #special leanback versions should be named like that in their commit
   fi
 
+  if [ -n "$beta" ]; then
+    name="$name ($beta)" #beta versions should be named like that in their commit
+  fi
+
   git rm -q -r --ignore-unmatch "$(dirname "$1")"
   eval "lowestapi=\$LOWESTAPI_$2"
   if [ "$sdkversion" -le "$lowestapi" ]; then
