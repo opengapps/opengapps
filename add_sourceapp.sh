@@ -122,6 +122,7 @@ $notinzip"
 for argument in "$@"; do
   if [ "$argument" = "beta" ]; then
     BETA="beta"
+    continue
   fi
   file="$(readlink -f "$argument")"
   if [ -f "$file" ]
