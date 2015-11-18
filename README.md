@@ -32,9 +32,9 @@ or
 ```
 make arm-22-stock
 ```
-One can update the sources used with the command:
+To add updated source APKs to the sources archive (you can add more than one at once):
 ```
-./add_sourceapp.sh /path/to/the/file/you/want/to/add.apk [/even/more/files.apk...]
+./add_sourceapp.sh [/path/to/the/files/you/want/to/add.apk]* [beta] [/apps/that/should/be/marked/as/beta.apk...]*
 ```
 For contributors, updated sources can be uploaded by using this command:
 ```

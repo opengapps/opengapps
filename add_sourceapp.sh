@@ -19,6 +19,7 @@ SCRIPTS="$TOP/scripts"
 CERTIFICATES="$SCRIPTS/certificates"
 . "$SCRIPTS/inc.sourceshelper.sh"
 . "$SCRIPTS/inc.tools.sh"
+BETA=""
 
 # Check tools
 checktools aapt file coreutils jarsigner keytool openssl unzip
@@ -119,6 +120,9 @@ $notinzip"
 }
 
 for argument in "$@"; do
+  if [ "$argument" = "beta" ]; then
+    BETA="beta"
+  fi
   file="$(readlink -f "$argument")"
   if [ -f "$file" ]
   then

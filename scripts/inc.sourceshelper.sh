@@ -74,6 +74,11 @@ getapkproperties(){
     *) type="app";;
   esac
 
+  #we do this on purpose after the priv-app detection to emulate the priv-app of the normal app
+  if [ -n "$BETA" ]; then
+    package="$package.$BETA"
+  fi
+
   if [ "$compatiblescreens" = "" ]; then # we can't use -z here, because there can be a linecontrol character or such in it
     dpis="nodpi"
   else
