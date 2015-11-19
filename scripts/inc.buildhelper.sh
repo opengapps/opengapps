@@ -63,7 +63,9 @@ buildapp(){
   if [ -z "$4" ]; then usearch="$ARCH"
   else usearch="$4"; fi #allows for an override
 
-  if getapksforapi "$package" "$usearch" "$API"
+  minapihack #Some packages need a minimal api level to maintain compatibility with the OS
+
+  if getapksforapi "$package" "$usearch" "$API" "$useminapi"
   then
     baseversionname=""
     for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
@@ -102,11 +104,15 @@ buildapp(){
 }
 
 getapksforapi() {
-  #this functions finds the highest available acceptable apk for a given api and architeture
-  #$1 package, $2 arch, $3 api
+  #this functions finds the highest available acceptable apk for a given api and architecture
+  #$1 package, $2 arch, $3 api, $4 minapi
+  if [ -z "$4" ]; then minapi="0"
+  else minapi="$4"; fi #specify minimal api
+
   if ! stat --printf='' "$SOURCES/$2/"*"app/$1" 2>/dev/null; then
     return 1 #appname is not there, error!?
   fi
+
   sourceapks=""
   OLDIFS="$IFS"
   IFS="
@@ -115,7 +121,7 @@ getapksforapi() {
   for foundapk in $(find $SOURCES/$2/*app/$1 -iname '*.apk' | sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2-); do
     foundpath="$(dirname "$(dirname "$foundapk")")"
     api="$(basename "$foundpath")"
-    if [ "$api" -le "$3" ]; then
+    if [ "$api" -le "$3" ] && [ "$api" -ge "$minapi" ]; then
       #We need to keep them sorted
       sourceapks="$(find "$foundpath" -iname '*.apk' | sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2-)"
       break
@@ -131,7 +137,7 @@ getapksforapi() {
 }
 
 getlibforapi() {
-  #this functions finds the highest available acceptable lib for a given api and architeture
+  #this functions finds the highest available acceptable lib for a given api and architecture
   #$1 libname, $2 arch, $3 api
   sourcelib=""
   OLDIFS="$IFS"

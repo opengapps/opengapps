@@ -136,6 +136,18 @@ kitkatpathshack(){
   fi
 }
 
+minapihack(){
+  useminapi=""
+  case "$package" in
+    com.google.android.gms)
+    if [ "$API" -ge "23" ]; then
+      useminapi="23"
+    elif [ "$API" -ge "21" ]; then
+      useminapi="21"
+    fi;; #for all other situations, not having a minimal API specified is OK
+  esac
+}
+
 systemlibhack(){
   case "$package" in
     com.google.android.webview) if [ "$API" -lt "23" ]; then #webview libs are only on /system/lib/ on pre-Marshmallow
