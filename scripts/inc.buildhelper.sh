@@ -118,12 +118,24 @@ getapksforapi() {
   IFS="
 "  #We set IFS to newline here so that spaces can survive the for loop
   #sed copies filename to the beginning, to compare version, and later we remove it with cut
+  maxsdkerrorapi=""
   for foundapk in $(find $SOURCES/$2/*app/$1 -iname '*.apk' | sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2-); do
     foundpath="$(dirname "$(dirname "$foundapk")")"
     api="$(basename "$foundpath")"
+    if [ "$maxsdkerrorapi" = "$api" ]; then
+      continue #if we already know that this api hit the maxsdk error, do not try it again
+    fi
     if [ "$api" -le "$3" ] && [ "$api" -ge "$minapi" ]; then
       #We need to keep them sorted
       sourceapks="$(find "$foundpath" -iname '*.apk' | sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2-)"
+      for maxsdkapk in $sourceapks; do
+        maxsdk="$(aapt dump badging "$maxsdkapk" 2>/dev/null | grep -a "maxSdkVersion:" | sed 's/maxSdkVersion://' | sed "s/'//g")"
+        if [ -n "$maxsdk" ] && [ "$maxsdk" -lt "$3" ]; then
+          echo "WARNING: Newest APK found is incompatible with API level $3 for package $1 on $2, maxSdk: $maxsdk, falling back to higher SDK"
+          maxsdkerrorapi="$api"
+          continue 2
+        fi
+      done
       break
     fi
   done
