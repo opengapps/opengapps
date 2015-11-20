@@ -148,14 +148,14 @@ getapksforapi() {
   return 0 #return that it was a success
 }
 
-getlibforapi() {
+getsystemlibforapi() {
   #this functions finds the highest available acceptable lib for a given api and architecture
-  #$1 libname, $2 arch, $3 api
+  #$1 libname without .so, $2 arch, $3 api
   sourcelib=""
   OLDIFS="$IFS"
   IFS="
 "  #We set IFS to newline here so that spaces can survive the for loop
-  for foundlib in $(find $SOURCES/$2/lib*/ -iname "$1.so" | sort -r); do
+  for foundlib in $(find $SOURCES/$2/lib*/ $SOURCES/$2/vendor/lib*/ -iname "$1.so" | sort -r); do
     api="$(basename "$(dirname "$foundlib")")"
     if [ "$api" -le "$3" ]; then
       sourcelib="$foundlib"
@@ -167,7 +167,10 @@ getlibforapi() {
     echo "WARNING: No lib found compatible with API level $3 for lib $1 on $2, lowest found: $api"
     return 1 #error
   fi
-  #$sourcelib and $api have the useful returnvalues
+  sourceslibpath="$(echo "$sourcelib" | awk -F'/' '{print $1"\\/"$2}')" # sources\\/arch with a double \ escape for later processing in sed
+  apilibpath="$(echo "$sourcelib" | awk -F'/' '{print $(NF-1)}')" # is api number
+  targetlib="$(echo "$sourcelib" | sed "s/$sourceslibpath\//\//g" | sed "s/\/$apilibpath\//\//g")" # lib/lib.so
+  #$sourcelib, $targetlib and $api have the useful returnvalues
   return 0 #return that it was a success
 }
 
