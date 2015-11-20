@@ -62,9 +62,8 @@ buildsystemlib() {
   if [ -z "$3" ]; then usearch="$ARCH"
   else usearch="$3"; fi #allows for an override
 
-  if getsystemlibforapi "$libname" "$usearch" "$API"
-  then
-    echo "$sourcelib to $build/$liblocation/$targetlib"
+  if getsystemlibforapi "$libname" "$usearch" "$API"; then
+    printf "%44s %6s-%s\n" "$libname" "$usearch" "$api"
     install -D -p "$sourcelib" "$build/$targetlib"
   else
     get_fallback_arch "$usearch"
@@ -86,8 +85,7 @@ buildapp(){
 
   minapihack #Some packages need a minimal api level to maintain compatibility with the OS
 
-  if getapksforapi "$package" "$usearch" "$API" "$useminapi"
-  then
+  if getapksforapi "$package" "$usearch" "$API" "$useminapi"; then
     baseversionname=""
     for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
       dpivariant="$(echo "$dpivariant" | tr '' ' ')" #and we place the spaces back again
@@ -253,13 +251,11 @@ buildlib() {
     fallbacklibpath="lib/$fallback_arch" #notice that this sometimes gives 'illegal' paths like 'lib/all', but the path is not used in those situations
   fi
   if [ "$API" -lt "23" ]; then #libextraction is only necessary on pre-Marshmallow
-    if [ -n "$(unzip -Z -1 "$sourceapk" "$libsearchpath" 2>/dev/null)" ]
-    then
+    if [ -n "$(unzip -Z -1 "$sourceapk" "$libsearchpath" 2>/dev/null)" ]; then
       install -d "$targetdir/$libpath"
       unzip -qq -j -o "$sourceapk" "$libsearchpath" -x "lib/*/crazy.*" -d "$targetdir/$libpath" 2>/dev/null
     fi
-    if [ "$apkarch" != "$fallback_arch" ] && [ -n "$(unzip -Z -1 "$sourceapk" "$libfallbacksearchpath" 2>/dev/null)" ]
-    then
+    if [ "$apkarch" != "$fallback_arch" ] && [ -n "$(unzip -Z -1 "$sourceapk" "$libfallbacksearchpath" 2>/dev/null)" ]; then
       install -d "$targetdir/$fallbacklibpath"
       unzip -qq -j -o "$sourceapk" "$libfallbacksearchpath" -x "lib/*/crazy.*" -d "$targetdir/$fallbacklibpath" 2>/dev/null
     fi
