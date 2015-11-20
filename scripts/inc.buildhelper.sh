@@ -56,6 +56,27 @@ buildfile() {
   fi
 }
 
+buildsystemlib() {
+  libname="$1"
+  liblocation="$2"
+  if [ -z "$3" ]; then usearch="$ARCH"
+  else usearch="$3"; fi #allows for an override
+
+  if getsystemlibforapi "$libname" "$usearch" "$API"
+  then
+    echo "$sourcelib to $build/$liblocation/$targetlib"
+    install -D -p "$sourcelib" "$build/$targetlib"
+  else
+    get_fallback_arch "$usearch"
+    if [ "$usearch" != "$fallback_arch" ]; then
+      buildsystemlib "$libname" "$liblocation" "$fallback_arch"
+    else
+      echo "ERROR: No fallback available. Failed to build lib $libname"
+      exit 1
+    fi
+  fi
+}
+
 buildapp(){
   package="$1"
   ziplocation="$2"
@@ -150,12 +171,12 @@ getapksforapi() {
 
 getsystemlibforapi() {
   #this functions finds the highest available acceptable lib for a given api and architecture
-  #$1 libname without .so, $2 arch, $3 api
+  #$1 libname, $2 arch, $3 api
   sourcelib=""
   OLDIFS="$IFS"
   IFS="
 "  #We set IFS to newline here so that spaces can survive the for loop
-  for foundlib in $(find $SOURCES/$2/lib*/ $SOURCES/$2/vendor/lib*/ -iname "$1.so" | sort -r); do
+  for foundlib in $(find $SOURCES/$2/lib*/ $SOURCES/$2/vendor/lib*/ -iname "$1" | sort -r); do
     api="$(basename "$(dirname "$foundlib")")"
     if [ "$api" -le "$3" ]; then
       sourcelib="$foundlib"
@@ -167,9 +188,8 @@ getsystemlibforapi() {
     echo "WARNING: No lib found compatible with API level $3 for lib $1 on $2, lowest found: $api"
     return 1 #error
   fi
-  sourceslibpath="$(echo "$sourcelib" | awk -F'/' '{print $1"\\/"$2}')" # sources\\/arch with a double \ escape for later processing in sed
   apilibpath="$(echo "$sourcelib" | awk -F'/' '{print $(NF-1)}')" # is api number
-  targetlib="$(echo "$sourcelib" | sed "s/$sourceslibpath\//\//g" | sed "s/\/$apilibpath\//\//g")" # lib/lib.so
+  targetlib="$(echo "$sourcelib" | sed "s:^$SOURCES/$2/::" | sed "s:/$apilibpath/:/:g")" # lib/lib.so
   #$sourcelib, $targetlib and $api have the useful returnvalues
   return 0 #return that it was a success
 }
