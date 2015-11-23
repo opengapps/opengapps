@@ -62,10 +62,19 @@ buildsystemlib() {
   if [ -z "$3" ]; then usearch="$ARCH"
   else usearch="$3"; fi #allows for an override
 
+  fallback=""
+  case "$libname" in
+    *+fallback) libname="$(echo "$libname" | sed 's/+fallback//')"
+    fallback="true";;
+  esac
+
   if getsystemlibforapi "$libname" "$usearch" "$API"; then
     printf "%44s %6s-%s\n" "$libname" "$usearch" "$api"
     install -D -p "$sourcelib" "$build/$targetlib"
   else
+    fallback="true"
+  fi
+  if [ -n "$fallback" ]; then
     get_fallback_arch "$usearch"
     if [ "$usearch" != "$fallback_arch" ]; then
       buildsystemlib "$libname" "$liblocation" "$fallback_arch"
