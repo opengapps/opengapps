@@ -17,8 +17,8 @@ cameracompatibilityhack(){
   fi
 }
 
-keyboardlibhack(){ #only on lollipop arm and arm64
-  if [ "$API" -gt "19" ] && [ "$API" -lt "23" ] && { [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ];}; then
+keyboardlibhack(){ #only on arm and arm64
+  if [ "$API" -gt "19" ] && { [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ];}; then
     gappsoptional="swypelibs $gappsoptional"
     REQDLIST="/system/lib/libjni_latinime.so
 /system/lib/libjni_latinimegoogle.so
