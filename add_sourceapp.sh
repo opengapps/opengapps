@@ -136,28 +136,28 @@ for argument in "$@"; do
         else
           echo "ERROR: File $file not a valid APK!"
         fi;;
-      *x86-64*)
-        install -D "$file" "$SOURCES/x86_64/lib64/$(basename "$file")"
-        echo "SUCCESS: Added $file to x86_64/lib64/";;
-      *aarch64*)
-        if [ "$(basename "$file")" = "libfrsdk.so" ]; then
-          install -D "$file" "$SOURCES/arm/vendor/lib64/$(basename "$file")"
-          echo "SUCCESS: Added $file to arm64/vendor/lib64/"
-        else
-          install -D "$file" "$SOURCES/arm64/lib64/$(basename "$file")"
-          echo "SUCCESS: Added $file to arm64/lib64/"
-        fi;;
-      *32-bit*intel*)
-        install -D "$file" "$SOURCES/x86/lib/$(basename "$file")"
-        echo "SUCCESS: Added $file to x86/lib/";;
-      *32-bit*arm*)
-        if [ "$(basename "$file")" = "libfrsdk.so" ]; then
-          install -D "$file" "$SOURCES/arm/vendor/lib/$(basename "$file")"
-          echo "SUCCESS: Added $file to arm/vendor/lib/"
-        else
-          install -D "$file" "$SOURCES/arm/lib/$(basename "$file")"
-          echo "SUCCESS: Added $file to arm/lib/"
-        fi;;
+      #*x86-64*)
+      #  install -D "$file" "$SOURCES/x86_64/lib64/$(basename "$file")"
+      #  echo "SUCCESS: Added $file to x86_64/lib64/";;
+      #*aarch64*)
+      #  if [ "$(basename "$file")" = "libfrsdk.so" ]; then
+      #    install -D "$file" "$SOURCES/arm/vendor/lib64/$(basename "$file")"
+      #    echo "SUCCESS: Added $file to arm64/vendor/lib64/"
+      #  else
+      #    install -D "$file" "$SOURCES/arm64/lib64/$(basename "$file")"
+      #    echo "SUCCESS: Added $file to arm64/lib64/"
+      #  fi;;
+      #*32-bit*intel*)
+      #  install -D "$file" "$SOURCES/x86/lib/$(basename "$file")"
+      #  echo "SUCCESS: Added $file to x86/lib/";;
+      #*32-bit*arm*)
+      #  if [ "$(basename "$file")" = "libfrsdk.so" ]; then
+      #    install -D "$file" "$SOURCES/arm/vendor/lib/$(basename "$file")"
+      #    echo "SUCCESS: Added $file to arm/vendor/lib/"
+      #  else
+      #    install -D "$file" "$SOURCES/arm/lib/$(basename "$file")"
+      #    echo "SUCCESS: Added $file to arm/lib/"
+      #  fi;;
       *)
         echo "ERROR: File $f has an unrecognized filetype!";;
     esac
