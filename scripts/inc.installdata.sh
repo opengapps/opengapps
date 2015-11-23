@@ -33,6 +33,14 @@ makegappsremovetxt(){
       gapps_remove="/system/$packagetarget$REMOVALSUFFIX
 $gapps_remove"
     fi
+    for lib in $packagelibs; do
+      systemlibpath=""
+      getpathsystemlib "$lib"
+      for libpath in $systemlibpath; do
+        gapps_remove="/system/$libpath
+$gapps_remove"
+      done
+    done
     for file in $packagefiles; do
       if [ "$file" = "etc" ];then
         gapps_remove="$(find "$SOURCES/all/" -mindepth 3 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^#/system/#' | sort | uniq)

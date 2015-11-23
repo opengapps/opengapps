@@ -145,6 +145,9 @@ for app in $gapps; do
   for file in $packagefiles; do
     buildfile "$packagetype/$app/common" "$file"
   done
+  for lib in $packagelibs; do
+    buildsystemlib "$lib" "$packagetype/$app/common"
+  done
 done
 
 EXTRACTFILES="app_densities.txt app_sizes.txt" #is executed as first
@@ -155,6 +158,7 @@ get_package_info(){
   packagetype=""
   packagetarget=""
   packagefiles=""
+  packagelibs=""
   case "$1" in
     configupdater)            packagetype="Core"; packagename="com.google.android.configupdater"; packagetarget="priv-app/ConfigUpdater";;
     framework)                packagetype="Core"; packagefiles="etc framework";;
@@ -183,16 +187,20 @@ get_package_info(){
     drive)          packagetype="GApps"; packagename="com.google.android.apps.docs"; packagetarget="app/Drive";;
     ears)           packagetype="GApps"; packagename="com.google.android.ears"; packagetarget="app/GoogleEars";;
     exchangegoogle) packagetype="GApps"; packagename="com.google.android.gm.exchange"; packagetarget="app/PrebuiltExchange3Google";;
-    facedetect)     packagetype="GApps"; packagefiles="$LIBFOLDER/libfilterpack_facedetect.so";
-                    if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib
-                      packagefiles="$packagefiles lib/libfilterpack_facedetect.so";
+    facedetect)     packagetype="GApps";
+                    if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib of libfilterpack_facedetect.so
+                      packagelibs="libfilterpack_facedetect.so+fallback";
+                    else
+                      packagelibs="libfilterpack_facedetect.so";
                     fi;;
     faceunlock)     if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then #both arm and arm64
                       packagetype="GApps"; packagename="com.android.facelock"; packagetarget="app/FaceLock";
-                      packagetype="GApps"; packagefiles="vendor/pittpatt/ $LIBFOLDER/libfacelock_jni.so vendor/$LIBFOLDER/libfrsdk.so";
-                      if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib
-                        packagefiles="$packagefiles vendor/lib/libfrsdk.so";
-                      fi;
+                      packagefiles="vendor/pittpatt/";
+                      if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib of librsdk.so
+                        packagelibs="libfacelock_jni.so libfrsdk.so+fallback";
+                      else
+                        packagelibs="libfacelock_jni.so libfrsdk.so";
+                      fi
                     fi;;
     fitness)        packagetype="GApps"; packagename="com.google.android.apps.fitness"; packagetarget="app/FitnessPrebuilt";;
     gmail)          packagetype="GApps"; packagename="com.google.android.gm"; packagetarget="app/PrebuiltGmail";;
@@ -235,7 +243,7 @@ get_package_info(){
 
     dialergoogle)   packagetype="GApps"; packagename="com.google.android.dialer"; packagetarget="priv-app/GoogleDialer";;
 
-    swypelibs)      packagetype="Optional"; packagefiles="$LIBFOLDER/libjni_latinimegoogle.so";;
+    swypelibs)      packagetype="Optional"; packagelibs="libjni_latinimegoogle.so";;
 
     *)              echo "ERROR! Missing build rule for application with keyword $1"; exit 1;;
   esac
