@@ -70,7 +70,7 @@ buildsystemlib() {
 
   if getsystemlibforapi "$libname" "$usearch" "$API"; then
     printf "%44s %6s-%s\n" "$libname" "$usearch" "$api"
-    install -D -p "$sourcelib" "$build/$targetlib"
+    install -D -p "$sourcelib" "$build/$liblocation/$targetlib"
   else
     fallback="true"
   fi
