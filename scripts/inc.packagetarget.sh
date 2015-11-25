@@ -67,6 +67,7 @@ createxz() {
       if [ -f "$CACHE/$hash.tar.xz" ]; then #we have this xz in cache
         echo "Fetching $d$f from the cache"
         rm -rf "$f" #remove the folder
+        touch -a "$CACHE/$hash.tar.xz" #mark this xz as accessed
         cp "$CACHE/$hash.tar.xz" "$f.tar.xz" #copy from the cache
       else
         echo "Thread: $threads | FreeRAM: $memory | Compressing Package: $d$f"
