@@ -143,7 +143,7 @@ for app in $gapps; do
     buildapp "$packagename" "$packagetype/$app" "$packagetarget"
   fi
   for file in $packagefiles; do
-    buildfile "$packagetype/$app/common" "$file"
+    buildfile "$file" "$packagetype/$app/common"
   done
   for lib in $packagelibs; do
     buildsystemlib "$lib" "$packagetype/$app/common"

@@ -34,23 +34,23 @@ buildfile() {
   if [ -z "$3" ]; then usearch="$ARCH"
   else usearch="$3"; fi #allows for an override
 
-  if [ -e "$SOURCES/$usearch/$2" ]; then #check if directory or file exists
-    if [ -d "$SOURCES/$usearch/$2" ]; then #if we are handling a directory
-      targetdir="$build/$1/$2"
+  if [ -e "$SOURCES/$usearch/$1" ]; then #check if directory or file exists
+    if [ -d "$SOURCES/$usearch/$1" ]; then #if we are handling a directory
+      targetdir="$build/$2/$1"
     else
-      targetdir="$build/$1/$(dirname "$2")"
+      targetdir="$build/$2/$(dirname "$1")"
     fi
     if [ "$usearch" != "$ARCH" ]; then
-      echo "INFO: Falling back from $ARCH to $usearch for file $2"
+      echo "INFO: Falling back from $ARCH to $usearch for file $1"
     fi
     install -d "$targetdir"
-    copy "$SOURCES/$usearch/$2" "$targetdir" #if we have a file specific to this architecture
+    copy "$SOURCES/$usearch/$1" "$targetdir" #if we have a file specific to this architecture
   else
     get_fallback_arch "$usearch"
     if [ "$usearch" != "$fallback_arch" ]; then
       buildfile "$1" "$2" "$fallback_arch"
     else
-      echo "ERROR: No fallback available. Failed to build file $2"
+      echo "ERROR: No fallback available. Failed to build file $1"
       exit 1
     fi
   fi
