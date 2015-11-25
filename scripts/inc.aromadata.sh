@@ -256,8 +256,7 @@ form(
     extra.prop,
     "extra",     "Advanced Options",        "",                                         "group",
       "ex1",     "<b>No Debug Log</b>",       "To disable debugging",                      "check",
-      "ex2",     "<b>Test</b>",       "To perform a simulation generating a detailed log, but <u>WILL NOT MAKE ANY CHANGES</u> to your device.",                      "check",
-      "ex3",     "<b>Swype Libs</b>",       "The AOSP keyboard does normally not support gesture typing but can be added on some ROMs by using Google's libs.",                      "check"
+      "ex2",     "<b>Test</b>",       "To perform a simulation generating a detailed log, but <u>WILL NOT MAKE ANY CHANGES</u> to your device.",                      "check"
 );
 
 ##############################################
@@ -275,11 +274,6 @@ if
   prop("extra.prop", "ex2")=="1"
 then
   appendvar("gapps", "Test\n");
-endif;
-if
-  prop("extra.prop", "ex3")=="1"
-then
-  appendvar("gapps", "swypelibs\n");
 endif;
 
 # INCLUDE/EXCLUDE
