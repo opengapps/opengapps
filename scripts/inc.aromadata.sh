@@ -105,8 +105,12 @@ checkviewbox(
 if
     getvar("loadselections")=="1"
   then
-    resexec("scripts/tools.sh", "load");
-    setvar("reset", "1");
+    if
+        getvar("reset")!="1"
+    then
+        resexec("scripts/tools.sh", "load");
+        setvar("reset", "1");
+    endif;
   else
     if
       getvar("reset")=="1" then
