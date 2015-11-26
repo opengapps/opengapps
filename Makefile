@@ -62,7 +62,7 @@ $(eval $(call make-gapps,$(platform)-$(api)))\
 ))
 
 tidycache:
-	@find "$(CACHEDIR)/"* -mtime +7 -exec rm {} \;
+	@find "$(CACHEDIR)/"* -atime +7 -exec rm {} \;
 	@echo "$(tput setaf 2)Cache cleaned, archives not used for 7 days removed!$(tput sgr 0)"
 
 clean:
