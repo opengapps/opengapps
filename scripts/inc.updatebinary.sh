@@ -614,7 +614,7 @@ fi;
 # Set density to unknown if it's still empty
 test -z "$density" && density=unknown;
 
-# Remove any files from gapps-list.txt that should not be processed for automatic removal
+# Remove any files from gapps-remove.txt that should not be processed for automatic removal
 for bypass_file in $removal_bypass_list; do
   sed -i "\:${bypass_file}:d" $gapps_removal_list;
 done;
@@ -949,8 +949,8 @@ if ( contains "$gapps_list" "dialergoogle" ) && ( ! contains "$aosp_remove_list"
   aosp_remove_list="${aosp_remove_list}dialerstock"$'\n';
 fi;
 
-# If we're installing packageinstaller we MUST ADD packageinstallerstock to $aosp_remove_list (if it's not already there)
-if ( contains "$core_gapps_list" "packageinstaller" ) && ( ! contains "$aosp_remove_list" "packageinstallerstock" ); then
+# If we're installing packageinstallergoogle we MUST ADD packageinstallerstock to $aosp_remove_list (if it's not already there)
+if ( contains "$core_gapps_list" "packageinstallergoogle" ) && ( ! contains "$aosp_remove_list" "packageinstallerstock" ); then
   aosp_remove_list="${aosp_remove_list}packageinstallerstock"$'\n';
 fi;
 
@@ -996,6 +996,77 @@ for f in $(find /system/lib /system/lib64 -name 'libchrome*.so' 2>/dev/null); do
 done;
 # Read in gapps removal list from file and append old Chrome libs
 full_removal_list="$(cat $gapps_removal_list)"$'\n'"${obsolete_libs_list}";
+
+# Some ROMs bundle Google Apps or the user might have installed a Google replacement app during an earlier install
+# Some of these apps are crucial to a functioning system and should NOT be removed if no AOSP/Stock equivalent is available
+# NOTICE: Only for Google Keyboard we need to take KitKat support into account, others are only Lollipop+
+contactsstock_available="false"
+for f in $contactsstock_list; do
+  if [ -e "$f" ]; then
+    contactsstock_available="true"
+    break; #at least 1 aosp stock file is present
+  fi
+done;
+if [ "$contactsstock_available" = "false" ] && ( ! contains "$gapps_list" "contactsgoogle" ); then
+  sed -i "\:/system/priv-app/GoogleContacts:d" $full_removal_list;
+fi
+
+#dialerstock_available="false"
+#for f in $dialerstock_list; do
+#  if [ -e "$f" ]; then
+#    dialerstock_available="true"
+#    break; #at least 1 aosp stock file is present
+#  fi
+#done;
+#if [ "$dialerstock_available" = "false" ] && ( ! contains "$gapps_list" "dialergoogle" ); then
+#  sed -i "\:/system/priv-app/GoogleDialer:d" $full_removal_list;
+#fi
+
+keyboardstock_available="false"
+for f in $keyboardstock_list; do
+  if [ -e "$f" ]; then
+    keyboardstock_available="true"
+    break; #at least 1 aosp stock file is present
+  fi
+done;
+if [ "$keyboardstock_available" = "false" ] && ( ! contains "$gapps_list" "keyboardgoogle" ); then
+EOFILE
+keyboardgooglenotremovehack
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+fi
+
+packageinstallerstock_available="false"
+for f in $packageinstallerstock_list; do
+  if [ -e "$f" ]; then
+    packageinstallerstock_available="true"
+    break; #at least 1 aosp stock file is present
+  fi
+done;
+if [ "$packageinstallerstock_available" = "false" ] && ( ! contains "$gapps_list" "packageinstallergoogle" ); then
+  sed -i "\:/system/priv-app/GooglePackageInstaller:d" $full_removal_list;
+fi
+
+tagstock_available="false"
+for f in $tagstock_list; do
+  if [ -e "$f" ]; then
+    tagstock_available="true"
+    break; #at least 1 aosp stock file is present
+  fi
+done;
+if [ "$tagstock_available" = "false" ] && ( ! contains "$gapps_list" "taggoogle" ); then
+  sed -i "\:/system/priv-app/TagGoogle:d" $full_removal_list;
+fi
+
+webviewstock_available="false"
+for f in $webviewstock_list; do
+  if [ -e "$f" ]; then
+    webviewstock_available="true"
+    break; #at least 1 aosp stock file is present
+  fi
+done;
+if [ "$webviewstock_available" = "false" ] && ( ! contains "$gapps_list" "webviewgoogle" ); then
+  sed -i "\:/system/app/WebViewGoogle:d" $full_removal_list;
+fi
 
 # Clean up and sort our lists for space calculations and installation
 set_progress 0.04;

@@ -17,6 +17,18 @@ cameracompatibilityhack(){
   fi
 }
 
+keyboardgooglenotremovehack(){
+  if [ "$API" -le "19" ]; then
+    tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+  sed -i "\:/system/app/LatinImeGoogle.apk:d" $full_removal_list;
+EOFILE
+  else
+    tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+  sed -i "\:/system/app/LatinImeGoogle:d" $full_removal_list;
+EOFILE
+  fi
+}
+
 keyboardlibhack(){ #only on arm and arm64
   if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then
     gappsoptional="swypelibs $gappsoptional"
@@ -201,19 +213,17 @@ api22hack(){
 configupdater"
 
     # On AOSP we only support Webview on 5.1+, stock Google ROMs support it on 5.0 too, but we're merging stock and fornexus
-    case "$VARIANT" in # We prevent the removal of WebViewGoogle on packages smaller than stock
-      aroma|super|stock)  gappsstock="$gappsstock
-webviewgoogle";
-                          stockremove="$stockremove
-webviewstock";;
-    esac
+    gappsstock="$gappsstock
+webviewgoogle"
+    stockremove="$stockremove
+webviewstock"
   fi
 }
 
 api23hack(){
   if [ "$API" -ge "23" ]; then
     gappscore="$gappscore
-packageinstaller"
+packageinstallergoogle"
     gappspico="$gappspico
 googletts"
     gappsmini="$gappsmini
