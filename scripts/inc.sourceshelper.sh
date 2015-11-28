@@ -63,6 +63,7 @@ getapkproperties(){
     "com.google.android.onetimeinitializer" |\
     "com.google.android.packageinstaller" |\
     "com.google.android.partnersetup" |\
+    "com.google.android.seedsetup" |\
     "com.google.android.setupwizard" |\
     "com.google.android.tungsten.setupwraith" |\
     "com.google.android.tag" |\
