@@ -22,7 +22,6 @@ keyboardgooglenotremovehack(){
     echo '  sed -i "\:/system/app/LatinImeGoogle.apk:d" $full_removal_list;'>> "$build/META-INF/com/google/android/update-binary"
   else
     echo '  sed -i "\:/system/app/LatinImeGoogle:d" $full_removal_list;'>> "$build/META-INF/com/google/android/update-binary"
-EOFILE
   fi
 }
 

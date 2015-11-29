@@ -53,6 +53,10 @@ $gapps_remove"
 $gapps_remove"
       fi
     done
+    for extraline in $packagegappsremove; do
+      gapps_remove="/system/$extraline
+$gapps_remove"
+    done
   done
   printf "%s" "$gapps_remove" | sort > "$build/gapps-remove.txt"
   EXTRACTFILES="$EXTRACTFILES gapps-remove.txt"

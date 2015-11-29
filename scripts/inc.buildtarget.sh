@@ -159,6 +159,7 @@ get_package_info(){
   packagetarget=""
   packagefiles=""
   packagelibs=""
+  packagegappsremove=""
   case "$1" in
     configupdater)            packagetype="Core"; packagename="com.google.android.configupdater"; packagetarget="priv-app/ConfigUpdater";;
     framework)                packagetype="Core"; packagefiles="etc framework";;
@@ -224,7 +225,7 @@ get_package_info(){
     speech)         packagetype="GApps"; packagefiles="usr/srec/en-US/";;
     talkback)       packagetype="GApps"; packagename="com.google.android.marvin.talkback"; packagetarget="app/talkback";;
     taggoogle)      packagetype="GApps"; packagename="com.google.android.tag"; packagetarget="priv-app/TagGoogle";;
-    webviewgoogle)  packagetype="GApps"; packagename="com.google.android.webview"; packagetarget="app/WebViewGoogle";;
+    webviewgoogle)  packagetype="GApps"; packagename="com.google.android.webview"; packagetarget="app/WebViewGoogle"; packagegappsremove="lib/libwebviewchromium.so";;
     youtube)        packagetype="GApps"; packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
 
     androidforwork) packagetype="GApps"; packagename="com.google.android.androidforwork"; packagetarget="priv-app/AndroidForWork";;
