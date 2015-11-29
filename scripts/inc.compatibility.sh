@@ -230,9 +230,12 @@ contactsgoogle"
     webviewlibs='lib/$WebView_lib_filename
 lib64/$WebView_lib_filename
 ' #on Marshmallow the AOSP WebViewlibs must be removed, since they are part of the Google WebView APK; use single quote to not replace variable names
+    webviewgappsremove=""
   else
     gappsmicro="$gappsmicro
 googletts"
-    webviewlibs="" # on non-Marshmallow the webviewlibs should not be considered part of the Stock/AOSP WebView, since they are shared with the Google WebView
+    webviewlibs="" # on non-Marshmallow the WebViewlibs should not be considered part of the Stock/AOSP WebView, since they are shared with the Google WebView
+    webviewgappsremove="lib/libwebviewchromium.so
+lib64/libwebviewchromium.so" #on non-Marshmallow the WebViewlibs are to be explictly included as a Google WebView file in gapps-remove.txt
   fi
 }

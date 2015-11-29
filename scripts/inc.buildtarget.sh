@@ -225,10 +225,7 @@ get_package_info(){
     speech)         packagetype="GApps"; packagefiles="usr/srec/en-US/";;
     talkback)       packagetype="GApps"; packagename="com.google.android.marvin.talkback"; packagetarget="app/talkback";;
     taggoogle)      packagetype="GApps"; packagename="com.google.android.tag"; packagetarget="priv-app/TagGoogle";;
-    webviewgoogle)  packagetype="GApps"; packagename="com.google.android.webview"; packagetarget="app/WebViewGoogle";
-                    if [ "$API" -lt "23" ]; then
-                      packagegappsremove="lib/libwebviewchromium.so"
-                    fi;;
+    webviewgoogle)  packagetype="GApps"; packagename="com.google.android.webview"; packagetarget="app/WebViewGoogle"; packagegappsremove="$webviewgappsremove";;
     youtube)        packagetype="GApps"; packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
 
     androidforwork) packagetype="GApps"; packagename="com.google.android.androidforwork"; packagetarget="priv-app/AndroidForWork";;
