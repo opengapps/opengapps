@@ -402,12 +402,7 @@ app/VisualizationWallpapers'"$REMOVALSUFFIX"'
 webviewstock_list="
 app/webview'"$REMOVALSUFFIX"'
 app/WebView'"$REMOVALSUFFIX"'
-";
-
-webviewlib_list="
-lib/$WebView_lib_filename
-lib64/$WebView_lib_filename
-";
+'"$webviewlibs"'";
 
 whisperpush_list="
 app/WhisperPush'"$REMOVALSUFFIX"'
