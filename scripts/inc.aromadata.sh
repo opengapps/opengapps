@@ -136,18 +136,21 @@ form(
       "AndroidPay",     "<b>Android Pay</b>",       "",                      "check",
       "AndroidForWork",     "<b>Android For Work</b>",       "",                      "check",
       "Books",     "<b>Google Play Books</b>",       "",                      "check",
+      "CalculatorGoogle",     "<b>Google Calculator</b>",       "",                      "check",
       "CalendarGoogle",     "<b>Google Calendar</b>",       "",                      "check",
       "CalSync",     "<b>Google Calendar Sync</b>",       "(installed by default when Google Calendar is NOT being installed)",                      "check",
       "CameraGoogle",     "<b>Google Camera</b>",       "",                      "check",
       "Chrome",     "<b>Google Chrome</b>",       "",                      "check",
       "ClockGoogle",     "<b>Google Clock</b>",       "",                      "check",
       "CloudPrint",     "<b>Google Cloud Print</b>",       "",                      "check",
+      "ContactsGoogle",     "<b>Google Contacts</b>",       "",                      "check",
       "DMAgent",     "<b>Google Apps Device Policy</b>",       "",                      "check",
       "Docs",     "<b>Google Docs</b>",       "",                      "check",
       "Drive",     "<b>Google Drive</b>",       "",                      "check",
       "Ears",     "<b>Sound Search for Google Play</b>",       "",                      "check",
       "Earth",     "<b>Google Earth</b>",       "",                      "check",
       "ExchangeGoogle",     "<b>Google Exchange Services</b>",       "",                      "check",
+      "FaceDetect",     "<b>Face Detection for Media</b>",       "",                      "check",
       "FaceUnlock",     "<b>Face Unlock</b>",       "",                      "check",
       "Fitness",     "<b>Google Fit</b>",       "",                      "check",
       "GCS",     "<b>Google Connectivity Services</b>",       "To Exclude BOTH Google Connectivity Services AND Project Fi by Google <#f00>OR</#> To Include Google Connectivity Services",                      "check",
@@ -307,6 +310,12 @@ then
 endif;
 
 if
+  prop("gapps.prop", "CalculatorGoogle")=="1"
+then
+  appendvar("gapps", "CalculatorGoogle\n");
+endif;
+
+if
   prop("gapps.prop", "CalendarGoogle")=="1"
 then
   appendvar("gapps", "CalendarGoogle\n");
@@ -343,6 +352,12 @@ then
 endif;
 
 if
+  prop("gapps.prop", "ContactsGoogle")=="1"
+then
+  appendvar("gapps", "ContactsGoogle\n");
+endif;
+
+if
   prop("gapps.prop", "DMAgent")=="1"
 then
   appendvar("gapps", "DMAgent\n");
@@ -376,6 +391,12 @@ if
   prop("gapps.prop", "ExchangeGoogle")=="1"
 then
   appendvar("gapps", "ExchangeGoogle\n");
+endif;
+
+if
+  prop("gapps.prop", "FaceDetect")=="1"
+then
+  appendvar("gapps", "FaceDetect\n");
 endif;
 
 if
