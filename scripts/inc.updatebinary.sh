@@ -999,6 +999,7 @@ full_removal_list="$(cat $gapps_removal_list)"$'\n'"${obsolete_libs_list}";
 
 # Some ROMs bundle Google Apps or the user might have installed a Google replacement app during an earlier install
 # Some of these apps are crucial to a functioning system and should NOT be removed if no AOSP/Stock equivalent is available
+# Unless override keyword is used, make sure they are not removed
 # NOTICE: Only for Google Keyboard we need to take KitKat support into account, others are only Lollipop+
 contactsstock_available="false"
 for f in $contactsstock_list; do
@@ -1007,7 +1008,7 @@ for f in $contactsstock_list; do
     break; #at least 1 aosp stock file is present
   fi
 done;
-if [ "$contactsstock_available" = "false" ] && ( ! contains "$gapps_list" "contactsgoogle" ); then
+if [ "$contactsstock_available" = "false" ] && ( ! contains "$gapps_list" "contactsgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
   sed -i "\:/system/priv-app/GoogleContacts:d" $full_removal_list;
   contactsstock_available="false[skipcontactsgoogleremove]"
   install_note="${install_note}nogooglecontacts_removal"$'\n'; # make note that Google Contacs will not be removed
@@ -1020,7 +1021,7 @@ fi
 #    break; #at least 1 aosp stock file is present
 #  fi
 #done;
-#if [ "$dialerstock_available" = "false" ] && ( ! contains "$gapps_list" "dialergoogle" ); then
+#if [ "$dialerstock_available" = "false" ] && ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
 #  sed -i "\:/system/priv-app/GoogleDialer:d" $full_removal_list;
 #  dialerstock_available="false[skipdialergoogleremove]"
 #  install_note="${install_note}nogoogledialer_removal"$'\n'; # make note that Google Dialer will not be removed
@@ -1033,7 +1034,7 @@ for f in $keyboardstock_list; do
     break; #at least 1 aosp stock file is present
   fi
 done;
-if [ "$keyboardstock_available" = "false" ] && ( ! contains "$gapps_list" "keyboardgoogle" ); then
+if [ "$keyboardstock_available" = "false" ] && ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
 EOFILE
 keyboardgooglenotremovehack
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
@@ -1048,7 +1049,7 @@ for f in $packageinstallerstock_list; do
     break; #at least 1 aosp stock file is present
   fi
 done;
-if [ "$packageinstallerstock_available" = "false" ] && ( ! contains "$gapps_list" "packageinstallergoogle" ); then
+if [ "$packageinstallerstock_available" = "false" ] && ( ! contains "$gapps_list" "packageinstallergoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
   sed -i "\:/system/priv-app/GooglePackageInstaller:d" $full_removal_list;
   packageinstallerstock_available="false[skippackageinstallergoogleremove]"
   install_note="${install_note}nogooglepackageinstaller_removal"$'\n'; # make note that Google Package Installer will not be removed
@@ -1061,7 +1062,7 @@ for f in $tagstock_list; do
     break; #at least 1 aosp stock file is present
   fi
 done;
-if [ "$tagstock_available" = "false" ] && ( ! contains "$gapps_list" "taggoogle" ); then
+if [ "$tagstock_available" = "false" ] && ( ! contains "$gapps_list" "taggoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
   sed -i "\:/system/priv-app/TagGoogle:d" $full_removal_list;
   tagstock_available="false[skiptaggoogleremove]"
   install_note="${install_note}nogoogletag_removal"$'\n'; # make note that Google Tag will not be removed
@@ -1074,7 +1075,7 @@ for f in $webviewstock_list; do
     break; #at least 1 aosp stock file is present
   fi
 done;
-if [ "$webviewstock_available" = "false" ] && ( ! contains "$gapps_list" "webviewgoogle" ); then
+if [ "$webviewstock_available" = "false" ] && ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
   sed -i "\:/system/app/WebViewGoogle:d" $full_removal_list;
   webviewstock_available="false[skipwebviewgoogleremove]"
   install_note="${install_note}nogooglewebview_removal"$'\n'; # make note that Google WebView will not be removed
