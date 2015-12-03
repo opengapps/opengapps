@@ -1001,84 +1001,108 @@ full_removal_list="$(cat $gapps_removal_list)"$'\n'"${obsolete_libs_list}";
 # Some of these apps are crucial to a functioning system and should NOT be removed if no AOSP/Stock equivalent is available
 # Unless override keyword is used, make sure they are not removed
 # NOTICE: Only for Google Keyboard we need to take KitKat support into account, others are only Lollipop+
-contactsstock_available="false"
+ignoregooglecontacts="true"
 for f in $contactsstock_list; do
   if [ -e "$f" ]; then
-    contactsstock_available="true"
+    ignoregooglecontacts="false"
     break; #at least 1 aosp stock file is present
   fi
 done;
-if [ "$contactsstock_available" = "false" ] && ( ! contains "$gapps_list" "contactsgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
-  sed -i "\:/system/priv-app/GoogleContacts:d" $full_removal_list;
-  contactsstock_available="false[skipcontactsgoogleremove]"
-  install_note="${install_note}nogooglecontacts_removal"$'\n'; # make note that Google Contacs will not be removed
+if [ "$ignoregooglecontacts" = "true" ]; then
+  if ( ! contains "$gapps_list" "contactsgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
+    sed -i "\:/system/priv-app/GoogleContacts:d" $full_removal_list;
+    ignoregooglecontacts="true[NoRemove]"
+    install_note="${install_note}nogooglecontacts_removal"$'\n'; # make note that Google Contacts will not be removed
+  else
+    ignoregooglecontacts="false[ContactsGoogle]"
+  fi
 fi
 
-#dialerstock_available="false"
+#ignoregoogledialer="true"
 #for f in $dialerstock_list; do
 #  if [ -e "$f" ]; then
-#    dialerstock_available="true"
+#    ignoregoogledialer="false"
 #    break; #at least 1 aosp stock file is present
 #  fi
 #done;
-#if [ "$dialerstock_available" = "false" ] && ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
-#  sed -i "\:/system/priv-app/GoogleDialer:d" $full_removal_list;
-#  dialerstock_available="false[skipdialergoogleremove]"
-#  install_note="${install_note}nogoogledialer_removal"$'\n'; # make note that Google Dialer will not be removed
+#if [ "$ignoregoogledialer" = "true" ]; then
+#  if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
+#    sed -i "\:/system/priv-app/GoogleDialer:d" $full_removal_list;
+#    ignoregoogledialer="true[NoRemove]"
+#    install_note="${install_note}nogoogledialer_removal"$'\n'; # make note that Google Dialer will not be removed
+#  else
+#    ignoregoogledialer="false[DialerGoogle]"
+#  fi
 #fi
 
-keyboardstock_available="false"
+ignoregooglekeyboard="true"
 for f in $keyboardstock_list; do
   if [ -e "$f" ]; then
-    keyboardstock_available="true"
+    ignoregooglekeyboard="false"
     break; #at least 1 aosp stock file is present
   fi
 done;
-if [ "$keyboardstock_available" = "false" ] && ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
+if [ "$ignoregooglekeyboard" = "true" ]; then
+  if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
 EOFILE
 keyboardgooglenotremovehack
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
-  keyboardstock_available="false[skipkeyboardgoogleremove]"
-  install_note="${install_note}nogooglekeyboard_removal"$'\n'; # make note that Google Keyboard will not be removed
+    ignoregooglekeyboard="true[NoRemove]"
+    install_note="${install_note}nogooglekeyboard_removal"$'\n'; # make note that Google Keyboard will not be removed
+  else
+    ignoregooglekeyboard="false[KeyboardGoogle]"
+  fi
 fi
 
-packageinstallerstock_available="false"
+ignoregooglepackageinstaller="true"
 for f in $packageinstallerstock_list; do
   if [ -e "$f" ]; then
-    packageinstallerstock_available="true"
+    ignoregooglepackageinstaller="false"
     break; #at least 1 aosp stock file is present
   fi
 done;
-if [ "$packageinstallerstock_available" = "false" ] && ( ! contains "$gapps_list" "packageinstallergoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
-  sed -i "\:/system/priv-app/GooglePackageInstaller:d" $full_removal_list;
-  packageinstallerstock_available="false[skippackageinstallergoogleremove]"
-  install_note="${install_note}nogooglepackageinstaller_removal"$'\n'; # make note that Google Package Installer will not be removed
+if [ "$ignoregooglepackageinstaller" = "true" ]; then
+  if ( ! contains "$gapps_list" "packageinstallergoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
+    sed -i "\:/system/priv-app/GooglePackageInstaller:d" $full_removal_list;
+    ignoregooglepackageinstaller="true[NoRemove]"
+    install_note="${install_note}nogooglepackageinstaller_removal"$'\n'; # make note that Google Package Installer will not be removed
+  else
+    ignoregooglepackageinstaller="false[PackageInstallerGoogle]"
+  fi
 fi
 
-tagstock_available="false"
+ignoregoogletag="true"
 for f in $tagstock_list; do
   if [ -e "$f" ]; then
-    tagstock_available="true"
+    ignoregoogletag="false"
     break; #at least 1 aosp stock file is present
   fi
 done;
-if [ "$tagstock_available" = "false" ] && ( ! contains "$gapps_list" "taggoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
-  sed -i "\:/system/priv-app/TagGoogle:d" $full_removal_list;
-  tagstock_available="false[skiptaggoogleremove]"
-  install_note="${install_note}nogoogletag_removal"$'\n'; # make note that Google Tag will not be removed
+if [ "$ignoregoogletag" = "true" ]; then
+  if ( ! contains "$gapps_list" "taggoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
+    sed -i "\:/system/priv-app/TagGoogle:d" $full_removal_list;
+    ignoregoogletag="true[NoRemove]"
+    install_note="${install_note}nogoogletag_removal"$'\n'; # make note that Google Tag will not be removed
+  else
+    ignoregoogletag="false[TagGoogle]"
+  fi
 fi
 
-webviewstock_available="false"
+ignoregooglewebview="true"
 for f in $webviewstock_list; do
   if [ -e "$f" ]; then
-    webviewstock_available="true"
+    ignoregooglewebview="false"
     break; #at least 1 aosp stock file is present
   fi
 done;
-if [ "$webviewstock_available" = "false" ] && ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
-  sed -i "\:/system/app/WebViewGoogle:d" $full_removal_list;
-  webviewstock_available="false[skipwebviewgoogleremove]"
-  install_note="${install_note}nogooglewebview_removal"$'\n'; # make note that Google WebView will not be removed
+if [ "$ignoregooglewebview" = "true" ]; then
+  if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
+    sed -i "\:/system/priv-app/WebViewGoogle:d" $full_removal_list;
+    ignoregooglewebview="true[NoRemove]"
+    install_note="${install_note}nogooglewebview_removal"$'\n'; # make note that Google WebView will not be removed
+  else
+    ignoregooglewebview="false[WebViewGoogle]"
+  fi
 fi
 
 # Clean up and sort our lists for space calculations and installation
@@ -1102,12 +1126,12 @@ log "Remove Stock/AOSP MMS App" "$remove_mms";
 log "Remove Stock/AOSP Pico TTS" "$remove_picotts";
 log "Remove Stock/AOSP NFC Tag" "$remove_tagstock";
 log "Remove Stock/AOSP WebView" "$remove_webviewstock";
-log "Stock/AOSP Contacts available" "$contactsstock_available";
-#log "Stock/AOSP Dialer available" "$dialerstock_available";
-log "Stock/AOSP Keyboard available" "$keyboardstock_available";
-log "Stock/AOSP Package Installer available" "$packageinstallerstock_available";
-log "Stock/AOSP NFC Tag available" "$tagstock_available";
-log "Stock/AOSP WebView available" "$webviewstock_available";
+log "Ignore Google Contacts" "$ignoregooglecontacts";
+#log "Ignore Google Dialer" "$ignoregoogledialer";
+log "Ignore Google Keyboard" "$ignoregooglekeyboard";
+log "Ignore Google Package Installer" "$ignoregooglepackageinstaller";
+log "Ignore Google NFC Tag" "$ignoregoogletag";
+log "Ignore Google WebView" "$ignoregooglewebview";
 # _____________________________________________________________________________________________________________________
 #                                                  Perform space calculations
 ui_print "- Performing system space calculations";
