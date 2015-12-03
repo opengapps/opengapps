@@ -17,6 +17,14 @@ cameracompatibilityhack(){
   fi
 }
 
+keyboardgooglenotremovehack(){
+  if [ "$API" -le "19" ]; then
+    echo '  sed -i "\:/system/app/LatinImeGoogle.apk:d" $full_removal_list;'>> "$build/META-INF/com/google/android/update-binary"
+  else
+    echo '  sed -i "\:/system/app/LatinImeGoogle:d" $full_removal_list;'>> "$build/META-INF/com/google/android/update-binary"
+  fi
+}
+
 keyboardlibhack(){ #only on arm and arm64
   if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then
     gappsoptional="swypelibs $gappsoptional"
@@ -201,19 +209,17 @@ api22hack(){
 configupdater"
 
     # On AOSP we only support Webview on 5.1+, stock Google ROMs support it on 5.0 too, but we're merging stock and fornexus
-    case "$VARIANT" in # We prevent the removal of WebViewGoogle on packages smaller than stock
-      aroma|super|stock)  gappsstock="$gappsstock
-webviewgoogle";
-                          stockremove="$stockremove
-webviewstock";;
-    esac
+    gappsstock="$gappsstock
+webviewgoogle"
+    stockremove="$stockremove
+webviewstock"
   fi
 }
 
 api23hack(){
   if [ "$API" -ge "23" ]; then
     gappscore="$gappscore
-packageinstaller"
+packageinstallergoogle"
     gappspico="$gappspico
 googletts"
     gappsmini="$gappsmini
@@ -221,8 +227,15 @@ calculatorgoogle"
     gappsstock="$gappsstock
 contactsgoogle"
 #dialergoogle"
+    webviewlibs='lib/$WebView_lib_filename
+lib64/$WebView_lib_filename
+' #on Marshmallow the AOSP WebViewlibs must be removed, since they are part of the Google WebView APK; use single quote to not replace variable names
+    webviewgappsremove=""
   else
     gappsmicro="$gappsmicro
 googletts"
+    webviewlibs="" # on non-Marshmallow the WebViewlibs should not be considered part of the Stock/AOSP WebView, since they are shared with the Google WebView
+    webviewgappsremove="lib/libwebviewchromium.so
+lib64/libwebviewchromium.so" #on non-Marshmallow the WebViewlibs are to be explictly included as a Google WebView file in gapps-remove.txt
   fi
 }
