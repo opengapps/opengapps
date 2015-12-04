@@ -1095,16 +1095,19 @@ for f in $webviewstock_list; do
     break; #at least 1 aosp stock file is present
   fi
 done;
-if [ "$ignoregooglewebview" = "true" ]; then
-  if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
+if [ "$ignoregooglewebview" = "true" ]; then #No AOSP WebView
+  if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then #Don't remove Google WebView components if no Google WebView selected
     sed -i "\:/system/lib/$WebView_lib_filename:d" $full_removal_list;
     sed -i "\:/system/lib64/$WebView_lib_filename:d" $full_removal_list;
     sed -i "\:/system/app/WebViewGoogle:d" $full_removal_list;
     ignoregooglewebview="true[NoRemove]"
     install_note="${install_note}nogooglewebview_removal"$'\n'; # make note that Google WebView will not be removed
-  else
+  else #No AOSP WebView, but Google WebView is being installed, no reason to protect the current components
     ignoregooglewebview="false[WebViewGoogle]"
   fi
+elif ( ! contains "$gapps_list" "webviewgoogle" ); then #AOSP WebView, and no Google WebView being installed, make sure to protect the current AOSP components that share name with Google WebView components
+  sed -i "\:/system/lib/$WebView_lib_filename:d" $full_removal_list;
+  sed -i "\:/system/lib64/$WebView_lib_filename:d" $full_removal_list;
 fi
 
 # Clean up and sort our lists for space calculations and installation
