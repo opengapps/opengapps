@@ -1097,6 +1097,8 @@ for f in $webviewstock_list; do
 done;
 if [ "$ignoregooglewebview" = "true" ]; then
   if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
+    sed -i "\:/system/lib/$WebView_lib_filename:d" $full_removal_list;
+    sed -i "\:/system/lib64/$WebView_lib_filename:d" $full_removal_list;
     sed -i "\:/system/app/WebViewGoogle:d" $full_removal_list;
     ignoregooglewebview="true[NoRemove]"
     install_note="${install_note}nogooglewebview_removal"$'\n'; # make note that Google WebView will not be removed
