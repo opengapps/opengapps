@@ -194,6 +194,7 @@ vendor/bundled-app/Boxer'"$REMOVALSUFFIX"'
 browser_list="
 app/Browser'"$REMOVALSUFFIX"'
 app/BrowserProviderProxy'"$REMOVALSUFFIX"'
+app/Chromium'"$REMOVALSUFFIX"'
 ";
 
 basicdreams_list="
