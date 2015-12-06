@@ -188,6 +188,7 @@ getapksforapi() {
           maxsdkerrorapi="$api"
           continue 2
         fi
+        break
       done
       break
     fi
