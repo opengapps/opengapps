@@ -960,43 +960,6 @@ if ( ! contains "$gapps_list" "gcs" ) && ( contains "$gapps_list" "projectfi" );
   install_note="${install_note}projectfi_msg"$'\n'; # make note that Project Fi will NOT be installed as user requested
 fi;
 
-# Process User Application Removals for calculations and subsequent removal
-if [ -n "$user_remove_list" ]; then
-  for remove_apk in $user_remove_list; do
-    testapk=$( echo "$remove_apk" | tr '[:upper:]'  '[:lower:]' );
-    # Add apk extension if user didn't include it
-    case $testapk in
-      *".apk" ) ;;
-      * )       testapk="${testapk}.apk" ;;
-    esac;
-    # Create user_remove_folder_list if this is a system/ROM application
-    for folder in /system/app /system/priv-app; do # Check all subfolders in /system/app /system/priv-app for the apk
-      file_count=0; # Reset Counter
-      file_count=$(find $folder -iname "$testapk" | wc -l);
-      case $file_count in
-        0)  continue;;
-EOFILE
-universalremoverhack #on kitkat the paths for the universalremover are different
-tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
-            break;;
-        *)  echo "$remove_apk" >> $user_remove_multiplefound_log; # Add app to user_remove_multiplefound_log since we found more than 1 instance
-            break;;
-      esac;
-    done;
-    if [ "$file_count" -eq 0 ]; then
-      echo "$remove_apk" >> $user_remove_notfound_log;
-    fi; # Add 'not found' app to user_remove_notfound_log
-  done;
-fi;
-
-# Removing old Chrome libraries
-obsolete_libs_list="";
-for f in $(find /system/lib /system/lib64 -name 'libchrome*.so' 2>/dev/null); do
-  obsolete_libs_list="${obsolete_libs_list}$f"$'\n';
-done;
-# Read in gapps removal list from file and append old Chrome libs
-full_removal_list="$(cat $gapps_removal_list)"$'\n'"${obsolete_libs_list}";
-
 # Some ROMs bundle Google Apps or the user might have installed a Google replacement app during an earlier install
 # Some of these apps are crucial to a functioning system and should NOT be removed if no AOSP/Stock equivalent is available
 # Unless override keyword is used, make sure they are not removed
@@ -1010,7 +973,7 @@ for f in $contactsstock_list; do
 done;
 if [ "$ignoregooglecontacts" = "true" ]; then
   if ( ! contains "$gapps_list" "contactsgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
-    sed -i "\:/system/priv-app/GoogleContacts:d" $full_removal_list;
+    sed -i "\:/system/priv-app/GoogleContacts:d" $gapps_removal_list;
     ignoregooglecontacts="true[NoRemove]"
     install_note="${install_note}nogooglecontacts_removal"$'\n'; # make note that Google Contacts will not be removed
   else
@@ -1027,7 +990,7 @@ fi
 #done;
 #if [ "$ignoregoogledialer" = "true" ]; then
 #  if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
-#    sed -i "\:/system/priv-app/GoogleDialer:d" $full_removal_list;
+#    sed -i "\:/system/priv-app/GoogleDialer:d" $gapps_removal_list;
 #    ignoregoogledialer="true[NoRemove]"
 #    install_note="${install_note}nogoogledialer_removal"$'\n'; # make note that Google Dialer will not be removed
 #  else
@@ -1063,7 +1026,7 @@ for f in $packageinstallerstock_list; do
 done;
 if [ "$ignoregooglepackageinstaller" = "true" ]; then
   if ( ! contains "$gapps_list" "packageinstallergoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
-    sed -i "\:/system/priv-app/GooglePackageInstaller:d" $full_removal_list;
+    sed -i "\:/system/priv-app/GooglePackageInstaller:d" $gapps_removal_list;
     ignoregooglepackageinstaller="true[NoRemove]"
     install_note="${install_note}nogooglepackageinstaller_removal"$'\n'; # make note that Google Package Installer will not be removed
   else
@@ -1080,7 +1043,7 @@ for f in $tagstock_list; do
 done;
 if [ "$ignoregoogletag" = "true" ]; then
   if ( ! contains "$gapps_list" "taggoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
-    sed -i "\:/system/priv-app/TagGoogle:d" $full_removal_list;
+    sed -i "\:/system/priv-app/TagGoogle:d" $gapps_removal_list;
     ignoregoogletag="true[NoRemove]"
     install_note="${install_note}nogoogletag_removal"$'\n'; # make note that Google Tag will not be removed
   else
@@ -1097,18 +1060,56 @@ for f in $webviewstock_list; do
 done;
 if [ "$ignoregooglewebview" = "true" ]; then #No AOSP WebView
   if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then #Don't remove Google WebView components if no Google WebView selected
-    sed -i "\:/system/lib/$WebView_lib_filename:d" $full_removal_list;
-    sed -i "\:/system/lib64/$WebView_lib_filename:d" $full_removal_list;
-    sed -i "\:/system/app/WebViewGoogle:d" $full_removal_list;
+    sed -i "\:/system/lib/$WebView_lib_filename:d" $gapps_removal_list;
+    sed -i "\:/system/lib64/$WebView_lib_filename:d" $gapps_removal_list;
+    sed -i "\:/system/app/WebViewGoogle:d" $gapps_removal_list;
     ignoregooglewebview="true[NoRemove]"
     install_note="${install_note}nogooglewebview_removal"$'\n'; # make note that Google WebView will not be removed
   else #No AOSP WebView, but Google WebView is being installed, no reason to protect the current components
     ignoregooglewebview="false[WebViewGoogle]"
   fi
 elif ( ! contains "$gapps_list" "webviewgoogle" ); then #AOSP WebView, and no Google WebView being installed, make sure to protect the current AOSP components that share name with Google WebView components
-  sed -i "\:/system/lib/$WebView_lib_filename:d" $full_removal_list;
-  sed -i "\:/system/lib64/$WebView_lib_filename:d" $full_removal_list;
+  sed -i "\:/system/lib/$WebView_lib_filename:d" $gapps_removal_list;
+  sed -i "\:/system/lib64/$WebView_lib_filename:d" $gapps_removal_list;
 fi
+
+# Process User Application Removals for calculations and subsequent removal
+if [ -n "$user_remove_list" ]; then
+  for remove_apk in $user_remove_list; do
+    testapk=$( echo "$remove_apk" | tr '[:upper:]'  '[:lower:]' );
+    # Add apk extension if user didn't include it
+    case $testapk in
+      *".apk" ) ;;
+      * )       testapk="${testapk}.apk" ;;
+    esac;
+    # Create user_remove_folder_list if this is a system/ROM application
+    for folder in /system/app /system/priv-app; do # Check all subfolders in /system/app /system/priv-app for the apk
+      file_count=0; # Reset Counter
+      file_count=$(find $folder -iname "$testapk" | wc -l);
+      case $file_count in
+        0)  continue;;
+EOFILE
+universalremoverhack #on kitkat the paths for the universalremover are different
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+            break;;
+        *)  echo "$remove_apk" >> $user_remove_multiplefound_log; # Add app to user_remove_multiplefound_log since we found more than 1 instance
+            break;;
+      esac;
+    done;
+    if [ "$file_count" -eq 0 ]; then
+      echo "$remove_apk" >> $user_remove_notfound_log;
+    fi; # Add 'not found' app to user_remove_notfound_log
+  done;
+fi;
+
+# Removing old Chrome libraries
+obsolete_libs_list="";
+for f in $(find /system/lib /system/lib64 -name 'libchrome*.so' 2>/dev/null); do
+  obsolete_libs_list="${obsolete_libs_list}$f"$'\n';
+done;
+
+# Read in gapps removal list from file and append old Chrome libs
+full_removal_list="$(cat $gapps_removal_list)"$'\n'"${obsolete_libs_list}";
 
 # Clean up and sort our lists for space calculations and installation
 set_progress 0.04;

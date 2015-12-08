@@ -19,9 +19,9 @@ cameracompatibilityhack(){
 
 keyboardgooglenotremovehack(){
   if [ "$API" -le "19" ]; then
-    echo '  sed -i "\:/system/app/LatinImeGoogle.apk:d" $full_removal_list;'>> "$build/META-INF/com/google/android/update-binary"
+    echo '  sed -i "\:/system/app/LatinImeGoogle.apk:d" $gapps_removal_list;'>> "$build/META-INF/com/google/android/update-binary"
   else
-    echo '  sed -i "\:/system/app/LatinImeGoogle:d" $full_removal_list;'>> "$build/META-INF/com/google/android/update-binary"
+    echo '  sed -i "\:/system/app/LatinImeGoogle:d" $gapps_removal_list;'>> "$build/META-INF/com/google/android/update-binary"
   fi
 }
 
@@ -229,7 +229,7 @@ contactsgoogle"
 #dialergoogle"
     webviewstocklibs='lib/$WebView_lib_filename
 lib64/$WebView_lib_filename
-' #on Marshmallow the AOSP WebViewlibs must be removed, since they are part of the Google WebView APK; use single quote to not replace variable names
+' #on Marshmallow the AOSP WebViewlibs must be removed, since they are embedded in the Google WebView APK; this assumes also any pre-bundled Google WebView with the ROM uses embedded libs; use single quote to not replace variable names
     webviewgappsremove=""
   else
     gappsmicro="$gappsmicro
