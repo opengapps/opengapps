@@ -37,10 +37,10 @@ keyboardlibhack(){ #only on arm and arm64
       KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ); then
   extract_app "Optional/swypelibs";
   mkdir -p "/system/app/LatinIME/lib/'"$ARCH"'";
-  ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google"; # create required symlink
+  ln -sfn "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google"; # create required symlink
 
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google\"" $bkup_tail;
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google\"" $bkup_tail;
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/LatinIME/lib/'"$ARCH"'\"" $bkup_tail;
 fi;'
     else # on KitKat we need to replace the aosp lib with a symlink, it has no 64bit libs
@@ -51,10 +51,10 @@ keybd_lib_aosp="libjni_latinime.so";'
       # Only touch AOSP keyboard only if it is not removed
       KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ); then
   extract_app "Optional/swypelibs";
-  ln -sf "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/'"$LIBFOLDER"'/$keybd_lib_aosp"; # create required symlink
+  ln -sfn "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/'"$LIBFOLDER"'/$keybd_lib_aosp"; # create required symlink
 
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sf \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/'"$LIBFOLDER"'/$keybd_lib_aosp\"" $bkup_tail;
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/'"$LIBFOLDER"'/$keybd_lib_aosp\"" $bkup_tail;
 fi;'
     fi
   else #on non-arm platforms we don't have these libs
