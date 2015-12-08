@@ -25,16 +25,16 @@ keyboardgooglenotremovehack(){
   fi
 }
 
-keyboardlibhack(){ #only on arm and arm64
-  if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then
-    gappsoptional="swypelibs $gappsoptional"
-    if [ "$API" -gt "19" ]; then # on Lollipop there are symlinks in /LatinIME/lib/ and we don't need to remove the aosp lib
-      REQDLIST="/system/lib/libjni_latinimegoogle.so
+keyboardlibhack(){
+  case "$ARCH" in #only arm based platforms we have swypelibs
+    arm*) gappsoptional="swypelibs $gappsoptional"
+          if [ "$API" -gt "19" ]; then # on Lollipop there are symlinks in /LatinIME/lib/ and we don't need to remove the aosp lib
+            REQDLIST="/system/lib/libjni_latinimegoogle.so
 /system/lib64/libjni_latinimegoogle.so
 /system/app/LatinIME/lib/$ARCH/libjni_latinimegoogle.so"
-      KEYBDLIBS='keybd_lib_google="libjni_latinimegoogle.so";'
-      # Only touch AOSP keyboard only if it is not removed
-      KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ); then
+            KEYBDLIBS='keybd_lib_google="libjni_latinimegoogle.so";'
+            # Only touch AOSP keyboard only if it is not removed
+            KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ); then
   extract_app "Optional/swypelibs";
   mkdir -p "/system/app/LatinIME/lib/'"$ARCH"'";
   ln -sfn "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google"; # create required symlink
@@ -43,25 +43,24 @@ keyboardlibhack(){ #only on arm and arm64
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google\"" $bkup_tail;
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/LatinIME/lib/'"$ARCH"'\"" $bkup_tail;
 fi;'
-    else # on KitKat we need to replace the aosp lib with a symlink, it has no 64bit libs
-      REQDLIST="/system/lib/libjni_latinime.so
+          else # on KitKat we need to replace the aosp lib with a symlink, it has no 64bit libs
+            REQDLIST="/system/lib/libjni_latinime.so
 /system/lib/libjni_latinimegoogle.so"
-      KEYBDLIBS='keybd_lib_google="libjni_latinimegoogle.so";
+            KEYBDLIBS='keybd_lib_google="libjni_latinimegoogle.so";
 keybd_lib_aosp="libjni_latinime.so";'
       # Only touch AOSP keyboard only if it is not removed
-      KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ); then
+            KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ); then
   extract_app "Optional/swypelibs";
   ln -sfn "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/'"$LIBFOLDER"'/$keybd_lib_aosp"; # create required symlink
 
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/'"$LIBFOLDER"'/$keybd_lib_aosp\"" $bkup_tail;
 fi;'
-    fi
-  else #on non-arm platforms we don't have these libs
-    REQDLIST=""
-    KEYBDLIBS=""
-    KEYBDINSTALLCODE=""
-  fi
+          fi;;
+    *) REQDLIST=""
+       KEYBDLIBS=""
+       KEYBDINSTALLCODE="";;
+  esac
 }
 
 kitkatdatahack(){

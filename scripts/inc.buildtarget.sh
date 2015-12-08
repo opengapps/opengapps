@@ -194,15 +194,15 @@ get_package_info(){
                     else
                       packagelibs="libfilterpack_facedetect.so";
                     fi;;
-    faceunlock)     if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then #both arm and arm64
-                      packagetype="GApps"; packagename="com.android.facelock"; packagetarget="app/FaceLock";
-                      packagefiles="vendor/pittpatt/";
-                      if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib of librsdk.so
-                        packagelibs="libfacelock_jni.so libfrsdk.so+fallback";
-                      else
-                        packagelibs="libfacelock_jni.so libfrsdk.so";
-                      fi
-                    fi;;
+    faceunlock)     case "$ARCH" in #only arm based platforms
+                      arm*) packagetype="GApps"; packagename="com.android.facelock"; packagetarget="app/FaceLock";
+                            packagefiles="vendor/pittpatt/";
+                            if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib of librsdk.so
+                              packagelibs="libfacelock_jni.so libfrsdk.so+fallback";
+                            else
+                              packagelibs="libfacelock_jni.so libfrsdk.so";
+                            fi;;
+                    esac;;
     fitness)        packagetype="GApps"; packagename="com.google.android.apps.fitness"; packagetarget="app/FitnessPrebuilt";;
     gmail)          packagetype="GApps"; packagename="com.google.android.gm"; packagetarget="app/PrebuiltGmail";;
     googlenow)      packagetype="GApps"; packagename="com.google.android.launcher"; packagetarget="app/GoogleHome";;
