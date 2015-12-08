@@ -55,10 +55,12 @@ aromaupdatebinary() {
 }
 
 bundlexz() {
-  if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then #For all arm-based platforms we can include our own xz-decompression binary
-    copy "$SCRIPTS/xz-resources/xzdec-arm" "$build/xzdec"
-    EXTRACTFILES="$EXTRACTFILES xzdec"
-  fi
+  case "$ARCH" in #Include our own 32-bit xz-decompression binary
+    arm*) xzbin="xzdec-arm";;
+    x86*) xzbin="xzdec-x86";;
+  esac
+  copy "$SCRIPTS/xz-resources/$xzbin" "$build/xzdec"
+  EXTRACTFILES="$EXTRACTFILES xzdec"
 }
 
 createxz() {
