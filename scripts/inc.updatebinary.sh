@@ -720,7 +720,7 @@ else
 
   # Use the opportunity of No GApps installed to check for potential ROM conflicts when deleting existing GApps files
   while read gapps_file; do
-    if [ -e "$gapps_file" ]; then
+    if [ -e "$gapps_file" ] && [ "$gapps_file" != "/system/lib/$WebView_lib_filename" ] && [ "$gapps_file" != "/system/lib64/$WebView_lib_filename" ]; then
       echo "$gapps_file" >> $conflicts_log;
     fi;
   done < $gapps_removal_list;
