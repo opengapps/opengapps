@@ -21,11 +21,11 @@ checktools() {
     if ! command -v $command >/dev/null 2>&1; then
       case $command in
         basename|install|readlink|md5sum)
-          echo "Coreutils is required for install, basename, readlink, md5sum and other utilities but is not installed.";;
+          echo 'Coreutils is required for install, basename, readlink, md5sum and other utilities, but is not installed or found in sh $PATH.';;
         jarsigner|keytool)
-          echo "JDK is required for jarsigner and keytools utilities but is not installed.";;
+          echo 'JDK is required for jarsigner and keytools utilities, but is not installed or found in sh $PATH.';;
         aapt|zipalign)
-          echo "Android SDK is required for aapt and zipalign utilities but is not installed.";;
+          echo 'Android SDK is required for aapt and zipalign utilities, but is not installed or found in sh $PATH.';;
         *)
           echo "$command is required but is not installed.";;
       esac
@@ -34,7 +34,7 @@ checktools() {
       case $command in
         zipalign)
           if ! zipalign 2>&1 | grep -q "page align stored shared object files"; then
-            echo "zipalign is outdated. Install a recent version from the Android SDK." >&2
+            echo 'zipalign is outdated. Install a more recent version from the Android SDK and findable in sh $PATH.' >&2
             missing="$missing $command"
           fi;;
       #*)
