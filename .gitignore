@@ -21,3 +21,6 @@ local.properties
 #Temporary editor files
 *.bak
 *~
+
+# Project files
+.project
