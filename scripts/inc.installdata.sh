@@ -411,7 +411,9 @@ app/WhisperPush'"$REMOVALSUFFIX"'
 # _____________________________________________________________________________________________________________________
 #                                             Permanently Removed Folders
 # Pieces that may be left over from AIO ROMs that can/will interfere with these GApps
+# Also remove the runtime-permissions.xml in case the rom had been booted prior to installing GApps
 other_list="
+/data/system/users/*/runtime-permissions.xml'"$REMOVALSUFFIX"'
 /system/app/CalendarGoogle'"$REMOVALSUFFIX"'
 /system/app/CloudPrint'"$REMOVALSUFFIX"'
 /system/app/DeskClockGoogle'"$REMOVALSUFFIX"'
