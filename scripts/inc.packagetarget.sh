@@ -182,7 +182,14 @@ signzip() {
     rm "$signedzip"
   fi
 
-  if java -Xmx3072m -jar "$SCRIPTS/inc.signapk.jar" -w "$CERTIFICATES/testkey.x509.pem" "$CERTIFICATES/testkey.pk8" "$unsignedzip" "$signedzip"; then #if signing did succeed
+  if [ -z "$CERTIFICATEFILE" ] || [ ! -e "$CERTIFICATEFILE" ]; then
+    CERTIFICATEFILE="$CERTIFICATES/testkey.x509.pem"
+  fi
+  if [ -z "$KEYFILEE" ] || [ ! -e "$KEYFILE" ]; then
+    KEYFILE="$CERTIFICATES/testkey.pk8"
+  fi
+
+  if java -Xmx3072m -jar "$SCRIPTS/inc.signapk.jar" -w "$CERTIFICATEFILE" "$KEYFILE" "$unsignedzip" "$signedzip"; then #if signing did succeed
     rm "$unsignedzip"
   else
     echo "ERROR: Creating Flashable ZIP-file failed, unsigned file can be found at $unsignedzip"

@@ -30,6 +30,8 @@ OUT="$TOP/out"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 CERTIFICATES="$SCRIPTS/certificates"
+#CERTIFICATEFILE=" #this can be set to a filepath to use as certificate file for signing
+#KEYFILE="" #this can be set to a filepath to use as key file for signing
 #OPENGAPPSLICENSEFILE="" #this can be set to a filepath to include as a LICENSE file
 . "$SCRIPTS/inc.aromadata.sh"
 . "$SCRIPTS/inc.buildhelper.sh"
