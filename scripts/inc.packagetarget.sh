@@ -30,6 +30,7 @@ commonscripts() {
   makeinstallerdata
   bundlexz # on arm platforms we can include our own xz binary
   makeupdatebinary # execute as last, it contains $EXTRACTFILES from the previous commands
+  bundlelicense #optionally add a LICENSE file to the package
 }
 
 aromascripts() {
@@ -61,6 +62,13 @@ bundlexz() {
   esac
   copy "$SCRIPTS/xz-resources/$xzbin" "$build/xzdec"
   EXTRACTFILES="$EXTRACTFILES xzdec"
+}
+
+bundlelicense() {
+  if [ -n "$OPENGAPPSLICENSEFILE" ] && [ -e "$OPENGAPPSLICENSEFILE" ]; then
+    echo "INFO: using $OPENGAPPSLICENSEFILE as LICENSE file"
+    copy "$OPENGAPPSLICENSEFILE" "$build/LICENSE"
+  fi
 }
 
 createxz() {

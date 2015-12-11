@@ -30,6 +30,7 @@ OUT="$TOP/out"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 CERTIFICATES="$SCRIPTS/certificates"
+#OPENGAPPSLICENSEFILE="" #this can be set to a filepath to include as a LICENSE file
 . "$SCRIPTS/inc.aromadata.sh"
 . "$SCRIPTS/inc.buildhelper.sh"
 . "$SCRIPTS/inc.buildtarget.sh"
