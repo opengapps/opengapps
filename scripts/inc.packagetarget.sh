@@ -68,6 +68,8 @@ bundlelicense() {
   if [ -n "$OPENGAPPSLICENSEFILE" ] && [ -e "$OPENGAPPSLICENSEFILE" ]; then
     echo "INFO: using $OPENGAPPSLICENSEFILE as LICENSE file"
     copy "$OPENGAPPSLICENSEFILE" "$build/LICENSE"
+  elif [ -e "LICENSE" ]; then
+    copy "LICENSE" "$build/LICENSE"
   fi
 }
 
