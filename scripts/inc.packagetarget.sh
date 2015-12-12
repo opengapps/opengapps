@@ -185,7 +185,7 @@ signzip() {
   if [ -z "$CERTIFICATEFILE" ] || [ ! -e "$CERTIFICATEFILE" ]; then
     CERTIFICATEFILE="$CERTIFICATES/testkey.x509.pem"
   fi
-  if [ -z "$KEYFILEE" ] || [ ! -e "$KEYFILE" ]; then
+  if [ -z "$KEYFILE" ] || [ ! -e "$KEYFILE" ]; then
     KEYFILE="$CERTIFICATES/testkey.pk8"
   fi
 
