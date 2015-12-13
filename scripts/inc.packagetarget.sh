@@ -184,9 +184,13 @@ signzip() {
 
   if [ -z "$CERTIFICATEFILE" ] || [ ! -e "$CERTIFICATEFILE" ]; then
     CERTIFICATEFILE="$CERTIFICATES/testkey.x509.pem"
+  else
+    echo "INFO: using $CERTIFICATEFILE as certificate file"
   fi
   if [ -z "$KEYFILE" ] || [ ! -e "$KEYFILE" ]; then
     KEYFILE="$CERTIFICATES/testkey.pk8"
+  else
+    echo "INFO: using $KEYFILE as cryptographic key file"
   fi
 
   if java -Xmx3072m -jar "$SCRIPTS/inc.signapk.jar" -w "$CERTIFICATEFILE" "$KEYFILE" "$unsignedzip" "$signedzip"; then #if signing did succeed
