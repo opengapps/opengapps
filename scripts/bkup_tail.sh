@@ -47,6 +47,8 @@ case "$1" in
 
     # Remove 'required' apps (per installer.data)
 
+    # Remove 'user requested' apps (from gapps-config)
+
   ;;
   post-restore)
     # Recreate required symlinks (from GApps Installer)
