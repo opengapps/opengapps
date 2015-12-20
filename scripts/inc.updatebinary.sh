@@ -1,6 +1,6 @@
 makeupdatebinary(){
 get_fallback_arch "$ARCH" #make sure that $fallback_arch will be available
-echo '#!/sbin/ash
+echo '#!/sbin/sh
 #This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
