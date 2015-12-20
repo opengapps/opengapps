@@ -760,14 +760,26 @@ else # User is not using a gapps-config and we're doing the 'full monty'
   gapps_list=$all_gapps_list;
 fi;
 
-# Configure default removal of Stock/AOSP apps - if we're installing Stock GApps
+# Configure default removal of Stock/AOSP apps - if we're installing Stock GApps or larger
 if [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
-  for default_name in $default_aosp_remove_list; do
+  for default_name in $default_stock_remove_list; do
     eval "remove_${default_name}=true[default]";
   done;
 else
   # Do not perform any default removals - but make them optional
-  for default_name in $default_aosp_remove_list; do
+  for default_name in $default_stock_remove_list; do
+    eval "remove_${default_name}=false[default]";
+  done;
+fi;
+
+# Configure default removal of Stock/AOSP apps that are part of Mini and larger
+if [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ] || [ "$gapps_type" = "full" ] || [ "$gapps_type" = "mini" ]; then
+  for default_name in $default_mini_remove_list; do
+    eval "remove_${default_name}=true[default]";
+  done;
+else
+  # Do not perform any default removals - but make them optional
+  for default_name in $default_mini_remove_list; do
     eval "remove_${default_name}=false[default]";
   done;
 fi;
@@ -776,7 +788,7 @@ fi;
 # We will look for +Browser, +Email, +Gallery, +Launcher, +MMS, +PicoTTS and more to prevent their removal
 set_progress 0.03;
 if [ "$g_conf" ]; then
-  for default_name in $default_aosp_remove_list; do
+  for default_name in $default_stock_remove_list; do
     if ( grep -qi "+$default_name" "$g_conf" ); then
       eval "remove_${default_name}=false[gapps-config]";
     elif [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
@@ -797,9 +809,15 @@ if [ "$g_conf" ]; then
       aosp_remove_list="$aosp_remove_list$opt_name"$'\n';
     fi;
   done;
+  for default_name in $default_mini_remove_list; do
+    if ( grep -qi "$default_name" "$g_conf" ); then
+      eval "remove_${default_name}=true[gapps-config]";
+      aosp_remove_list="$aosp_remove_list$default_name"$'\n';
+    fi;
+  done;
 else
   if [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
-      aosp_remove_list=$default_aosp_remove_list;
+      aosp_remove_list=$default_stock_remove_list$default_mini_remove;
   fi;
 fi;
 
@@ -1125,6 +1143,8 @@ log "Config Type" "$config_type";
 log "Using gapps-config" "$config_file";
 log "Remove Stock/AOSP Browser" "$remove_browser";
 log "Remove Stock/AOSP Clock" "$remove_clockstock";
+log "Remove Stock/AOSP Contacts" "$remove_contactsstock";
+#log "Remove Stock/AOSP Dialer" "$remove_dialerstock";
 log "Remove Stock/AOSP Email" "$remove_email";
 log "Remove Stock/AOSP Gallery" "$remove_gallery";
 log "Remove Stock/AOSP Launcher" "$remove_launcher";
