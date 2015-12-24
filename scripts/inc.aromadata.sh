@@ -228,7 +228,6 @@ form(
       "CMUpdater",     "<b>CyanogenMod Updater</b>",       "",                      "check",
       "CMWallpapers",     "<b>CyanogenMod Wallpapers</b>",       "",                      "check",
       "DashClock",     "<b>DashClock Widget</b>",       "(a widget found in certain ROMs)",                      "check",
-      "DocumentsUI",   "<b>Documents</b>",       "",                      "check",
       "Email",     "<b>Stock/AOSP Email</b>",       "",                      "check",
       "ExchangeStock",     "<b>Stock/AOSP Exchange Services</b>",       "(automatically removed when Google Exchange Services is installed)",                      "check",
       "FMRadio",     "<b>Stock/AOSP FM Radio</b>",       "(not found on all devices or ROM's)",                      "check",
@@ -683,12 +682,6 @@ if
   prop("rem.prop", "DashClock")=="1"
 then
   appendvar("gapps", "DashClock\n");
-endif;
-
-if
-  prop("rem.prop", "DocumentsUI")=="1"
-then
-  appendvar("gapps", "DocumentsUI\n");
 endif;
 
 if

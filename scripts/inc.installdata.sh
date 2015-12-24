@@ -165,7 +165,6 @@ cmsetupwizard
 cmupdater
 cmwallpapers
 dashclock
-documentsui
 exchangestock
 fmradio
 galaxy
@@ -264,10 +263,6 @@ priv-app/Contacts'"$REMOVALSUFFIX"'
 
 dashclock_list="
 app/DashClock'"$REMOVALSUFFIX"'
-";
-
-documentsui_list="
-app/DocumentsUI'"$REMOVALSUFFIX"'
 ";
 
 # Must be used when Google Dialer is installed
