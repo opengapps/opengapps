@@ -353,10 +353,7 @@ mount /system;
 mount /cache;
 mount /data;
 mount /persist;
-mount -o rw,remount /system;
-mount -o rw,remount /system /system;
-mount -o rw,remount /;
-mount -o rw,remount / /;
+
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
 if [ -e "/system/build.prop" ]; then
