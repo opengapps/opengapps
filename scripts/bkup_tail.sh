@@ -59,9 +59,9 @@ case "$1" in
     done;
     # Fix ownership/permissions and clean up after backup and restore from /sdcard
     for i in $(list_files); do
-      busybox chown root.root "/system/$i"
-      busybox chmod 644 "/system/$i"
-      busybox chmod 755 $(busybox dirname "/system/$i")
+      chown root.root "/system/$i"
+      chmod 644 "/system/$i"
+      chmod 755 $(dirname "/system/$i")
     done
     rm -rf /sdcard/tmp-gapps
   ;;

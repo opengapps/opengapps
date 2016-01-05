@@ -522,7 +522,7 @@ fi;
 
 # Determine Recovery Type and Version
 for rec_log in $rec_tmp_log $rec_cache_log; do
-  recovery=$(busybox grep -m 2 -E " Recovery v|Starting TWRP|Welcome to|PhilZ" $rec_log);
+  recovery=$(grep -m 2 -E " Recovery v|Starting TWRP|Welcome to|PhilZ" $rec_log);
   case "$recovery" in
     *Welcome*)  recovery="$(grep -m 1 "Welcome to" $rec_log | awk '{ print substr($0, index($0,$3)) }')$(grep -m 1 "^ext.version" $rec_log | cut -d\" -f2)"; break;;
     *Recovery*) recovery=$(grep -m 1 "Recovery v" $rec_log); recovery=${recovery/Recovery v/Recovery }; break;;
@@ -1156,7 +1156,7 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
 fi
 
 # Read and save system partition size details
-df=$(busybox df -k /system | tail -n 1);
+df=$(df -k /system | tail -n 1);
 case $df in
   /dev/block/*) df=$(echo "$df" | awk '{ print substr($0, index($0,$2)) }');;
 esac;
