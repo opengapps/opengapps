@@ -18,7 +18,9 @@ echo '#!/sbin/sh
 # This Open GApps Shell Script Installer includes code derived from the TK GApps of @TKruzze and @osm0sis,
 # The TK GApps are available under the GPLv3 from http://forum.xda-developers.com/android/software/tk-gapps-t3116347
 #
-unzip -o "$3" '"$EXTRACTFILES"' -d /tmp;'> "$build/META-INF/com/google/android/update-binary"
+for f in '"$EXTRACTFILES"'; do
+  unzip -o "$3" "$f" -d /tmp;
+done'> "$build/META-INF/com/google/android/update-binary"
 case "$EXTRACTFILES" in
   *xzdec*) echo 'chmod +x /tmp/xzdec'>> "$build/META-INF/com/google/android/update-binary";; #xz-decompression binary bundled
 esac
