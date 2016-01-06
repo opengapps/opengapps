@@ -77,14 +77,18 @@ if ( contains "$gapps_list" "hangouts" ); then
   tarpath="/tmp/GApps/hangouts.tar.xz";
   which_dpi "hangouts";
   tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
-  cp -rf /tmp/$dpiapkpath/priv-app/Hangouts.apk /data/app/com.google.android.talk.apk;
+  number="$(find /data/app/com.google.android.talk-*.apk | head -n1 | grep -o "\-[0-9]\+\.apk\$" | grep -o "[0-9]\+")"
+  if [ -z "$number" ]; then
+    number="1"
+  fi
+  cp -rf /tmp/$dpiapkpath/priv-app/Hangouts.apk /data/app/com.google.android.talk-$number.apk;
   rm -rf /tmp/$dpiapkpath;
   tar -xJf "$tarpath" -C /tmp "common";
-  cp -rf /tmp/hangouts/common/lib. /data/app-lib/com.google.android.talk/;
-  chown "system.system" /data/app/com.google.android.talk*.apk
-  chmod 644 /data/app/com.google.android.talk*.apk
-  chown -R "system.system" /data/app-lib/com.google.android.talk*/
-  chmod -R 755 /data/app-lib/com.google.android.talk*/
+  cp -rf /tmp/hangouts/common/lib. /data/app-lib/com.google.android.talk-$number/;
+  chown "system.system" /data/app/com.google.android.talk-*.apk
+  chmod 644 /data/app/com.google.android.talk-*.apk
+  chown -R "system.system" /data/app-lib/com.google.android.talk-*/
+  chmod -R 755 /data/app-lib/com.google.android.talk-*/
   rm -rf /tmp/hangouts/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/hangouts};
@@ -95,14 +99,18 @@ if ( contains "$gapps_list" "googleplus" ); then
   tarpath="/tmp/GApps/googleplus.tar.xz";
   which_dpi "googleplus";
   tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
-  cp -rf /tmp/$dpiapkpath/app/PlusOne.apk /data/app/com.google.android.apps.plus.apk;
+  number="$(find /data/app/com.google.android.apps.plus-*.apk | head -n1 | grep -o "\-[0-9]\+\.apk\$" | grep -o "[0-9]\+")"
+  if [ -z "$number" ]; then
+    number="1"
+  fi
+  cp -rf /tmp/$dpiapkpath/app/PlusOne.apk /data/app/com.google.android.apps.plus-$number.apk;
   rm -rf /tmp/$dpiapkpath;
   tar -xJf "$tarpath" -C /tmp "common";
-  cp -rf /tmp/googleplus/common/lib. /data/app-lib/com.google.android.apps.plus/;
-  chown "system.system" /data/app/com.google.android.apps.plus*.apk
-  chmod 644 /data/app/com.google.android.apps.plus*.apk
-  chown -R "system.system" /data/app-lib/com.google.android.apps.plus*/
-  chmod -R 755 /data/app-lib/com.google.android.apps.plus*/
+  cp -rf /tmp/googleplus/common/lib. /data/app-lib/com.google.android.apps.plus-$number/;
+  chown "system.system" /data/app/com.google.android.apps.plus-*.apk
+  chmod 644 /data/app/com.google.android.apps.plus-*.apk
+  chown -R "system.system" /data/app-lib/com.google.android.apps.plus-*/
+  chmod -R 755 /data/app-lib/com.google.android.apps.plus-*/
   rm -rf /tmp/googleplus/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/googleplus};
@@ -113,14 +121,18 @@ if ( contains "$gapps_list" "photos" ); then
   tarpath="/tmp/GApps/photos.tar.xz";
   which_dpi "photos";
   tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
-  cp -rf /tmp/$dpiapkpath/app/Photos.apk /data/app/com.google.android.apps.photos.apk;
+  number="$(find /data/app/com.google.android.apps.photos-*.apk | head -n1 | grep -o "\-[0-9]\+\.apk\$" | grep -o "[0-9]\+")"
+  if [ -z "$number" ]; then
+    number="1"
+  fi
+  cp -rf /tmp/$dpiapkpath/app/Photos.apk /data/app/com.google.android.apps.photos-$number.apk;
   rm -rf /tmp/$dpiapkpath;
   tar -xJf "$tarpath" -C /tmp "common";
-  cp -rf /tmp/photos/common/lib. /data/app-lib/com.google.android.apps.photos/;
-  chown "system.system" /data/app/com.google.android.apps.photos*.apk
-  chmod 644 /data/app/com.google.android.apps.photos*.apk
-  chown -R "system.system" /data/app-lib/com.google.android.apps.photos*/
-  chmod -R 755 /data/app-lib/com.google.android.apps.photos*/
+  cp -rf /tmp/photos/common/lib. /data/app-lib/com.google.android.apps.photos-$number/;
+  chown "system.system" /data/app/com.google.android.apps.photos-*.apk
+  chmod 644 /data/app/com.google.android.apps.photos-*.apk
+  chown -R "system.system" /data/app-lib/com.google.android.apps.photos-*/
+  chmod -R 755 /data/app-lib/com.google.android.apps.photos-*/
   rm -rf /tmp/photos/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/photos};
@@ -131,14 +143,18 @@ if ( contains "$gapps_list" "youtube" ); then
   tarpath="/tmp/GApps/youtube.tar.xz";
   which_dpi "youtube";
   tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
-  cp -rf /tmp/$dpiapkpath/app/YouTube.apk /data/app/com.google.android.youtube.apk;
+  number="$(find /data/app/com.google.android.youtube-*.apk | head -n1 | grep -o "\-[0-9]\+\.apk\$" | grep -o "[0-9]\+")"
+  if [ -z "$number" ]; then
+    number="1"
+  fi
+  cp -rf /tmp/$dpiapkpath/app/YouTube.apk /data/app/com.google.android.youtube-$number.apk;
   rm -rf /tmp/$dpiapkpath;
   tar -xJf "$tarpath" -C /tmp "common";
-  cp -rf /tmp/youtube/common/lib. /data/app-lib/com.google.android.youtube/;
-  chown "system.system" /data/app/com.google.android.youtube*.apk
-  chmod 644 /data/app/com.google.android.youtube*.apk
-  chown -R "system.system" /data/app-lib/com.google.android.youtube*/
-  chmod -R 755 /data/app-lib/com.google.android.youtube*/
+  cp -rf /tmp/youtube/common/lib. /data/app-lib/com.google.android.youtube-$number/;
+  chown "system.system" /data/app/com.google.android.youtube-*.apk
+  chmod 644 /data/app/com.google.android.youtube-*.apk
+  chown -R "system.system" /data/app-lib/com.google.android.youtube-*/
+  chmod -R 755 /data/app-lib/com.google.android.youtube-*/
   rm -rf /tmp/youtube/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/youtube};
