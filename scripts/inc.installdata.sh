@@ -161,6 +161,7 @@ cmaudiofx
 cmaccount
 cmeleven
 cmfilemanager
+cmmusic
 cmsetupwizard
 cmupdater
 cmwallpapers
@@ -241,6 +242,10 @@ app/Eleven'"$REMOVALSUFFIX"'
 
 cmfilemanager_list="
 app/CMFileManager'"$REMOVALSUFFIX"'
+";
+
+cmmusic_list="
+app/Music'"$REMOVALSUFFIX"'
 ";
 
 cmupdater_list="
