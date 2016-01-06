@@ -82,7 +82,9 @@ if ( contains "$gapps_list" "hangouts" ); then
   tar -xJf "$tarpath" -C /tmp "common";
   cp -rf /tmp/hangouts/common/lib. /data/app-lib/com.google.android.talk/;
   chown "system.system" /data/app/com.google.android.talk*.apk
+  chmod 644 /data/app/com.google.android.talk*.apk
   chown -R "system.system" /data/app-lib/com.google.android.talk*/
+  chmod -R 755 /data/app-lib/com.google.android.talk*/
   rm -rf /tmp/hangouts/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/hangouts};
@@ -98,7 +100,9 @@ if ( contains "$gapps_list" "googleplus" ); then
   tar -xJf "$tarpath" -C /tmp "common";
   cp -rf /tmp/googleplus/common/lib. /data/app-lib/com.google.android.apps.plus/;
   chown "system.system" /data/app/com.google.android.apps.plus*.apk
+  chmod 644 /data/app/com.google.android.apps.plus*.apk
   chown -R "system.system" /data/app-lib/com.google.android.apps.plus*/
+  chmod -R 755 /data/app-lib/com.google.android.apps.plus*/
   rm -rf /tmp/googleplus/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/googleplus};
@@ -114,7 +118,9 @@ if ( contains "$gapps_list" "photos" ); then
   tar -xJf "$tarpath" -C /tmp "common";
   cp -rf /tmp/photos/common/lib. /data/app-lib/com.google.android.apps.photos/;
   chown "system.system" /data/app/com.google.android.apps.photos*.apk
+  chmod 644 /data/app/com.google.android.apps.photos*.apk
   chown -R "system.system" /data/app-lib/com.google.android.apps.photos*/
+  chmod -R 755 /data/app-lib/com.google.android.apps.photos*/
   rm -rf /tmp/photos/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/photos};
@@ -130,7 +136,9 @@ if ( contains "$gapps_list" "youtube" ); then
   tar -xJf "$tarpath" -C /tmp "common";
   cp -rf /tmp/youtube/common/lib. /data/app-lib/com.google.android.youtube/;
   chown "system.system" /data/app/com.google.android.youtube*.apk
+  chmod 644 /data/app/com.google.android.youtube*.apk
   chown -R "system.system" /data/app-lib/com.google.android.youtube*/
+  chmod -R 755 /data/app-lib/com.google.android.youtube*/
   rm -rf /tmp/youtube/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/youtube};
