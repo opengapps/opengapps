@@ -127,7 +127,7 @@ exxit() {
     tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" logs/*;
     cd /;
   fi;
-  rm -rf /tmp/*;
+  find /tmp/* -maxdepth 0 ! -name 'recovery.log' -exec rm -rf {} +;
   set_progress 1.0;
   ui_print "- Unmounting /system, /data, /cache, /persist";
   ui_print " ";
