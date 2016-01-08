@@ -102,7 +102,7 @@ for appname in $allapps;do
           appversionname="$(aapt dump badging "$appversionfile" 2>/dev/null | awk '/versionName=/ {print $4}' | sed s/versionName=// | sed "s/'//g")"
           if [ -z "$nosig" ];then
             if verifyapk "$appversionfile";then
-              signed="pass"
+              signed="ok"
             else
               signed="fail"
             fi
