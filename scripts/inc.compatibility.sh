@@ -36,12 +36,12 @@ keyboardlibhack(){
             # Only touch AOSP keyboard only if it is not removed
             KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false" ]; then
   extract_app "Optional/swypelibs";
-  mkdir -p "/system/app/LatinIME/lib/'"$ARCH"'";
+  install -d "/system/app/LatinIME/lib/'"$ARCH"'";
   ln -sfn "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google"; # create required symlink
 
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google\"" $bkup_tail;
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/LatinIME/lib/'"$ARCH"'\"" $bkup_tail;
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/LatinIME/lib/'"$ARCH"'\"" $bkup_tail;
 fi;'
           else # on KitKat we need to replace the aosp lib with a symlink, it has no 64bit libs
             REQDLIST="/system/lib/libjni_latinime.so

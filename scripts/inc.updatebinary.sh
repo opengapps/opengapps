@@ -462,8 +462,8 @@ else
 fi;
 
 # Unless this is a NoDebug install - create folder and take 'Before' snapshots
-if ( ! grep -qi "nodebug" "$g_conf" ); then
-  mkdir /tmp/logs;
+if ( ! grep -qiE "^ *nodebug *($|#)+" "$g_conf" ); then
+  install -d /tmp/logs;
   ls -alZR /system > /tmp/logs/System_Files_Before.txt;
   df -k > /tmp/logs/Device_Space_Before.txt;
 fi;
@@ -1267,7 +1267,7 @@ done;
 
 # Perform calculations of required Buffer Size
 set_progress 0.11;
-if ( grep -qi "smallbuffer" "$g_conf" ); then
+if ( grep -qiE "^ *smallbuffer *($|#)+" "$g_conf" ); then
   buffer_size_kb=$small_buffer_size;
 fi;
 
@@ -1379,29 +1379,29 @@ done;
 EOFILE
 echo '# Create FaceLock lib symlink if FaceLock was installed
 if ( contains "$gapps_list" "faceunlock" ); then
-  mkdir -p "/system/app/FaceLock/lib/'"$ARCH"'";
+  install -d "/system/app/FaceLock/lib/'"$ARCH"'";
   ln -sfn "/system/'"$LIBFOLDER"'/$faceLock_lib_filename" "/system/app/FaceLock/lib/'"$ARCH"'/$faceLock_lib_filename"; # create required symlink
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$faceLock_lib_filename\" \"/system/app/FaceLock/lib/'"$ARCH"'/$faceLock_lib_filename\"" $bkup_tail;
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/FaceLock/lib/'"$ARCH"'\"" $bkup_tail;
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/FaceLock/lib/'"$ARCH"'\"" $bkup_tail;
 fi;
 ' >> "$build/META-INF/com/google/android/update-binary"
 if [ "$API" -lt "23" ]; then
   echo '# Create WebView lib symlink if WebView was installed
 if ( contains "$gapps_list" "webviewgoogle" ); then
-  mkdir -p "/system/app/WebViewGoogle/lib/'"$ARCH"'";
+  install -d "/system/app/WebViewGoogle/lib/'"$ARCH"'";
   ln -sfn "/system/'"$LIBFOLDER"'/$WebView_lib_filename" "/system/app/WebViewGoogle/lib/'"$ARCH"'/$WebView_lib_filename"; # create required symlink' >> "$build/META-INF/com/google/android/update-binary"
   if [ "$LIBFOLDER" = "lib64" ]; then #on 64bit we also need to add 32 bit libs
-    echo '  mkdir -p "/system/app/WebViewGoogle/lib/'"$fallback_arch"'";
+    echo '  install -d "/system/app/WebViewGoogle/lib/'"$fallback_arch"'";
   ln -sfn "/system/lib/$WebView_lib_filename" "/system/app/WebViewGoogle/lib/'"$fallback_arch"'/$WebView_lib_filename"; # create required symlink' >> "$build/META-INF/com/google/android/update-binary"
   fi
   echo '  # Add same code to backup script to insure symlinks are recreated on addon.d restore' >> "$build/META-INF/com/google/android/update-binary"
   if [ "$LIBFOLDER" = "lib64" ]; then #on 64bit we also need to add 32 bit libs
     echo '  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/lib/$WebView_lib_filename\" \"/system/app/WebViewGoogle/lib/'"$fallback_arch"'/$WebView_lib_filename\"" $bkup_tail;
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/WebViewGoogle/lib/'"$fallback_arch"'\"" $bkup_tail;' >> "$build/META-INF/com/google/android/update-binary"
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/WebViewGoogle/lib/'"$fallback_arch"'\"" $bkup_tail;' >> "$build/META-INF/com/google/android/update-binary"
   fi
   echo '  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$WebView_lib_filename\" \"/system/app/WebViewGoogle/lib/'"$ARCH"'/$WebView_lib_filename\"" $bkup_tail;
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    mkdir -p \"/system/app/WebViewGoogle/lib/'"$ARCH"'\"" $bkup_tail;
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/WebViewGoogle/lib/'"$ARCH"'\"" $bkup_tail;
 fi;' >> "$build/META-INF/com/google/android/update-binary"
 fi
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
@@ -1433,7 +1433,7 @@ done;
 bkup_header="#!/sbin/sh\n# \n# /system/addon.d/70-gapps.sh\n#\n. /tmp/backuptool.functions\n\nlist_files() {\ncat <<EOF"
 bkup_list="$bkup_list"$'\n'"etc/g.prop"; # add g.prop to backup list
 bkup_list=$(echo "${bkup_list}" | sort -u| sed '/^$/d'); # sort list & remove duplicates and empty lines
-mkdir -p /system/addon.d;
+install -d /system/addon.d;
 echo -e "$bkup_header" > /system/addon.d/70-gapps.sh;
 echo -e "$bkup_list" >> /system/addon.d/70-gapps.sh;
 cat $bkup_tail >> /system/addon.d/70-gapps.sh;

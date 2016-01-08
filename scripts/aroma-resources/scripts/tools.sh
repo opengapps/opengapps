@@ -10,7 +10,7 @@ case "$1" in
 	rm -f /sdcard/Open-GApps/bypass.prop
 	rm -f /sdcard/Open-GApps/rem.prop
 	rm -f /sdcard/Open-GApps/extra.prop
-	[ ! -d /sdcard/Open-GApps ] && mkdir /sdcard/Open-GApps
+	[ ! -d /sdcard/Open-GApps ] && install -d /sdcard/Open-GApps
 	cp /tmp/aroma/aromagapps.prop /sdcard/Open-GApps/aromagapps.prop
 	cp /tmp/aroma/bypass.prop /sdcard/Open-GApps/bypass.prop
 	cp /tmp/aroma/rem.prop /sdcard/Open-GApps/rem.prop
