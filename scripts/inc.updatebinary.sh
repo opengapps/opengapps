@@ -348,6 +348,9 @@ ui_print " ";
 ui_print "$installer_name$gapps_version";
 ui_print " ";
 mounts=""
+if [ -d /vendor ] && ! mountpoint -q /vendor; then
+  mounts="/vendor $mounts"
+fi
 if [ -d /system ] && ! mountpoint -q /system; then
   mounts="/system $mounts"
 fi
