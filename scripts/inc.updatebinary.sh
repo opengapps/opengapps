@@ -1152,6 +1152,7 @@ log "Installing GApps Type" "$gapps_type";
 log "Config Type" "$config_type";
 log "Using gapps-config" "$config_file";
 log "Remove Stock/AOSP Browser" "$remove_browser";
+log "Remove Stock/AOSP Calculator" "$remove_calculatorstock"
 log "Remove Stock/AOSP Clock" "$remove_clockstock";
 log "Remove Stock/AOSP Contacts" "$remove_contactsstock";
 #log "Remove Stock/AOSP Dialer" "$remove_dialerstock";
