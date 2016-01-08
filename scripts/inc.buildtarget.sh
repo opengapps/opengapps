@@ -88,6 +88,8 @@ launcher
 mms
 picotts"
 
+miniremove=""
+
 case "$ARCH" in
   arm64|x86_64)  LIBFOLDER="lib64";;
   *)             LIBFOLDER="lib";;

@@ -146,8 +146,11 @@ pico_gapps_list="
 ";
 # _____________________________________________________________________________________________________________________
 #                                             Default Stock/AOSP Removal List (Stock GApps Only)
-default_aosp_remove_list="
+default_stock_remove_list="
 '"$stockremove"'
+";
+default_mini_remove_list="
+'"$miniremove"'
 ";
 # _____________________________________________________________________________________________________________________
 #                                             Optional Stock/AOSP/ROM Removal List
