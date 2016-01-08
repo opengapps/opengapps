@@ -34,7 +34,7 @@ keyboardlibhack(){
 /system/app/LatinIME/lib/$ARCH/libjni_latinimegoogle.so"
             KEYBDLIBS='keybd_lib_google="libjni_latinimegoogle.so";'
             # Only touch AOSP keyboard only if it is not removed
-            KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ); then
+            KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false" ]; then
   extract_app "Optional/swypelibs";
   mkdir -p "/system/app/LatinIME/lib/'"$ARCH"'";
   ln -sfn "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google"; # create required symlink
@@ -49,7 +49,7 @@ fi;'
             KEYBDLIBS='keybd_lib_google="libjni_latinimegoogle.so";
 keybd_lib_aosp="libjni_latinime.so";'
       # Only touch AOSP keyboard only if it is not removed
-            KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ); then
+            KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false" ]; then
   extract_app "Optional/swypelibs";
   ln -sfn "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/'"$LIBFOLDER"'/$keybd_lib_aosp"; # create required symlink
 

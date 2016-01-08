@@ -612,16 +612,23 @@ case $density in
 esac;
 
 # Check for DPI Override in gapps-config
-if ( grep -qiE "forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi)" "$g_conf" ); then # user wants to override the DPI selection
-  density=$( grep -iEo "forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi)" "$g_conf" | tr '[:upper:]'  '[:lower:]' );
+if ( grep -qiE "^ *forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi) *($|#)+" "$g_conf" ); then # user wants to override the DPI selection
+  density=$( grep -iEo "^ *forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi) *($|#)+" "$g_conf" | tr '[:upper:]'  '[:lower:]' );
   density=${density#forcedpi};
 fi;
 
 # Check for Clean Override in gapps-config
-if ( grep -qiE "^forceclean$" "$g_conf" ); then # true or false to override the default selection
+if ( grep -qiE "^ *forceclean *($|#)+" "$g_conf" ); then # true or false to override the default selection
   forceclean="true"
 else
   forceclean="false"
+fi;
+
+# Check for skipswypelibs Override in gapps-config
+if ( grep -qiE "^ *skipswypelibs *($|#)+" $g_conf ); then # true or false to override the default selection
+  skipswypelibs="true"
+else
+  skipswypelibs="false"
 fi;
 
 # Set density to unknown if it's still empty
@@ -1185,7 +1192,7 @@ for gapp_name in $core_gapps_list; do
 done;
 
 # Add swypelibs size to core, if it will be installed
-if ( ! contains "$gapps_list" "keyboardgoogle" ); then
+if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false" ]; then
   unzip -o "$ZIP" "Optional/swypelibs.tar.xz" -d /tmp;
   keybd_lib_size=$(tar -tvJf "/tmp/Optional/swypelibs.tar.xz" "swypelibs" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
   rm -f "/tmp/Optional/swypelibs.tar.xz";
