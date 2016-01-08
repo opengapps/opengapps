@@ -1318,7 +1318,7 @@ for i in /system/app /system/priv-app /system/vendor/pittpatt /system/usr/srec /
 done;
 # _____________________________________________________________________________________________________________________
 #                                                  Perform Installs
-ui_print "- Installing updated GApps";
+ui_print "- Installing core GApps";
 ui_print " ";
 set_progress 0.15;
 for gapp_name in $core_gapps_list; do
@@ -1339,6 +1339,7 @@ prog_bar=3000; # Set Progress Bar start point (0.3000) for below
 
 # Install the rest of GApps still in $gapps_list
 for gapp_name in $gapps_list; do
+  ui_print "- Installing $gapp_name";
   extract_app "GApps/$gapp_name"; # Installing User Selected GApps
   prog_bar=$((prog_bar + incr_amt));
   set_progress 0.$prog_bar;
@@ -1408,6 +1409,7 @@ cat $bkup_tail >> /system/addon.d/70-gapps.sh;
 # _____________________________________________________________________________________________________________________
 #                                                  Fix Permissions
 set_progress 0.83;
+ui_print " ";
 ui_print "- Fixing permissions & contexts";
 ui_print " ";
 set_perm_recursive 0 0 755 644 "/system/app" "/system/framework" "/system/lib" "/system/lib64" "/system/priv-app" "/system/usr/srec" "/system/vendor/pittpatt" "/system/etc/permissions" "/system/etc/preferred-apps";
