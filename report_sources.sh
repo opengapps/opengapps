@@ -78,7 +78,7 @@ esac
 result="$(printf "%45s|%6s|%3s|%15s|%27s|%10s|%4s" "Application Name" "Arch." "SDK" "DPI" "Version Name" "Version" "Sig.")
 ---------------------------------------------------------------------------------------------------------------"
 allapps="$(find "$SOURCES/" -iname "*.apk" | awk -F '/' '{print $(NF-3)}' | sort | uniq)"
-for appname in $allapps;do
+for appname in $allapps; do
   appnamefiles="$(find "$SOURCES/" -iname "*.apk" -ipath "*/$appname/*")"
   if [ -n "$buildarch" ]; then
     apparchs="$buildarch $fallbackarchs all"
@@ -88,20 +88,20 @@ for appname in $allapps;do
     apparchs="$(printf "%s" "$appnamefiles" | awk -F '/' '{print $(NF-5)}' | sort | uniq)"
   fi
 
-  for arch in $apparchs;do
+  for arch in $apparchs; do
     appsdkfiles="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/*")"
     appsdks="$(printf "%s" "$appsdkfiles" | awk -F '/' '{print $(NF-2)}' | sort -r -g | uniq)"
 
-    for sdk in $appsdks;do
-      if [ "$sdk" -le "$maxsdk" ];then
+    for sdk in $appsdks; do
+      if [ "$sdk" -le "$maxsdk" ]; then
         appdpifiles="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/*")"
         appdpis="$(printf "%s" "$appdpifiles" | awk -F '/' '{print $(NF-1)}' | sort | uniq)"
-        for dpi in $appdpis;do
+        for dpi in $appdpis; do
           appversionfile="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/$dpi/*" | head -n 1)"
           appversion="$(basename -s ".apk" "$appversionfile")"
           appversionname="$(aapt dump badging "$appversionfile" 2>/dev/null | awk '/versionName=/ {print $4}' | sed s/versionName=// | sed "s/'//g")"
-          if [ -z "$nosig" ];then
-            if verifyapk "$appversionfile";then
+          if [ -z "$nosig" ]; then
+            if verifyapk "$appversionfile" "silent"; then
               signed="ok"
             else
               signed="fail"

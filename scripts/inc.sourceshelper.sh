@@ -117,7 +117,7 @@ getarchitectures() {
 
 verifyapk() {
   notinzip=""
-  if importcert "$1"; then #always import, because sometimes new certificates are supplied but it would never be detected because the exitcode of jarsigner -verify would be 0, because the existing certificates would suffice
+  if importcert "$1" "$2"; then #always import, because sometimes new certificates are supplied but it would never be detected because the exitcode of jarsigner -verify would be 0, because the existing certificates would suffice
     if ! jarsigner -verify -keystore "$CERTIFICATES/opengapps.keystore" -strict "$1" 1>/dev/null 2>&1; then
       return 1 #contains files not signed by Google. APK not imported
     fi
@@ -139,8 +139,10 @@ importcert() {
   if ! keytool -list -keystore "$CERTIFICATES/opengapps.keystore" -storepass "opengapps" -noprompt -alias "$alias" 1>/dev/null 2>&1; then
     if [ -n "$IMPORTCERTS" ]; then #set this variable in your environment if you want to permit the script to update the keystore
       unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | keytool -importcert -keystore "$CERTIFICATES/opengapps.keystore" -storepass "opengapps" -noprompt -alias "$alias" 1>/dev/null 2>&1
-      echo "Certificate with alias $alias is signed by Google and added to the keystore"
-    else
+      if [ -n "$2" ]; then #silent mode if value is set
+        echo "Certificate with alias $alias is signed by Google and added to the keystore"
+      fi
+    elif [ -z "$2" ]; then #only output if no silent mode value is set
       echo "APK contains a new Google certificate not yet available in the keystore, please contact Open GApps maintainer to get it included"
     fi
   fi
