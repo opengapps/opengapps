@@ -85,10 +85,8 @@ if ( contains "$gapps_list" "hangouts" ); then
   rm -rf /tmp/$dpiapkpath;
   tar -xJf "$tarpath" -C /tmp "common";
   cp -rf /tmp/hangouts/common/lib. /data/app-lib/com.google.android.talk-$number/;
-  chown "system.system" /data/app/com.google.android.talk-*.apk
-  chmod 644 /data/app/com.google.android.talk-*.apk
-  chown -R "system.system" /data/app-lib/com.google.android.talk-*/
-  chmod -R 755 /data/app-lib/com.google.android.talk-*/
+  set_perm 1000 1000 644 "/data/app/com.google.android.talk-$number.apk"
+  set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.talk-$number"
   rm -rf /tmp/hangouts/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/hangouts};
@@ -107,10 +105,8 @@ if ( contains "$gapps_list" "googleplus" ); then
   rm -rf /tmp/$dpiapkpath;
   tar -xJf "$tarpath" -C /tmp "common";
   cp -rf /tmp/googleplus/common/lib. /data/app-lib/com.google.android.apps.plus-$number/;
-  chown "system.system" /data/app/com.google.android.apps.plus-*.apk
-  chmod 644 /data/app/com.google.android.apps.plus-*.apk
-  chown -R "system.system" /data/app-lib/com.google.android.apps.plus-*/
-  chmod -R 755 /data/app-lib/com.google.android.apps.plus-*/
+  set_perm 1000 1000 644 "/data/app/com.google.android.apps.plus-$number.apk"
+  set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.apps.plus-$number"
   rm -rf /tmp/googleplus/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/googleplus};
@@ -129,10 +125,8 @@ if ( contains "$gapps_list" "photos" ); then
   rm -rf /tmp/$dpiapkpath;
   tar -xJf "$tarpath" -C /tmp "common";
   cp -rf /tmp/photos/common/lib. /data/app-lib/com.google.android.apps.photos-$number/;
-  chown "system.system" /data/app/com.google.android.apps.photos-*.apk
-  chmod 644 /data/app/com.google.android.apps.photos-*.apk
-  chown -R "system.system" /data/app-lib/com.google.android.apps.photos-*/
-  chmod -R 755 /data/app-lib/com.google.android.apps.photos-*/
+  set_perm 1000 1000 644 "/data/app/com.google.android.apps.photos-$number.apk"
+  set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.apps.photos-$number"
   rm -rf /tmp/photos/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/photos};
@@ -151,10 +145,8 @@ if ( contains "$gapps_list" "youtube" ); then
   rm -rf /tmp/$dpiapkpath;
   tar -xJf "$tarpath" -C /tmp "common";
   cp -rf /tmp/youtube/common/lib. /data/app-lib/com.google.android.youtube-$number/;
-  chown "system.system" /data/app/com.google.android.youtube-*.apk
-  chmod 644 /data/app/com.google.android.youtube-*.apk
-  chown -R "system.system" /data/app-lib/com.google.android.youtube-*/
-  chmod -R 755 /data/app-lib/com.google.android.youtube-*/
+  set_perm 1000 1000 644 "/data/app/com.google.android.youtube-$number.apk"
+  set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.youtube-$number"
   rm -rf /tmp/youtube/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/youtube};

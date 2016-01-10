@@ -58,9 +58,9 @@ case "$1" in
         find $i -type d | xargs rmdir -p --ignore-fail-on-non-empty;
     done;
     # Fix ownership/permissions and clean up after backup and restore from /sdcard
-    find /system/vendor/pittpatt -type d -exec chown 0.2000 '{}' \; # Change pittpatt folders to root:shell per Google Factory Settings
+    find /system/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; # Change pittpatt folders to root:shell per Google Factory Settings
     for i in $(list_files); do
-      chown root.root "/system/$i"
+      chown root:root "/system/$i"
       chmod 644 "/system/$i"
       chmod 755 $(dirname "/system/$i")
     done

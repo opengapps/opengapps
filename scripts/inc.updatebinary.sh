@@ -249,7 +249,6 @@ quit() {
 }
 
 set_perm() {
-  chown "$1.$2" "$4";
   chown "$1:$2" "$4";
   chmod "$3" "$4";
 }
@@ -257,7 +256,7 @@ set_perm() {
 set_perm_recursive() {
   dirs=$(echo "$@" | awk '{ print substr($0, index($0,$5)) }');
   for i in $dirs; do
-    chown -R "$1.$2" "$i"; chown -R "$1:$2" "$i";
+    chown -R "$1:$2" "$i";
     find "$i" -type d -exec chmod "$3" {} +;
     find "$i" -type f -exec chmod "$4" {} +;
   done;
@@ -1449,7 +1448,7 @@ set_progress 0.85;
 set_perm_recursive 0 0 755 755 "/system/addon.d";
 
 set_progress 0.87;
-find /system/vendor/pittpatt -type d -exec chown 0.2000 '{}' \; # Change pittpatt folders to root:shell per Google Factory Settings
+find /system/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; # Change pittpatt folders to root:shell per Google Factory Settings
 
 set_perm 0 0 644 $g_prop;
 
