@@ -34,14 +34,23 @@ keyboardlibhack(){
 /system/app/LatinIME/lib/$ARCH/libjni_latinimegoogle.so"
             KEYBDLIBS='keybd_lib_google="libjni_latinimegoogle.so";'
             # Only touch AOSP keyboard only if it is not removed
-            KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false" ]; then
-  extract_app "Optional/swypelibs";
-  install -d "/system/app/LatinIME/lib/'"$ARCH"'";
-  ln -sfn "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google"; # create required symlink
+            KEYBDINSTALLCODE='# Install/Remove SwypeLibs
+if ( ! contains "$gapps_list" "keyboardgoogle" ); then
+  if [ "$skipswypelibs" = "false" ]; then
+    ui_print "- Installing swypelibs";
+    log "- Installing " "swypelibs";
+    extract_app "Optional/swypelibs";
+    install -d "/system/app/LatinIME/lib/'"$ARCH"'";
+    ln -sfn "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google"; # create required symlink
 
-  # Add same code to backup script to insure symlinks are recreated on addon.d restore
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google\"" $bkup_tail;
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/LatinIME/lib/'"$ARCH"'\"" $bkup_tail;
+    # Add same code to backup script to insure symlinks are recreated on addon.d restore
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/app/LatinIME/lib/'"$ARCH"'/$keybd_lib_google\"" $bkup_tail;
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/LatinIME/lib/'"$ARCH"'\"" $bkup_tail;
+  else
+    ui_print "- Removing swypelibs";
+    log "- Removing " "swypelibs";
+    rm -f "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/app/LatinIME/'"$LIBFOLDER"'/'"$ARCH"'/$keybd_lib_google"; # remove swypelibs and symlink if any
+  fi;
 fi;'
           else # on KitKat we need to replace the aosp lib with a symlink, it has no 64bit libs
             REQDLIST="/system/lib/libjni_latinime.so
@@ -49,12 +58,22 @@ fi;'
             KEYBDLIBS='keybd_lib_google="libjni_latinimegoogle.so";
 keybd_lib_aosp="libjni_latinime.so";'
       # Only touch AOSP keyboard only if it is not removed
-            KEYBDINSTALLCODE='if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false" ]; then
-  extract_app "Optional/swypelibs";
-  ln -sfn "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/'"$LIBFOLDER"'/$keybd_lib_aosp"; # create required symlink
+            KEYBDINSTALLCODE='# Install/Remove SwypeLibs
+if ( ! contains "$gapps_list" "keyboardgoogle" ); then
+  if [ "$skipswypelibs" = "false" ]; then
+    ui_print "- Installing swypelibs";
+    log "- Installing " "swypelibs";
+    extract_app "Optional/swypelibs";
+    ln -sfn "/system/'"$LIBFOLDER"'/$keybd_lib_google" "/system/'"$LIBFOLDER"'/$keybd_lib_aosp"; # create required symlink
 
-  # Add same code to backup script to insure symlinks are recreated on addon.d restore
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/'"$LIBFOLDER"'/$keybd_lib_aosp\"" $bkup_tail;
+    # Add same code to backup script to insure symlinks are recreated on addon.d restore
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$keybd_lib_google\" \"/system/'"$LIBFOLDER"'/$keybd_lib_aosp\"" $bkup_tail;
+  else
+    ui_print "- Restoring non-swypelibs";
+    log "- Restoring " " non-swypelibs";
+    rm -f "/system/'"$LIBFOLDER"'/$keybd_lib_google"; # remove swypelibs
+    ln -sfn "/system/'"$LIBFOLDER"'/$keybd_lib_aosp" "/system/'"$LIBFOLDER"'/'"$ARCH"'/$keybd_lib_aosp"; # restore non-swypelibs symlink
+  fi;
 fi;'
           fi;;
     *) REQDLIST=""
