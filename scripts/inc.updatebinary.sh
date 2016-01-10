@@ -1196,6 +1196,7 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false"
   keybd_lib_size=$(tar -tvJf "/tmp/Optional/swypelibs.tar.xz" "swypelibs" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
   rm -f "/tmp/Optional/swypelibs.tar.xz";
   core_size=$((core_size + keybd_lib_size)); # Add Keyboard Lib size to core, if it exists
+  log "SwypeLibs" "keybd_lib_size (KB)";
 fi
 
 # Read and save system partition size details
@@ -1370,6 +1371,7 @@ prog_bar=3000; # Set Progress Bar start point (0.3000) for below
 # Install the rest of GApps still in $gapps_list
 for gapp_name in $gapps_list; do
   ui_print "- Installing $gapp_name";
+  log "- Installing " "$gapp_name";
   extract_app "GApps/$gapp_name"; # Installing User Selected GApps
   prog_bar=$((prog_bar + incr_amt));
   set_progress 0.$prog_bar;
@@ -1378,6 +1380,8 @@ done;
 EOFILE
 echo '# Create FaceLock lib symlink if FaceLock was installed
 if ( contains "$gapps_list" "faceunlock" ); then
+  ui_print "- Installing FaceLock";
+  log "- Installing " "$FaceLock";
   install -d "/system/app/FaceLock/lib/'"$ARCH"'";
   ln -sfn "/system/'"$LIBFOLDER"'/$faceLock_lib_filename" "/system/app/FaceLock/lib/'"$ARCH"'/$faceLock_lib_filename"; # create required symlink
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
