@@ -103,7 +103,7 @@ if ( contains "$gapps_list" "hangouts" ); then
   cp -rf /tmp/$dpiapkpath/priv-app/Hangouts.apk /data/app/com.google.android.talk-$number.apk;
   rm -rf /tmp/$dpiapkpath;
   tar -xJf "$tarpath" -C /tmp "common";
-  cp -rf /tmp/hangouts/common/lib. /data/app-lib/com.google.android.talk-$number/;
+  cp -rf /tmp/hangouts/common/lib* /data/app-lib/com.google.android.talk-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.talk-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.talk-$number"
   rm -rf /tmp/hangouts/common;
@@ -123,7 +123,7 @@ if ( contains "$gapps_list" "googleplus" ); then
   cp -rf /tmp/$dpiapkpath/app/PlusOne.apk /data/app/com.google.android.apps.plus-$number.apk;
   rm -rf /tmp/$dpiapkpath;
   tar -xJf "$tarpath" -C /tmp "common";
-  cp -rf /tmp/googleplus/common/lib. /data/app-lib/com.google.android.apps.plus-$number/;
+  cp -rf /tmp/googleplus/common/lib* /data/app-lib/com.google.android.apps.plus-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.apps.plus-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.apps.plus-$number"
   rm -rf /tmp/googleplus/common;
@@ -143,7 +143,7 @@ if ( contains "$gapps_list" "photos" ); then
   cp -rf /tmp/$dpiapkpath/app/Photos.apk /data/app/com.google.android.apps.photos-$number.apk;
   rm -rf /tmp/$dpiapkpath;
   tar -xJf "$tarpath" -C /tmp "common";
-  cp -rf /tmp/photos/common/lib. /data/app-lib/com.google.android.apps.photos-$number/;
+  cp -rf /tmp/photos/common/lib* /data/app-lib/com.google.android.apps.photos-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.apps.photos-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.apps.photos-$number"
   rm -rf /tmp/photos/common;
@@ -163,7 +163,7 @@ if ( contains "$gapps_list" "youtube" ); then
   cp -rf /tmp/$dpiapkpath/app/YouTube.apk /data/app/com.google.android.youtube-$number.apk;
   rm -rf /tmp/$dpiapkpath;
   tar -xJf "$tarpath" -C /tmp "common";
-  cp -rf /tmp/youtube/common/lib. /data/app-lib/com.google.android.youtube-$number/;
+  cp -rf /tmp/youtube/common/lib* /data/app-lib/com.google.android.youtube-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.youtube-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.youtube-$number"
   rm -rf /tmp/youtube/common;
