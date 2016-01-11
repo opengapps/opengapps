@@ -119,47 +119,49 @@ $notinzip"
   fi
 }
 
+addlib() {
+  lib="$1"
+  libname="$(basename "$lib")"
+  architecture="$2"
+  case "$libname" in
+    libfrsdk.so)  prefix="vendor/";;
+    *)            prefix="";;
+  esac
+  case $architecture in
+    arm64|x86_64)  libfolder="lib64";;
+    *)             libfolder="lib";;
+  esac
+  path="$SOURCES/$architecture/$prefix$libfolder/API/$libname"
+
+  echo "For which API level should $path be installed? [#]"
+  IFS= read -r REPLY
+  case "$REPLY" in
+    (*[!0-9]*|'') echo "ERROR: $REPLY is not a valid API level";;
+    (*)           install -D "$lib" "$SOURCES/$architecture/$prefix$libfolder/$REPLY/$libname"
+                  echo "SUCCESS: Added $libname to $architecture/$prefix$libfolder/$REPLY/";;
+  esac
+}
+
 for argument in "$@"; do
   if [ "$argument" = "beta" ]; then
     BETA="beta"
     continue
   fi
   file="$(readlink -f "$argument")"
-  if [ -f "$file" ]
-  then
+  if [ -f "$file" ]; then
     filetype="$(file -b -0 "$file" | tr '[:upper:]' '[:lower:]')"
     case "$filetype" in
       *jar*|*zip*)
-        if aapt dump configurations "$file" >/dev/null
-        then
+        if aapt dump configurations "$file" >/dev/null; then
           addapk "$file"
         else
           echo "ERROR: File $file not a valid APK!"
         fi;;
-      #*x86-64*)
-      #  install -D "$file" "$SOURCES/x86_64/lib64/$(basename "$file")"
-      #  echo "SUCCESS: Added $file to x86_64/lib64/";;
-      #*aarch64*)
-      #  if [ "$(basename "$file")" = "libfrsdk.so" ]; then
-      #    install -D "$file" "$SOURCES/arm/vendor/lib64/$(basename "$file")"
-      #    echo "SUCCESS: Added $file to arm64/vendor/lib64/"
-      #  else
-      #    install -D "$file" "$SOURCES/arm64/lib64/$(basename "$file")"
-      #    echo "SUCCESS: Added $file to arm64/lib64/"
-      #  fi;;
-      #*32-bit*intel*)
-      #  install -D "$file" "$SOURCES/x86/lib/$(basename "$file")"
-      #  echo "SUCCESS: Added $file to x86/lib/";;
-      #*32-bit*arm*)
-      #  if [ "$(basename "$file")" = "libfrsdk.so" ]; then
-      #    install -D "$file" "$SOURCES/arm/vendor/lib/$(basename "$file")"
-      #    echo "SUCCESS: Added $file to arm/vendor/lib/"
-      #  else
-      #    install -D "$file" "$SOURCES/arm/lib/$(basename "$file")"
-      #    echo "SUCCESS: Added $file to arm/lib/"
-      #  fi;;
-      *)
-        echo "ERROR: File $f has an unrecognized filetype!";;
+      *x86-64*)       addlib "$file" "x86_64";;
+      *aarch64*)      addlib "$file" "arm64";;
+      *32-bit*intel*) addlib "$file" "x86";;
+      *32-bit*arm*)   addlib "$file" "arm";;
+      *)              echo "ERROR: File $f has an unrecognized filetype!";;
     esac
   else
     echo "ERROR: File $file does not exist!"
