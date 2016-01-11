@@ -100,7 +100,7 @@ if ( contains "$gapps_list" "hangouts" ); then
   if [ -z "$number" ]; then
     number="1"
   fi
-  cp -rf /tmp/$dpiapkpath/priv-app/Hangouts.apk /data/app/com.google.android.talk-$number.apk;
+  cp -rf /tmp/$dpiapkpath/app/Hangouts.apk /data/app/com.google.android.talk-$number.apk;
   rm -rf /tmp/$dpiapkpath;
   tar -xJf "$tarpath" -C /tmp "common";
   cp -rf /tmp/hangouts/common/lib* /data/app-lib/com.google.android.talk-$number/;
