@@ -96,7 +96,7 @@ if ( contains "$gapps_list" "hangouts" ); then
   tarpath="/tmp/GApps/hangouts.tar.xz";
   which_dpi "hangouts";
   tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
-  number="$(basename /data/app/com.google.android.talk-*.apk .apk | rev | cut -d- -f1)"
+  number="$(basename "$(find /data/app/com.google.android.talk-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
   fi
@@ -116,7 +116,7 @@ if ( contains "$gapps_list" "googleplus" ); then
   tarpath="/tmp/GApps/googleplus.tar.xz";
   which_dpi "googleplus";
   tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
-  number="$(basename /data/app/com.google.android.apps.plus-*.apk .apk | rev | cut -d- -f1)"
+  number="$(basename "$(find /data/app/com.google.android.apps.plus-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
   fi
@@ -136,7 +136,7 @@ if ( contains "$gapps_list" "photos" ); then
   tarpath="/tmp/GApps/photos.tar.xz";
   which_dpi "photos";
   tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
-  number="$(basename /data/app/com.google.android.apps.photos-*.apk .apk | rev | cut -d- -f1)"
+  number="$(basename "$(find /data/app/com.google.android.apps.photos-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
   fi
@@ -156,7 +156,7 @@ if ( contains "$gapps_list" "youtube" ); then
   tarpath="/tmp/GApps/youtube.tar.xz";
   which_dpi "youtube";
   tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
-  number="$(basename /data/app/com.google.android.youtube-*.apk .apk | rev | cut -d- -f1)"
+  number="$(basename "$(find /data/app/com.google.android.youtube-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
   fi
