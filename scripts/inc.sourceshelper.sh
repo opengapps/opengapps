@@ -40,6 +40,8 @@ getapkproperties(){
     esac
   fi
 
+  sdkversionhacks
+
   case $package in
     "com.android.vending" |\
     "com.android.vending.leanback" |\

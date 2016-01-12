@@ -291,3 +291,10 @@ googletts"
 lib64/libwebviewchromium.so" #on non-Marshmallow the WebViewlibs are to be explictly included as a Google WebView file in gapps-remove.txt
   fi
 }
+
+sdkversionhacks(){
+  case "$package" in
+    com.android.facelock) if [ "$versioncode" = "23" ]; then sdkversion="23"; fi;;
+    *) ;;
+  esac
+}
