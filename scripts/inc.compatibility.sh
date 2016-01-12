@@ -205,6 +205,53 @@ minapihack(){
   esac
 }
 
+runtimepermissionshack(){
+  tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+install -d "$(dirname "$run_perms")"
+
+if [ ! -e "$run_perms" ]; then
+  fingerprint="$(file_getprop "$BPROP" "ro.build.fingerprint")"
+  echo "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<runtime-permissions fingerprint=\"$fingerprint\">
+</runtime-permissions>" > "$run_perms"
+fi
+
+#We (only) set permissions of apps that are part of core or that are direct replacements of AOSP/Stock apps with a high level of system integration
+fixpkgperms "com.android.vending" "CONTACTS_PERMISSIONS" "LOCATION_PERMISSIONS" "PHONE_PERMISSIONS" "SMS_PERMISSIONS"
+fixpkgperms "com.google.android.apps.gcs" "CONTACTS_PERMISSIONS" "LOCATION_PERMISSIONS"
+fixpkgperms "com.google.android.apps.messaging" "CAMERA_PERMISSIONS" "CONTACTS_PERMISSIONS" "LOCATION_PERMISSIONS" "MICROPHONE_PERMISSIONS" "PHONE_PERMISSIONS" "SMS_PERMISSIONS" "STORAGE_PERMISSIONS"
+fixpkgperms "com.google.android.backuptransport" "CONTACTS_PERMISSIONS"
+fixpkgperms "com.google.android.contacts" "CONTACTS_PERMISSIONS" "PHONE_PERMISSIONS" "STORAGE_PERMISSIONS"
+fixpkgperms "com.google.android.dialer" "CONTACTS_PERMISSIONS" "PHONE_PERMISSIONS" "ADDITIONAL_PERMISSIONS" #uses non-AOSP permissions
+fixpkgperms "com.google.android.GoogleCamera" "CAMERA_PERMISSIONS" "LOCATION_PERMISSIONS" "MICROPHONE_PERMISSIONS" "STORAGE_PERMISSIONS" #mind the capitals in the packagename
+fixpkgperms "com.google.android.gm.exchange" "CALENDAR_PERMISSIONS" "CONTACTS_PERMISSIONS"
+fixpkgperms "com.google.android.gms" "CALENDAR_PERMISSIONS" "CAMERA_PERMISSIONS" "CONTACTS_PERMISSIONS" "LOCATION_PERMISSIONS" "MICROPHONE_PERMISSIONS" "PHONE_PERMISSIONS" "SENSORS_PERMISSIONS" "SMS_PERMISSIONS" "STORAGE_PERMISSIONS"
+fixpkgperms "com.google.android.googlequicksearchbox" "CALENDAR_PERMISSIONS" "CAMERA_PERMISSIONS" "CONTACTS_PERMISSION" "LOCATION_PERMISSIONS" "MICROPHONE_PERMISSIONS" "PHONE_PERMISSIONS" "SMS_PERMISSIONS" "STORAGE_PERMISSIONS"
+fixpkgperms "com.google.android.gsf" "CONTACTS_PERMISSIONS" "PHONE_PERMISSIONS"
+fixpkgperms "com.google.android.gsf.login" "CONTACTS_PERMISSIONS" "PHONE_PERMISSIONS"
+fixpkgperms "com.google.android.packageinstaller" "STORAGE_PERMISSIONS"
+fixpkgperms "com.google.android.setupwizard" "CONTACTS_PERMISSIONS" "PHONE_PERMISSIONS"
+fixpkgperms "com.google.android.syncadapters.contacts" "CONTACTS_PERMISSIONS"
+fixpkgperms "com.google.android.talk" "CAMERA_PERMISSIONS" "CONTACTS_PERMISSIONS" "LOCATION_PERMISSIONS" "MICROPHONE_PERMISSIONS" "PHONE_PERMISSIONS" "SMS_PERMISSIONS" "STORAGE_PERMISSIONS"
+#faceunlock
+#calsync
+#googlefeedback
+#googleonetimeinitializer
+#googlepartnersetup
+#googletts
+#googletag
+#clockgoogle
+#calculatorgoogle
+#androidforwork
+#dmagent
+#projectfi
+
+fixuserperms "com.google.android.calendar.uid.shared" "CALENDAR_PERMISSIONS" "READ_CONTACTS" #note that READ_CONTACTS is not a permission group
+fixuserperms "com.google.uid.shared" "CALENDAR_PERMISSIONS" "CONTACTS_PERMISSIONS" "LOCATION_PERMISSIONS" "MICROPHONE_PERMISSIONS" "PHONE_PERMISSIONS" "SENSORS_PERMISSIONS" "SMS_PERMISSIONS" "STORAGE_PERMISSIONS"
+
+EOFILE
+}
+
 systemlibhack(){
   case "$package" in
     com.google.android.webview) if [ "$API" -lt "23" ]; then #webview libs are only on /system/lib/ on pre-Marshmallow

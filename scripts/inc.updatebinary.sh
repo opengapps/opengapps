@@ -39,6 +39,7 @@ calc_log=/tmp/calc.log;
 conflicts_log=/tmp/conflicts.log;
 rec_cache_log=/cache/recovery/log;
 rec_tmp_log=/tmp/recovery.log;
+run_perms="/data/system/users/0/runtime-permissions.xml"
 user_remove_notfound_log=/tmp/user_remove_notfound.log;
 user_remove_multiplefound_log=/tmp/user_remove_multiplefound.log;
 
@@ -322,6 +323,59 @@ which_dpi() {
       done;
     done;
   fi;
+}
+# _____________________________________________________________________________________________________________________
+#                                           Define Runtime Permissions Functions
+fixpkgperms() {
+  currentperms="$(awk "/<pkg name=\"$1\">/,/<\/pkg>/" "$run_perms")"
+  if [ -z "$currentperms" ]; then #if the packagename is not yet in the permissions
+    sed -i "/<runtime-permissions/a\ \ <pkg name=\"$1\">\n\ \ <\/pkg>" "$run_perms"
+  fi
+  for permissionsets in "$@"; do
+    if [ "$permissionsets" = "$1" ]; then #skip first entry since that is the packagename (posix-style)
+      continue
+    fi
+    getruntimeperms "$permissionsets"
+    for permission in $permissions; do
+      if ! echo "$currentperms" | grep -q "<item name=\"android.permission.$permission\""; then
+        sed -i "/<pkg name=\"$1\">/a\ \ \ \ <item name=\"android.permission.$permission\" granted=\"true\" flags=\"30\" />" "$run_perms"
+      fi
+    done
+  done
+}
+
+fixuserperms() {
+  currentperms="$(awk "/<shared-user name=\"$1\">/,/<\/shared-user>/" "$run_perms")"
+  if [ -z "$currentperms" ]; then #if the packagename is not yet in the permissions
+    sed -i "/<runtime-permissions/a\ \ <shared-user name=\"$1\">\n\ \ <\/shared-user>" "$run_perms"
+  fi
+  for permissionsets in "$@"; do
+    if [ "$permissionsets" = "$1" ]; then #skip first entry since that is the packagename (posix-style)
+      continue
+    fi
+    getruntimeperms "$permissionsets"
+    for permission in $permissions; do
+      if ! echo "$currentperms" | grep -q "<item name=\"android.permission.$permission\""; then
+        sed -i "/<shared-user name=\"$1\">/a\ \ \ \ <item name=\"android.permission.$permission\" granted=\"true\" flags=\"30\" />" "$run_perms"
+      fi
+    done
+  done
+}
+
+getruntimeperms(){
+  case "$1" in
+    PHONE_PERMISSIONS)      permissions="READ_PHONE_STATE CALL_PHONE READ_CALL_LOG WRITE_CALL_LOG ADD_VOICEMAIL USE_SIP PROCESS_OUTGOING_CALLS";;
+    CONTACTS_PERMISSIONS)   permissions="READ_CONTACTS WRITE_CONTACTS GET_ACCOUNTS";;
+    LOCATION_PERMISSIONS)   permissions="ACCESS_FINE_LOCATION ACCESS_COARSE_LOCATION";;
+    CALENDAR_PERMISSIONS)   permissions="READ_CALENDAR WRITE_CALENDAR";;
+    SMS_PERMISSIONS)        permissions="SEND_SMS RECEIVE_SMS READ_SMS RECEIVE_WAP_PUSH RECEIVE_MMS READ_CELL_BROADCASTS";;
+    MICROPHONE_PERMISSIONS) permissions="RECORD_AUDIO";;
+    CAMERA_PERMISSIONS)     permissions="CAMERA";;
+    SENSORS_PERMISSIONS)    permissions="BODY_SENSORS";;
+    STORAGE_PERMISSIONS)    permissions="READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE";;
+    ADDITIONAL_PERMISSIONS) permissions="ACCESS_NETWORK_STATE ACCESS_WIFI_STATE CONTROL_INCALL_EXPERIENCE GET_ACCOUNTS READ_PROFILE READ_SYNC_SETTINGS RECEIVE_BOOT_COMPLETED USE_CREDENTIALS";; #not in AOSP, used in Dialer
+    *)                      permissions="$1";; #just give the literal permission back
+  esac
 }
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Pre-Install Info
@@ -1419,6 +1473,18 @@ set_progress 0.83;
 ui_print " ";
 ui_print "- Fixing permissions & contexts";
 ui_print " ";
+
+EOFILE
+if [ "$API" -ge "23" ]; then
+  runtimepermissionshack #marshmallow needs runtime permissions set
+fi
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+set_perm 1000 1000 771 "/data/"
+set_perm 1000 1000 775 "/data/system"
+set_perm 1000 1000 775 "/data/system/users"
+set_perm 1000 1000 700 "$(dirname "$run_perms")"
+set_perm 1000 1000 600 "$run_perms"
+
 set_perm_recursive 0 0 755 644 "/system/app" "/system/framework" "/system/lib" "/system/lib64" "/system/priv-app" "/system/usr/srec" "/system/vendor/pittpatt" "/system/etc/permissions" "/system/etc/preferred-apps";
 
 set_progress 0.85;
