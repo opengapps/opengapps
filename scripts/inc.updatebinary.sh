@@ -791,18 +791,6 @@ else
   done;
 fi;
 
-# Configure default removal of Stock/AOSP apps that are part of Mini and larger
-if [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ] || [ "$gapps_type" = "full" ] || [ "$gapps_type" = "mini" ]; then
-  for default_name in $default_mini_remove_list; do
-    eval "remove_${default_name}=true[default]";
-  done;
-else
-  # Do not perform any default removals - but make them optional
-  for default_name in $default_mini_remove_list; do
-    eval "remove_${default_name}=false[default]";
-  done;
-fi;
-
 # Prepare list of AOSP/ROM files that will be deleted using gapps-config
 # We will look for +Browser, +Email, +Gallery, +Launcher, +MMS, +PicoTTS and more to prevent their removal
 set_progress 0.03;
@@ -828,15 +816,9 @@ if [ "$g_conf" ]; then
       aosp_remove_list="$aosp_remove_list$opt_name"$'\n';
     fi;
   done;
-  for default_name in $default_mini_remove_list; do
-    if ( grep -qi "$default_name" "$g_conf" ); then
-      eval "remove_${default_name}=true[gapps-config]";
-      aosp_remove_list="$aosp_remove_list$default_name"$'\n';
-    fi;
-  done;
 else
   if [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
-      aosp_remove_list=$default_stock_remove_list$default_mini_remove;
+      aosp_remove_list=$default_stock_remove_list;
   fi;
 fi;
 
@@ -945,7 +927,6 @@ fi;
 # If we're installing clockgoogle we must ADD clockstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "clockgoogle" ) && ( ! contains "$aosp_remove_list" "clockstock" ); then
   aosp_remove_list="${aosp_remove_list}clockstock"$'\n';
-  remove_clockstock="true[ClockGoogle]";
 fi;
 
 # If we're installing exchangegoogle we must ADD exchangestock to $aosp_remove_list (if it's not already there)
@@ -956,7 +937,6 @@ fi;
 # If we're installing taggoogle we must ADD tagstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "taggoogle" ) && ( ! contains "$aosp_remove_list" "tagstock" ); then
   aosp_remove_list="${aosp_remove_list}tagstock"$'\n';
-  remove_tagstock="true[TagGoogle]";
 fi;
 
 # If we're installing webviewgoogle we MUST ADD webviewstock to $aosp_remove_list (if it's not already there)
@@ -967,7 +947,6 @@ fi;
 # If we're NOT installing webviewgoogle and webviewstock is in $aosp_remove_list then user must override removal protection
 if ( ! contains "$gapps_list" "webviewgoogle" ) && ( contains "$aosp_remove_list" "webviewstock" ) && ( ! grep -qi "override" "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/webviewstock}; # we'll prevent webviewstock from being removed so user isn't left with no WebView
-  remove_webviewstock="false[NO_WebViewGoogle]";
   install_note="${install_note}nowebview_msg"$'\n'; # make note that Stock Webview can't be removed unless user Overrides
 fi;
 
@@ -1161,17 +1140,11 @@ log "Installing GApps Type" "$gapps_type";
 log "Config Type" "$config_type";
 log "Using gapps-config" "$config_file";
 log "Remove Stock/AOSP Browser" "$remove_browser";
-log "Remove Stock/AOSP Calculator" "$remove_calculatorstock"
-log "Remove Stock/AOSP Clock" "$remove_clockstock";
-log "Remove Stock/AOSP Contacts" "$remove_contactsstock";
-#log "Remove Stock/AOSP Dialer" "$remove_dialerstock";
 log "Remove Stock/AOSP Email" "$remove_email";
 log "Remove Stock/AOSP Gallery" "$remove_gallery";
 log "Remove Stock/AOSP Launcher" "$remove_launcher";
 log "Remove Stock/AOSP MMS App" "$remove_mms";
 log "Remove Stock/AOSP Pico TTS" "$remove_picotts";
-log "Remove Stock/AOSP NFC Tag" "$remove_tagstock";
-log "Remove Stock/AOSP WebView" "$remove_webviewstock";
 log "Ignore Google Contacts" "$ignoregooglecontacts";
 #log "Ignore Google Dialer" "$ignoregoogledialer";
 log "Ignore Google Keyboard" "$ignoregooglekeyboard";
