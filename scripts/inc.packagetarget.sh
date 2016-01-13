@@ -28,7 +28,8 @@ commonscripts() {
   makegappsremovetxt
   makegprop
   makeinstallerdata
-  bundlexz # on arm platforms we can include our own xz binary
+  bundlexz # we can include our own xz binary for compatibility
+  bundleawk # we can include our own awk binary for compatibility
   makeupdatebinary # execute as last, it contains $EXTRACTFILES from the previous commands
   bundlelicense #optionally add a LICENSE file to the package
 }
@@ -62,6 +63,15 @@ bundlexz() {
   esac
   copy "$SCRIPTS/xz-resources/$xzbin" "$build/xzdec"
   EXTRACTFILES="$EXTRACTFILES xzdec"
+}
+
+bundleawk() {
+  case "$ARCH" in #Include our own 32-bit akw binary
+    arm*) awkbin="gawk-arm";;
+    x86*) awkbin="gawk-x86";;
+  esac
+  copy "$SCRIPTS/awk-resources/$awkbin" "$build/awk"
+  EXTRACTFILES="$EXTRACTFILES awk"
 }
 
 bundlelicense() {

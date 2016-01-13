@@ -1,6 +1,6 @@
-Fetch XZ sources from fetch the source of XZ from http://tukaani.org/xz/
+Fetch XZ sources from http://tukaani.org/xz/
 
-To compile xzdec for arm:
+To compile for arm:
 ./configure --host=arm-linux-androideabi --enable-static --disable-shared LDFLAGS=-static
 make LDFLAGS=-all-static
 

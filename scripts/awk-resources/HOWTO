@@ -1,0 +1,13 @@
+Fetch gawk sources from http://savannah.gnu.org/projects/gawk/
+
+To compile for arm (Note: gnu abi and not android abi):
+./configure --host=arm-linux-gnueabi --enable-static --disable-shared LDFLAGS=-static CC="arm-linux-gnueabi-gcc-5"
+make
+
+To compile for x86 (Note that you cannot have gcc-multilib installed together with arm-linux-gnueabi):
+./configure --enable-static --disable-shared "CFLAGS=-m32" "CPPFLAGS=-m32" "CXXFLAGS=-m32" "LDFLAGS=-static -m32"
+make "LDFLAGS=-static -m32"
+
+The gawk binary can be found in the main folder
+
+gawk is part of the GNU Project and is licensed under the GPLv3 or later

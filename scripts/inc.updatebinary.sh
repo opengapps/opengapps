@@ -24,6 +24,9 @@ done'> "$build/META-INF/com/google/android/update-binary"
 case "$EXTRACTFILES" in
   *xzdec*) echo 'chmod +x /tmp/xzdec'>> "$build/META-INF/com/google/android/update-binary";; #xz-decompression binary bundled
 esac
+case "$EXTRACTFILES" in
+  *awk*) echo 'chmod +x /tmp/awk'>> "$build/META-INF/com/google/android/update-binary";; #awk bundled
+esac
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 . /tmp/installer.data;
 # _____________________________________________________________________________________________________________________
@@ -400,6 +403,24 @@ if [ "$(head -c4 "$b_prop")" = "zzzz" ]; then
   install_note="${install_note}recovery_compression_msg"$'\n'; # make note that recovery does not support transparent compression
   abort "$E_RECCOMPR";
 fi
+
+# Check for the presence of the awk binary
+if [ -z "$(command -v awk)" ]; then
+EOFILE
+case "$EXTRACTFILES" in
+  *awk*) echo '  ln -s /tmp/awk /sbin/awk'>> "$build/META-INF/com/google/android/update-binary";; #try to symlink our own bundled awk
+  *)     echo '  ui_print "Your recovery is missing the awk";
+  ui_print "binary. Please update your recovery";
+  ui_print "to the latest version or switch to";
+  ui_print "another recovery like TWRP.";
+  ui_print "See:'"'"'$log_folder/open_gapps_log.txt'"'"'";
+  ui_print "for complete details and information.";
+  ui_print " ";
+  install_note="${install_note}no_awk_message"$'"'\n'"'; # make note that there is no awk support
+  abort "$E_AWK";'>> "$build/META-INF/com/google/android/update-binary";;
+esac
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+fi;
 
 # Get device name any which way we can
 for field in ro.product.device ro.build.product ro.product.name; do
