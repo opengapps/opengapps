@@ -408,7 +408,8 @@ fi
 if [ -z "$(command -v awk)" ]; then
 EOFILE
 case "$EXTRACTFILES" in
-  *awk*) echo '  ln -s /tmp/awk /sbin/awk'>> "$build/META-INF/com/google/android/update-binary";; #try to symlink our own bundled awk
+  *awk*) echo '  ln -s /tmp/awk /sbin/awk
+bundled_awk=true'>> "$build/META-INF/com/google/android/update-binary";; #try to symlink our own bundled awk
   *)     echo '  ui_print "Your recovery is missing the awk";
   ui_print "binary. Please update your recovery";
   ui_print "to the latest version or switch to";
@@ -420,7 +421,9 @@ case "$EXTRACTFILES" in
   abort "$E_AWK";'>> "$build/META-INF/com/google/android/update-binary";;
 esac
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
-fi;
+else
+  bundled_awk=false
+fi
 
 # Get device name any which way we can
 for field in ro.product.device ro.build.product ro.product.name; do
@@ -699,7 +702,8 @@ esac;
 log "ROM ID" "$(file_getprop $b_prop ro.build.display.id)";
 log "ROM Version" "$rom_version";
 log "Device Recovery" "$recovery";
-log "Using Bundled XZdec" "$bundled_xz"
+log "Using Bundled awk" "$bundled_awk";
+log "Using Bundled XZdec" "$bundled_xz";
 log "Device Name" "$device_name";
 log "Device Model" "$(file_getprop $b_prop ro.product.model)";
 log "Device Type" "$device_type";
