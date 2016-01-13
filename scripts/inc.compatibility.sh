@@ -270,7 +270,8 @@ packageinstallergoogle"
 calculatorgoogle"
     gappsstock="$gappsstock
 contactsgoogle"
-#dialergoogle"
+    gappsstock="$gappsstock
+dialergoogle"
 
     webviewstocklibs='lib/$WebView_lib_filename
 lib64/$WebView_lib_filename
