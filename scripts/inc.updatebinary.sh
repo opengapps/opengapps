@@ -410,7 +410,8 @@ EOFILE
 case "$EXTRACTFILES" in
   *awk*) echo '  ln -s /tmp/awk /sbin/awk
 bundled_awk=true'>> "$build/META-INF/com/google/android/update-binary";; #try to symlink our own bundled awk
-  *)     echo '  ui_print "Your recovery is missing the awk";
+  *)     tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+  ui_print "Your recovery is missing the awk";
   ui_print "binary. Please update your recovery";
   ui_print "to the latest version or switch to";
   ui_print "another recovery like TWRP.";
@@ -418,7 +419,9 @@ bundled_awk=true'>> "$build/META-INF/com/google/android/update-binary";; #try to
   ui_print "for complete details and information.";
   ui_print " ";
   install_note="${install_note}no_awk_message"$'"'\n'"'; # make note that there is no awk support
-  abort "$E_AWK";'>> "$build/META-INF/com/google/android/update-binary";;
+  abort "$E_AWK";
+EOFILE
+;;
 esac
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 else

@@ -29,7 +29,9 @@ commonscripts() {
   makegprop
   makeinstallerdata
   bundlexz # we can include our own xz binary for compatibility
-  bundleawk # we can include our own awk binary for compatibility
+  if [ "$API" -ge "23" ]; then
+    bundleawk # we can include our own awk binary for compatibility
+  fi
   makeupdatebinary # execute as last, it contains $EXTRACTFILES from the previous commands
   bundlelicense #optionally add a LICENSE file to the package
 }
