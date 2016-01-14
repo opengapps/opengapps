@@ -258,8 +258,10 @@ form(
     "@default",
     extra.prop,
     "extra",     "Advanced Options",        "",                                         "group",
-      "ex1",     "<b>No Debug Log</b>",       "To disable debugging",                      "check",
-      "ex2",     "<b>Test</b>",       "To perform a simulation generating a detailed log, but <u>WILL NOT MAKE ANY CHANGES</u> to your device.",                      "check"
+      "exdebug",     "<b>NoDebug</b>",       "To disable the creation of the debug log",                      "check",
+      "extest",     "<b>Test</b>",       "To perform a simulation generating a detailed log, but <u>WILL NOT MAKE ANY CHANGES</u> to your device.",                      "check",
+      "exswype",     "<b>SkipSwypelibs</b>",       "To avoid the installation of the Google Swype libraries for the AOSP Keyboard",                      "check",
+      "exclean",     "<b>ForceClean</b>",       "To ignore the detection of dirty installations and force the installer to behave as if it concerns a clean install <u>DO NOT REPORT ANY BUGS IF USED</u>",                      "check"
 );
 
 ##############################################
@@ -269,14 +271,24 @@ setvar("gapps","");
 
 # ADVANCED OPTIONS
 if
-  prop("extra.prop", "ex1")=="1"
+  prop("extra.prop", "exdebug")=="1"
 then
   appendvar("gapps", "NoDebug\n");
 endif;
 if
-  prop("extra.prop", "ex2")=="1"
+  prop("extra.prop", "extest")=="1"
 then
   appendvar("gapps", "Test\n");
+endif;
+if
+  prop("extra.prop", "exswype")=="1"
+then
+  appendvar("gapps", "skipswypelibs\n");
+endif;
+if
+  prop("extra.prop", "exclean")=="1"
+then
+  appendvar("gapps", "forceclean\n");
 endif;
 
 # INCLUDE/EXCLUDE
