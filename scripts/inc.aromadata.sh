@@ -170,6 +170,7 @@ form(
       "Music",     "<b>Google Play Music</b>",       "",                      "check",
       "NewsStand",     "<b>Google Play Newsstand</b>",       "",                      "check",
       "NewsWidget",     "<b>Google News & Weather</b>",       "",                      "check",
+      "PackageInstallerGoogle",     "<b>Google PackageInstaller</b>",       "",                      "check",
       "Pinyin",     "<b>Google Pinyin Input</b>",       "",                      "check",
       "Photos",     "<b>Google Photos</b>",       "",                      "check",
       "PlayGames",     "<b>Google Play Games</b>",       "",                      "check",
@@ -523,6 +524,12 @@ if
   prop("gapps.prop", "NewsWidget")=="1"
 then
   appendvar("gapps", "NewsWidget\n");
+endif;
+
+if
+  prop("gapps.prop", "PackageInstallerGoogle")=="1"
+then
+  appendvar("gapps", "PackageInstallerGoogle\n");
 endif;
 
 if
