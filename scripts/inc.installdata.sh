@@ -159,7 +159,6 @@ camerastock
 clockstock
 cmaudiofx
 cmaccount
-cmeleven
 cmfilemanager
 cmmusic
 cmsetupwizard
@@ -236,15 +235,12 @@ cmaudiofx_list="
 priv-app/AudioFX'"$REMOVALSUFFIX"'
 ";
 
-cmeleven_list="
-app/Eleven'"$REMOVALSUFFIX"'
-";
-
 cmfilemanager_list="
 app/CMFileManager'"$REMOVALSUFFIX"'
 ";
 
 cmmusic_list="
+app/Eleven'"$REMOVALSUFFIX"'
 app/Music'"$REMOVALSUFFIX"'
 ";
 
