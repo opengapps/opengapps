@@ -118,8 +118,9 @@ buildapp() {
   else usearch="$4"; fi #allows for an override
 
   minapihack #Some packages need a minimal api level to maintain compatibility with the OS
+  maxapihack #Some packages need a maximal api level to maintain compatibility with the OS
 
-  if getapksforapi "$package" "$usearch" "$API" "$useminapi"; then
+  if getapksforapi "$package" "$usearch" "$usemaxapi" "$useminapi"; then
     baseversionname=""
     for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
       dpivariant="$(echo "$dpivariant" | tr '' ' ')" #and we place the spaces back again
