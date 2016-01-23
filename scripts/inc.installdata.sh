@@ -221,6 +221,7 @@ priv-app/Camera'"$REMOVALSUFFIX"'
 priv-app/Camera2'"$REMOVALSUFFIX"'
 app/MotCamera'"$REMOVALSUFFIX"'
 priv-app/MotCamera'"$REMOVALSUFFIX"'
+app/Snap'"$REMOVALSUFFIX"'
 ";
 
 clockstock_list="
