@@ -268,9 +268,9 @@ app/DashClock'"$REMOVALSUFFIX"'
 ";
 
 # Must be used when Google Dialer is installed
-#dialerstock_list="
-#priv-app/Dialer'"$REMOVALSUFFIX"'
-#";
+dialerstock_list="
+priv-app/Dialer'"$REMOVALSUFFIX"'
+";
 
 email_list="
 app/Email'"$REMOVALSUFFIX"'
@@ -517,7 +517,7 @@ no_xz_message="INSTALLATION FAILURE: The installer detected that your recovery d
 no_stdin_message="INSTALLATION FAILURE: The installer detected that your recovery\ndoes not support stdin for the tar binary. Please update your recovery\nor switch to another one like TWRP."
 
 nogooglecontacts_removal_msg="NOTE: The Stock/AOSP Contacts is not available on your\nROM (anymore), the Google equivalent will not be removed."
-#nogoogledialer_removal_msg="NOTE: The Stock/AOSP Dialer is not available on your\nROM (anymore), the Google equivalent will not be removed."
+nogoogledialer_removal_msg="NOTE: The Stock/AOSP Dialer is not available on your\nROM (anymore), the Google equivalent will not be removed."
 nogooglekeyboard_removal_msg="NOTE: The Stock/AOSP Keyboard is not available on your\nROM (anymore), the Google equivalent will not be removed."
 nogooglepackageinstaller_removal_msg="NOTE: The Stock/AOSP Package Installer is not\navailable on your ROM (anymore), the Google equivalent will not be removed."
 nogoogletag_removal_msg="NOTE: The Stock/AOSP NFC Tag is not available on your\nROM (anymore), the Google equivalent will not be removed."

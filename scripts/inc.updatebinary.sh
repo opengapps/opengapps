@@ -997,22 +997,22 @@ if [ "$ignoregooglecontacts" = "true" ]; then
   fi
 fi
 
-#ignoregoogledialer="true"
-#for f in $dialerstock_list; do
-#  if [ -e "/system/$f" ]; then
-#    ignoregoogledialer="false"
-#    break; #at least 1 aosp stock file is present
-#  fi
-#done;
-#if [ "$ignoregoogledialer" = "true" ]; then
-#  if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
-#    sed -i "\:/system/priv-app/GoogleDialer:d" $gapps_removal_list;
-#    ignoregoogledialer="true[NoRemove]"
-#    install_note="${install_note}nogoogledialer_removal"$'\n'; # make note that Google Dialer will not be removed
-#  else
-#    ignoregoogledialer="false[DialerGoogle]"
-#  fi
-#fi
+ignoregoogledialer="true"
+for f in $dialerstock_list; do
+  if [ -e "/system/$f" ]; then
+    ignoregoogledialer="false"
+    break; #at least 1 aosp stock file is present
+  fi
+done;
+if [ "$ignoregoogledialer" = "true" ]; then
+  if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
+    sed -i "\:/system/priv-app/GoogleDialer:d" $gapps_removal_list;
+    ignoregoogledialer="true[NoRemove]"
+    install_note="${install_note}nogoogledialer_removal"$'\n'; # make note that Google Dialer will not be removed
+  else
+    ignoregoogledialer="false[DialerGoogle]"
+  fi
+fi
 
 ignoregooglekeyboard="true"
 for f in $keyboardstock_list; do
@@ -1146,7 +1146,7 @@ log "Remove Stock/AOSP Launcher" "$remove_launcher";
 log "Remove Stock/AOSP MMS App" "$remove_mms";
 log "Remove Stock/AOSP Pico TTS" "$remove_picotts";
 log "Ignore Google Contacts" "$ignoregooglecontacts";
-#log "Ignore Google Dialer" "$ignoregoogledialer";
+log "Ignore Google Dialer" "$ignoregoogledialer";
 log "Ignore Google Keyboard" "$ignoregooglekeyboard";
 log "Ignore Google Package Installer" "$ignoregooglepackageinstaller";
 log "Ignore Google NFC Tag" "$ignoregoogletag";
