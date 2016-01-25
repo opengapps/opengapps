@@ -174,7 +174,7 @@ createzip() {
   echo "All components are ready."
 
   unsignedzip="$BUILD/$ARCH/$API/$VARIANT.zip"
-  signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.zip"
+  signedzip="$OUT/open_gapps-toybox-$ARCH-$PLATFORM-$VARIANT-$DATE.zip"
 
   if [ -f "$unsignedzip" ]; then
     rm "$unsignedzip"
