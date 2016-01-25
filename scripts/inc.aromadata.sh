@@ -170,6 +170,7 @@ form(
       "Music",     "<b>Google Play Music</b>",       "",                      "check",
       "NewsStand",     "<b>Google Play Newsstand</b>",       "",                      "check",
       "NewsWidget",     "<b>Google News & Weather</b>",       "",                      "check",
+      "PackageInstallerGoogle",     "<b>Google PackageInstaller</b>",       "",                      "check",
       "Pinyin",     "<b>Google Pinyin Input</b>",       "",                      "check",
       "Photos",     "<b>Google Photos</b>",       "",                      "check",
       "PlayGames",     "<b>Google Play Games</b>",       "",                      "check",
@@ -222,8 +223,8 @@ form(
       "ClockStock",     "<b>Stock/AOSP Clock</b>",       "(automatically removed when Google Clock is installed)",                      "check",
       "CMAccount",     "<b>CyanogenMod Account</b>",       "",                      "check",
       "CMAudioFX",     "<b>CyanogenMod AudioFX</b>",       "",                      "check",
-      "CMEleven",     "<b>CyanogenMod Music</b>",       "",                      "check",
       "CMFileManager",     "<b>CyanogenMod File Manager</b>",       "",                      "check",
+      "CMMusic",     "<b>CyanogenMod Music</b>",       "",                      "check",
       "CMSetupWizard",     "<b>CyanogenMod Setup Wizard</b>",       "",                      "check",
       "CMUpdater",     "<b>CyanogenMod Updater</b>",       "",                      "check",
       "CMWallpapers",     "<b>CyanogenMod Wallpapers</b>",       "",                      "check",
@@ -258,8 +259,10 @@ form(
     "@default",
     extra.prop,
     "extra",     "Advanced Options",        "",                                         "group",
-      "ex1",     "<b>No Debug Log</b>",       "To disable debugging",                      "check",
-      "ex2",     "<b>Test</b>",       "To perform a simulation generating a detailed log, but <u>WILL NOT MAKE ANY CHANGES</u> to your device.",                      "check"
+      "exdebug",     "<b>NoDebug</b>",       "To disable the creation of the debug log",                      "check",
+      "extest",     "<b>Test</b>",       "To perform a simulation generating a detailed log, but <u>WILL NOT MAKE ANY CHANGES</u> to your device.",                      "check",
+      "exswype",     "<b>SkipSwypelibs</b>",       "To avoid the installation of the Google Swype libraries for the AOSP Keyboard",                      "check",
+      "exclean",     "<b>ForceClean</b>",       "To ignore the detection of dirty installations and force the installer to behave as if it concerns a clean install <u>DO NOT REPORT ANY BUGS IF USED</u>",                      "check"
 );
 
 ##############################################
@@ -269,14 +272,24 @@ setvar("gapps","");
 
 # ADVANCED OPTIONS
 if
-  prop("extra.prop", "ex1")=="1"
+  prop("extra.prop", "exdebug")=="1"
 then
   appendvar("gapps", "NoDebug\n");
 endif;
 if
-  prop("extra.prop", "ex2")=="1"
+  prop("extra.prop", "extest")=="1"
 then
   appendvar("gapps", "Test\n");
+endif;
+if
+  prop("extra.prop", "exswype")=="1"
+then
+  appendvar("gapps", "skipswypelibs\n");
+endif;
+if
+  prop("extra.prop", "exclean")=="1"
+then
+  appendvar("gapps", "forceclean\n");
 endif;
 
 # INCLUDE/EXCLUDE
@@ -511,6 +524,12 @@ if
   prop("gapps.prop", "NewsWidget")=="1"
 then
   appendvar("gapps", "NewsWidget\n");
+endif;
+
+if
+  prop("gapps.prop", "PackageInstallerGoogle")=="1"
+then
+  appendvar("gapps", "PackageInstallerGoogle\n");
 endif;
 
 if

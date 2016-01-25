@@ -263,10 +263,9 @@ webviewstock"
 
 api23hack(){
   if [ "$API" -ge "23" ]; then
-    gappscore="$gappscore
-packageinstallergoogle"
     gappspico="$gappspico
-googletts"
+googletts
+packageinstallergoogle"
     gappsmini="$gappsmini
 calculatorgoogle"
     gappsstock="$gappsstock
