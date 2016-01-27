@@ -112,13 +112,13 @@ getpathsystemlib(){
 
 buildapp() {
   package="$1"
-  ziplocation="$2"
-  targetlocation="$3"
-  if [ -z "$4" ]; then usearch="$ARCH"
-  else usearch="$4"; fi #allows for an override
+  usemaxapi="$2"
+  ziplocation="$3"
+  targetlocation="$4"
+  if [ -z "$5" ]; then usearch="$ARCH"
+  else usearch="$5"; fi #allows for an override
 
   minapihack #Some packages need a minimal api level to maintain compatibility with the OS
-  maxapihack #Some packages need a maximal api level to maintain compatibility with the OS
 
   if getapksforapi "$package" "$usearch" "$usemaxapi" "$useminapi"; then
     baseversionname=""
@@ -149,7 +149,7 @@ buildapp() {
   else
     get_fallback_arch "$usearch"
     if [ "$usearch" != "$fallback_arch" ]; then
-      buildapp "$package" "$ziplocation" "$targetlocation" "$fallback_arch"
+      buildapp "$package" "$usemaxapi" "$ziplocation" "$targetlocation" "$fallback_arch"
     else
       echo "ERROR: No fallback available. Failed to build package $package"
       exit 1

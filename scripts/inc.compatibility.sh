@@ -205,17 +205,6 @@ minapihack(){
   esac
 }
 
-maxapihack(){
-  case "$package" in
-    com.google.android.googlecamera)
-      usemaxapi="19"
-    ;;
-    *)
-      usemaxapi="${API}"
-    ;;
-  esac
-}
-
 systemlibhack(){
   case "$package" in
     com.google.android.webview) if [ "$API" -lt "23" ]; then #webview libs are only on /system/lib/ on pre-Marshmallow
@@ -280,6 +269,7 @@ packageinstallergoogle"
     gappsmini="$gappsmini
 calculatorgoogle"
     gappsstock="$gappsstock
+cameragooglelegacy
 contactsgoogle"
 #dialergoogle"
 

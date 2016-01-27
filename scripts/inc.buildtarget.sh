@@ -142,7 +142,7 @@ gapps="$gapps_list"
 for app in $gapps; do
   get_package_info "$app"
   if [ -n "$packagename" ]; then
-    buildapp "$packagename" "$packagetype/$app" "$packagetarget"
+    buildapp "$packagename" "$packagemaxapi" "$packagetype/$app" "$packagetarget"
   fi
   for file in $packagefiles; do
     buildfile "$file" "$packagetype/$app/common"
@@ -161,6 +161,7 @@ get_package_info(){
   packagetarget=""
   packagefiles=""
   packagelibs=""
+  packagemaxapi="$API"
   packagegappsremove=""
   case "$1" in
     configupdater)            packagetype="Core"; packagename="com.google.android.configupdater"; packagetarget="priv-app/ConfigUpdater";;
@@ -183,6 +184,7 @@ get_package_info(){
     calendargoogle)           packagetype="GApps"; packagename="com.google.android.calendar"; packagetarget="app/CalendarGooglePrebuilt";;
     calsync)                  packagetype="GApps"; packagename="com.google.android.syncadapters.calendar"; packagetarget="app/GoogleCalendarSyncAdapter";;
     cameragoogle)             packagetype="GApps"; packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera";;
+    cameragooglelegacy)       packagetype="GApps"; packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera"; packagemaxapi="22";;
     chrome)                   packagetype="GApps"; packagename="com.android.chrome"; packagetarget="app/Chrome";;
     clockgoogle)              packagetype="GApps"; packagename="com.google.android.deskclock"; packagetarget="app/PrebuiltDeskClockGoogle";;
     cloudprint)               packagetype="GApps"; packagename="com.google.android.apps.cloudprint"; packagetarget="app/CloudPrint2";;
