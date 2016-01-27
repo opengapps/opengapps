@@ -1355,8 +1355,6 @@ done;
 EOFILE
 echo '# Create FaceLock lib symlink if FaceLock was installed
 if ( contains "$gapps_list" "faceunlock" ); then
-  ui_print "- Installing FaceLock";
-  log "- Installing " "$FaceLock";
   install -d "/system/app/FaceLock/lib/'"$ARCH"'";
   ln -sfn "/system/'"$LIBFOLDER"'/$faceLock_lib_filename" "/system/app/FaceLock/lib/'"$ARCH"'/$faceLock_lib_filename"; # create required symlink
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
