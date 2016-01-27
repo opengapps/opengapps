@@ -792,7 +792,7 @@ else
 fi;
 
 # Prepare list of AOSP/ROM files that will be deleted using gapps-config
-# We will look for +Browser, +Email, +Gallery, +Launcher, +MMS, +PicoTTS and more to prevent their removal
+# We will look for +Browser, +CameraStock, +Email, +Gallery, +Launcher, +MMS, +PicoTTS and more to prevent their removal
 set_progress 0.03;
 if [ "$g_conf" ]; then
   for default_name in $default_stock_remove_list; do
@@ -919,9 +919,10 @@ if ( contains "$gapps_list" "cameragoogle" ) && ( ! clean_inst ) && [ $cameragoo
   install_note="${install_note}camera_sys_msg"$'\n'; # make note that Google Camera will NOT be installed as user requested
 fi;
 
-# If we're installing cameragoogle we MUST ADD camerastock to $aosp_remove_list (if it's not already there)
-if ( contains "$gapps_list" "cameragoogle" ) && ( ! contains "$aosp_remove_list" "camerastock" ); then
-  aosp_remove_list="${aosp_remove_list}camerastock"$'\n';
+# If we're NOT installing cameragoogle make certain 'camerastock' is NOT in $aosp_remove_list UNLESS 'camerastock' is in $g_conf
+if ( ! contains "$gapps_list" "cameragoogle" ) && ( ! grep -qi "camerastock" "$g_conf" ); then
+  aosp_remove_list=${aosp_remove_list/cameragoogle};
+  remove_camerastock="false[NO_CameraGoogle]";
 fi;
 
 # If we're installing clockgoogle we must ADD clockstock to $aosp_remove_list (if it's not already there)
@@ -1140,6 +1141,7 @@ log "Installing GApps Type" "$gapps_type";
 log "Config Type" "$config_type";
 log "Using gapps-config" "$config_file";
 log "Remove Stock/AOSP Browser" "$remove_browser";
+log "Remove Stock/AOSP Camera" "$remove_camera";
 log "Remove Stock/AOSP Email" "$remove_email";
 log "Remove Stock/AOSP Gallery" "$remove_gallery";
 log "Remove Stock/AOSP Launcher" "$remove_launcher";

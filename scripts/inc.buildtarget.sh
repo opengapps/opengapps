@@ -82,6 +82,7 @@ speech"
 gappspico="calsync"
 
 stockremove="browser
+camerastock
 email
 gallery
 launcher
