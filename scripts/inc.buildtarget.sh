@@ -24,7 +24,7 @@ gsflogin
 setupwizard
 vending"
 
-gappsoptional=""
+gappscore_optional=""
 
 gappssuper="androidforwork
 androidpay
@@ -43,6 +43,8 @@ zhuyin"
 gappsstock="cameragoogle
 keyboardgoogle
 messenger"
+
+gappsstock_optional=""
 
 gappsfull="books
 chrome
@@ -125,9 +127,9 @@ get_supported_variants(){
 
 get_gapps_list(){
   #Compile the list of applications that will be build for this variant
-  gapps_list="$gappscore $gappsoptional"
+  gapps_list="$gappscore $gappscore_optional"
   for variant in $1; do
-    eval "addtogapps=\$gapps$variant"
+    eval "addtogapps=\"\$gapps$variant \$gapps${variant}_optional\""
     gapps_list="$gapps_list $addtogapps"
   done
 }

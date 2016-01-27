@@ -144,6 +144,7 @@ nano_gapps_list="
 pico_gapps_list="
 '"$gappspico"'
 ";
+
 # _____________________________________________________________________________________________________________________
 #                                             Default Stock/AOSP Removal List (Stock GApps Only)
 default_stock_remove_list="
