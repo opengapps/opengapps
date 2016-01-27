@@ -89,7 +89,7 @@ getapkproperties(){
   if [ "$compatiblescreens" = "" ]; then # we can't use -z here, because there can be a linecontrol character or such in it
     dpis="nodpi"
   else
-    dpis=$(echo "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])[0-9]" | uniq | tr -d '\012\015' | tr '/' '-' | cut -c 2-)
+    dpis=$(echo "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])[0-9]" | sort -u | tr -d '\012\015' | tr '/' '-' | cut -c 2-)
   fi
 }
 
