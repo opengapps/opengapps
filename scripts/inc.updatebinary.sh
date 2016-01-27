@@ -1090,6 +1090,16 @@ elif ( ! contains "$gapps_list" "webviewgoogle" ); then #AOSP WebView, and no Go
   sed -i "\:/system/lib64/$WebView_lib_filename:d" $gapps_removal_list;
 fi
 
+# Process Google (Legacy) Camera compatibility
+# Check device name for devices that are compatible with Google Camera v3
+# Currently this list only consists of Google's own Marshmallow-compatible Nexi and Android One devices
+case $device_name in
+  ryu|angler|bullhead|shamu|volantis*|hammerhead|razor*|sprout*) log "Camera v3 support" "Compatible";;
+EOFILE
+camerav3compatibilityhack #in marshmallow we need to use the legacy camera that uses the v2 api on many devices
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+esac;
+
 # Process User Application Removals for calculations and subsequent removal
 if [ -n "$user_remove_list" ]; then
   for remove_apk in $user_remove_list; do

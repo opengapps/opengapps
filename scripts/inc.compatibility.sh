@@ -17,6 +17,12 @@ cameracompatibilityhack(){
   fi
 }
 
+camerav3compatibilityhack(){
+  if [ "$API" -ge "23" ]; then
+    echo '  *) gapps_list=${gapps_list/cameragoogle/cameragooglelegacy}; log "Camera v3 support" "Incompatible";;' >> "$build/META-INF/com/google/android/update-binary"
+  fi
+}
+
 keyboardgooglenotremovehack(){
   if [ "$API" -le "19" ]; then
     echo '  sed -i "\:/system/app/LatinImeGoogle.apk:d" $gapps_removal_list;'>> "$build/META-INF/com/google/android/update-binary"
@@ -27,7 +33,7 @@ keyboardgooglenotremovehack(){
 
 keyboardlibhack(){
   case "$ARCH" in #only arm based platforms we have swypelibs
-    arm*) gappsoptional="swypelibs $gappsoptional"
+    arm*) gappscore_optional="swypelibs $gappscore_optional"
           if [ "$API" -gt "19" ]; then # on Lollipop there are symlinks in /LatinIME/lib/ and we don't need to remove the aosp lib
             REQDLIST="/system/lib/libjni_latinimegoogle.so
 /system/lib64/libjni_latinimegoogle.so
@@ -271,6 +277,8 @@ calculatorgoogle"
     gappsstock="$gappsstock
 contactsgoogle"
 #dialergoogle"
+    gappsstock_optional="$gappsstock_optional
+cameragooglelegacy"
 
     webviewstocklibs='lib/$WebView_lib_filename
 lib64/$WebView_lib_filename
