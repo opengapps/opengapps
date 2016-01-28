@@ -286,6 +286,7 @@ priv-app/Exchange2'"$REMOVALSUFFIX"'
 fmradio_list="
 app/FM2'"$REMOVALSUFFIX"'
 app/FMRecord'"$REMOVALSUFFIX"'
+priv-app/FMRadio'"$REMOVALSUFFIX"'
 ";
 
 galaxy_list="
