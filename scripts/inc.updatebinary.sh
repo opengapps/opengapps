@@ -921,7 +921,7 @@ fi;
 
 # If we're NOT installing cameragoogle make certain 'camerastock' is NOT in $aosp_remove_list UNLESS 'camerastock' is in $g_conf
 if ( ! contains "$gapps_list" "cameragoogle" ) && ( ! grep -qiE "^camerastock\$" "$g_conf" ); then
-  aosp_remove_list=${aosp_remove_list/cameragoogle};
+  aosp_remove_list=${aosp_remove_list/camerastock};
   remove_camerastock="false[NO_CameraGoogle]";
 fi;
 
@@ -1151,7 +1151,7 @@ log "Installing GApps Type" "$gapps_type";
 log "Config Type" "$config_type";
 log "Using gapps-config" "$config_file";
 log "Remove Stock/AOSP Browser" "$remove_browser";
-log "Remove Stock/AOSP Camera" "$remove_camera";
+log "Remove Stock/AOSP Camera" "$remove_camerastock";
 log "Remove Stock/AOSP Email" "$remove_email";
 log "Remove Stock/AOSP Gallery" "$remove_gallery";
 log "Remove Stock/AOSP Launcher" "$remove_launcher";
