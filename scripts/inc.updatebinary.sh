@@ -1094,7 +1094,7 @@ fi
 # Check device name for devices that are compatible with Google Camera v3
 # Currently this list only consists of Google's own Marshmallow-compatible Nexi and Android One devices
 case $device_name in
-  ryu|angler|bullhead|shamu|volantis*|hammerhead|razor*|sprout*) log "Camera v3 support" "Compatible";;
+  ryu|angler|bullhead|shamu|volantis*|hammerhead|sprout*) log "Camera v3 support" "Compatible";;
 EOFILE
 camerav3compatibilityhack #in marshmallow we need to use the legacy camera that uses the v2 api on many devices
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
