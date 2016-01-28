@@ -110,7 +110,7 @@ extract_app() {
 
 exxit() {
   set_progress 0.98;
-  if ( ! grep -qi "nodebug" "$g_conf" ); then
+  if ( ! grep -qiE "^ *nodebug *($|#)+" "$g_conf" ); then
     if [ "$g_conf" ]; then # copy gapps-config files to debug logs folder
       cp -f "$g_conf_orig" /tmp/logs/gapps-config_original.txt;
       cp -f "$g_conf" /tmp/logs/gapps-config_processed.txt;
@@ -450,7 +450,7 @@ if [ "$g_conf" ]; then
   g_conf_orig="$g_conf";
   # Create processed gapps-config with user comments stripped and user app removals removed and stored in variable for processing later
   g_conf="/tmp/proc_gconf";
-  sed -e 's|#.*||g' -e 's/\r//g' -e '/^$/d'  "$g_conf_orig" > "$g_conf"; # Strip user comments from gapps-config
+  sed -e 's|#.*||g' -e 's/\r//g' -e '/^$/d' -e 's/^ *//g' -e 's/ *$//g' "$g_conf_orig" > "$g_conf"; # Strip user comments from gapps-config
   user_remove_list=$(awk -F "[()]" '{ for (i=2; i<NF; i+=2) print $i }' "$g_conf"); # Get users list of apk's to remove from gapps-config
   sed -i s/'([^)]*)'/''/g "$g_conf"; # Remove all instances of user app removals (stuff between parentheses)
   sed -i '/^$/d' "$g_conf"; # Remove all empty lines for cleaner appearance
@@ -461,7 +461,7 @@ else
 fi;
 
 # Unless this is a NoDebug install - create folder and take 'Before' snapshots
-if ( ! grep -qiE "^ *nodebug *($|#)+" "$g_conf" ); then
+if ( ! grep -qiE "^nodebug\$" "$g_conf" ); then
   install -d /tmp/logs;
   ls -alZR /system > /tmp/logs/System_Files_Before.txt;
   df -k > /tmp/logs/Device_Space_Before.txt;
@@ -611,20 +611,20 @@ case $density in
 esac;
 
 # Check for DPI Override in gapps-config
-if ( grep -qiE "^ *forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi) *($|#)+" "$g_conf" ); then # user wants to override the DPI selection
-  density=$( grep -iEo "^ *forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi) *($|#)+" "$g_conf" | tr '[:upper:]'  '[:lower:]' );
+if ( grep -qiE "^forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi)\$" "$g_conf" ); then # user wants to override the DPI selection
+  density=$( grep -iEo "^forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi)\$" "$g_conf" | tr '[:upper:]'  '[:lower:]' );
   density=${density#forcedpi};
 fi;
 
 # Check for Clean Override in gapps-config
-if ( grep -qiE "^ *forceclean *($|#)+" "$g_conf" ); then # true or false to override the default selection
+if ( grep -qiE "^forceclean\$" "$g_conf" ); then # true or false to override the default selection
   forceclean="true"
 else
   forceclean="false"
 fi;
 
 # Check for skipswypelibs Override in gapps-config
-if ( grep -qiE "^ *skipswypelibs *($|#)+" $g_conf ); then # true or false to override the default selection
+if ( grep -qiE "^skipswypelibs\$" $g_conf ); then # true or false to override the default selection
   skipswypelibs="true"
 else
   skipswypelibs="false"
@@ -750,7 +750,7 @@ fi;
 for pkg in $pkg_names; do
   eval "addto=\$${pkg}_gapps_list"; # Look for method to combine this with line below
   all_gapps_list=${all_gapps_list}${addto}; # Look for method to combine this with line above
-  if ( grep -qi "${pkg}gapps" "$g_conf" ); then # user has selected a 'preset' install
+  if ( grep -qiE "^${pkg}gapps\$" "$g_conf" ); then # user has selected a 'preset' install
     gapps_type=$pkg;
     sed -i "/ro.addon.open_type/c\ro.addon.open_type=$pkg" /tmp/g.prop; # modify g.prop to new package type
     break;
@@ -759,17 +759,17 @@ done;
 
 # Prepare list of User specified GApps that will be installed
 if [ "$g_conf" ]; then
-  if ( grep -qi "include" "$g_conf" ); then # User is indicating the apps they WANT installed
+  if ( grep -qiE "^include\$" "$g_conf" ); then # User is indicating the apps they WANT installed
     config_type=include;
     for gapp_name in $all_gapps_list; do
-      if ( grep -qi "$gapp_name" "$g_conf" ); then
+      if ( grep -qiE "^$gapp_name\$" "$g_conf" ); then
         gapps_list="$gapps_list$gapp_name"$'\n';
       fi;
     done;
   else # User is indicating the apps they DO NOT WANT installed
     config_type=exclude;
     for gapp_name in $all_gapps_list; do
-      if ( ! grep -qi "$gapp_name" "$g_conf" ); then
+      if ( ! grep -qiE "^$gapp_name\$" "$g_conf" ); then
         gapps_list="$gapps_list$gapp_name"$'\n';
       fi;
     done;
@@ -796,15 +796,15 @@ fi;
 set_progress 0.03;
 if [ "$g_conf" ]; then
   for default_name in $default_stock_remove_list; do
-    if ( grep -qi "+$default_name" "$g_conf" ); then
+    if ( grep -qiE "^\+$default_name\$" "$g_conf" ); then
       eval "remove_${default_name}=false[gapps-config]";
     elif [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
       aosp_remove_list="$aosp_remove_list$default_name"$'\n';
-      if ( grep -qi "$default_name" "$g_conf" ); then
+      if ( grep -qiE "^$default_name\$" "$g_conf" ); then
         eval "remove_${default_name}=true[gapps-config]";
       fi;
     else
-      if ( grep -qi "$default_name" "$g_conf" ); then
+      if ( grep -qiE "^$default_name\$" "$g_conf" ); then
         eval "remove_${default_name}=true[gapps-config]";
         aosp_remove_list="$aosp_remove_list$default_name"$'\n';
       fi;
@@ -812,7 +812,7 @@ if [ "$g_conf" ]; then
   done;
   # Check gapps-config for other optional AOSP/ROM files that will be deleted
   for opt_name in $optional_aosp_remove_list; do
-    if ( grep -qi "$opt_name" "$g_conf" ); then
+    if ( grep -qiE "^$opt_name\$" "$g_conf" ); then
       aosp_remove_list="$aosp_remove_list$opt_name"$'\n';
     fi;
   done;
@@ -829,19 +829,19 @@ if ( contains "$gapps_list" "faceunlock" ) && [ $faceunlock_compat = "false" ]; 
 fi;
 
 # If we're NOT installing chrome make certain 'browser' is NOT in $aosp_remove_list UNLESS 'browser' is in $g_conf
-if ( ! contains "$gapps_list" "chrome" ) && ( ! grep -qi "browser" "$g_conf" ); then
+if ( ! contains "$gapps_list" "chrome" ) && ( ! grep -qiE "^browser\$" "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/browser};
   remove_browser="false[NO_Chrome]";
 fi;
 
 # If we're NOT installing gmail make certain 'email' is NOT in $aosp_remove_list UNLESS 'email' is in $g_conf
-if ( ! contains "$gapps_list" "gmail" ) && ( ! grep -qi "email" "$g_conf" ); then
+if ( ! contains "$gapps_list" "gmail" ) && ( ! grep -qiE "^email\$" "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/email};
   remove_email="false[NO_Gmail]";
 fi;
 
 # If we're NOT installing photos make certain 'gallery' is NOT in $aosp_remove_list UNLESS 'gallery' is in $g_conf
-if ( ! contains "$gapps_list" "photos" ) && ( ! grep -qi "gallery" "$g_conf" ); then
+if ( ! contains "$gapps_list" "photos" ) && ( ! grep -qiE "^gallery\$" "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/gallery};
   remove_gallery="false[NO_Photos]";
 fi;
@@ -852,20 +852,20 @@ if ( contains "$gapps_list" "messenger" ) && [ $device_type = "tablet" ]; then
 fi;
 
 # If we're NOT installing hangouts or messenger make certain 'mms' is NOT in $aosp_remove_list UNLESS 'mms' is in $g_conf
-if ( ! contains "$gapps_list" "hangouts" )  && ( ! contains "$gapps_list" "messenger" ) && ( ! grep -qi "mms" "$g_conf" ); then
+if ( ! contains "$gapps_list" "hangouts" )  && ( ! contains "$gapps_list" "messenger" ) && ( ! grep -qiE "^mms\$" "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/mms};
   remove_mms="false[NO_Hangouts]";
 fi;
 
 # If we're NOT installing hangouts or messenger and mms is in $aosp_remove_list then user must override removal protection
-if ( ! contains "$gapps_list" "hangouts" ) && ( ! contains "$gapps_list" "messenger" ) && ( contains "$aosp_remove_list" "mms" ) && ( ! grep -qi "override" "$g_conf" ); then
+if ( ! contains "$gapps_list" "hangouts" ) && ( ! contains "$gapps_list" "messenger" ) && ( contains "$aosp_remove_list" "mms" ) && ( ! grep -qiE "^override\$" "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/mms}; # we'll prevent mms from being removed so user isn't left with no way to receive text messages
   remove_mms="false[NO_Override]";
   install_note="${install_note}nomms_msg"$'\n'; # make note that MMS can't be removed unless user Overrides
 fi;
 
 # If we're NOT installing googletts make certain 'picotts' is NOT in $aosp_remove_list UNLESS 'picotts' is in $g_conf
-if ( ! contains "$gapps_list" "googletts" ) && ( ! grep -qi "picotts" "$g_conf" ); then
+if ( ! contains "$gapps_list" "googletts" ) && ( ! grep -qiE "^picotts\$" "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/picotts};
   remove_picotts="false[NO_GoogleTTS]";
 fi;
@@ -877,13 +877,13 @@ if ( ! contains "$gapps_list" "search" ) && ( contains "$gapps_list" "googlenow"
 fi;
 
 # If we're NOT installing googlenow make certain 'launcher' is NOT in $aosp_remove_list UNLESS 'launcher' is in $g_conf
-if ( ! contains "$gapps_list" "googlenow" ) && ( ! grep -qi "launcher" "$g_conf" ); then
+if ( ! contains "$gapps_list" "googlenow" ) && ( ! grep -qiE "^launcher\$" "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/launcher};
   remove_launcher="false[NO_GoogleNow]";
 fi;
 
 # If we're NOT installing googlenow and launcher is in $aosp_remove_list then user must override removal protection
-if ( ! contains "$gapps_list" "googlenow" ) && ( contains "$aosp_remove_list" "launcher" ) && ( ! grep -qi "override" "$g_conf" ); then
+if ( ! contains "$gapps_list" "googlenow" ) && ( contains "$aosp_remove_list" "launcher" ) && ( ! grep -qiE "^override\$" "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/launcher}; # we'll prevent launcher from being removed so user isn't left with no Launcher
   remove_launcher="false[NO_Override]";
   install_note="${install_note}nolauncher_msg"$'\n'; # make note that Launcher can't be removed unless user Overrides
@@ -920,7 +920,7 @@ if ( contains "$gapps_list" "cameragoogle" ) && ( ! clean_inst ) && [ $cameragoo
 fi;
 
 # If we're NOT installing cameragoogle make certain 'camerastock' is NOT in $aosp_remove_list UNLESS 'camerastock' is in $g_conf
-if ( ! contains "$gapps_list" "cameragoogle" ) && ( ! grep -qi "camerastock" "$g_conf" ); then
+if ( ! contains "$gapps_list" "cameragoogle" ) && ( ! grep -qiE "^camerastock\$" "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/cameragoogle};
   remove_camerastock="false[NO_CameraGoogle]";
 fi;
@@ -946,7 +946,7 @@ if ( contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$aosp_remove_list
 fi;
 
 # If we're NOT installing webviewgoogle and webviewstock is in $aosp_remove_list then user must override removal protection
-if ( ! contains "$gapps_list" "webviewgoogle" ) && ( contains "$aosp_remove_list" "webviewstock" ) && ( ! grep -qi "override" "$g_conf" ); then
+if ( ! contains "$gapps_list" "webviewgoogle" ) && ( contains "$aosp_remove_list" "webviewstock" ) && ( ! grep -qiE "^override\$" "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/webviewstock}; # we'll prevent webviewstock from being removed so user isn't left with no WebView
   install_note="${install_note}nowebview_msg"$'\n'; # make note that Stock Webview can't be removed unless user Overrides
 fi;
@@ -989,7 +989,7 @@ for f in $contactsstock_list; do
   fi
 done;
 if [ "$ignoregooglecontacts" = "true" ]; then
-  if ( ! contains "$gapps_list" "contactsgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
+  if ( ! contains "$gapps_list" "contactsgoogle" ) && ( ! grep -qiE "^override\$" "$g_conf" ); then
     sed -i "\:/system/priv-app/GoogleContacts:d" $gapps_removal_list;
     ignoregooglecontacts="true[NoRemove]"
     install_note="${install_note}nogooglecontacts_removal"$'\n'; # make note that Google Contacts will not be removed
@@ -1006,7 +1006,7 @@ fi
 #  fi
 #done;
 #if [ "$ignoregoogledialer" = "true" ]; then
-#  if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
+#  if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qiE "^override\$" "$g_conf" ); then
 #    sed -i "\:/system/priv-app/GoogleDialer:d" $gapps_removal_list;
 #    ignoregoogledialer="true[NoRemove]"
 #    install_note="${install_note}nogoogledialer_removal"$'\n'; # make note that Google Dialer will not be removed
@@ -1023,7 +1023,7 @@ for f in $keyboardstock_list; do
   fi
 done;
 if [ "$ignoregooglekeyboard" = "true" ]; then
-  if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
+  if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! grep -qiE "^override\$" "$g_conf" ); then
 EOFILE
 keyboardgooglenotremovehack
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
@@ -1042,7 +1042,7 @@ for f in $packageinstallerstock_list; do
   fi
 done;
 if [ "$ignoregooglepackageinstaller" = "true" ]; then
-  if ( ! contains "$gapps_list" "packageinstallergoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
+  if ( ! contains "$gapps_list" "packageinstallergoogle" ) && ( ! grep -qiE "^override\$" "$g_conf" ); then
     sed -i "\:/system/priv-app/GooglePackageInstaller:d" $gapps_removal_list;
     ignoregooglepackageinstaller="true[NoRemove]"
     install_note="${install_note}nogooglepackageinstaller_removal"$'\n'; # make note that Google Package Installer will not be removed
@@ -1059,7 +1059,7 @@ for f in $tagstock_list; do
   fi
 done;
 if [ "$ignoregoogletag" = "true" ]; then
-  if ( ! contains "$gapps_list" "taggoogle" ) && ( ! grep -qi "override" "$g_conf" ); then
+  if ( ! contains "$gapps_list" "taggoogle" ) && ( ! grep -qiE "^override\$" "$g_conf" ); then
     sed -i "\:/system/priv-app/TagGoogle:d" $gapps_removal_list;
     ignoregoogletag="true[NoRemove]"
     install_note="${install_note}nogoogletag_removal"$'\n'; # make note that Google Tag will not be removed
@@ -1076,7 +1076,7 @@ for f in $webviewstock_list; do
   fi
 done;
 if [ "$ignoregooglewebview" = "true" ]; then #No AOSP WebView
-  if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qi "override" "$g_conf" ); then #Don't remove Google WebView components if no Google WebView selected
+  if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qiE "^override\$" "$g_conf" ); then #Don't remove Google WebView components if no Google WebView selected
     sed -i "\:/system/lib/$WebView_lib_filename:d" $gapps_removal_list;
     sed -i "\:/system/lib64/$WebView_lib_filename:d" $gapps_removal_list;
     sed -i "\:/system/app/WebViewGoogle:d" $gapps_removal_list;
@@ -1181,7 +1181,7 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false"
   keybd_lib_size=$(tar -tvJf "/tmp/Optional/swypelibs.tar.xz" "swypelibs" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
   rm -f "/tmp/Optional/swypelibs.tar.xz";
   core_size=$((core_size + keybd_lib_size)); # Add Keyboard Lib size to core, if it exists
-  log "SwypeLibs" "keybd_lib_size (KB)";
+  log "SwypeLibs" "$keybd_lib_size (KB)";
 fi
 
 # Read and save system partition size details
@@ -1252,7 +1252,7 @@ done;
 
 # Perform calculations of required Buffer Size
 set_progress 0.11;
-if ( grep -qiE "^ *smallbuffer *($|#)+" "$g_conf" ); then
+if ( grep -qiE "^smallbuffer\$" "$g_conf" ); then
   buffer_size_kb=$small_buffer_size;
 fi;
 
@@ -1292,7 +1292,7 @@ if [ "$post_install_size_kb" -lt 0 ]; then
 fi;
 
 # Check to see if this is the 'real thing' or only a test
-if ( grep -qi "test" "$g_conf" ); then # user has selected a 'test' install ONLY
+if ( grep -qiE "^test\$" "$g_conf" ); then # user has selected a 'test' install ONLY
   ui_print "- Exiting Simulated Install";
   ui_print " ";
   install_note="${install_note}simulation_msg"$'\n'; # make note that this is only a test installation
