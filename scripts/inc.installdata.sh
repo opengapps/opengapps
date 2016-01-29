@@ -452,7 +452,6 @@ other_list="
 /system/app/PrebuiltKeepStub'"$REMOVALSUFFIX"'
 /system/app/Provision'"$REMOVALSUFFIX"'
 /system/app/QuickSearchBox'"$REMOVALSUFFIX"'
-/system/app/Street'"$REMOVALSUFFIX"'
 /system/app/Vending'"$REMOVALSUFFIX"'
 /system/priv-app/GmsCore'"$REMOVALSUFFIX"'
 /system/priv-app/GoogleNow'"$REMOVALSUFFIX"'
