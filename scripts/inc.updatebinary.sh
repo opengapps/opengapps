@@ -616,6 +616,9 @@ if ( grep -qiE "^forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi)\$" "$g_
   density=${density#forcedpi};
 fi;
 
+# Set density to unknown if it's still empty
+test -z "$density" && density=unknown;
+
 # Check for Clean Override in gapps-config
 if ( grep -qiE "^forceclean\$" "$g_conf" ); then # true or false to override the default selection
   forceclean="true"
@@ -629,9 +632,6 @@ if ( grep -qiE "^skipswypelibs\$" $g_conf ); then # true or false to override th
 else
   skipswypelibs="false"
 fi;
-
-# Set density to unknown if it's still empty
-test -z "$density" && density=unknown;
 
 # Remove any files from gapps-remove.txt that should not be processed for automatic removal
 for bypass_file in $removal_bypass_list; do
