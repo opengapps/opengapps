@@ -620,7 +620,7 @@ fi;
 test -z "$density" && density=unknown;
 
 #Check for Camera API v2 availability
-cameraapi="$(file_getprop $b_prop "com.camera2.portability.force_api")"
+cameraapi="$(file_getprop $b_prop "camera2.portability.force_api")"
 camerahal="$(file_getprop $b_prop "persist.camera.HAL3.enabled")"
 if [ -n "$cameraapi" ]; then #we check first for the existence of this key, it takes precedence if set to any value
   if [ "$cameraapi" -ge "2" ]; then
