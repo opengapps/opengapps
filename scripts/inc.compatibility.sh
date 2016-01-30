@@ -19,7 +19,11 @@ cameracompatibilityhack(){
 
 camerav3compatibilityhack(){
   if [ "$API" -ge "23" ]; then
-    echo '  *) gapps_list=${gapps_list/cameragoogle/cameragooglelegacy}; log "Camera v3 support" "Incompatible";;' >> "$build/META-INF/com/google/android/update-binary"
+    echo '
+# Google Camera fallback to Legacy if incompatible with new Camera API
+if [ "$newcamera_compat" = "false" ]; then
+  gapps_list=${gapps_list/cameragoogle/cameragooglelegacy}; log "Google Camera version" "Legacy"
+fi' >> "$build/META-INF/com/google/android/update-binary"
   fi
 }
 

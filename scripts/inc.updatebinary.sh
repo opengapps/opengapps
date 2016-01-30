@@ -619,6 +619,25 @@ fi;
 # Set density to unknown if it's still empty
 test -z "$density" && density=unknown;
 
+#Check for Camera API v2 availability
+cameraapi="$(file_getprop $b_prop "com.camera2.portability.force_api")"
+camerahal="$(file_getprop $b_prop "persist.camera.HAL3.enabled")"
+if [ -n "$cameraapi" ]; then #we check first for the existence of this key, it takes precedence if set to any value
+  if [ "$cameraapi" -ge "2" ]; then
+    newcamera_compat="true[force_api]"
+  else
+    newcamera_compat="false[force_api]"
+  fi
+elif [ -n "$camerahal" ] && [ "$camerahal" -ge "1" ]; then
+  newcamera_compat="true"
+else
+  # If not explictly defined, check whitelist
+  case $device_name in
+    ryu|angler|bullhead|shamu|volantis*|hammerhead|sprout*) newcamera_compat="true[whitelist]";;
+    *) newcamera_compat="false"
+  esac
+fi
+
 # Check for Clean Override in gapps-config
 if ( grep -qiE "^forceclean\$" "$g_conf" ); then # true or false to override the default selection
   forceclean="true"
@@ -691,6 +710,7 @@ log "Install Type" "$install_type";
 log "Google Camera Installed¹" "$cameragoogle_inst";
 log "FaceUnlock Compatible" "$faceunlock_compat";
 log "Google Camera Compatible" "$cameragoogle_compat";
+log "New Camera API Compatible" "$newcamera_compat";
 log_close="                  ¹ Previously installed with Open GApps\n$log_close";
 
 # Determine if a GApps package is installed and
@@ -1089,16 +1109,9 @@ elif ( ! contains "$gapps_list" "webviewgoogle" ); then #AOSP WebView, and no Go
   sed -i "\:/system/lib/$WebView_lib_filename:d" $gapps_removal_list;
   sed -i "\:/system/lib64/$WebView_lib_filename:d" $gapps_removal_list;
 fi
-
-# Process Google (Legacy) Camera compatibility
-# Check device name for devices that are compatible with Google Camera v3
-# Currently this list only consists of Google's own Marshmallow-compatible Nexi and Android One devices
-case $device_name in
-  ryu|angler|bullhead|shamu|volantis*|hammerhead|sprout*) log "Camera v3 support" "Compatible";;
 EOFILE
-camerav3compatibilityhack #in marshmallow we need to use the legacy camera that uses the v2 api on many devices
+camerav3compatibilityhack #in marshmallow we need to use the legacy camera that uses the older api
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
-esac;
 
 # Process User Application Removals for calculations and subsequent removal
 if [ -n "$user_remove_list" ]; then
