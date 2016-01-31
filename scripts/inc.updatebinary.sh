@@ -450,7 +450,7 @@ if [ "$g_conf" ]; then
   g_conf_orig="$g_conf";
   # Create processed gapps-config with user comments stripped and user app removals removed and stored in variable for processing later
   g_conf="/tmp/proc_gconf";
-  sed -e 's|#.*||g' -e 's/\r//g' -e '/^$/d' -e 's/^ *//g' -e 's/ *$//g' "$g_conf_orig" > "$g_conf"; # Strip user comments from gapps-config
+  sed -e 's|#.*||g' -e 's/\r//g' -e '/^$/d' -e 's/^[:blank:]*//g' -e 's/[:blank:]*$//g' "$g_conf_orig" > "$g_conf"; # Strip user comments, spaces and tabs from gapps-config
   user_remove_list=$(awk -F "[()]" '{ for (i=2; i<NF; i+=2) print $i }' "$g_conf"); # Get users list of apk's to remove from gapps-config
   sed -i s/'([^)]*)'/''/g "$g_conf"; # Remove all instances of user app removals (stuff between parentheses)
   sed -i '/^$/d' "$g_conf"; # Remove all empty lines for cleaner appearance
