@@ -913,9 +913,13 @@ if ( ! contains "$gapps_list" "googlenow" ) && ( contains "$aosp_remove_list" "l
   install_note="${install_note}nolauncher_msg"$'\n'; # make note that Launcher can't be removed unless user Overrides
 fi;
 
-# If we're installing calendargoogle we must ADD calendarstock to $aosp_remove_list (if it's not already there) and NOT install calsync
+# If we're installing calendargoogle we must ADD calendarstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "calendargoogle" ) && ( ! contains "$aosp_remove_list" "calendarstock" ); then
   aosp_remove_list="${aosp_remove_list}calendarstock"$'\n';
+fi;
+
+# If we're installing calendargoogle we must NOT install calsync
+if ( contains "$gapps_list" "calendargoogle" ); then
   gapps_list=${gapps_list/calsync};
 fi;
 
