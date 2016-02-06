@@ -132,9 +132,6 @@ removal_bypass_list="'"$REMOVALBYPASS"'
 ";
 
 # Define exit codes (returned upon exit due to an error)
-E_XZ=10; # No XZ support
-E_TAR=11; # No TAR support
-E_STDIN=12; # No TAR stdin support
 E_ROMVER=20; # Wrong ROM version
 E_NOBUILDPROP=25; #No build.prop or default.prop
 E_RECCOMPR=30; # Recovery without transparent compression
@@ -566,9 +563,6 @@ system_space_msg="INSTALLATION FAILURE: Your device does not have sufficient spa
 user_multiplefound_msg="NOTE: All User Application Removals included in gapps-config were unable to be\nprocessed as requested because multiple versions of the app were found on your\ndevice. See the log portion below for the name(s) of the application(s).\n";
 user_notfound_msg="NOTE: All User Application Removals included in gapps-config were unable to be\nremoved as requested because the files were not found on your device. See the\nlog portion below for the name(s) of the application(s).\n";
 del_conflict_msg="!!! WARNING !!! - Duplicate files were found between your ROM and this GApps\npackage. This is likely due to your ROM's dev including Google proprietary\nfiles in the ROM. The duplicate files are shown in the log portion below.\n";
-no_tar_message="INSTALLATION FAILURE: The installer detected that your recovery does not support\ntar extraction. Please update your recovery or switch to another one like TWRP."
-no_xz_message="INSTALLATION FAILURE: The installer detected that your recovery does not support\nXZ decompression. Please update your recovery or switch to another one like TWRP."
-no_stdin_message="INSTALLATION FAILURE: The installer detected that your recovery\ndoes not support stdin for the tar binary. Please update your recovery\nor switch to another one like TWRP."
 
 nogooglecontacts_removal_msg="NOTE: The Stock/AOSP Contacts is not available on your\nROM (anymore), the Google equivalent will not be removed."
 #nogoogledialer_removal_msg="NOTE: The Stock/AOSP Dialer is not available on your\nROM (anymore), the Google equivalent will not be removed."
@@ -693,11 +687,7 @@ file_getprop() {
 }
 
 folder_extract() {
-  if [ "$bundled_xz" = "true" ]; then
-    /tmp/xzdec "$1" | tar -x -C /tmp -f - "$2"
-  else
-    tar -xJf "$1" -C /tmp "$2";
-  fi
+  tar -xJf "$1" -C /tmp "$2";
   bkup_list=$'\n'"$(find "/tmp/$2/" -type f | cut -d/ -f5-)${bkup_list}";
   cp -rf /tmp/$2/. /system/;
   rm -rf /tmp/$2;
@@ -1105,55 +1095,6 @@ for rec_log in $rec_tmp_log $rec_cache_log; do
   esac;
 done;
 
-# Check for the presence of the tar binary
-if [ -z "$(command -v tar)" ]; then
-  ui_print "Your recovery is missing the tar";
-  ui_print "binary. Please update your recovery";
-  ui_print "to the latest version or switch to";
-  ui_print "another recovery like TWRP.";
-  ui_print "See:'$log_folder/open_gapps_log.txt'";
-  ui_print "for complete details and information.";
-  ui_print " ";
-  install_note="${install_note}no_tar_message"$'\n'; # make note that there is no TAR support
-  abort "$E_TAR";
-fi;
-
-# Check for the presence of the xz binary and tar parameter
-if [ -z "$(command -v xz)" ] || [ -z "$(tar --help 2>&1 | grep -e "J.*xz")" ]; then
-EOFILE
-case "$EXTRACTFILES" in
-  *xzdec*) echo '  bundled_xz=true'>> "$build/$1";; #xz-decompression binary bundled
-  *)       echo '  ui_print "Your recovery is missing the xz";
-  ui_print "binary. Please update your recovery";
-  ui_print "to the latest version or switch to";
-  ui_print "another recovery like TWRP.";
-  ui_print "See:'"'"'$log_folder/open_gapps_log.txt'"'"'";
-  ui_print "for complete details and information.";
-  ui_print " ";
-  install_note="${install_note}no_xz_message"$'"'\n'"'; # make note that there is no XZ support
-  abort "$E_XZ";'>> "$build/$1";;
-esac
-echo 'else'>> "$build/$1"
-if [ "$VARIANT" = "aroma" ]; then
-  echo '  bundled_xz=true #aroma needs bundled xz'>> "$build/$1" #aroma always needs to use bundled xz, otherwise it crashes
-else
-  echo '  bundled_xz=false'>> "$build/$1"
-fi
-tee -a "$build/$1" > /dev/null <<'EOFILE'
-fi;
-# Check for the -f - tar support
-if [ -z "$(tar --help 2>&1 | grep -e "f.*stdin")" ]; then
-  ui_print "Your recovery does not support stdin";
-  ui_print "for the tar binary. Please update your";
-  ui_print "recovery to the latest version or";
-  ui_print "switch to another recovery like TWRP.";
-  ui_print "See:'"'"'$log_folder/open_gapps_log.txt'"'"'";
-  ui_print "for complete details and information.";
-  ui_print " ";
-  install_note="${install_note}no_stdin_message"$'"'\n'"'; # make note that there is no stdin tar support
-  abort "$E_STDIN";
-fi;
-
 # Get display density using getprop from Recovery
 density=$(getprop ro.sf.lcd_density);
 
@@ -1256,7 +1197,6 @@ esac;
 log "ROM ID" "$(file_getprop $b_prop ro.build.display.id)";
 log "ROM Version" "$rom_version";
 log "Device Recovery" "$recovery";
-log "Using Bundled XZdec" "$bundled_xz"
 log "Device Name" "$device_name";
 log "Device Model" "$(file_getprop $b_prop ro.product.model)";
 log "Device Type" "$device_type";

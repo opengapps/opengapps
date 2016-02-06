@@ -28,7 +28,7 @@ commonscripts() {
   makegappsremovetxt "gapps-remove.txt"
   makegprop "g.prop"
   makeinstallersh "installer.sh"
-  bundlexz # on arm platforms we can include our own xz binary
+  bundlebusybox "busybox"
   makeupdatebinary "META-INF/com/google/android/update-binary" "installer.sh" # execute as last, it contains $EXTRACTFILES from the previous commands
   bundlelicense #optionally add a LICENSE file to the package
 }
@@ -55,13 +55,13 @@ aromaupdatebinary() {
   copy "$SCRIPTS/aroma-resources/update-binary" "$build/META-INF/com/google/android/update-binary"
 }
 
-bundlexz() {
-  case "$ARCH" in #Include our own 32-bit xz-decompression binary
-    arm*) xzbin="xzdec-arm";;
-    x86*) xzbin="xzdec-x86";;
+bundlebusybox() {
+  case "$ARCH" in #Include official busybox binary
+    arm*) busyboxbin="busybox-armv7l";;
+    x86*) busyboxbin="busybox-i686";;
   esac
-  copy "$SCRIPTS/xz-resources/$xzbin" "$build/xzdec"
-  EXTRACTFILES="$EXTRACTFILES xzdec"
+  copy "$SCRIPTS/busybox-resources/$busyboxbin" "$build/$1"
+  EXTRACTFILES="$EXTRACTFILES $1"
 }
 
 bundlelicense() {
