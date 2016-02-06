@@ -22,8 +22,8 @@ getapkproperties(){
   apkproperties="$(aapt dump badging "$1" 2>/dev/null)"
   name="$(echo "$apkproperties" | grep -a "application-label:" | sed 's/application-label://g' | sed "s/'//g")"
   package="$(echo "$apkproperties" | awk '/package:/ {print $2}' | sed s/name=//g | sed s/\'//g | awk '{print tolower($0)}')"
-  versionname="$(echo "$apkproperties" | awk '/versionName=/ {print $4}' | sed s/versionName=// | sed "s/'//g")"
-  versioncode="$(echo "$apkproperties" | awk '/versionCode=/ {print $3}' | sed s/versionCode=// | sed "s/'//g")"
+  versionname="$(echo "$apkproperties" | awk -F="'" '/versionName=/ {print $4}' | sed "s/'.*//g")"
+  versioncode="$(echo "$apkproperties" | awk -F="'" '/versionCode=/ {print $3}' | sed "s/'.*//g")"
   sdkversion="$(echo "$apkproperties" | grep -a "sdkVersion:" | sed 's/sdkVersion://' | sed "s/'//g")"
   compatiblescreens="$(echo "$apkproperties" | grep -a "compatible-screens:'")" #the ' is added to prevent detection of lines that only have compatiblescreens but without any values
   native="$(echo "$apkproperties" | grep -a "native-code:" | sed 's/native-code://g' | sed "s/'//g")"

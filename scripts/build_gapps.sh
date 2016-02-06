@@ -39,6 +39,7 @@ CERTIFICATES="$SCRIPTS/certificates"
 . "$SCRIPTS/inc.compatibility.sh"
 . "$SCRIPTS/inc.installdata.sh"
 . "$SCRIPTS/inc.packagetarget.sh"
+. "$SCRIPTS/inc.sourceshelper.sh"
 . "$SCRIPTS/inc.updatebinary.sh"
 . "$SCRIPTS/inc.tools.sh"
 

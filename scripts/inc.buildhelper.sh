@@ -124,7 +124,7 @@ buildapp() {
     baseversionname=""
     for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
       dpivariant="$(echo "$dpivariant" | tr '' ' ')" #and we place the spaces back again
-      versionname="$(aapt dump badging "$dpivariant" 2>/dev/null | awk '/versionName/ {print $4}' | sed s/versionName=// | sed "s/'//g")"
+      getapkproperties "$dpivariant" #get versionname
       versionnamehack #Some packages have a different versionname, when the actual version is equal
       systemlibhack #Some packages want their libs installed as system libs
       if [ "$API" -le "19" ] || [ "$systemlib" = "true" ]; then
