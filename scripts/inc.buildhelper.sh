@@ -125,6 +125,7 @@ buildapp() {
     for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
       dpivariant="$(echo "$dpivariant" | tr '' ' ')" #and we place the spaces back again
       getapkproperties "$dpivariant" #get versionname
+      versionname="$(printf "$versionname" | cut -d ' ' -f 1)" #always cut off everything in the versionname after the space since that indicates a part that is ALWAYS at minimum dpi-specific
       versionnamehack #Some packages have a different versionname, when the actual version is equal
       systemlibhack #Some packages want their libs installed as system libs
       if [ "$API" -le "19" ] || [ "$systemlib" = "true" ]; then

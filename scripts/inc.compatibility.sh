@@ -244,6 +244,8 @@ versionnamehack(){
     com.google.android.apps.docs*) versionname="$(echo "$versionname" | cut -c 1-10)";;
     #the Fitness variate the last 3 digits per DPI variant
     com.google.android.apps.fitness) versionname="$(echo "$versionname" | cut -c 1-7)";;
+    #the Project FI variates with different lengths at the end, but begin string is always 8 long
+    com.google.android.apps.tycho) versionname="$(echo "$versionname" | cut -c 1-8)";;
   esac
 }
 
