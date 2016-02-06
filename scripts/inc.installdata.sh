@@ -363,10 +363,11 @@ noisefield_list="
 app/NoiseField'"$REMOVALSUFFIX"'
 ";
 
-# Must be used when Google PackageInstaller is installed
+# Must be used when Google PackageInstaller is installed; non-capitalized spelling on Lenovo K3 Note
 packageinstallerstock_list="
 app/PackageInstaller'"$REMOVALSUFFIX"'
 priv-app/PackageInstaller'"$REMOVALSUFFIX"'
+priv-app/packageinstaller'"$REMOVALSUFFIX"'
 ";
 
 phasebeam_list="
