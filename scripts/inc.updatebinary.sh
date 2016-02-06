@@ -18,12 +18,23 @@ echo '#!/sbin/sh
 # This Open GApps Shell Script Installer includes code derived from the TK GApps of @TKruzze and @osm0sis,
 # The TK GApps are available under the GPLv3 from http://forum.xda-developers.com/android/software/tk-gapps-t3116347
 #
-for f in '"$EXTRACTFILES"'; do
-  unzip -o "$3" "$f" -d /tmp;
-done'> "$build/META-INF/com/google/android/update-binary"
-case "$EXTRACTFILES" in
-  *xzdec*) echo 'chmod +x /tmp/xzdec'>> "$build/META-INF/com/google/android/update-binary";; #xz-decompression binary bundled
-esac
+case "$PATH" in
+  */tmp/bin/*)
+    ;;
+  *)
+    for f in '"$EXTRACTFILES"'; do
+      unzip -o "$3" "$f" -d /tmp;
+    done
+
+    chmod +x /tmp/busybox
+    install -d /tmp/bin
+    bb=/tmp/busybox
+    for i in $($bb --list); do
+      ln -s $bb /tmp/bin/$i
+    done
+    PATH="/tmp/bin" $bb ash "$@"
+    ;;
+esac'> "$build/META-INF/com/google/android/update-binary"
 tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 . /tmp/installer.data;
 # _____________________________________________________________________________________________________________________
@@ -142,11 +153,8 @@ file_getprop() {
 }
 
 folder_extract() {
-  if [ "$bundled_xz" = "true" ]; then
-    /tmp/xzdec "$1" | tar -x -C /tmp -f - "$2"
-  else
-    tar -xJf "$1" -C /tmp "$2";
-  fi
+  tar -xJf "$1" -C /tmp "$2";
+
   bkup_list=$'\n'"$(find "/tmp/$2/" -type f | cut -d/ -f5-)${bkup_list}";
   cp -rf /tmp/$2/. /system/;
   rm -rf /tmp/$2;
@@ -552,55 +560,6 @@ for rec_log in $rec_tmp_log $rec_cache_log; do
   esac;
 done;
 
-# Check for the presence of the tar binary
-if [ -z "$(command -v tar)" ]; then
-  ui_print "Your recovery is missing the tar";
-  ui_print "binary. Please update your recovery";
-  ui_print "to the latest version or switch to";
-  ui_print "another recovery like TWRP.";
-  ui_print "See:'$log_folder/open_gapps_log.txt'";
-  ui_print "for complete details and information.";
-  ui_print " ";
-  install_note="${install_note}no_tar_message"$'\n'; # make note that there is no TAR support
-  abort "$E_TAR";
-fi;
-
-# Check for the presence of the xz binary and tar parameter
-if [ -z "$(command -v xz)" ] || [ -z "$(tar --help 2>&1 | grep -e "J.*xz")" ]; then
-EOFILE
-case "$EXTRACTFILES" in
-  *xzdec*) echo '  bundled_xz=true'>> "$build/META-INF/com/google/android/update-binary";; #xz-decompression binary bundled
-  *)       echo '  ui_print "Your recovery is missing the xz";
-  ui_print "binary. Please update your recovery";
-  ui_print "to the latest version or switch to";
-  ui_print "another recovery like TWRP.";
-  ui_print "See:'"'"'$log_folder/open_gapps_log.txt'"'"'";
-  ui_print "for complete details and information.";
-  ui_print " ";
-  install_note="${install_note}no_xz_message"$'"'\n'"'; # make note that there is no XZ support
-  abort "$E_XZ";'>> "$build/META-INF/com/google/android/update-binary";;
-esac
-echo 'else'>> "$build/META-INF/com/google/android/update-binary"
-if [ "$VARIANT" = "aroma" ]; then
-  echo '  bundled_xz=true #aroma needs bundled xz'>> "$build/META-INF/com/google/android/update-binary" #aroma always needs to use bundled xz, otherwise it crashes
-else
-  echo '  bundled_xz=false'>> "$build/META-INF/com/google/android/update-binary"
-fi
-tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
-fi;
-# Check for the -f - tar support
-if [ -z "$(tar --help 2>&1 | grep -e "f.*stdin")" ]; then
-  ui_print "Your recovery does not support stdin";
-  ui_print "for the tar binary. Please update your";
-  ui_print "recovery to the latest version or";
-  ui_print "switch to another recovery like TWRP.";
-  ui_print "See:'"'"'$log_folder/open_gapps_log.txt'"'"'";
-  ui_print "for complete details and information.";
-  ui_print " ";
-  install_note="${install_note}no_stdin_message"$'"'\n'"'; # make note that there is no stdin tar support
-  abort "$E_STDIN";
-fi;
-
 # Get display density using getprop from Recovery
 density=$(getprop ro.sf.lcd_density);
 
@@ -703,7 +662,6 @@ esac;
 log "ROM ID" "$(file_getprop $b_prop ro.build.display.id)";
 log "ROM Version" "$rom_version";
 log "Device Recovery" "$recovery";
-log "Using Bundled XZdec" "$bundled_xz"
 log "Device Name" "$device_name";
 log "Device Model" "$(file_getprop $b_prop ro.product.model)";
 log "Device Type" "$device_type";

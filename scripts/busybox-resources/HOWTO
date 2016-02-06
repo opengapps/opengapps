@@ -1,0 +1,5 @@
+Fetch busybox binaries from https://busybox.net
+More precisely: https://busybox.net/downloads/binaries/latest/
+
+"BusyBox is licensed under the GNU General Public License version 2, which is often abbreviated as GPLv2."
+Check https://www.busybox.net/license.html for more information.
