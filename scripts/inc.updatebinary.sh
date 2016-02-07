@@ -1355,7 +1355,7 @@ done;
 
 # Remove any empty folders we may have created during the removal process
 for i in /system/app /system/priv-app /system/vendor/pittpatt /system/usr/srec /system/etc/preferred-apps; do
-  find "$i" -type d | xargs rmdir -p --ignore-fail-on-non-empty;
+  find "$i" -type d | xargs -r rmdir -p --ignore-fail-on-non-empty;
 done;
 # _____________________________________________________________________________________________________________________
 #                                                  Perform Installs
