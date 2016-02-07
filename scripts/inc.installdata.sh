@@ -177,6 +177,7 @@ noisefield
 phasebeam
 photophase
 phototable
+provision
 simtoolkit
 studio
 sykopath
@@ -390,6 +391,11 @@ lib/libttspico.so
 tts
 ";
 
+provision_list="
+app/Provision'"$REMOVALSUFFIX"'
+priv-app/Provision'"$REMOVALSUFFIX"'
+"
+
 simtoolkit_list="
 app/Stk'"$REMOVALSUFFIX"'
 ";
@@ -451,7 +457,6 @@ other_list="
 /system/app/PartnerBookmarksProvider'"$REMOVALSUFFIX"'
 /system/app/PrebuiltBugleStub'"$REMOVALSUFFIX"'
 /system/app/PrebuiltKeepStub'"$REMOVALSUFFIX"'
-/system/app/Provision'"$REMOVALSUFFIX"'
 /system/app/QuickSearchBox'"$REMOVALSUFFIX"'
 /system/app/Vending'"$REMOVALSUFFIX"'
 /system/priv-app/GmsCore'"$REMOVALSUFFIX"'
@@ -459,7 +464,6 @@ other_list="
 /system/priv-app/GoogleSearch'"$REMOVALSUFFIX"'
 /system/priv-app/GoogleHangouts'"$REMOVALSUFFIX"'
 /system/priv-app/OneTimeInitializer'"$REMOVALSUFFIX"'
-/system/priv-app/Provision'"$REMOVALSUFFIX"'
 /system/priv-app/QuickSearchBox'"$REMOVALSUFFIX"'
 /system/priv-app/Vending'"$REMOVALSUFFIX"'
 /system/priv-app/Velvet_update'"$REMOVALSUFFIX"'

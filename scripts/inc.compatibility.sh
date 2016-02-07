@@ -215,6 +215,15 @@ minapihack(){
   esac
 }
 
+provisionremovalhack(){
+  if [ "$API" -le "22" ]; then
+    tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+# On Pre-Marshmallow the Provision folder does always have to be removed (it conflicts with SetupWizard.apk)
+aosp_remove_list="${remove_list}provision"$'\n';
+EOFILE
+  fi
+}
+
 systemlibhack(){
   case "$package" in
     com.google.android.webview) if [ "$API" -lt "23" ]; then #webview libs are only on /system/lib/ on pre-Marshmallow

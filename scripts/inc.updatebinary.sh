@@ -846,6 +846,10 @@ else
   fi;
 fi;
 
+EOFILE
+provisionremovalhack #pre-Marshmallow Provision always has to be removed
+tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+
 # Verify device is FaceUnlock compatible BEFORE we allow it in $gapps_list
 if ( contains "$gapps_list" "faceunlock" ) && [ $faceunlock_compat = "false" ]; then
   gapps_list=${gapps_list/faceunlock};
