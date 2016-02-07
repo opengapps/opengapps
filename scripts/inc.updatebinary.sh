@@ -386,7 +386,7 @@ else
   abort "$E_NOBUILDPROP";
 fi
 # Check if build.prop is not compressed and thus unprocessable
-if [ "$(head -c4 "$b_prop")" = "zzzz" ]; then
+if [ "$(head -c 4 "$b_prop")" = "zzzz" ]; then
   ui_print "*** Recovery does not support transparent compression ***";
   ui_print " ";
   ui_print "Your ROM uses transparent compression, but your recovery";
@@ -1218,11 +1218,11 @@ log "Used System Space (KB)" "$used_system_size_kb";
 log "Current Free Space (KB)" "$free_system_size_kb";
 
 # Perform storage space calculations of existing GApps that will be deleted/replaced
-reclaimed_gapps_space_kb=$(du -ck $(complete_gapps_list) | tail -n1 | awk '{ print $1 }');
+reclaimed_gapps_space_kb=$(du -ck $(complete_gapps_list) | tail -n 1 | awk '{ print $1 }');
 
 # Perform storage space calculations of other Removals that need to be deleted (Obsolete and Conflicting Apps)
 set_progress 0.05;
-reclaimed_removal_space_kb=$(du -ck $(obsolete_gapps_list) | tail -n1 | awk '{ print $1 }');
+reclaimed_removal_space_kb=$(du -ck $(obsolete_gapps_list) | tail -n 1 | awk '{ print $1 }');
 
 # Add information to calc.log that will later be added to open_gapps.log to assist user with app removals
 post_install_size_kb=$((free_system_size_kb + reclaimed_gapps_space_kb)); # Add opening calculations
@@ -1240,7 +1240,7 @@ for aosp_name in $aosp_remove_list; do
   aosp_size_kb=0; # Reset counter
   for file_name in $list_name; do
     if [ -e "/system/$file_name" ]; then
-      file_size_kb=$(du -ck "/system/$file_name" | tail -n1 | awk '{ print $1 }');
+      file_size_kb=$(du -ck "/system/$file_name" | tail -n 1 | awk '{ print $1 }');
       aosp_size_kb=$((file_size_kb + aosp_size_kb));
       post_install_size_kb=$((post_install_size_kb + file_size_kb));
     fi;
@@ -1251,7 +1251,7 @@ done;
 # Perform calculations of User App Removals that will be deleted
 for remove_folder in $user_remove_folder_list; do
   if [ -e "$remove_folder" ]; then
-    folder_size_kb=$(du -ck "$remove_folder" | tail -n1 | awk '{ print $1 }');
+    folder_size_kb=$(du -ck "$remove_folder" | tail -n 1 | awk '{ print $1 }');
     post_install_size_kb=$((post_install_size_kb + folder_size_kb));
     log_add "Remove" "$(basename "$remove_folder")°" "$folder_size_kb" $post_install_size_kb;
   fi;
