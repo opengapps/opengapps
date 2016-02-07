@@ -66,7 +66,7 @@ $gapps_remove"
 makeupdatebinary(){
   chmodx=""
   case "$EXTRACTFILES" in
-    *xzdec*) chmodx="$chmodx xzdec";; #xz-decompression binary bundled
+    *busybox*) chmodx="$chmodx busybox";;
   esac
   echo '#!/sbin/sh
 #This file is part of The Open GApps script of @mfonville.
@@ -1086,12 +1086,13 @@ fi;
 
 # Determine Recovery Type and Version
 for rec_log in $rec_tmp_log $rec_cache_log; do
-  recovery=$(grep -m 2 -E " Recovery v|Starting TWRP|Welcome to|PhilZ" $rec_log);
+  recovery=$(grep -m 2 -E " Recovery v|Starting TWRP|Welcome to|PhilZ|Starting recovery \(" $rec_log);
   case "$recovery" in
     *Welcome*)  recovery="$(grep -m 1 "Welcome to" $rec_log | awk '{ print substr($0, index($0,$3)) }')$(grep -m 1 "^ext.version" $rec_log | cut -d\" -f2)"; break;;
     *Recovery*) recovery=$(grep -m 1 "Recovery v" $rec_log); recovery=${recovery/Recovery v/Recovery }; break;;
     *PhilZ*)    recovery=$(grep -m 2 -E "PhilZ|ClockworkMod" $rec_log); recovery="${recovery/ClockworkMod v/(ClockworkMod })"; break;;
-    Starting*)  recovery=$(echo "$recovery" | awk -F"Starting " '{ print $2 }' | awk -F" on " '{ print $1 }'); break;;
+    *Starting\ recovery\ \(*) recovery=$(grep -m 1 "ro.cm.version=" $rec_log| sed -e 's/.*ro.cm.version=/CM Recovery /gI'); break;;
+    Starting*) recovery=$(echo "$recovery" | awk -F"Starting " '{ print $2 }' | awk -F" on " '{ print $1 }'); break;;
   esac;
 done;
 
