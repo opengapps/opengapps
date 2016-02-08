@@ -99,8 +99,7 @@ for appname in $allapps; do
         appdpis="$(printf "%s" "$appdpifiles" | awk -F '/' '{print $(NF-1)}' | sort | uniq)"
         for dpi in $appdpis; do
           appversionfile="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/$dpi/*" | head -n 1)"
-          appversion="$(basename -s ".apk" "$appversionfile")"
-          appversionname="$(aapt dump badging "$appversionfile" 2>/dev/null | awk -F="'" '/versionName=/ {print $4}' | sed "s/'//g")"
+          getapkproperties "$appversionfile" #set versionname and versioncode
           if [ -z "$nosig" ]; then
             if verifyapk "$appversionfile" "silent"; then
               signed="ok"
@@ -111,7 +110,7 @@ for appname in $allapps; do
             signed="skip"
           fi
           result="$result
-$(printf "%45s|%6s|%3s|%15s|%27s|%10s|%4s" "$appname" "$arch" "$sdk" "$dpi" "$appversionname" "$appversion" "$signed")"
+$(printf "%45s|%6s|%3s|%15s|%27s|%10s|%4s" "$appname" "$arch" "$sdk" "$dpi" "$versionname" "$versioncode" "$signed")"
         done
         if [ -n "$buildarch" ]; then
           break 2 #when selecting for the build of a specified architeture and sdk, only one architecture result is enough
