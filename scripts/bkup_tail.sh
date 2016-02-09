@@ -55,7 +55,7 @@ case "$1" in
 
     # Remove any empty folders we may have created during the removal process
     for i in /system/app /system/priv-app /system/vendor/pittpatt /system/usr/srec /system/vendor/pittpatt; do
-        find $i -type d | xargs rmdir -p --ignore-fail-on-non-empty;
+        find $i -type d | xargs -r rmdir -p --ignore-fail-on-non-empty;
     done;
     # Fix ownership/permissions and clean up after backup and restore from /sdcard
     find /system/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; # Change pittpatt folders to root:shell per Google Factory Settings
