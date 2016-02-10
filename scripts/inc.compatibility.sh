@@ -219,7 +219,7 @@ provisionremovalhack(){
   if [ "$API" -le "22" ]; then
     tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
 # On Pre-Marshmallow the Provision folder does always have to be removed (it conflicts with SetupWizard.apk)
-aosp_remove_list="${remove_list}provision"$'\n';
+aosp_remove_list="${aosp_remove_list}provision"$'\n';
 EOFILE
   fi
 }
