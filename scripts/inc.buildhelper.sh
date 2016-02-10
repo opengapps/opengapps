@@ -242,10 +242,10 @@ buildapk() {
   fi
 
   install -D "$sourceapk" "$targetapk"
-  if [ "$API" -lt "23" ] && (unzip -qql "$targetapk" | grep -q "lib/"); then #only if pre-Marshmallow and the lib folder exists
+  if [ "$API" -lt "23" ] && (unzip -qqql "$targetapk" | grep -q "lib/"); then #only if pre-Marshmallow and the lib folder exists
     unzip -Z -1 "$targetapk" | grep "lib/" | grep -v "/crazy." | xargs zip -q -d "$targetapk" #delete all libs, except crazy-linked
-  elif [ "$API" -ge "23" ] && (unzip -qql "$targetapk" | grep -q "lib/"); then #Marshmallow needs (if any exist) libs to be stored without compression within the APK
-    unzip -q -o "$targetapk" -d "$targetdir" "lib/*"
+  elif [ "$API" -ge "23" ] && (unzip -qqql "$targetapk" | grep -q "lib/"); then #Marshmallow needs (if any exist) libs to be stored without compression within the APK
+    unzip -qqq -o "$targetapk" -d "$targetdir" "lib/*"
     zip -q -d "$targetapk" "lib/*" #delete all libs
     CURRENTPWD="$(realpath .)" #if we ever switch to bash, make this a pushd-popd trick
     cd "$targetdir"
@@ -290,11 +290,11 @@ buildlib() {
   if [ "$API" -lt "23" ]; then #libextraction is only necessary on pre-Marshmallow
     if [ -n "$(unzip -Z -1 "$sourceapk" "$libsearchpath" 2>/dev/null)" ]; then
       install -d "$targetdir/$libpath"
-      unzip -qq -j -o "$sourceapk" "$libsearchpath" -x "lib/*/crazy.*" -d "$targetdir/$libpath" 2>/dev/null
+      unzip -qqq -j -o "$sourceapk" "$libsearchpath" -x "lib/*/crazy.*" -d "$targetdir/$libpath" 2>/dev/null
     fi
     if [ "$apkarch" != "$fallback_arch" ] && [ -n "$(unzip -Z -1 "$sourceapk" "$libfallbacksearchpath" 2>/dev/null)" ]; then
       install -d "$targetdir/$fallbacklibpath"
-      unzip -qq -j -o "$sourceapk" "$libfallbacksearchpath" -x "lib/*/crazy.*" -d "$targetdir/$fallbacklibpath" 2>/dev/null
+      unzip -qqq -j -o "$sourceapk" "$libfallbacksearchpath" -x "lib/*/crazy.*" -d "$targetdir/$fallbacklibpath" 2>/dev/null
     fi
   fi
 }
