@@ -344,6 +344,7 @@ priv-app/LiquidLauncher'"$REMOVALSUFFIX"'
 priv-app/Paclauncher'"$REMOVALSUFFIX"'
 priv-app/SlimLauncher'"$REMOVALSUFFIX"'
 priv-app/Trebuchet'"$REMOVALSUFFIX"'
+priv-app/Nox'"$REMOVALSUFFIX"'
 ";
 
 livewallpapers_list="
