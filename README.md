@@ -57,7 +57,7 @@ If you want an overview of the locally available sources:
 ```
 You can add extra arguments to report_sources to do your more advanced bidding too:
 ```
-./report_sources.sh ( ([sdk] [archs]*) || [arch-sdk] ) && [hash] || [nohelp] || [nosig]
+./report_sources.sh ( ([sdk] [archs]*) || [arch-sdk] ) && [hash] || [nobeta] || [nohelp] || [noleanback] || [nosig]
 ```
 
 License
