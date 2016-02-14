@@ -27,7 +27,9 @@ checktools aapt coreutils jarsigner
 argument(){
   case $1 in
     hash)   hash="hash";;
+    nobeta) nobeta="! -ipath '*.beta*'";;
     nohelp) nohelp="nohelp";;
+    noleanback) noleanback="! -ipath '*.leanback*'";;
     nosig)  nosig="nosig";;
     all)    filterapparchs="${filterapparchs} all";;
     arm)    filterapparchs="${filterapparchs} arm";;
@@ -41,7 +43,9 @@ argument(){
 }
 
 hash=""
+nobeta=""
 nohelp=""
+noleanback=""
 nosig=""
 filterapparchs=""
 buildarch=""
@@ -64,7 +68,9 @@ if [ -z "$hash" ] && [ -z "$nohelp" ]; then
 * Example command: './report_sources.sh arm-22'
 === AND ===
 * hash: If you add hash as an extra argument, the result will not be returned as human readable, but with a unique hash for the resultset
+* nobeta: If you add nobeta as an extra argument, the result will not include the apps that are marked as beta (=ending on .beta)
 * nohelp: If you add nohelp as an extra argument, the result will not include this helptext (not necessary if hash is used)
+* noleanback: If you add noleanback as an extra argument, the result will not include the apps that are marked as leanback (=ending on .leanback)
 * nosig: Skips signature checking (which takes a lot of CPU power); NB: this does change the hash result!
 * Example command: './report_sources.sh arm-22 hash'
 ---------------------------------------------------------------------------------------------------------------"
@@ -78,7 +84,8 @@ esac
 
 result="$(printf "%45s|%6s|%3s|%15s|%27s|%10s|%4s" "Application Name" "Arch." "SDK" "DPI" "Version Name" "Version" "Sig.")
 ---------------------------------------------------------------------------------------------------------------"
-allapps="$(find "$SOURCES/" -iname "*.apk" | awk -F '/' '{print $(NF-3)}' | sort | uniq)"
+searchstring="find '$SOURCES/' -iname '*.apk' $nobeta $noleanback | awk -F '/' '{print \$(NF-3)}' | sort | uniq"
+allapps="$(eval "$searchstring")"
 for appname in $allapps; do
   appnamefiles="$(find "$SOURCES/" -iname "*.apk" -ipath "*/$appname/*")"
   if [ -n "$buildarch" ]; then
