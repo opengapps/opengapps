@@ -21,3 +21,6 @@ local.properties
 #Temporary editor files
 *.bak
 *~
+
+#APKs in the non-sources opengapps repository
+*.apk
