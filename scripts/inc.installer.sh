@@ -588,15 +588,15 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 #                                                  Declare Variables
 zip_folder="$(dirname "$ZIP")";
 g_prop=/system/etc/g.prop;
-bkup_tail=/tmp/bkup_tail.sh;
-gapps_removal_list=/tmp/gapps-remove.txt;
-g_log=/tmp/g.log;
-calc_log=/tmp/calc.log;
-conflicts_log=/tmp/conflicts.log;
+bkup_tail=$TMP/bkup_tail.sh;
+gapps_removal_list=$TMP/gapps-remove.txt;
+g_log=$TMP/g.log;
+calc_log=$TMP/calc.log;
+conflicts_log=$TMP/conflicts.log;
 rec_cache_log=/cache/recovery/log;
-rec_tmp_log=/tmp/recovery.log;
-user_remove_notfound_log=/tmp/user_remove_notfound.log;
-user_remove_multiplefound_log=/tmp/user_remove_multiplefound.log;
+rec_tmp_log=$TMP/recovery.log;
+user_remove_notfound_log=$TMP/user_remove_notfound.log;
+user_remove_multiplefound_log=$TMP/user_remove_multiplefound.log;
 
 log_close="# End Open GApps Install Log\n";
 
@@ -653,8 +653,8 @@ clean_inst() {
 }
 
 extract_app() {
-  tarpath="/tmp/$1.tar.xz"
-  unzip -o "$ZIP" "$1.tar.xz" -d /tmp;
+  tarpath="$TMP/$1.tar.xz"
+  unzip -o "$ZIP" "$1.tar.xz" -d $TMP;
   app_name="$(basename "$1")";
   which_dpi "$app_name";
   if [ "$dpiapkpath" != "unknown" ]; then #technically not necessary, 'unknown' folder would not exist anyway
@@ -668,22 +668,22 @@ exxit() {
   set_progress 0.98;
   if ( ! grep -qiE '^ *nodebug *($|#)+' "$g_conf" ); then
     if [ "$g_conf" ]; then # copy gapps-config files to debug logs folder
-      cp -f "$g_conf_orig" /tmp/logs/gapps-config_original.txt;
-      cp -f "$g_conf" /tmp/logs/gapps-config_processed.txt;
+      cp -f "$g_conf_orig" $TMP/logs/gapps-config_original.txt;
+      cp -f "$g_conf" $TMP/logs/gapps-config_processed.txt;
     fi;
-    ls -alZR /system > /tmp/logs/System_Files_After.txt;
-    df -k > /tmp/logs/Device_Space_After.txt;
-    cp -f "$log_folder/open_gapps_log.txt" /tmp/logs;
-    cp -f $b_prop /tmp/logs;
-    cp -f /system/addon.d/70-gapps.sh /tmp/logs;
-    cp -f $gapps_removal_list "/tmp/logs/gapps-remove_revised.txt";
-    cp -f $rec_cache_log /tmp/logs/Recovery_cache.log;
-    cp -f $rec_tmp_log /tmp/logs/Recovery_tmp.log;
-    cd /tmp;
+    ls -alZR /system > $TMP/logs/System_Files_After.txt;
+    df -k > $TMP/logs/Device_Space_After.txt;
+    cp -f "$log_folder/open_gapps_log.txt" $TMP/logs;
+    cp -f $b_prop $TMP/logs;
+    cp -f /system/addon.d/70-gapps.sh $TMP/logs;
+    cp -f $gapps_removal_list "$TMP/logs/gapps-remove_revised.txt";
+    cp -f $rec_cache_log $TMP/logs/Recovery_cache.log;
+    cp -f $rec_tmp_log $TMP/logs/Recovery_tmp.log;
+    cd $TMP;
     tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" logs/*;
     cd /;
   fi;
-  find /tmp/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +;
+  find $TMP/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +;
   set_progress 1.0;
   ui_print "- Unmounting $mounts";
   ui_print " ";
@@ -698,17 +698,17 @@ file_getprop() {
 }
 
 folder_extract() {
-  tar -xJf "$1" -C /tmp "$2";
-  bkup_list=$'\n'"$(find "/tmp/$2/" -type f | cut -d/ -f5-)${bkup_list}";
-  cp -rf /tmp/$2/. /system/;
-  rm -rf /tmp/$2;
+  tar -xJf "$1" -C $TMP "$2";
+  bkup_list=$'\n'"$(find "$TMP/$2/" -type f | cut -d/ -f5-)${bkup_list}";
+  cp -rf $TMP/$2/. /system/;
+  rm -rf $TMP/$2;
 }
 
 get_appsize() {
   app_name="$(basename "$1")";
   which_dpi "$app_name";
   app_density="$(basename "$dpiapkpath")";
-  appsize="$(cat /tmp/app_sizes.txt | grep -E "$app_name.*($app_density|common)" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')";
+  appsize="$(cat $TMP/app_sizes.txt | grep -E "$app_name.*($app_density|common)" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')";
 }
 
 log() {
@@ -831,7 +831,7 @@ ui_print() {
 which_dpi() {
   # Calculate available densities
   app_densities="";
-  app_densities="$(cat /tmp/app_densities.txt | grep -E "$1/([0-9-]+|nodpi)/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | sort)";
+  app_densities="$(cat $TMP/app_densities.txt | grep -E "$1/([0-9-]+|nodpi)/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | sort)";
   # Check if in the package there is a version for our density, or a universal one.
   for densities in $app_densities; do
     case "$densities" in
@@ -878,8 +878,8 @@ which_dpi() {
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Pre-Install Info
 # Get GApps Version and GApps Type from g.prop extracted at top of script
-gapps_version=$(file_getprop /tmp/g.prop ro.addon.open_version);
-gapps_type=$(file_getprop /tmp/g.prop ro.addon.open_type);
+gapps_version=$(file_getprop $TMP/g.prop ro.addon.open_version);
+gapps_type=$(file_getprop $TMP/g.prop ro.addon.open_type);
 # _____________________________________________________________________________________________________________________
 #                                                  Begin GApps Installation
 ui_print " ";
@@ -965,7 +965,7 @@ for field in ro.product.device ro.build.product ro.product.name; do
 done;
 
 # Locate gapps-config (if used)
-for i in "/tmp/aroma/.gapps-config"\
+for i in "$TMP/aroma/.gapps-config"\
  "$zip_folder/.gapps-config-$device_name"\
  "$zip_folder/gapps-config-$device_name.txt"\
  "/sdcard/Open-GApps/.gapps-config-$device_name"\
@@ -991,7 +991,7 @@ for i in "/tmp/aroma/.gapps-config"\
 done;
 
 # We log in the same diretory as the gapps-config file, unless it is aroma
-if [ -n "$g_conf" ] && [ "$g_conf" != "/tmp/aroma/.gapps-config" ]; then
+if [ -n "$g_conf" ] && [ "$g_conf" != "$TMP/aroma/.gapps-config" ]; then
   log_folder="$(dirname "$g_conf")";
 else
   log_folder="$zip_folder";
@@ -1007,7 +1007,7 @@ if [ "$g_conf" ]; then
   fi
 
   # Create processed gapps-config with user comments stripped and user app removals removed and stored in variable for processing later
-  g_conf="/tmp/proc_gconf";
+  g_conf="$TMP/proc_gconf";
   awk '{IGNORECASE=1;gsub("(in|ex)clude", "");print}' "$g_conf_orig" > "$g_conf"; # drop in/exclude with awk
   sed -i -e 's|#.*||g' -e 's/\r//g' -e 's/^[ \t]*//g' -e 's/[ \t]*$//g' -e '/^$/d' "$g_conf";
   #TODO: We would prefer the line below instead of the 2 lines above, but sed-word replacement is broken in some recoveries
@@ -1016,15 +1016,15 @@ if [ "$g_conf" ]; then
   sed -i -e s/'([^)]*)'/''/g -e '/^$/d'"$g_conf"; # Remove all instances of user app removals (stuff between parentheses) and empty lines
 else
   config_file="Not Used";
-  g_conf="/tmp/proc_gconf";
+  g_conf="$TMP/proc_gconf";
   touch "$g_conf";
 fi;
 
 # Unless this is a NoDebug install - create folder and take 'Before' snapshots
 if ( ! grep -qiE '^nodebug$' "$g_conf" ); then
-  install -d /tmp/logs;
-  ls -alZR /system > /tmp/logs/System_Files_Before.txt;
-  df -k > /tmp/logs/Device_Space_Before.txt;
+  install -d $TMP/logs;
+  ls -alZR /system > $TMP/logs/System_Files_Before.txt;
+  df -k > $TMP/logs/Device_Space_Before.txt;
 fi;
 
 # Get ROM android version from build.prop
@@ -1283,7 +1283,7 @@ for pkg in $pkg_names; do
   all_gapps_list=${all_gapps_list}${addto}; # Look for method to combine this with line above
   if ( grep -qiE "^${pkg}gapps\$" "$g_conf" ); then # user has selected a 'preset' install
     gapps_type=$pkg;
-    sed -i "/ro.addon.open_type/c\ro.addon.open_type=$pkg" /tmp/g.prop; # modify g.prop to new package type
+    sed -i "/ro.addon.open_type/c\ro.addon.open_type=$pkg" $TMP/g.prop; # modify g.prop to new package type
     break;
   fi;
 done;
@@ -1707,9 +1707,9 @@ done;
 
 # Add swypelibs size to core, if it will be installed
 if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false" ]; then
-  unzip -o "$ZIP" "Optional/swypelibs.tar.xz" -d /tmp;
-  keybd_lib_size=$(tar -tvJf "/tmp/Optional/swypelibs.tar.xz" "swypelibs" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
-  rm -f "/tmp/Optional/swypelibs.tar.xz";
+  unzip -o "$ZIP" "Optional/swypelibs.tar.xz" -d $TMP;
+  keybd_lib_size=$(tar -tvJf "$TMP/Optional/swypelibs.tar.xz" "swypelibs" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
+  rm -f "$TMP/Optional/swypelibs.tar.xz";
   core_size=$((core_size + keybd_lib_size)); # Add Keyboard Lib size to core, if it exists
   log "SwypeLibs" "$keybd_lib_size (KB)";
 fi
@@ -1923,7 +1923,7 @@ fi
 tee -a "$build/$1" > /dev/null <<'EOFILE'
 
 # Copy g.prop over to /system/etc
-cp -f /tmp/g.prop $g_prop;
+cp -f $TMP/g.prop $g_prop;
 # _____________________________________________________________________________________________________________________
 #                                                  Build and Install Addon.d Backup Script
 # Add 'other' Removals to addon.d script
