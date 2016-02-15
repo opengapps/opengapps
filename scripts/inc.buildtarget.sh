@@ -156,6 +156,7 @@ for app in $gapps; do
 done
 
 EXTRACTFILES="app_densities.txt app_sizes.txt" #is executed as first
+CHMODXFILES=""
 }
 
 get_package_info(){

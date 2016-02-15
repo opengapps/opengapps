@@ -64,10 +64,6 @@ $gapps_remove"
 }
 
 makeupdatebinary(){
-  chmodx=""
-  case "$EXTRACTFILES" in
-    *busybox*) chmodx="$chmodx busybox";;
-  esac
   echo '#!/sbin/sh
 #This file is part of The Open GApps script of @mfonville.
 #
@@ -81,19 +77,36 @@ makeupdatebinary(){
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
+export ZIP="$3"
+export OUTFD="/proc/self/fd/$2"
+export TMP="/tmp"
+bb="$TMP/'"$2"'"
+l="$TMP/bin"
 for f in '"$EXTRACTFILES"'; do
-  unzip -o "$3" "$f" -d "/tmp";
+  unzip -o "$ZIP" "$f" -d "$TMP";
 done
-for f in '"$chmodx"'; do
-  chmod +x "/tmp/$f";
+for f in '"$CHMODXFILES"'; do
+  chmod +x "$TMP/$f";
 done
-. "/tmp/'"$2"'"'> "$build/$1"
+install -d "$l"
+for i in $($bb --list); do
+  if ! ln -sf "$bb" "$l/$i" && ! $bb ln -sf "$bb" "$l/$i" ; then
+    echo "ui_print ERROR 10: Failed to set-up '"$2"'" > "$OUTFD"
+    echo "ui_print" > "$OUTFD"
+    echo "ui_print Please use TWRP as recovery instead" > "$OUTFD"
+    echo "ui_print" > "$OUTFD"
+    exit 1
+  fi
+done
+PATH="$l:$PATH" $bb ash "$TMP/'"$3"'" "$@"
+exit "$?"'> "$build/$1"
 }
 
 makeinstallersh(){
 get_fallback_arch "$ARCH" #make sure that $fallback_arch will be available
 EXTRACTFILES="$EXTRACTFILES $1"
-echo '#This file is part of The Open GApps script of @mfonville.
+echo '#!/sbin/ash
+#This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -573,9 +586,7 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
-ZIP="$3";
 zip_folder="$(dirname "$ZIP")";
-OUTFD=/proc/self/fd/$2;
 g_prop=/system/etc/g.prop;
 bkup_tail=/tmp/bkup_tail.sh;
 gapps_removal_list=/tmp/gapps-remove.txt;

@@ -29,7 +29,7 @@ commonscripts() {
   makegprop "g.prop"
   makeinstallersh "installer.sh"
   bundlebusybox "busybox"
-  makeupdatebinary "META-INF/com/google/android/update-binary" "installer.sh" # execute as last, it contains $EXTRACTFILES from the previous commands
+  makeupdatebinary "META-INF/com/google/android/update-binary" "busybox" "installer.sh" # execute as last, it contains $EXTRACTFILES from the previous commands
   bundlelicense #optionally add a LICENSE file to the package
 }
 
@@ -62,6 +62,7 @@ bundlebusybox() {
   esac
   copy "$SCRIPTS/busybox-resources/$busyboxbin" "$build/$1"
   EXTRACTFILES="$EXTRACTFILES $1"
+  CHMODXFILES="$CHMODXFILES $1"
 }
 
 bundlelicense() {
