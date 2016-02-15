@@ -25,11 +25,11 @@ commonscripts() {
   install -d "$build/META-INF/com/google/android"
   echo "# Dummy file; update-binary is a shell script.">"$build/META-INF/com/google/android/updater-script"
 
-  makegappsremovetxt
-  makegprop
-  makeinstallerdata
+  makegappsremovetxt "gapps-remove.txt"
+  makegprop "g.prop"
+  makeinstallersh "installer.sh"
   bundlexz # on arm platforms we can include our own xz binary
-  makeupdatebinary # execute as last, it contains $EXTRACTFILES from the previous commands
+  makeupdatebinary "META-INF/com/google/android/update-binary" "installer.sh" # execute as last, it contains $EXTRACTFILES from the previous commands
   bundlelicense #optionally add a LICENSE file to the package
 }
 
