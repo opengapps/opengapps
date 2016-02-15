@@ -13,7 +13,7 @@
 
 cameracompatibilityhack(){
   if [ "$API" -le "19" ]; then
-    echo '    A0001|bacon|find7) cameragoogle_compat=false;; # bacon or A0001=OnePlus One | find7=Oppo Find7 and Find7a' >> "$build/META-INF/com/google/android/update-binary"
+    echo '    A0001|bacon|find7) cameragoogle_compat=false;; # bacon or A0001=OnePlus One | find7=Oppo Find7 and Find7a' >> "$1"
   fi
 }
 
@@ -23,15 +23,15 @@ camerav3compatibilityhack(){
 # Google Camera fallback to Legacy if incompatible with new Camera API
 case $newcamera_compat in
   false*) gapps_list=${gapps_list/cameragoogle/cameragooglelegacy}; log "Google Camera version" "Legacy";;
-esac' >> "$build/META-INF/com/google/android/update-binary"
+esac' >> "$1"
   fi
 }
 
 keyboardgooglenotremovehack(){
   if [ "$API" -le "19" ]; then
-    echo '  sed -i "\:/system/app/LatinImeGoogle.apk:d" $gapps_removal_list;'>> "$build/META-INF/com/google/android/update-binary"
+    echo '  sed -i "\:/system/app/LatinImeGoogle.apk:d" $gapps_removal_list;'>> "$1"
   else
-    echo '  sed -i "\:/system/app/LatinImeGoogle:d" $gapps_removal_list;'>> "$build/META-INF/com/google/android/update-binary"
+    echo '  sed -i "\:/system/app/LatinImeGoogle:d" $gapps_removal_list;'>> "$1"
   fi
 }
 
@@ -102,81 +102,81 @@ kitkatdatahack(){
 install -d /data/app-lib/
 # Handle broken lib configuration on KitKat by putting Hangouts on /data/
 if ( contains "$gapps_list" "hangouts" ); then
-  unzip -o "$ZIP" "GApps/hangouts.tar.xz" -d /tmp;
-  tarpath="/tmp/GApps/hangouts.tar.xz";
+  unzip -o "$ZIP" "GApps/hangouts.tar.xz" -d $TMP;
+  tarpath="$TMP/GApps/hangouts.tar.xz";
   which_dpi "hangouts";
-  tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
+  tar -xJf "$tarpath" -C $TMP "$dpiapkpath";
   number="$(basename "$(find /data/app/com.google.android.talk-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
   fi
-  cp -rf /tmp/$dpiapkpath/app/Hangouts.apk /data/app/com.google.android.talk-$number.apk;
-  rm -rf /tmp/$dpiapkpath;
-  tar -xJf "$tarpath" -C /tmp "hangouts/common";
-  cp -rf /tmp/hangouts/common/lib* /data/app-lib/com.google.android.talk-$number/;
+  cp -rf $TMP/$dpiapkpath/app/Hangouts.apk /data/app/com.google.android.talk-$number.apk;
+  rm -rf $TMP/$dpiapkpath;
+  tar -xJf "$tarpath" -C $TMP "hangouts/common";
+  cp -rf $TMP/hangouts/common/lib* /data/app-lib/com.google.android.talk-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.talk-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.talk-$number"
-  rm -rf /tmp/hangouts/common;
+  rm -rf $TMP/hangouts/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/hangouts};
 fi;
 # Handle broken lib configuration on KitKat by putting Google+ on /data/
 if ( contains "$gapps_list" "googleplus" ); then
-  unzip -o "$ZIP" "GApps/googleplus.tar.xz" -d /tmp;
-  tarpath="/tmp/GApps/googleplus.tar.xz";
+  unzip -o "$ZIP" "GApps/googleplus.tar.xz" -d $TMP;
+  tarpath="$TMP/GApps/googleplus.tar.xz";
   which_dpi "googleplus";
-  tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
+  tar -xJf "$tarpath" -C $TMP "$dpiapkpath";
   number="$(basename "$(find /data/app/com.google.android.apps.plus-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
   fi
-  cp -rf /tmp/$dpiapkpath/app/PlusOne.apk /data/app/com.google.android.apps.plus-$number.apk;
-  rm -rf /tmp/$dpiapkpath;
-  tar -xJf "$tarpath" -C /tmp "googleplus/common";
-  cp -rf /tmp/googleplus/common/lib* /data/app-lib/com.google.android.apps.plus-$number/;
+  cp -rf $TMP/$dpiapkpath/app/PlusOne.apk /data/app/com.google.android.apps.plus-$number.apk;
+  rm -rf $TMP/$dpiapkpath;
+  tar -xJf "$tarpath" -C $TMP "googleplus/common";
+  cp -rf $TMP/googleplus/common/lib* /data/app-lib/com.google.android.apps.plus-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.apps.plus-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.apps.plus-$number"
-  rm -rf /tmp/googleplus/common;
+  rm -rf $TMP/googleplus/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/googleplus};
 fi;
 # Handle broken lib configuration on KitKat by putting Photos on /data/
 if ( contains "$gapps_list" "photos" ); then
-  unzip -o "$ZIP" "GApps/photos.tar.xz" -d /tmp;
-  tarpath="/tmp/GApps/photos.tar.xz";
+  unzip -o "$ZIP" "GApps/photos.tar.xz" -d $TMP;
+  tarpath="$TMP/GApps/photos.tar.xz";
   which_dpi "photos";
-  tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
+  tar -xJf "$tarpath" -C $TMP "$dpiapkpath";
   number="$(basename "$(find /data/app/com.google.android.apps.photos-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
   fi
-  cp -rf /tmp/$dpiapkpath/app/Photos.apk /data/app/com.google.android.apps.photos-$number.apk;
-  rm -rf /tmp/$dpiapkpath;
-  tar -xJf "$tarpath" -C /tmp "photos/common";
-  cp -rf /tmp/photos/common/lib* /data/app-lib/com.google.android.apps.photos-$number/;
+  cp -rf $TMP/$dpiapkpath/app/Photos.apk /data/app/com.google.android.apps.photos-$number.apk;
+  rm -rf $TMP/$dpiapkpath;
+  tar -xJf "$tarpath" -C $TMP "photos/common";
+  cp -rf $TMP/photos/common/lib* /data/app-lib/com.google.android.apps.photos-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.apps.photos-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.apps.photos-$number"
-  rm -rf /tmp/photos/common;
+  rm -rf $TMP/photos/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/photos};
 fi;
 # Handle broken lib configuration on KitKat by putting YouTube on /data/
 if ( contains "$gapps_list" "youtube" ); then
-  unzip -o "$ZIP" "GApps/youtube.tar.xz" -d /tmp;
-  tarpath="/tmp/GApps/youtube.tar.xz";
+  unzip -o "$ZIP" "GApps/youtube.tar.xz" -d $TMP;
+  tarpath="$TMP/GApps/youtube.tar.xz";
   which_dpi "youtube";
-  tar -xJf "$tarpath" -C /tmp "$dpiapkpath";
+  tar -xJf "$tarpath" -C $TMP "$dpiapkpath";
   number="$(basename "$(find /data/app/com.google.android.youtube-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
   fi
-  cp -rf /tmp/$dpiapkpath/app/YouTube.apk /data/app/com.google.android.youtube-$number.apk;
-  rm -rf /tmp/$dpiapkpath;
-  tar -xJf "$tarpath" -C /tmp "youtube/common";
-  cp -rf /tmp/youtube/common/lib* /data/app-lib/com.google.android.youtube-$number/;
+  cp -rf $TMP/$dpiapkpath/app/YouTube.apk /data/app/com.google.android.youtube-$number.apk;
+  rm -rf $TMP/$dpiapkpath;
+  tar -xJf "$tarpath" -C $TMP "youtube/common";
+  cp -rf $TMP/youtube/common/lib* /data/app-lib/com.google.android.youtube-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.youtube-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.youtube-$number"
-  rm -rf /tmp/youtube/common;
+  rm -rf $TMP/youtube/common;
   rm -f "$tarpath";
   gapps_list=${gapps_list/youtube};
 fi;'
@@ -217,7 +217,7 @@ minapihack(){
 
 provisionremovalhack(){
   if [ "$API" -le "22" ]; then
-    tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+    tee -a "$1" > /dev/null <<'EOFILE'
 # On Pre-Marshmallow the Provision folder does always have to be removed (it conflicts with SetupWizard.apk)
 aosp_remove_list="${aosp_remove_list}provision"$'\n';
 EOFILE
@@ -236,12 +236,12 @@ systemlibhack(){
 
 universalremoverhack(){
   if [ "$API" -le "19" ]; then
-    tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+    tee -a "$1" > /dev/null <<'EOFILE'
                     1)  user_remove_folder_list="${user_remove_folder_list}$(find "$folder" -type f -iname "$testapk")"$'\n'; # Add found file to list
                         user_remove_folder_list="${user_remove_folder_list}$(printf "$(find "$folder" -type f -iname "$testapk")" | rev | cut -c 4- | rev)odex"$'\n'; # Add odex to list
 EOFILE
   else
-    tee -a "$build/META-INF/com/google/android/update-binary" > /dev/null <<'EOFILE'
+    tee -a "$1" > /dev/null <<'EOFILE'
                     1)  user_remove_folder_list="${user_remove_folder_list}$(dirname "$(find "$folder" -type f -iname "$testapk")")"$'\n'; # Add found folder to list
 EOFILE
   fi

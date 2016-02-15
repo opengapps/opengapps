@@ -37,10 +37,9 @@ CERTIFICATES="$SCRIPTS/certificates"
 . "$SCRIPTS/inc.buildhelper.sh"
 . "$SCRIPTS/inc.buildtarget.sh"
 . "$SCRIPTS/inc.compatibility.sh"
-. "$SCRIPTS/inc.installdata.sh"
+. "$SCRIPTS/inc.installer.sh"
 . "$SCRIPTS/inc.packagetarget.sh"
 . "$SCRIPTS/inc.sourceshelper.sh"
-. "$SCRIPTS/inc.updatebinary.sh"
 . "$SCRIPTS/inc.tools.sh"
 
 # Check tools
