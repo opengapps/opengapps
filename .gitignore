@@ -24,3 +24,5 @@ local.properties
 
 #APKs in the non-sources opengapps repository
 *.apk
+#APKs that are marked as potentially dangerous
+*.err
