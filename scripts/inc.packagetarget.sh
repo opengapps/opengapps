@@ -57,8 +57,8 @@ aromaupdatebinary() {
 
 bundlebusybox() {
   case "$ARCH" in #Include official busybox binary
-    arm*) busyboxbin="busybox-armv7l";;
-    x86*) busyboxbin="busybox-i686";;
+    arm*) busyboxbin="busybox-arm";;
+    x86*) busyboxbin="busybox-x86";;
   esac
   copy "$SCRIPTS/busybox-resources/$busyboxbin" "$build/$1"
   EXTRACTFILES="$EXTRACTFILES $1"
