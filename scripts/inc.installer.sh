@@ -146,7 +146,7 @@ removal_bypass_list="'"$REMOVALBYPASS"'
 
 # Define exit codes (returned upon exit due to an error)
 E_ROMVER=20; # Wrong ROM version
-E_NOBUILDPROP=25; #No build.prop or default.prop
+E_NOBUILDPROP=25; #No build.prop or equivalent
 E_RECCOMPR=30; # Recovery without transparent compression
 E_NOSPACE=70; # Insufficient Space Available in System Partition
 E_NONOPEN=40; # NON Open GApps Currently Installed
@@ -562,7 +562,7 @@ camera_compat_msg="WARNING: Google Camera has/will not be installed as requested
 faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";
 googlenow_msg="WARNING: Google Now Launcher has/will not be installed as requested. Google\nSearch must be added to the GApps installation if you want to install the Google\nNow Launcher.\n";
 projectfi_msg="WARNING: Project Fi has/will not be installed as requested. GCS must be\nadded to the GApps installation if you want to install the Project Fi app.\n";
-nobuildprop="INSTALLATION FAILURE: The installed ROM has no build.prop or default.prop\n";
+nobuildprop="INSTALLATION FAILURE: The installed ROM has no build.prop or equivalent\n";
 nokeyboard_msg="NOTE: The Stock/AOSP keyboard was NOT removed as requested to ensure your device\nwas not accidentally left with no keyboard installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
 nolauncher_msg="NOTE: The Stock/AOSP Launcher was NOT removed as requested to ensure your device\nwas not accidentally left with no Launcher. If this was your intention, you can\nadd 'Override' to your gapps-config to override this protection.\n";
 nomms_msg="NOTE: The Stock/AOSP MMS app was NOT removed as requested to ensure your device\nwas not accidentally left with no way to receive text messages. If this WAS\nintentional, add 'Override' to your gapps-config to override this protection.\n";
@@ -587,7 +587,8 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
 zip_folder="$(dirname "$ZIP")";
-g_prop=/system/etc/g.prop;
+g_prop=/system/etc/g.prop
+PROPFILES="$g_prop /default.prop /system/default.prop /system/build.prop /build.prop /data/local.prop"
 bkup_tail=$TMP/bkup_tail.sh;
 gapps_removal_list=$TMP/gapps-remove.txt;
 g_log=$TMP/g.log;
@@ -674,7 +675,9 @@ exxit() {
     ls -alZR /system > $TMP/logs/System_Files_After.txt;
     df -k > $TMP/logs/Device_Space_After.txt;
     cp -f "$log_folder/open_gapps_log.txt" $TMP/logs;
-    cp -f $b_prop $TMP/logs;
+    for f in $PROPFILES; do
+      cp -f "$f" "$TMP/logs"
+    done
     cp -f /system/addon.d/70-gapps.sh $TMP/logs;
     cp -f $gapps_removal_list "$TMP/logs/gapps-remove_revised.txt";
     cp -f $rec_cache_log $TMP/logs/Recovery_cache.log;
@@ -693,10 +696,6 @@ exxit() {
   exit "$1";
 }
 
-file_getprop() {
-  grep "^$2" "$1" | cut -d= -f2;
-}
-
 folder_extract() {
   tar -xJf "$1" -C $TMP "$2";
   bkup_list=$'\n'"$(find "$TMP/$2/" -type f | cut -d/ -f5-)${bkup_list}";
@@ -709,6 +708,27 @@ get_appsize() {
   which_dpi "$app_name";
   app_density="$(basename "$dpiapkpath")";
   appsize="$(cat $TMP/app_sizes.txt | grep -E "$app_name.*($app_density|common)" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')";
+}
+
+get_file_prop() {
+  grep "^$2=" "$1" | cut -d= -f2
+}
+
+get_prop() {
+  #first try to use built-in getprop method
+  prop="$(getprop "$1")"
+  #if getprop failed to execute or is empty; manually check known .prop files using get_file_prop
+  if [ "$?" -ne "0" ] || [ -z "$prop" ]; then
+    for f in $PROPFILES; do
+      if [ -e "$f" ]; then
+        prop="$(get_file_prop "$f" "$1")"
+        if [ -n "$prop" ]; then
+          break #if an entry has been found, break out of the loop
+        fi
+      fi
+    done
+  fi
+  echo "$prop"
 }
 
 log() {
@@ -878,8 +898,8 @@ which_dpi() {
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Pre-Install Info
 # Get GApps Version and GApps Type from g.prop extracted at top of script
-gapps_version=$(file_getprop $TMP/g.prop ro.addon.open_version);
-gapps_type=$(file_getprop $TMP/g.prop ro.addon.open_type);
+gapps_version=$(get_file_prop "$TMP/g.prop" "ro.addon.open_version")
+gapps_type=$(get_file_prop "$TMP/g.prop" "ro.addon.open_type")
 # _____________________________________________________________________________________________________________________
 #                                                  Begin GApps Installation
 ui_print " ";
@@ -923,46 +943,42 @@ done
 
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
-if [ -e "/system/build.prop" ]; then
-  b_prop=/system/build.prop;
-elif [ -e "/system/default.prop" ]; then
-  b_prop=/system/default.prop;
-else
-  ui_print "*** No build.prop ***";
-  ui_print " ";
-  ui_print "Your ROM has no build.prop or default.prop";
-  ui_print " ";
-  ui_print "******* GApps Installation failed *******";
-  ui_print " ";
-  install_note="${install_note}nobuildprop"$'\n'; # make note that there is no build.prop
-  abort "$E_NOBUILDPROP";
+if [ -z "$(get_prop "ro.build.id")" ]; then
+  ui_print "*** No ro.build.id ***"
+  ui_print " "
+  ui_print "Your ROM has no valid build.prop or equivalent"
+  ui_print " "
+  ui_print "******* GApps Installation failed *******"
+  ui_print " "
+  install_note="${install_note}nobuildprop"$'\n'
+  abort "$E_NOBUILDPROP"
 fi
-# Check if build.prop is not compressed and thus unprocessable
-if [ "$(head -c 4 "$b_prop")" = "zzzz" ]; then
-  ui_print "*** Recovery does not support transparent compression ***";
-  ui_print " ";
-  ui_print "Your ROM uses transparent compression, but your recovery";
-  ui_print "does not support this feature, resulting in corrupt files.";
-  ui_print " ";
-  ui_print "BEFORE INSTALLING ANYTHING ANYMORE YOU SHOULD UPDATE YOUR";
-  ui_print "RECOVERY AS SOON AS POSSIBLE, TO PREVENT FILE CORRUPTION.";
-  ui_print " ";
-  ui_print "******* GApps Installation failed *******";
-  ui_print " ";
-  install_note="${install_note}recovery_compression_msg"$'\n'; # make note that recovery does not support transparent compression
-  abort "$E_RECCOMPR";
+
+testcomprfile="$(find /system -type f -maxdepth 1 | head -n 1)" #often this should return the build.prop, but it can be any file for this test
+# Check if $testcomprfile if it is exists is not compressed and thus unprocessable
+if -e "$testcomprfile" && [ "$(head -c 4 "$testcomprfile")" = "zzzz" ]; then
+  ui_print "*** Recovery does not support transparent compression ***"
+  ui_print " "
+  ui_print "Your ROM uses transparent compression, but your recovery"
+  ui_print "does not support this feature, resulting in corrupt files."
+  ui_print " "
+  ui_print "BEFORE INSTALLING ANYTHING ANYMORE YOU SHOULD UPDATE YOUR"
+  ui_print "RECOVERY AS SOON AS POSSIBLE, TO PREVENT FILE CORRUPTION."
+  ui_print " "
+  ui_print "******* GApps Installation failed *******"
+  ui_print " "
+  install_note="${install_note}recovery_compression_msg"$'\n'
+  abort "$E_RECCOMPR"
 fi
 
 # Get device name any which way we can
 for field in ro.product.device ro.build.product ro.product.name; do
-  for file in $b_prop /default.prop; do
-    device_name=$(file_getprop $file $field);
-    if [ ${#device_name} -ge 2 ]; then
-      break 2;
-    fi;
-  done;
-  device_name="Bad ROM/Recovery";
-done;
+  device_name="$(get_prop "$field")"
+  if [ "${#device_name}" -ge "2" ]; then
+    break
+  fi
+  device_name="Bad ROM/Recovery"
+done
 
 # Locate gapps-config (if used)
 for i in "$TMP/aroma/.gapps-config"\
@@ -990,7 +1006,7 @@ for i in "$TMP/aroma/.gapps-config"\
   fi;
 done;
 
-# We log in the same diretory as the gapps-config file, unless it is aroma
+# We log in the same directory as the gapps-config file, unless it is aroma
 if [ -n "$g_conf" ] && [ "$g_conf" != "$TMP/aroma/.gapps-config" ]; then
   log_folder="$(dirname "$g_conf")";
 else
@@ -1027,28 +1043,28 @@ if ( ! grep -qiE '^nodebug$' "$g_conf" ); then
   df -k > $TMP/logs/Device_Space_Before.txt;
 fi;
 
-# Get ROM android version from build.prop
-ui_print "- Gathering device & ROM information";
-ui_print " ";
-rom_android_version=$(file_getprop $b_prop ro.build.version.release);
+# Get ROM Android version
+ui_print "- Gathering device & ROM information"
+ui_print " "
+rom_android_version="$(get_prop "ro.build.version.release")"
 
-# Get Device Type (phone or tablet) from build.prop
-if echo "$(file_getprop $b_prop ro.build.characteristics)" | grep -qi "tablet"; then
-  device_type=tablet;
-elif echo "$(file_getprop $b_prop ro.build.characteristics)" | grep -qi "tv"; then
-  device_type=tv;
+# Get Device Type
+if echo "$(get_prop "ro.build.characteristics")" | grep -qi "tablet"; then
+  device_type=tablet
+elif echo "$(get_prop "ro.build.characteristics")" | grep -qi "tv"; then
+  device_type=tv
 else
-  device_type=phone;
-fi;
+  device_type=phone
+fi
 
-# Get Rom Version from build.prop
+# Get ROM Version
 for field in ro.modversion ro.build.version.incremental; do
-  rom_version="$(file_getprop $b_prop $field)";
-  if [ ${#rom_version} -ge 2 ]; then
+  rom_version="$(get_prop "$field")"
+  if [ "${#rom_version}" -ge "2" ]; then
     break;
   fi;
-  rom_version="non-standard build.prop";
-done;
+  rom_version="n/a"
+done
 
 echo "# Begin Open GApps Install Log" > $g_log;
 echo ----------------------------------------------------------------------------- >> $g_log;
@@ -1067,10 +1083,10 @@ if [ ! "${rom_android_version:0:3}" = "$req_android_version" ]; then
 fi;
 
 # Check to make certain that user device matches the architecture
-device_architecture="$(file_getprop $b_prop "ro.product.cpu.abilist=")"
+device_architecture="$(get_prop "ro.product.cpu.abilist")"
 # If the recommended field is empty, fall back to the deprecated one
 if [ -z "$device_architecture" ]; then
-  device_architecture="$(file_getprop $b_prop "ro.product.cpu.abi=")"
+  device_architecture="$(get_prop "ro.product.cpu.abi")"
 fi
 EOFILE
 printf 'if ! (echo "$device_architecture" | '>> "$build/$1"
@@ -1107,33 +1123,21 @@ for rec_log in $rec_tmp_log $rec_cache_log; do
   esac;
 done;
 
-# Get display density using getprop from Recovery
-density=$(getprop ro.sf.lcd_density);
-
-# If the density returned by getprop is empty or non-standard - read from default.prop instead
-case $density in
-  120|160|213|240|280|320|400|480|560|640) ;;
-  *) density=$(file_getprop /default.prop "ro.sf.lcd_density");;
-esac;
-
-# If the density from default.prop is still empty or non-standard - read from build.prop instead
-case $density in
-  120|160|213|240|280|320|400|480|560|640) ;;
-  *) density=$(file_getprop $b_prop "ro.sf.lcd_density");;
-esac;
+# Get display density
+density="$(get_prop "ro.sf.lcd_density")"
 
 # Check for DPI Override in gapps-config
 if ( grep -qiE '^forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi)$' "$g_conf" ); then # user wants to override the DPI selection
-  density=$( grep -iEo "^forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi)\$" "$g_conf" | tr '[:upper:]'  '[:lower:]' );
-  density=${density#forcedpi};
-fi;
+  density=$( grep -iEo '^forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi)$' "$g_conf" | tr '[:upper:]'  '[:lower:]' )
+  density=${density#forcedpi}
+fi
 
 # Set density to unknown if it's still empty
-test -z "$density" && density=unknown;
+test -z "$density" && density="unknown"
 
 #Check for Camera API v2 availability
-cameraapi="$(file_getprop $b_prop "camera2.portability.force_api")"
-camerahal="$(file_getprop $b_prop "persist.camera.HAL3.enabled")"
+cameraapi="$(get_prop "camera2.portability.force_api")"
+camerahal="$(get_prop "persist.camera.HAL3.enabled")"
 if [ -n "$cameraapi" ]; then #we check first for the existence of this key, it takes precedence if set to any value
   if [ "$cameraapi" -ge "2" ]; then
     newcamera_compat="true[force_api]"
@@ -1206,75 +1210,73 @@ tee -a "$build/$1" > /dev/null <<'EOFILE'
   *) cameragoogle_compat=true;;
 esac;
 
-log "ROM ID" "$(file_getprop $b_prop ro.build.display.id)";
-log "ROM Version" "$rom_version";
-log "Device Recovery" "$recovery";
-log "Device Name" "$device_name";
-log "Device Model" "$(file_getprop $b_prop ro.product.model)";
-log "Device Type" "$device_type";
-log "Device CPU" "$device_architecture";
-log "getprop Density" "$(getprop ro.sf.lcd_density)";
-log "default.prop Density" "$(file_getprop /default.prop ro.sf.lcd_density)";
-log "build.prop Density" "$(file_getprop $b_prop ro.sf.lcd_density)";
-log "Display Density Used" "${density}dpi";
-log "Install Type" "$install_type";
-log "Google Camera Installed¹" "$cameragoogle_inst";
-log "FaceUnlock Compatible" "$faceunlock_compat";
-log "Google Camera Compatible" "$cameragoogle_compat";
-log "New Camera API Compatible" "$newcamera_compat";
-log_close="                  ¹ Previously installed with Open GApps\n$log_close";
+log "ROM ID" "$(get_prop "ro.build.display.id")"
+log "ROM Version" "$rom_version"
+log "Device Recovery" "$recovery"
+log "Device Name" "$device_name"
+log "Device Model" "$(get_prop "ro.product.model")"
+log "Device Type" "$device_type"
+log "Device CPU" "$device_architecture"
+log "Display Density Used" "$density"
+log "Install Type" "$install_type"
+log "Google Camera Installed¹" "$cameragoogle_inst"
+log "FaceUnlock Compatible" "$faceunlock_compat"
+log "Google Camera Compatible" "$cameragoogle_compat"
+log "New Camera API Compatible" "$newcamera_compat"
+log_close="                  ¹ Previously installed with Open GApps\n$log_close"
 
 # Determine if a GApps package is installed and
-# the version, type, and whether it's a Open GApps package
+# the version, type, and whether it's an Open GApps package
 if [ -e /system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk -a -e /system/priv-app/GoogleLoginService/GoogleLoginService.apk ]; then
-  if $(grep -q -e ro.addon.open_version $g_prop); then
-    log "Current GApps Version" "$(file_getprop $g_prop ro.addon.open_version)";
-    if $(grep -q ro.addon.open_type $g_prop); then
-      log "Current Open GApps Package" "$(file_getprop $g_prop ro.addon.open_type)";
-    else
-      log "Current Open GApps Package" "Unknown";
-    fi;
-  elif [ -e /system/etc/g.prop ]; then
-    log "Current GApps Version" "NON Open GApps Package Currently Installed (FAILURE)";
-    ui_print "* Incompatible GApps Currently Installed *";
-    ui_print " ";
-    ui_print "This Open GApps package can ONLY be installed";
-    ui_print "on top of an existing installation of Open GApps";
-    ui_print "or a clean AOSP/CyanogenMod ROM installation,";
-    ui_print "or a Stock ROM that conforms to Nexus standards.";
-    ui_print "You must wipe (format) your system partition";
-    ui_print "and flash your ROM BEFORE installing Open GApps.";
-    ui_print " ";
-    ui_print "******* GApps Installation failed *******";
-    ui_print " ";
-    install_note="${install_note}non_open_gapps_msg"$'\n'; # make note that currently installed GApps are non-Open
-    abort "$E_NONOPEN";
+  openversion="$(get_prop "ro.addon.open_version")"
+  if [ -n "$openversion" ]; then
+    log "Current GApps Version" "$openversion"
+    opentype="$(get_prop "ro.addon.open_type")"
+    if [ -z "$opentype" ]; then
+      opentype="unknown"
+    fi
+    log "Current Open GApps Package" "$opentype"
+  elif [ -e "/system/etc/g.prop" ]; then
+    log "Current GApps Version" "NON Open GApps Package Currently Installed (FAILURE)"
+    ui_print "* Incompatible GApps Currently Installed *"
+    ui_print " "
+    ui_print "This Open GApps package can ONLY be installed"
+    ui_print "on top of an existing installation of Open GApps"
+    ui_print "or a clean AOSP/CyanogenMod ROM installation,"
+    ui_print "or a Stock ROM that conforms to Nexus standards."
+    ui_print "You must wipe (format) your system partition"
+    ui_print "and flash your ROM BEFORE installing Open GApps."
+    ui_print " "
+    ui_print "******* GApps Installation failed *******"
+    ui_print " "
+    install_note="${install_note}non_open_gapps_msg"$'\n'
+    abort "$E_NONOPEN"
   else
-    log "Current GApps Version" "Stock ROM GApps Currently Installed (NOTICE)";
-    ui_print "* Stock ROM GApps Currently Installed *";
-    ui_print " ";
-    ui_print "The installer detected that Stock ROM GApps are";
-    ui_print "already installed. If you are flashing over a";
-    ui_print "Nexus-compatible ROM there is no problem, but if";
-    ui_print "you are flashing over a custom ROM, you may want";
-    ui_print "to contact the developer to request the removal of";
-    ui_print "the included GApps. The installation will now";
-    ui_print "continue, but please be aware that any problems";
-    ui_print "that may occur depend on your ROM.";
-    ui_print " ";
-    install_note="${install_note}fornexus_open_gapps_msg"$'\n'; # make note that currently installed GApps are Stock ROM
-  fi;
+    log "Current GApps Version" "Stock ROM GApps Currently Installed (NOTICE)"
+    ui_print "* Stock ROM GApps Currently Installed *"
+    ui_print " "
+    ui_print "The installer detected that Stock ROM GApps are"
+    ui_print "already installed. If you are flashing over a"
+    ui_print "Nexus-compatible ROM there is no problem, but if"
+    ui_print "you are flashing over a custom ROM, you may want"
+    ui_print "to contact the developer to request the removal of"
+    ui_print "the included GApps. The installation will now"
+    ui_print "continue, but please be aware that any problems"
+    ui_print "that may occur depend on your ROM."
+    ui_print " "
+    install_note="${install_note}fornexus_open_gapps_msg"$'\n'
+  fi
 else
   # User does NOT have a GApps package installed on their device
-  log "Current GApps Version" "No GApps Installed";
+  log "Current GApps Version" "No GApps Installed"
 
   # Use the opportunity of No GApps installed to check for potential ROM conflicts when deleting existing GApps files
   while read gapps_file; do
     if [ -e "$gapps_file" ] && [ "$gapps_file" != "/system/lib/$WebView_lib_filename" ] && [ "$gapps_file" != "/system/lib64/$WebView_lib_filename" ]; then
-      echo "$gapps_file" >> $conflicts_log;
-    fi;
-  done < $gapps_removal_list;
-fi;
+      echo "$gapps_file" >> $conflicts_log
+    fi
+  done < $gapps_removal_list
+fi
 # _____________________________________________________________________________________________________________________
 #                                                  Prepare the list of GApps being installed and AOSP/Stock apps being removed
 # Build list of available GApps that can be installed (and check for a user package preset)
@@ -1283,7 +1285,7 @@ for pkg in $pkg_names; do
   all_gapps_list=${all_gapps_list}${addto}; # Look for method to combine this with line above
   if ( grep -qiE "^${pkg}gapps\$" "$g_conf" ); then # user has selected a 'preset' install
     gapps_type=$pkg;
-    sed -i "/ro.addon.open_type/c\ro.addon.open_type=$pkg" $TMP/g.prop; # modify g.prop to new package type
+    sed -i "/ro.addon.open_type/c\ro.addon.open_type=$pkg" "$TMP/g.prop"; # modify g.prop to new package type
     break;
   fi;
 done;
@@ -1923,7 +1925,7 @@ fi
 tee -a "$build/$1" > /dev/null <<'EOFILE'
 
 # Copy g.prop over to /system/etc
-cp -f $TMP/g.prop $g_prop;
+cp -f "$TMP/g.prop" "$g_prop"
 # _____________________________________________________________________________________________________________________
 #                                                  Build and Install Addon.d Backup Script
 # Add 'other' Removals to addon.d script
@@ -1967,12 +1969,12 @@ set_perm_recursive 0 0 755 755 "/system/addon.d";
 set_progress 0.87;
 find /system/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; # Change pittpatt folders to root:shell per Google Factory Settings
 
-set_perm 0 0 644 $g_prop;
+set_perm 0 0 644 "$g_prop"
 
 # Set contexts on all files we installed
 set_progress 0.88;
 ch_con_recursive "/system/app" "/system/framework" "/system/lib" "/system/lib64" "/system/priv-app" "/system/usr/srec" "/system/vendor/pittpatt" "/system/etc/permissions" "/system/etc/preferred-apps" "/system/addon.d";
-ch_con $g_prop;
+ch_con "$g_prop"
 
 set_progress 0.92;
 quit;
