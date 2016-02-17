@@ -1000,20 +1000,20 @@ fi
 if [ "$g_conf" ]; then
   config_file="$g_conf";
   g_conf_orig="$g_conf";
-  if ( grep -qiE '^([^#]*[[:blank:]]+)?include($|#|[[:blank:]])' "$g_conf" ); then # if there is any line where include is mentioned as a *whole word* (surrounded by space/tabs or start/end or directly followed by a comment) and is itself NOT a comment
+  g_conf="$TMP/proc_gconf";
+
+  sed -r -e 's/\r//g' -e 's|#.*||g' -e 's/^[ \t]*//g' -e 's/[ \t]*$//g' -e '/^$/d' "$g_conf_orig" > "$g_conf"; # UNIX line-endings, strip comments+emptylines+spaces+tabs
+
+  # include mentioned as a *whole word* (surrounded by space/tabs or start/end or directly followed by a comment) and is itself NOT a comment (should not be possible because of sed above)
+  if ( grep -qiE '^([^#]*[[:blank:]]+)?include($|#|[[:blank:]])' "$g_conf" ); then
     config_type="include"
   else
     config_type="exclude"
   fi
+  sed -i -r -e 's/\<(in|ex)clude\>//gI' "$g_conf" # drop in/exclude from the config
 
-  # Create processed gapps-config with user comments stripped and user app removals removed and stored in variable for processing later
-  g_conf="$TMP/proc_gconf";
-  awk '{IGNORECASE=1;gsub("(in|ex)clude", "");print}' "$g_conf_orig" > "$g_conf"; # drop in/exclude with awk
-  sed -i -e 's|#.*||g' -e 's/\r//g' -e 's/^[ \t]*//g' -e 's/[ \t]*$//g' -e '/^$/d' "$g_conf";
-  #TODO: We would prefer the line below instead of the 2 lines above, but sed-word replacement is broken in some recoveries
-  #sed -r -e 's/\<(in|ex)clude\>//gI' -e 's|#.*||g' -e 's/\r//g' -e 's/^[ \t]*//g' -e 's/[ \t]*$//g' -e '/^$/d' "$g_conf_orig" > "$g_conf"; # Remove in/exclude, strip comments+emptylines+spaces+tabs in gapps-config
   user_remove_list=$(awk -F "[()]" '{ for (i=2; i<NF; i+=2) print $i }' "$g_conf"); # Get users list of apk's to remove from gapps-config
-  sed -i -e s/'([^)]*)'/''/g -e '/^$/d'"$g_conf"; # Remove all instances of user app removals (stuff between parentheses) and empty lines
+  sed -i -e s/'([^)]*)'/''/g -e '/^$/d'"$g_conf"; # Remove all instances of user app removals (stuff between parentheses) and empty lines we might have created
 else
   config_file="Not Used";
   g_conf="$TMP/proc_gconf";
