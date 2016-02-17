@@ -28,6 +28,7 @@ checktools aapt file coreutils jarsigner keytool openssl unzip
 installapk() {
   architecture="$1"
   eval "lowestapi=\$LOWESTAPI_$architecture"
+  existing=""
 
   if [ "$sdkversion" -lt "$lowestapi" ]; then
     for i in $(seq "$(($sdkversion + 1))" "$lowestapi")
@@ -42,27 +43,36 @@ installapk() {
 
   #targetlocation: sources/platform/type/package/sdkversion/dpi1-dpi2-dpi3/versioncode.apk
   target="$SOURCES/$1/$type/$package/$sdkversion/$dpis"
-  install -d "$target"
-  if stat --printf='' "$target/"* 2>/dev/null; then
-    existing=$(find "$target/" -name "*.apk" | sort -r | cut -c1-) #we only look for lowercase .apk, since basename later assumes the same
-    echo "Existing version $existing"
-    existingversion=$(basename -s.apk "$existing")
-    if [ "$versioncode" -gt "$existingversion" ]; then
-      echo "Replaced with $target/$versioncode.apk"
-      rm "$existing"
-      install -D "$apk" "$target/$versioncode.apk"
-    else
-      echo "ERROR: APK is not newer than existing"
+
+  for d in $(printf "$dpis" | sed 's/-/ /g'); do
+    existingpath="$(find "$SOURCES/$architecture/$type/$package/$sdkversion/" -type d -name "*$d*")" 2>/dev/null
+    if [ -n "$existingpath" ]; then
+    existing="$(find "$existingpath/" -name "*.apk" | sort -r | cut -c1-)" 2>/dev/null #we only look for lowercase .apk, since basename later assumes the same
+      if [ -e "$existing" ]; then
+        echo "Existing version $existing"
+        existingversion=$(basename -s.apk "$existing")
+        if [ "$versioncode" -gt "$existingversion" ]; then
+          rm "$existing"
+          rmdir -p --ignore-fail-on-non-empty "$existingpath"
+          install -D "$apk" "$target/$versioncode.apk"
+          echo "Replaced with $target/$versioncode.apk"
+        else
+          echo "ERROR: APK is not newer than existing"
+        fi
+        break
+      fi
     fi
-  else
+  done
+  if [ -z "$existing" ]; then
     install -D "$apk" "$target/$versioncode.apk"
     echo "SUCCESS: Added $target/$versioncode.apk"
   fi
 
+
   if [ "$sdkversion" -le "$lowestapi" ]; then
     for i in $(seq 1 "$((sdkversion - 1))")
     do
-      remove="$SOURCES/$architecture/$type/$package/$i/$dpis"
+    remove="$SOURCES/$architecture/$type/$package/$i/$dpis"
       if [ -e "$remove" ];then
         rm -rf "$remove"
         rmdir --ignore-fail-on-non-empty "$(dirname "$remove")"
