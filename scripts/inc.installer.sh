@@ -715,20 +715,21 @@ get_file_prop() {
 }
 
 get_prop() {
-  #first try to use built-in getprop method
-  prop="$(getprop "$1")"
-  #if getprop failed to execute or is empty; manually check known .prop files using get_file_prop
-  if [ "$?" -ne "0" ] || [ -z "$prop" ]; then
-    for f in $PROPFILES; do
-      if [ -e "$f" ]; then
-        prop="$(get_file_prop "$f" "$1")"
-        if [ -n "$prop" ]; then
-          break #if an entry has been found, break out of the loop
-        fi
+  #check known .prop files using get_file_prop
+  for f in $PROPFILES; do
+    if [ -e "$f" ]; then
+      prop="$(get_file_prop "$f" "$1")"
+      if [ -n "$prop" ]; then
+        break #if an entry has been found, break out of the loop
       fi
-    done
+    fi
+  done
+  #if prop is still empty; try to use recovery's built-in getprop method; otherwise echo current result
+  if [ -z "$prop" ]; then
+    getprop "$1"
+  else
+    echo "$prop"
   fi
-  echo "$prop"
 }
 
 log() {
