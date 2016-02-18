@@ -311,6 +311,7 @@ lib64/libwebviewchromium.so" #on non-Marshmallow the WebViewlibs are to be expli
 sdkversionhacks(){
   case "$package" in
     com.android.facelock) if [ "$versioncode" = "23" ]; then sdkversion="23"; fi;;
+    com.google.android.partnersetup) if [ "$versioncode" = "23" ]; then sdkversion="23"; fi;;
     *) ;;
   esac
 }
