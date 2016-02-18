@@ -31,13 +31,14 @@ installapk() {
   existing=""
 
   if [ "$sdkversion" -lt "$lowestapi" ]; then
-    for i in $(seq "$(($sdkversion + 1))" "$lowestapi")
-    do
-      existing="$SOURCES/$architecture/$type/$package/$i/$dpis"
-      if [ -e "$existing" ];then
-        echo "ERROR: API level is lower than minimum level $lowestapi and lower than existing level $i of the same package"
-        return 1;
-      fi
+    for s in $(seq "$(($sdkversion + 1))" "$lowestapi"); do
+      for d in $(printf "$dpis" | sed 's/-/ /g'); do
+        existing="$(find "$SOURCES/$architecture/$type/$package/$s/" -type d -name "*$d*" | sort -r | cut -c1-)" 2>/dev/null
+        if [ -e "$existing" ];then
+          echo "ERROR: API level is lower than minimum level $lowestapi and lower than existing level $s of the same package"
+          return 1;
+        fi
+      done
     done
   fi
 
@@ -45,9 +46,9 @@ installapk() {
   target="$SOURCES/$1/$type/$package/$sdkversion/$dpis"
 
   for d in $(printf "$dpis" | sed 's/-/ /g'); do
-    existingpath="$(find "$SOURCES/$architecture/$type/$package/$sdkversion/" -type d -name "*$d*")" 2>/dev/null
+    existingpath="$(find "$SOURCES/$architecture/$type/$package/$sdkversion/" -type d -name "*$d*" | sort -r | cut -c1-)" 2>/dev/null
     if [ -n "$existingpath" ]; then
-    existing="$(find "$existingpath/" -name "*.apk" | sort -r | cut -c1-)" 2>/dev/null #we only look for lowercase .apk, since basename later assumes the same
+      existing="$(find "$existingpath/" -name "*.apk" | sort -r | cut -c1-)" 2>/dev/null #we only look for lowercase .apk, since basename later assumes the same
       if [ -e "$existing" ]; then
         echo "Existing version $existing"
         existingversion=$(basename -s.apk "$existing")
@@ -68,16 +69,16 @@ installapk() {
     echo "SUCCESS: Added $target/$versioncode.apk"
   fi
 
-
   if [ "$sdkversion" -le "$lowestapi" ]; then
-    for i in $(seq 1 "$((sdkversion - 1))")
-    do
-    remove="$SOURCES/$architecture/$type/$package/$i/$dpis"
-      if [ -e "$remove" ];then
-        rm -rf "$remove"
-        rmdir --ignore-fail-on-non-empty "$(dirname "$remove")"
-        echo "Cleaned up old API: $remove"
-      fi
+    for s in $(seq 1 "$((sdkversion - 1))"); do
+      for d in $(printf "$dpis" | sed 's/-/ /g'); do
+        remove="$(find "$SOURCES/$architecture/$type/$package/$s/" -type d -name "*$d*" | sort -r | cut -c1-)" 2>/dev/null
+        if [ -e "$remove" ]; then
+          rm -rf "$remove"
+          rmdir --ignore-fail-on-non-empty "$(dirname "$remove")"
+          echo "Cleaned up old API: $remove"
+        fi
+      done
     done
   fi
 }
