@@ -1,5 +1,5 @@
 **Only issues related to the code of The Open GApps Project scripts themselves**
-If you have found an issue with a pre-built OpenGApps.org packages please use [XDA Forum](http://forum.xda-developers.com/android/software/Open-GApps-t3098071)
+If you have found an issue with a pre-built OpenGApps.org package please use [XDA Forum](http://forum.xda-developers.com/android/software/Open-GApps-t3098071)
 
 **Checklist**
 
