@@ -43,6 +43,7 @@ getapkproperties(){
   sdkversionhacks
 
   case $package in
+    "com.android.hotwordenrollment" |\
     "com.android.vending" |\
     "com.android.vending.leanback" |\
     "com.google.android.androidforwork" |\

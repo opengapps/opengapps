@@ -27,6 +27,18 @@ esac' >> "$1"
   fi
 }
 
+hotwordadditionhack(){
+  if [ "$API" -ge "23" ]; then
+    tee -a "$1" > /dev/null <<'EOFILE'
+# On Marshmallow arm64; If we're installing search we must install hotword too (if it's not already there)
+if ( contains "$gapps_list" "search" ) && ( ! contains "$gapps_list" "hotword" ); then
+  gapps_list="${gapps_list}hotword"$'\n';
+fi;
+
+EOFILE
+  fi
+}
+
 keyboardgooglenotremovehack(){
   if [ "$API" -le "19" ]; then
     echo '  sed -i "\:/system/app/LatinImeGoogle.apk:d" $gapps_removal_list;'>> "$1"
@@ -220,6 +232,7 @@ provisionremovalhack(){
     tee -a "$1" > /dev/null <<'EOFILE'
 # On Pre-Marshmallow the Provision folder does always have to be removed (it conflicts with SetupWizard.apk)
 aosp_remove_list="${aosp_remove_list}provision"$'\n';
+
 EOFILE
   fi
 }
@@ -287,6 +300,8 @@ api23hack(){
     gappspico="$gappspico
 googletts
 packageinstallergoogle"
+    gappsnano="$gappsnano
+hotword"
     gappsmini="$gappsmini
 calculatorgoogle"
     gappsstock="$gappsstock
