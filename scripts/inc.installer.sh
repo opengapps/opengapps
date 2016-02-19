@@ -921,21 +921,11 @@ ui_print " ";
 ui_print "$installer_name$gapps_version";
 ui_print " ";
 mounts=""
-if [ -d /vendor ] && ! mountpoint -q /vendor; then
-  mounts="/vendor $mounts"
-fi
-if [ -d /system ] && ! mountpoint -q /system; then
-  mounts="/system $mounts"
-fi
-if [ -d /persist ] && ! mountpoint -q /persist; then
-  mounts="/persist $mounts"
-fi
-if [ -d /data ] && ! mountpoint -q /data; then
-  mounts="/data $mounts"
-fi
-if [ -d /cache ] && ! mountpoint -q /cache; then
-  mounts="/cache $mounts"
-fi
+for p in "/cache" "/data" "/persist" "/system" "/vendor"; do
+  if [ -d "$p" ] && grep -q "$p" "/etc/fstab" && ! mountpoint -q "$p"; then
+    mounts="$mounts $p"
+  fi
+done
 ui_print "- Mounting $mounts";
 ui_print " ";
 set_progress 0.01;
