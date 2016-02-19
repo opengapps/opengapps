@@ -1030,7 +1030,7 @@ if [ "$g_conf" ]; then
   sed -i -r -e 's/\<(in|ex)clude\>//gI' "$g_conf" # drop in/exclude from the config
 
   user_remove_list=$(awk -F "[()]" '{ for (i=2; i<NF; i+=2) print $i }' "$g_conf"); # Get users list of apk's to remove from gapps-config
-  sed -i -e s/'([^)]*)'/''/g -e '/^$/d'"$g_conf"; # Remove all instances of user app removals (stuff between parentheses) and empty lines we might have created
+  sed -i -e s/'([^)]*)'/''/g -e '/^$/d' "$g_conf"; # Remove all instances of user app removals (stuff between parentheses) and empty lines we might have created
 else
   config_file="Not Used";
   g_conf="$TMP/proc_gconf";
