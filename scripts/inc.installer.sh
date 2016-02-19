@@ -955,9 +955,9 @@ if [ -z "$(get_prop "ro.build.id")" ]; then
   abort "$E_NOBUILDPROP"
 fi
 
-testcomprfile="$(find /system -type f -maxdepth 1 | head -n 1)" #often this should return the build.prop, but it can be any file for this test
+testcomprfile="$(find /system -maxdepth 1 -type f  | head -n 1)" #often this should return the build.prop, but it can be any file for this test
 # Check if $testcomprfile if it is exists is not compressed and thus unprocessable
-if -e "$testcomprfile" && [ "$(head -c 4 "$testcomprfile")" = "zzzz" ]; then
+if [ -e "$testcomprfile" ] && [ "$(head -c 4 "$testcomprfile")" = "zzzz" ]; then
   ui_print "*** Recovery does not support transparent compression ***"
   ui_print " "
   ui_print "Your ROM uses transparent compression, but your recovery"
