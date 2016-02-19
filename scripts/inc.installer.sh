@@ -588,7 +588,7 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 #                                                  Declare Variables
 zip_folder="$(dirname "$ZIP")";
 g_prop=/system/etc/g.prop
-PROPFILES="$g_prop /default.prop /system/default.prop /system/build.prop /build.prop /data/local.prop"
+PROPFILES="$g_prop /system/default.prop /system/build.prop /data/local.prop /default.prop /build.prop"
 bkup_tail=$TMP/bkup_tail.sh;
 gapps_removal_list=$TMP/gapps-remove.txt;
 g_log=$TMP/g.log;
@@ -724,11 +724,11 @@ get_prop() {
       fi
     fi
   done
-  #if prop is still empty; try to use recovery's built-in getprop method; otherwise echo current result
+  #if prop is still empty; try to use recovery's built-in getprop method; otherwise output current result
   if [ -z "$prop" ]; then
-    getprop "$1"
+    getprop "$1" | cut -c1-
   else
-    echo "$prop"
+    printf "$prop"
   fi
 }
 
