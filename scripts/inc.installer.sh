@@ -853,6 +853,7 @@ which_dpi() {
   # Calculate available densities
   app_densities="";
   app_densities="$(cat $TMP/app_densities.txt | grep -E "$1/([0-9-]+|nodpi)/" | sed -r 's#.*/([0-9-]+|nodpi)/.*#\1#' | sort)";
+  dpiapkpath="unknown"
   # Check if in the package there is a version for our density, or a universal one.
   for densities in $app_densities; do
     case "$densities" in
