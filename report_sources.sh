@@ -73,7 +73,7 @@ if [ -z "$hash" ] && [ -z "$nohelp" ]; then
 * noleanback: If you add noleanback as an extra argument, the result will not include the apps that are marked as leanback (=ending on .leanback)
 * nosig: Skips signature checking (which takes a lot of CPU power); NB: this does change the hash result!
 * Example command: './report_sources.sh arm-22 hash'
----------------------------------------------------------------------------------------------------------------"
+--------------------------------------------------------------------------------------------------------------------"
 fi
 
 case "$buildarch" in
@@ -83,7 +83,7 @@ case "$buildarch" in
 esac
 
 result="$(printf "%45s|%6s|%3s|%15s|%27s|%10s|%4s" "Application Name" "Arch." "SDK" "DPI" "Version Name" "Version" "Sig.")
----------------------------------------------------------------------------------------------------------------"
+--------------------------------------------------------------------------------------------------------------------"
 searchstring="find '$SOURCES/' -iname '*.apk' $nobeta $noleanback | awk -F '/' '{print \$(NF-3)}' | sort | uniq"
 allapps="$(eval "$searchstring")"
 for appname in $allapps; do
