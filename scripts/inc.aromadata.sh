@@ -12,7 +12,7 @@
 #
 makearomaconfig(){
 tee "$build/META-INF/com/google/android/aroma-config" > /dev/null <<'EOFILE'
-#This file is part of The Open GApps script of @raulx222.
+#This file is part of The Open GApps script of @raulpetru.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -159,7 +159,7 @@ form(
       "GooglePlus",     "<b>Google+</b>",       "",                      "check",
       "GoogleTTS",     "<b>Google Text-to-Speech</b>",       "",                      "check",
       "Hangouts",     "<b>Google Hangouts</b>",       "",                      "check",
-      "Hotword",     "<b>OK Google Hotword Enrollment</b>",       "(automatically selected if "Search" will be installed)",                      "check",
+      "Hotword",     "<b>OK Google Hotword Enrollment</b>",       "(automatically selected if Search will be installed)",                      "check",
       "Indic",     "<b>Google Indic Keyboard</b>",       "",                      "check",
       "Japanese",     "<b>Google Japanese Input</b>",       "",                      "check",
       "Keep",     "<b>Google Keep</b>",       "",                      "check",
