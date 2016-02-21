@@ -1,5 +1,7 @@
 Fetch busybox sources from https://busybox.net
 Compile using the instructions from http://forum.xda-developers.com/android/software-hacking/guide-busybox-snapshot-building-android-t2857650
 
-"BusyBox is licensed under the GNU General Public License version 2, which is often abbreviated as GPLv2."
+The busybox binaries bundled with The Open GApps Project were compiled by @YashdSaraf
+
+BusyBox is licensed under the GNU General Public License version 2, which is often abbreviated as GPLv2.
 Check https://www.busybox.net/license.html for more information.

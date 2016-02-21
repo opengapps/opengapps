@@ -96,6 +96,8 @@ createxz() {
 }
 
 createzip() {
+  echo "INFO: Total size uncompressed package: $(du -hs "$build" | awk '{ print $1 }')"
+
   find "$build" -exec touch -d "2008-02-28 21:33:46.000000000 +0100" {} \;
   cd "$build"
 
@@ -158,9 +160,9 @@ createzip() {
     done
   done
 
-  echo "Waiting for components to be prepared..."
   for p in $pidlist; do wait $p; done
-  echo "All components are ready."
+
+  echo "INFO: Total size lz-compressed package: $(du -hs "$build" | awk '{ print $1 }')"
 
   unsignedzip="$BUILD/$ARCH/$API/$VARIANT.zip"
   signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.zip"
