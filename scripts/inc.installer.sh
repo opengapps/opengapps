@@ -77,6 +77,9 @@ makeupdatebinary(){
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
+#    This Open GApps installer-runtime is because of the Open GApps installable
+#    zip exception de-facto LGPLv3 licensed.
+#
 export ZIP="$3"
 export OUTFD="/proc/self/fd/$2"
 export TMP="/tmp"
@@ -118,8 +121,11 @@ echo '#!/sbin/bash
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-# This script of the Open GApps Installer is contains work from the PA GApps of @TKruzze and @osm0sis,
-# PA GApps source is used with permission, under the license that it may be re-used to continue GApps packages.
+#    This Open GApps installer-runtime is because of the Open GApps installable
+#    zip exception de-facto LGPLv3 licensed.
+#
+#    This script of the Open GApps Installer is contains work from the PA GApps of @TKruzze and @osm0sis,
+#    PA GApps source is used with permission, under the license that it may be re-used to continue GApps packages.
 #
 # Last Updated: '"$DATE"'
 # _____________________________________________________________________________________________________________________
@@ -654,8 +660,8 @@ clean_inst() {
 }
 
 extract_app() {
-  tarpath="$TMP/$1.tar.xz"
-  unzip -o "$ZIP" "$1.tar.xz" -d $TMP;
+  tarpath="$TMP/$1.tar.lz"
+  unzip -o "$ZIP" "$1.tar.lz" -d $TMP;
   app_name="$(basename "$1")";
   which_dpi "$app_name";
   if [ "$dpiapkpath" != "unknown" ]; then #technically not necessary, 'unknown' folder would not exist anyway
@@ -697,7 +703,7 @@ exxit() {
 }
 
 folder_extract() {
-  tar -xJf "$1" -C $TMP "$2";
+  tar -xyf "$1" -C $TMP "$2";
   bkup_list=$'\n'"$(find "$TMP/$2/" -type f | cut -d/ -f5-)${bkup_list}";
   cp -rf $TMP/$2/. /system/;
   rm -rf $TMP/$2;
@@ -1701,9 +1707,9 @@ done;
 
 # Add swypelibs size to core, if it will be installed
 if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false" ]; then
-  unzip -o "$ZIP" "Optional/swypelibs.tar.xz" -d $TMP;
-  keybd_lib_size=$(tar -tvJf "$TMP/Optional/swypelibs.tar.xz" "swypelibs" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
-  rm -f "$TMP/Optional/swypelibs.tar.xz";
+  unzip -o "$ZIP" "Optional/swypelibs.tar.lz" -d $TMP;
+  keybd_lib_size=$(tar -tvyf "$TMP/Optional/swypelibs.tar.lz" "swypelibs" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
+  rm -f "$TMP/Optional/swypelibs.tar.lz";
   core_size=$((core_size + keybd_lib_size)); # Add Keyboard Lib size to core, if it exists
   log "SwypeLibs" "$keybd_lib_size (KB)";
 fi

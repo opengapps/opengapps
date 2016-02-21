@@ -1,4 +1,5 @@
 Fetch busybox sources from https://busybox.net
+Apply the lzip support patches from http://download.savannah.gnu.org/releases/lzip/busybox/
 Compile using the instructions from http://forum.xda-developers.com/android/software-hacking/guide-busybox-snapshot-building-android-t2857650
 
 The busybox binaries bundled with The Open GApps Project were compiled by @YashdSaraf

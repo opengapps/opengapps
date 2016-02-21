@@ -114,17 +114,17 @@ kitkatdatahack(){
 install -d /data/app-lib/
 # Handle broken lib configuration on KitKat by putting Hangouts on /data/
 if ( contains "$gapps_list" "hangouts" ); then
-  unzip -o "$ZIP" "GApps/hangouts.tar.xz" -d $TMP;
-  tarpath="$TMP/GApps/hangouts.tar.xz";
+  unzip -o "$ZIP" "GApps/hangouts.tar.lz" -d $TMP;
+  tarpath="$TMP/GApps/hangouts.tar.lz";
   which_dpi "hangouts";
-  tar -xJf "$tarpath" -C $TMP "$dpiapkpath";
+  tar -xyf "$tarpath" -C $TMP "$dpiapkpath";
   number="$(basename "$(find /data/app/com.google.android.talk-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
   fi
   cp -rf $TMP/$dpiapkpath/app/Hangouts.apk /data/app/com.google.android.talk-$number.apk;
   rm -rf $TMP/$dpiapkpath;
-  tar -xJf "$tarpath" -C $TMP "hangouts/common";
+  tar -xyf "$tarpath" -C $TMP "hangouts/common";
   cp -rf $TMP/hangouts/common/lib* /data/app-lib/com.google.android.talk-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.talk-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.talk-$number"
@@ -134,17 +134,17 @@ if ( contains "$gapps_list" "hangouts" ); then
 fi;
 # Handle broken lib configuration on KitKat by putting Google+ on /data/
 if ( contains "$gapps_list" "googleplus" ); then
-  unzip -o "$ZIP" "GApps/googleplus.tar.xz" -d $TMP;
-  tarpath="$TMP/GApps/googleplus.tar.xz";
+  unzip -o "$ZIP" "GApps/googleplus.tar.lz" -d $TMP;
+  tarpath="$TMP/GApps/googleplus.tar.lz";
   which_dpi "googleplus";
-  tar -xJf "$tarpath" -C $TMP "$dpiapkpath";
+  tar -xyf "$tarpath" -C $TMP "$dpiapkpath";
   number="$(basename "$(find /data/app/com.google.android.apps.plus-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
   fi
   cp -rf $TMP/$dpiapkpath/app/PlusOne.apk /data/app/com.google.android.apps.plus-$number.apk;
   rm -rf $TMP/$dpiapkpath;
-  tar -xJf "$tarpath" -C $TMP "googleplus/common";
+  tar -xyf "$tarpath" -C $TMP "googleplus/common";
   cp -rf $TMP/googleplus/common/lib* /data/app-lib/com.google.android.apps.plus-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.apps.plus-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.apps.plus-$number"
@@ -154,17 +154,17 @@ if ( contains "$gapps_list" "googleplus" ); then
 fi;
 # Handle broken lib configuration on KitKat by putting Photos on /data/
 if ( contains "$gapps_list" "photos" ); then
-  unzip -o "$ZIP" "GApps/photos.tar.xz" -d $TMP;
-  tarpath="$TMP/GApps/photos.tar.xz";
+  unzip -o "$ZIP" "GApps/photos.tar.lz" -d $TMP;
+  tarpath="$TMP/GApps/photos.tar.lz";
   which_dpi "photos";
-  tar -xJf "$tarpath" -C $TMP "$dpiapkpath";
+  tar -xyf "$tarpath" -C $TMP "$dpiapkpath";
   number="$(basename "$(find /data/app/com.google.android.apps.photos-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
   fi
   cp -rf $TMP/$dpiapkpath/app/Photos.apk /data/app/com.google.android.apps.photos-$number.apk;
   rm -rf $TMP/$dpiapkpath;
-  tar -xJf "$tarpath" -C $TMP "photos/common";
+  tar -xyf "$tarpath" -C $TMP "photos/common";
   cp -rf $TMP/photos/common/lib* /data/app-lib/com.google.android.apps.photos-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.apps.photos-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.apps.photos-$number"
@@ -174,17 +174,17 @@ if ( contains "$gapps_list" "photos" ); then
 fi;
 # Handle broken lib configuration on KitKat by putting YouTube on /data/
 if ( contains "$gapps_list" "youtube" ); then
-  unzip -o "$ZIP" "GApps/youtube.tar.xz" -d $TMP;
-  tarpath="$TMP/GApps/youtube.tar.xz";
+  unzip -o "$ZIP" "GApps/youtube.tar.lz" -d $TMP;
+  tarpath="$TMP/GApps/youtube.tar.lz";
   which_dpi "youtube";
-  tar -xJf "$tarpath" -C $TMP "$dpiapkpath";
+  tar -xyf "$tarpath" -C $TMP "$dpiapkpath";
   number="$(basename "$(find /data/app/com.google.android.youtube-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
   fi
   cp -rf $TMP/$dpiapkpath/app/YouTube.apk /data/app/com.google.android.youtube-$number.apk;
   rm -rf $TMP/$dpiapkpath;
-  tar -xJf "$tarpath" -C $TMP "youtube/common";
+  tar -xyf "$tarpath" -C $TMP "youtube/common";
   cp -rf $TMP/youtube/common/lib* /data/app-lib/com.google.android.youtube-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.youtube-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.youtube-$number"

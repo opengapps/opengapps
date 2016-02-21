@@ -74,24 +74,28 @@ bundlelicense() {
   fi
 }
 
-createxz() {
-      hash="$(tar -cf - "$f" | md5sum | cut -f1 -d' ')"
+createlz() {
+      hash="$(tar -cf - "$2" | md5sum | cut -f1 -d' ')"
 
-      if [ -f "$CACHE/$hash.tar.xz" ]; then #we have this xz in cache
-        echo "Fetching $d$f from the cache"
-        rm -rf "$f" #remove the folder
-        touch -a "$CACHE/$hash.tar.xz" #mark this xz as accessed
-        cp "$CACHE/$hash.tar.xz" "$f.tar.xz" #copy from the cache
+      if [ -f "$CACHE/$hash.tar.lz" ]; then #we have this lz in cache
+        echo "Fetching $1$2 from the cache"
+        rm -rf "$2" #remove the folder
+        touch -a "$CACHE/$hash.tar.lz" #mark this lz as accessed
+        cp "$CACHE/$hash.tar.lz" "$2.tar.lz" #copy from the cache
       else
-        echo "Thread: $threads | FreeRAM: $memory | Compressing Package: $d$f"
-        XZ_OPT=-9e tar --remove-files -cJf "$f.tar.xz" "$f"
+        if [ -n "$3" ] && [ -n "$4" ]; then
+          echo "Thread: $3 | FreeRAM: $4 | Compressing Package: $1$2"
+        else
+          echo "Compressing Package: $1$2"
+        fi
+        tar --remove-files -cf - "$2" | lzip -m 273 -s 128MiB -o "$2.tar" #.lz is added by lzip; specify the compression parameters manually to get good results
         if [ $? != 0 ]; then
-          echo "ERROR: XZ compression failed, aborting."
+          echo "ERROR: lzip compression failed, aborting."
           exit 1
         fi
-        cp "$f.tar.xz" "$CACHE/$hash.tar.xz" #copy into the cache
+        cp "$2.tar.lz" "$CACHE/$hash.tar.lz" #copy into the cache
       fi
-      touch -d "2008-02-28 21:33:46.000000000 +0100" "$f.tar.xz"
+      touch -d "2008-02-28 21:33:46.000000000 +0100" "$2.tar.lz"
       sync
 }
 
@@ -101,7 +105,7 @@ createzip() {
   find "$build" -exec touch -d "2008-02-28 21:33:46.000000000 +0100" {} \;
   cd "$build"
 
-  MEMORY_MIN=800000 # Minimum of RAM required (for single thread) on x86_64 machine [~701MB for xz, 2*25KB for bash and some spare]
+  MEMORY_MIN=800000 # Minimum of RAM required (for single thread) on x86_64 machine based on XZ's documentation (which is a comparable algorithm to lzip)
   THREADS="$(($(nproc)))"
 
   if ! grep -q "MemAvailable:" /proc/meminfo; then
@@ -125,11 +129,11 @@ createzip() {
         printf "%s\t%s\t%d\n" "$f" "$g" "$foldersize" >> "$build/app_sizes.txt"
       done
 
-      # Use parallel mode only if we have memory metric and have more then 1 CPU
+      # Use parallel mode only if we have memory metric and have more than 1 CPU
       if [ $THREADS -gt 1 ] && [ $MEMORY -gt 0 ]; then
         # Wait if we reached RAM or THREADS limit
         tries=0; while true; do
-          # Count still running createxz instances
+          # Count still running createlz instances
           threads=0; for p in $pidlist; do test -d /proc/$p && threads=$((threads+1)); done
           memory=$(grep "MemAvailable:" /proc/meminfo | awk '{print $2}')
 
@@ -140,7 +144,7 @@ createzip() {
             tries=$((tries+1))
             # If we are trying for more then 180*5 seconds, we bail out (in case machine is to low on memory or CPU we won't run forever!)
             if [ $tries -gt 180 ]; then
-              echo "Seems like this machine is too slow or was unable to collect enought usable memory for compression, aborting."
+              echo "ERROR: Seems like this machine is too slow or was unable to collect enought usable memory for compression, aborting."
               exit 1
             fi
             continue
@@ -149,13 +153,13 @@ createzip() {
          fi
         done
 
-        # Spawn xz creation
-        createxz $d &
+        # Spawn lz creation
+        createlz "$d" "$f" "$threads" "$memory" &
         # Collect resulting PID
         pidlist="$pidlist $!"
       else
         # Call xz creation
-        createxz $d
+        createlz "$d" "$f"
       fi
     done
   done
