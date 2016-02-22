@@ -43,7 +43,7 @@ CERTIFICATES="$SCRIPTS/certificates"
 . "$SCRIPTS/inc.tools.sh"
 
 # Check tools
-checktools aapt coreutils java jarsigner unzip zip tar xz realpath zipalign
+checktools aapt coreutils java jarsigner unzip zip tar lzip realpath zipalign
 
 case "$API" in
   19) PLATFORM="4.4";;
