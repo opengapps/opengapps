@@ -95,8 +95,28 @@ addapk() {
     echo "Package supports DPIs: $(echo "$dpis" | tr '-' ' ')"
   fi
 
-  getarchitectures "$apk"
-  echo "Native code for architecture(s): $architectures"
+  # So an extra check is necessary before declaring it suitable for all platforms
+  if [ "$(echo $native)" = ""  ]; then # we can't use -z here, because there can be a spaces in it
+    getarchitecturesfromlib "$apk"
+    if [ "$architectures" = "all" ]; then
+      echo "No native code"
+    else
+      echo "Found native libraries for architecture(s): $architectures"
+    fi
+  else
+    architectures=""
+    altarchitectures=""
+    for arch in $native; do
+      architectures="$architectures$arch "
+    done
+    echo "Native code for architecture(s): $architectures"
+    for altarch in $altnative; do
+      altarchitectures="$altarchitectures$altarch "
+    done
+    if [ -n "$altarchitectures" ]; then
+      echo "Alternative native code for architecture(s): $altarchitectures"
+    fi
+  fi
 
   if ! verifyapk "$apk"; then
     if [ -n "$notinzip" ]; then
@@ -112,19 +132,19 @@ $notinzip"
 
   #We manually check for each of our set of supported architectures
   #We assume NO universal packages for 32vs64 bit, so start with the 'highest' architectures first, if it matches one of those, we will NOT add it to a lower architecture
-  if echo "$architectures" | grep -q "arm64"; then #no space, all arm64 types are valid
-    installapk "arm64"
-  else
-    if echo "$architectures" | grep -q "armeabi"; then #no space, all armearbi types are valid
-      installapk "arm"
-    fi
+  if { echo "$architectures" | grep -q "armeabi" && ! echo "$architectures" | grep -q "arm64"; } ||\
+       echo "$native" | grep -q "armeabi"; then #no space, all armearbi* are valid
+    installapk "arm"
   fi
-  if echo "$architectures" | grep -q "x86_64 "; then
+  if echo "$architectures" | grep -q "arm64"; then
+    installapk "arm64"
+  fi
+  if { echo "$architectures" | grep -q "x86 " && ! echo "$architectures" | grep -q "x86_64"; } ||\
+       echo "$native" | grep -q "x86 "; then #x86 with space, make sure x86 is not a substring of x86_64
+    installapk "x86"
+  fi
+  if echo "$architectures" | grep -q "x86_64"; then
     installapk "x86_64"
-  else
-    if echo "$architectures" | grep -q "x86 "; then
-      installapk "x86"
-    fi
   fi
   if echo "$architectures" | grep -q "all"; then #no space (single entry)
     installapk "all"

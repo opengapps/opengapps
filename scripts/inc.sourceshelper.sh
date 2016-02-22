@@ -26,7 +26,8 @@ getapkproperties(){
   versioncode="$(echo "$apkproperties" | awk -F="'" '/versionCode=/ {print $3}' | sed "s/'.*//g")"
   sdkversion="$(echo "$apkproperties" | grep -a "sdkVersion:" | sed 's/sdkVersion://' | sed "s/'//g")"
   compatiblescreens="$(echo "$apkproperties" | grep -a "compatible-screens:'")" #the ' is added to prevent detection of lines that only have compatiblescreens but without any values
-  native="$(echo "$apkproperties" | grep -a "native-code:" | sed 's/native-code://g' | sed "s/'//g")"
+  native="$(echo "$apkproperties" | grep -av "alt-native-code:" | grep -a "native-code:" | sed 's/native-code://g' | sed "s/'//g") " # add a space at the end
+  altnative="$(echo "$apkproperties" | grep -a "alt-native-code:" | sed 's/alt-native-code://g' | sed "s/'//g") " # add a space at the end
   leanback="$(echo "$apkproperties" | grep -a "android.software.leanback" | awk -F [.\'] '{print $(NF-1)}')"
   case "$versionname" in
     *leanback*) leanback="leanback";;
@@ -87,34 +88,27 @@ getapkproperties(){
     *.beta/*) beta="beta";; #report beta status as a property
   esac
 
-  if [ "$compatiblescreens" = "" ]; then # we can't use -z here, because there can be a linecontrol character or such in it
+  if [ "$(echo $compatiblescreens)" = "" ]; then # we can't use -z here, because there can be a linecontrol character or such in it
     dpis="nodpi"
   else
     dpis=$(echo "$compatiblescreens" | grep "compatible-screens:" | grep -oE "/([0-9][0-9])[0-9]" | sort -u | tr -d '\012\015' | tr '/' '-' | cut -c 2-)
   fi
 }
 
-getarchitectures() {
+getarchitecturesfromlib() {
+  # Some packages don't have native-code specified, but are still depending on it
+  # If multiple architectures are found; we assume it to be only compatible with the highest architecture and not multi-arch
   architectures=""
-  if [ -z "$native" ]; then
-    #Some packages don't have native-code specified, but are still depending on it.
-    #So an extra check is necessary before declaring it suitable for all platforms
-    libfiles=$(unzip -qqql "$1" "lib/*" | tr -s ' ' | cut -d ' ' -f5-)
-    for lib in $libfiles; do
-      #this gives all files found in the lib-folder(s), check their paths for which architectures' libs are included
-      arch="$(echo "$lib" | awk 'BEGIN { FS = "/" } ; {print $2}')"
-      echo "$architectures" | grep -q "$arch"
-      if [ $? -eq 1 ]; then #only add if this architecture is not yet in the list
-        architectures="$architectures$arch "
-      fi
-    done
-    if [ -z "$architectures" ]; then #If the package really has no native code
-      architectures="all"
-    fi
-  else
-    for arch in $native; do
+  libfiles=$(unzip -qqql "$1" "lib/*" | tr -s ' ' | cut -d ' ' -f5-)
+  for lib in $libfiles; do
+    #this gives all files found in the lib-folder(s), check their paths for which architectures' libs are included
+    arch="$(echo "$lib" | awk 'BEGIN { FS = "/" } ; {print $2}')" #add a space at the end
+    if ! echo "$architectures" | grep -q "$arch "; then #only add if this architecture is not yet in the list; use a space to distinguish substrings (e.g. x86 vs x86_64)
       architectures="$architectures$arch "
-    done
+    fi
+  done
+  if [ -z "$architectures" ]; then #If the package really has no native code
+    architectures="all"
   fi
 }
 
