@@ -121,6 +121,8 @@ if ( contains "$gapps_list" "hangouts" ); then
     $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
   elif [ -e "$tarpath.lz" ]; then
     tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+  elif [ -e "$tarpath" ]; then
+    tar -xf "$tarpath" -C $TMP "$dpiapkpath"
   fi
   number="$(basename "$(find /data/app/com.google.android.talk-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
@@ -145,6 +147,8 @@ if ( contains "$gapps_list" "googleplus" ); then
     $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
   elif [ -e "$tarpath.lz" ]; then
     tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+  elif [ -e "$tarpath" ]; then
+    tar -xf "$tarpath" -C $TMP "$dpiapkpath"
   fi
   number="$(basename "$(find /data/app/com.google.android.apps.plus-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
@@ -169,6 +173,8 @@ if ( contains "$gapps_list" "photos" ); then
     $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
   elif [ -e "$tarpath.lz" ]; then
     tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+  elif [ -e "$tarpath" ]; then
+    tar -xf "$tarpath" -C $TMP "$dpiapkpath"
   fi
   number="$(basename "$(find /data/app/com.google.android.apps.photos-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
@@ -193,6 +199,8 @@ if ( contains "$gapps_list" "youtube" ); then
     $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
   elif [ -e "$tarpath.lz" ]; then
     tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+  elif [ -e "$tarpath" ]; then
+    tar -xf "$tarpath" -C $TMP "$dpiapkpath"
   fi
   number="$(basename "$(find /data/app/com.google.android.youtube-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
@@ -348,8 +356,12 @@ sdkversionhacks(){
 }
 
 xzcompathack(){
-  case "$1" in
-    googlecontactssync) COMPRESSION="lz";; #Googlecontactssync extraction is broken with XZ on smaller packages on marshmallow, reason unknown but it is caused by tar+xz(dec) on busybox
-    *) COMPRESSION="xz";;
+  case "$VARIANT" in
+    aroma) COMPRESSION="xz";; # Aroma gives memory issues if we don't use XZ
+    *) if [ "$API" -ge "23" ]; then
+         COMPRESSION="lz" # Googlecontactssync extraction is broken on some devices with XZ on marshmallow, reason unknown but it is caused by tar+xz(dec) on busybox
+       else
+         COMPRESSION="xz"
+       fi;;
   esac
 }

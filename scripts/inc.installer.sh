@@ -661,14 +661,14 @@ clean_inst() {
 
 extract_app() {
   tarpath="$TMP/$1.tar" # NB no suffix specified here
-  unzip -o "$ZIP" "$1.tar.*" -d "$TMP" # wildcard for suffix
+  unzip -o "$ZIP" "$1.tar*" -d "$TMP" # wildcard for suffix
   app_name="$(basename "$1")"
   which_dpi "$app_name"
   if [ "$dpiapkpath" != "unknown" ]; then #technically not necessary, 'unknown' folder would not exist anyway
     folder_extract "$tarpath" "$dpiapkpath"
   fi
   folder_extract "$tarpath" "$app_name/common"
-  rm -f "$tarpath.xz" "$tarpath.lz"
+  rm -f "$tarpath.xz" "$tarpath.lz" "$tarpath"
 }
 
 exxit() {
@@ -707,6 +707,8 @@ folder_extract() {
     $TMP/xzdec "$1.xz" | tar -x -C "$TMP" -f - "$2"
   elif [ -e "$1.lz" ]; then
     tar -xyf "$1.lz" -C $TMP "$2"
+  elif [ -e "$1" ]; then
+    tar -xf "$1" -C $TMP "$2"
   fi
   bkup_list=$'\n'"$(find "$TMP/$2/" -type f | cut -d/ -f5-)${bkup_list}"
   cp -rf "$TMP/$2/." "/system/"
@@ -1716,6 +1718,8 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false"
     keybd_lib_size=$(tar -tvJf "$TMP/Optional/swypelibs.tar.xz" "swypelibs" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
   elif [ -e "$TMP/Optional/swypelibs.tar.lz" ]; then
     keybd_lib_size=$(tar -tvyf "$TMP/Optional/swypelibs.tar.lz" "swypelibs" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
+  elif [ -e "$TMP/Optional/swypelibs.tar" ]; then
+    keybd_lib_size=$(tar -tvf "$TMP/Optional/swypelibs.tar" "swypelibs" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
   fi
   rm -f "$TMP/Optional/swypelibs.tar.xz" "$TMP/Optional/swypelibs.tar.lz"
   core_size=$((core_size + keybd_lib_size)); # Add Keyboard Lib size to core, if it exists

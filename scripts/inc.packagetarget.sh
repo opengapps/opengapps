@@ -100,6 +100,12 @@ compressapp() {
           tar --remove-files -cf - "$1" | lzip -m 273 -s 128MiB -o "$1.tar" #.lz is added by lzip; specify the compression parameters manually to get good results
         }
     ;;
+    none)
+        CSUF=""
+        compress() {
+          tar --remove-files -cf "$1.tar" "$1"
+        }
+    ;;
     *)  echo "ERROR: Unsupported compression method! Aborting..."; exit 1;;
   esac
   hash="$(tar -cf - "$2" | md5sum | cut -f1 -d' ')"
