@@ -1229,7 +1229,7 @@ log_close="                  ¹ Previously installed with Open GApps\n$log_close
 
 # Determine if a GApps package is installed and
 # the version, type, and whether it's an Open GApps package
-if [ -e /system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk -a -e /system/priv-app/GoogleLoginService/GoogleLoginService.apk ]; then
+if [ -e "/system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ] && [ -e "/system/priv-app/GoogleLoginService/GoogleLoginService.apk" ]; then
   openversion="$(get_prop "ro.addon.open_version")"
   if [ -n "$openversion" ]; then
     log "Current GApps Version" "$openversion"
