@@ -114,10 +114,14 @@ kitkatdatahack(){
 install -d /data/app-lib/
 # Handle broken lib configuration on KitKat by putting Hangouts on /data/
 if ( contains "$gapps_list" "hangouts" ); then
-  unzip -o "$ZIP" "GApps/hangouts.tar'"$CSUF"'" -d $TMP;
-  tarpath="$TMP/GApps/hangouts.tar'"$CSUF"'";
+  unzip -o "$ZIP" "GApps/hangouts.tar.*" -d "$TMP"
+  tarpath="$TMP/GApps/hangouts.tar"
   which_dpi "hangouts";
-  '"$decompresskitkathack"'
+  if [ -e "$tarpath.xz" ]; then
+    $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
+  elif [ -e "$tarpath.lz" ]; then
+    tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+  fi
   number="$(basename "$(find /data/app/com.google.android.talk-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
@@ -134,10 +138,14 @@ if ( contains "$gapps_list" "hangouts" ); then
 fi;
 # Handle broken lib configuration on KitKat by putting Google+ on /data/
 if ( contains "$gapps_list" "googleplus" ); then
-  unzip -o "$ZIP" "GApps/googleplus.tar'"$CSUF"'" -d $TMP;
-  tarpath="$TMP/GApps/googleplus.tar'"$CSUF"'";
-  which_dpi "googleplus";
-  '"$decompresskitkathack"'
+  unzip -o "$ZIP" "GApps/googleplus.tar.*" -d $TMP
+  tarpath="$TMP/GApps/googleplus.tar"
+  which_dpi "googleplus"
+  if [ -e "$tarpath.xz" ]; then
+    $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
+  elif [ -e "$tarpath.lz" ]; then
+    tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+  fi
   number="$(basename "$(find /data/app/com.google.android.apps.plus-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
@@ -154,10 +162,14 @@ if ( contains "$gapps_list" "googleplus" ); then
 fi;
 # Handle broken lib configuration on KitKat by putting Photos on /data/
 if ( contains "$gapps_list" "photos" ); then
-  unzip -o "$ZIP" "GApps/photos.tar'"$CSUF"'" -d $TMP;
-  tarpath="$TMP/GApps/photos.tar'"$CSUF"'";
-  which_dpi "photos";
-  '"$decompresskitkathack"'
+  unzip -o "$ZIP" "GApps/photos.tar.*" -d $TMP
+  tarpath="$TMP/GApps/photos.tar"
+  which_dpi "photos"
+  if [ -e "$tarpath.xz" ]; then
+    $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
+  elif [ -e "$tarpath.lz" ]; then
+    tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+  fi
   number="$(basename "$(find /data/app/com.google.android.apps.photos-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
@@ -174,10 +186,14 @@ if ( contains "$gapps_list" "photos" ); then
 fi;
 # Handle broken lib configuration on KitKat by putting YouTube on /data/
 if ( contains "$gapps_list" "youtube" ); then
-  unzip -o "$ZIP" "GApps/youtube.tar'"$CSUF"'" -d $TMP;
-  tarpath="$TMP/GApps/youtube.tar'"$CSUF"'";
-  which_dpi "youtube";
-  '"$decompresskitkathack"'
+  unzip -o "$ZIP" "GApps/youtube.tar.*" -d $TMP
+  tarpath="$TMP/GApps/youtube.tar"
+  which_dpi "youtube"
+  if [ -e "$tarpath.xz" ]; then
+    $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
+  elif [ -e "$tarpath.lz" ]; then
+    tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+  fi
   number="$(basename "$(find /data/app/com.google.android.youtube-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
@@ -328,5 +344,12 @@ sdkversionhacks(){
     com.android.facelock) if [ "$versioncode" = "23" ]; then sdkversion="23"; fi;;
     com.google.android.partnersetup) if [ "$versioncode" = "23" ]; then sdkversion="23"; fi;;
     *) ;;
+  esac
+}
+
+xzcompathack(){
+  case "$1" in
+    googlecontactssync) COMPRESSION="lz";; #Googlecontactssync extraction is broken with XZ on smaller packages on marshmallow, reason unknown but it is caused by tar+xz(dec) on busybox
+    *) COMPRESSION="xz";;
   esac
 }

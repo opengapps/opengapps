@@ -29,9 +29,7 @@ commonscripts() {
   makegprop "g.prop"
   makeinstallersh "installer.sh"
   bundlebusybox "busybox"
-  if [ "$COMPRESSION" = "xz" ]; then
-    bundlexz "xzdec"
-  fi
+  bundlexz "xzdec"
   makeupdatebinary "META-INF/com/google/android/update-binary" "busybox" "installer.sh" # execute as last, it contains $EXTRACTFILES from the previous commands
   bundlelicense #optionally add a LICENSE file to the package
 }
@@ -88,28 +86,44 @@ bundlelicense() {
 }
 
 compressapp() {
-      hash="$(tar -cf - "$2" | md5sum | cut -f1 -d' ')"
+  xzcompathack "$2"
+  case "$COMPRESSION" in
+    xz) checktools xz
+        CSUF=".xz"
+        compress() {
+          XZ_OPT='-9e -C crc32' tar --remove-files -cJf "$1.tar.xz" "$1"
+        }
+    ;;
+    lz) checktools lzip
+        CSUF=".lz"
+        compress() {
+          tar --remove-files -cf - "$1" | lzip -m 273 -s 128MiB -o "$1.tar" #.lz is added by lzip; specify the compression parameters manually to get good results
+        }
+    ;;
+    *)  echo "ERROR: Unsupported compression method! Aborting..."; exit 1;;
+  esac
+  hash="$(tar -cf - "$2" | md5sum | cut -f1 -d' ')"
 
-      if [ -f "$CACHE/$hash.tar$CSUF" ]; then #we have this compressed app in cache
-        echo "Fetching $1$2 from the cache"
-        rm -rf "$2" #remove the folder
-        touch -a "$CACHE/$hash.tar$CSUF" #mark this cache object as recently accessed
-        cp "$CACHE/$hash.tar$CSUF" "$2.tar$CSUF" #copy from the cache
-      else
-        if [ -n "$3" ] && [ -n "$4" ]; then
-          echo "Thread: $3 | FreeRAM: $4 | Compressing Package: $1$2"
-        else
-          echo "Compressing Package: $1$2"
-        fi
-        compress "$2"
-        if [ $? != 0 ]; then
-          echo "ERROR: compressing $1$2 failed, aborting."
-          exit 1
-        fi
-        cp "$2.tar$CSUF" "$CACHE/$hash.tar$CSUF" #copy into the cache
-      fi
-      touch -d "2008-02-28 21:33:46.000000000 +0100" "$2.tar$CSUF"
-      sync
+  if [ -f "$CACHE/$hash.tar$CSUF" ]; then #we have this compressed app in cache
+    echo "Fetching $1$2 from the cache"
+    rm -rf "$2" #remove the folder
+    touch -a "$CACHE/$hash.tar$CSUF" #mark this cache object as recently accessed
+    cp "$CACHE/$hash.tar$CSUF" "$2.tar$CSUF" #copy from the cache
+  else
+    if [ -n "$3" ] && [ -n "$4" ]; then
+      echo "Thread: $3 | FreeRAM: $4 | Compressing Package: $1$2"
+    else
+      echo "Compressing Package: $1$2"
+    fi
+    compress "$2"
+    if [ $? != 0 ]; then
+      echo "ERROR: compressing $1$2 failed, aborting."
+      exit 1
+    fi
+    cp "$2.tar$CSUF" "$CACHE/$hash.tar$CSUF" #copy into the cache
+  fi
+  touch -d "2008-02-28 21:33:46.000000000 +0100" "$2.tar$CSUF"
+  sync
 }
 
 createzip() {
