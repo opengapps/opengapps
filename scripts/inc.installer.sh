@@ -660,8 +660,10 @@ clean_inst() {
 }
 
 extract_app() {
-  tarpath="$TMP/$1.tar.lz"
-  unzip -o "$ZIP" "$1.tar.lz" -d $TMP;
+EOFILE
+echo '  tarpath="$TMP/$1.tar'"$CSUF"'"
+  unzip -o "$ZIP" "$1.tar'"$CSUF"'" -d $TMP;'>> "$build/$1"
+tee -a "$build/$1" > /dev/null <<'EOFILE'
   app_name="$(basename "$1")";
   which_dpi "$app_name";
   if [ "$dpiapkpath" != "unknown" ]; then #technically not necessary, 'unknown' folder would not exist anyway
@@ -703,7 +705,9 @@ exxit() {
 }
 
 folder_extract() {
-  tar -xyf "$1" -C $TMP "$2";
+EOFILE
+echo "  $decompress">> "$build/$1"
+tee -a "$build/$1" > /dev/null <<'EOFILE'
   bkup_list=$'\n'"$(find "$TMP/$2/" -type f | cut -d/ -f5-)${bkup_list}";
   cp -rf $TMP/$2/. /system/;
   rm -rf $TMP/$2;
@@ -1704,16 +1708,20 @@ for gapp_name in $core_gapps_list; do
   get_appsize "Core/$gapp_name";
   core_size=$((core_size + appsize));
 done;
+EOFILE
 
+echo '
 # Add swypelibs size to core, if it will be installed
 if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false" ]; then
-  unzip -o "$ZIP" "Optional/swypelibs.tar.lz" -d $TMP;
-  keybd_lib_size=$(tar -tvyf "$TMP/Optional/swypelibs.tar.lz" "swypelibs" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
-  rm -f "$TMP/Optional/swypelibs.tar.lz";
+  unzip -o "$ZIP" "Optional/swypelibs.tar'"$CSUF"'" -d $TMP;
+  keybd_lib_size=$(tar -tv'"$CSWITCH"'f "$TMP/Optional/swypelibs.tar'"$CSUF"'" "swypelibs" 2>/dev/null | awk '"'"'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\\n", app_size / 1024; }'"'"');
+  rm -f "$TMP/Optional/swypelibs.tar'"$CSUF"'";
   core_size=$((core_size + keybd_lib_size)); # Add Keyboard Lib size to core, if it exists
   log "SwypeLibs" "$keybd_lib_size (KB)";
 fi
+'>> "$build/$1"
 
+tee -a "$build/$1" > /dev/null <<'EOFILE'
 # Read and save system partition size details
 df=$(df -k /system | tail -n 1);
 case $df in

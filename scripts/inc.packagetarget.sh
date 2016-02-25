@@ -29,6 +29,9 @@ commonscripts() {
   makegprop "g.prop"
   makeinstallersh "installer.sh"
   bundlebusybox "busybox"
+  if [ "$COMPRESSION" = "xz" ]; then
+    bundlexz "xzdec"
+  fi
   makeupdatebinary "META-INF/com/google/android/update-binary" "busybox" "installer.sh" # execute as last, it contains $EXTRACTFILES from the previous commands
   bundlelicense #optionally add a LICENSE file to the package
 }
@@ -56,11 +59,21 @@ aromaupdatebinary() {
 }
 
 bundlebusybox() {
-  case "$ARCH" in #Include official busybox binary
+  case "$ARCH" in #Include busybox binary
     arm*) busyboxbin="busybox-arm";;
     x86*) busyboxbin="busybox-x86";;
   esac
   copy "$SCRIPTS/busybox-resources/$busyboxbin" "$build/$1"
+  EXTRACTFILES="$EXTRACTFILES $1"
+  CHMODXFILES="$CHMODXFILES $1"
+}
+
+bundlexz() {
+  case "$ARCH" in #Include xzdec binary
+    arm*) xzdecbin="xzdec-arm";;
+    x86*) xzdecbin="xzdec-x86";;
+  esac
+  copy "$SCRIPTS/xz-resources/$xzdecbin" "$build/$1"
   EXTRACTFILES="$EXTRACTFILES $1"
   CHMODXFILES="$CHMODXFILES $1"
 }
@@ -74,33 +87,33 @@ bundlelicense() {
   fi
 }
 
-createlz() {
+compressapp() {
       hash="$(tar -cf - "$2" | md5sum | cut -f1 -d' ')"
 
-      if [ -f "$CACHE/$hash.tar.lz" ]; then #we have this lz in cache
+      if [ -f "$CACHE/$hash.tar$CSUF" ]; then #we have this compressed app in cache
         echo "Fetching $1$2 from the cache"
         rm -rf "$2" #remove the folder
-        touch -a "$CACHE/$hash.tar.lz" #mark this lz as accessed
-        cp "$CACHE/$hash.tar.lz" "$2.tar.lz" #copy from the cache
+        touch -a "$CACHE/$hash.tar$CSUF" #mark this cache object as recently accessed
+        cp "$CACHE/$hash.tar$CSUF" "$2.tar$CSUF" #copy from the cache
       else
         if [ -n "$3" ] && [ -n "$4" ]; then
           echo "Thread: $3 | FreeRAM: $4 | Compressing Package: $1$2"
         else
           echo "Compressing Package: $1$2"
         fi
-        tar --remove-files -cf - "$2" | lzip -m 273 -s 128MiB -o "$2.tar" #.lz is added by lzip; specify the compression parameters manually to get good results
+        compress "$2"
         if [ $? != 0 ]; then
-          echo "ERROR: lzip compression failed, aborting."
+          echo "ERROR: compressing $1$2 failed, aborting."
           exit 1
         fi
-        cp "$2.tar.lz" "$CACHE/$hash.tar.lz" #copy into the cache
+        cp "$2.tar$CSUF" "$CACHE/$hash.tar$CSUF" #copy into the cache
       fi
-      touch -d "2008-02-28 21:33:46.000000000 +0100" "$2.tar.lz"
+      touch -d "2008-02-28 21:33:46.000000000 +0100" "$2.tar$CSUF"
       sync
 }
 
 createzip() {
-  echo "INFO: Total size uncompressed package: $(du -hs "$build" | awk '{ print $1 }')"
+  echo "INFO: Total size uncompressed applications: $(du -hs "$build" | awk '{ print $1 }')"
 
   find "$build" -exec touch -d "2008-02-28 21:33:46.000000000 +0100" {} \;
   cd "$build"
@@ -133,7 +146,7 @@ createzip() {
       if [ $THREADS -gt 1 ] && [ $MEMORY -gt 0 ]; then
         # Wait if we reached RAM or THREADS limit
         tries=0; while true; do
-          # Count still running createlz instances
+          # Count still running compressapp instances
           threads=0; for p in $pidlist; do test -d /proc/$p && threads=$((threads+1)); done
           memory=$(grep "MemAvailable:" /proc/meminfo | awk '{print $2}')
 
@@ -153,20 +166,20 @@ createzip() {
          fi
         done
 
-        # Spawn lz creation
-        createlz "$d" "$f" "$threads" "$memory" &
+        # Spawn compressapp thread
+        compressapp "$d" "$f" "$threads" "$memory" &
         # Collect resulting PID
         pidlist="$pidlist $!"
       else
-        # Call xz creation
-        createlz "$d" "$f"
+        # Call compressapp
+        compressapp "$d" "$f"
       fi
     done
   done
 
   for p in $pidlist; do wait $p; done
 
-  echo "INFO: Total size lz-compressed package: $(du -hs "$build" | awk '{ print $1 }')"
+  echo "INFO: Total size compressed applications: $(du -hs "$build" | awk '{ print $1 }')"
 
   unsignedzip="$BUILD/$ARCH/$API/$VARIANT.zip"
   signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.zip"

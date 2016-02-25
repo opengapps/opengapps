@@ -3,7 +3,7 @@ Apply the lzip support patches from http://download.savannah.gnu.org/releases/lz
 Compile using the instructions from http://forum.xda-developers.com/android/software-hacking/guide-busybox-snapshot-building-android-t2857650
 
 The busybox binaries bundled with The Open GApps Project were compiled by @YashdSaraf
-His busybox repository and toolchain can be found at: https://github.com/yashdsaraf/busybox
+@YashdSaraf's busybox repository and toolchain can be found at: https://github.com/yashdsaraf/busybox
 
 BusyBox is licensed under the GNU General Public License version 2, which is often abbreviated as GPLv2.
 Check https://www.busybox.net/license.html for more information.

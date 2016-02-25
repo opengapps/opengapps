@@ -33,6 +33,7 @@ CERTIFICATES="$SCRIPTS/certificates"
 #CERTIFICATEFILE="" #this can be set to a filepath to use as certificate file for signing
 #KEYFILE="" #this can be set to a filepath to use as key file for signing
 #OPENGAPPSLICENSEFILE="" #this can be set to a filepath to include as a LICENSE file
+COMPRESSION=xz #lz
 . "$SCRIPTS/inc.aromadata.sh"
 . "$SCRIPTS/inc.buildhelper.sh"
 . "$SCRIPTS/inc.buildtarget.sh"
@@ -43,15 +44,37 @@ CERTIFICATES="$SCRIPTS/certificates"
 . "$SCRIPTS/inc.tools.sh"
 
 # Check tools
-checktools aapt coreutils java jarsigner unzip zip tar lzip realpath zipalign
+checktools aapt coreutils java jarsigner unzip zip tar realpath zipalign
 
 case "$API" in
   19) PLATFORM="4.4";;
   21) PLATFORM="5.0";;
   22) PLATFORM="5.1";;
   23) PLATFORM="6.0";;
-  *)  echo "ERROR: Unknown API version! Aborting..."
-  exit 1;;
+  *)  echo "ERROR: Unknown API version! Aborting..."; exit 1;;
+esac
+
+case "$COMPRESSION" in
+  xz) checktools xz
+      CSUF=".xz"
+      CSWITCH="J" #used on tar's buit-in XZ-embedded (to e.g. list filesizes); not used for actual decompression when using xzdec
+      compress() {
+        XZ_OPT=-9e tar --remove-files -cJf "$1.tar.xz" "$1"
+      }
+      decompress='$TMP/xzdec "$1" | tar -x -C $TMP -f - "$2"'
+      decompresskitkathack='$TMP/xzdec "$tarpath" | tar -x -C $TMP -f - "$dpiapkpath"'
+      #xzdec toevoegen aan de uit te pakken bestanden
+  ;;
+  lz) checktools lzip
+      CSUF=".lz"
+      CSWITCH="y"
+      compress() {
+        tar --remove-files -cf - "$1" | lzip -m 273 -s 128MiB -o "$1.tar" #.lz is added by lzip; specify the compression parameters manually to get good results
+      }
+      decompress='tar -xyf "$1" -C $TMP "$2"'
+      decompresskitkathack='tar -xyf "$tarpath" -C $TMP "$dpiapkpath"'
+  ;;
+  *)  echo "ERROR: Unknown compression method! Aborting..."; exit 1;;
 esac
 
 get_supported_variants "$VARIANT"
