@@ -119,10 +119,13 @@ if ( contains "$gapps_list" "hangouts" ); then
   which_dpi "hangouts";
   if [ -e "$tarpath.xz" ]; then
     $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
+    rm -f "$tarpath.xz"
   elif [ -e "$tarpath.lz" ]; then
     tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+    rm -f "$tarpath.lz"
   elif [ -e "$tarpath" ]; then
     tar -xf "$tarpath" -C $TMP "$dpiapkpath"
+    rm -f "$tarpath"
   fi
   number="$(basename "$(find /data/app/com.google.android.talk-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
@@ -135,7 +138,6 @@ if ( contains "$gapps_list" "hangouts" ); then
   set_perm 1000 1000 644 "/data/app/com.google.android.talk-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.talk-$number"
   rm -rf $TMP/hangouts/common;
-  rm -f "$tarpath";
   gapps_list=${gapps_list/hangouts};
 fi;
 # Handle broken lib configuration on KitKat by putting Google+ on /data/
@@ -145,10 +147,13 @@ if ( contains "$gapps_list" "googleplus" ); then
   which_dpi "googleplus"
   if [ -e "$tarpath.xz" ]; then
     $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
+    rm -f "$tarpath.xz"
   elif [ -e "$tarpath.lz" ]; then
     tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+    rm -f "$tarpath.lz"
   elif [ -e "$tarpath" ]; then
     tar -xf "$tarpath" -C $TMP "$dpiapkpath"
+    rm -f "$tarpath"
   fi
   number="$(basename "$(find /data/app/com.google.android.apps.plus-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
@@ -161,7 +166,6 @@ if ( contains "$gapps_list" "googleplus" ); then
   set_perm 1000 1000 644 "/data/app/com.google.android.apps.plus-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.apps.plus-$number"
   rm -rf $TMP/googleplus/common;
-  rm -f "$tarpath";
   gapps_list=${gapps_list/googleplus};
 fi;
 # Handle broken lib configuration on KitKat by putting Photos on /data/
@@ -171,10 +175,13 @@ if ( contains "$gapps_list" "photos" ); then
   which_dpi "photos"
   if [ -e "$tarpath.xz" ]; then
     $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
+    rm -f "$tarpath.xz"
   elif [ -e "$tarpath.lz" ]; then
     tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+    rm -f "$tarpath.lz"
   elif [ -e "$tarpath" ]; then
     tar -xf "$tarpath" -C $TMP "$dpiapkpath"
+    rm -f "$tarpath"
   fi
   number="$(basename "$(find /data/app/com.google.android.apps.photos-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
@@ -187,7 +194,6 @@ if ( contains "$gapps_list" "photos" ); then
   set_perm 1000 1000 644 "/data/app/com.google.android.apps.photos-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.apps.photos-$number"
   rm -rf $TMP/photos/common;
-  rm -f "$tarpath";
   gapps_list=${gapps_list/photos};
 fi;
 # Handle broken lib configuration on KitKat by putting YouTube on /data/
@@ -197,10 +203,13 @@ if ( contains "$gapps_list" "youtube" ); then
   which_dpi "youtube"
   if [ -e "$tarpath.xz" ]; then
     $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
+    rm -f "$tarpath.xz"
   elif [ -e "$tarpath.lz" ]; then
     tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+    rm -f "$tarpath.lz"
   elif [ -e "$tarpath" ]; then
     tar -xf "$tarpath" -C $TMP "$dpiapkpath"
+    rm -f "$tarpath"
   fi
   number="$(basename "$(find /data/app/com.google.android.youtube-* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
@@ -213,7 +222,6 @@ if ( contains "$gapps_list" "youtube" ); then
   set_perm 1000 1000 644 "/data/app/com.google.android.youtube-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.youtube-$number"
   rm -rf $TMP/youtube/common;
-  rm -f "$tarpath";
   gapps_list=${gapps_list/youtube};
 fi;'
   else
@@ -356,12 +364,12 @@ sdkversionhacks(){
 }
 
 xzcompathack(){
-  case "$VARIANT" in
-    aroma) COMPRESSION="xz";; # Aroma gives memory issues if we don't use XZ
-    *) if [ "$API" -ge "23" ]; then
-         COMPRESSION="lz" # Googlecontactssync extraction is broken on some devices with XZ on marshmallow, reason unknown but it is caused by tar+xz(dec) on busybox
-       else
-         COMPRESSION="xz"
-       fi;;
-  esac
+  if [ "$API" -ge "23" ]; then
+    case "$1" in
+      googlecontactssync) COMPRESSION="none";; # Googlecontactssync extraction is broken on some devices with XZ on marshmallow, if we compress it in any way while the rest of the package is xz compressed
+      *) COMPRESSION="xz";;
+    esac
+  else
+    COMPRESSION="xz"
+  fi
 }

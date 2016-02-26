@@ -668,7 +668,6 @@ extract_app() {
     folder_extract "$tarpath" "$dpiapkpath"
   fi
   folder_extract "$tarpath" "$app_name/common"
-  rm -f "$tarpath.xz" "$tarpath.lz" "$tarpath"
 }
 
 exxit() {
@@ -705,10 +704,13 @@ exxit() {
 folder_extract() {
   if [ -e "$1.xz" ]; then
     $TMP/xzdec "$1.xz" | tar -x -C "$TMP" -f - "$2"
+    rm -f "$tarpath.xz"
   elif [ -e "$1.lz" ]; then
     tar -xyf "$1.lz" -C $TMP "$2"
+    rm -f "$tarpath.lz"
   elif [ -e "$1" ]; then
     tar -xf "$1" -C $TMP "$2"
+    rm -f "$tarpath"
   fi
   bkup_list=$'\n'"$(find "$TMP/$2/" -type f | cut -d/ -f5-)${bkup_list}"
   cp -rf "$TMP/$2/." "/system/"
