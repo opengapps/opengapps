@@ -1,12 +1,12 @@
 Fetch XZ sources from fetch the source of XZ from http://tukaani.org/xz/
 
-To compile xzdec for arm:
-./configure --host=arm-linux-androideabi --enable-static --disable-shared LDFLAGS=-static
-make LDFLAGS=-all-static
+To compile for ARM:
+./configure --host=arm-linux --disable-shared --enable-static CFLAGS="--sysroot=/path_to_toolchain/arm-uClibc/arm-rorschack-linux-uclibcgnueabihf/sysroot -Os" LDFLAGS=--static
+arm-linux-strip -s src/xzdec/xzdec
 
 To compile for x86:
-./configure --enable-static --disable-shared "CFLAGS=-m32" "CPPFLAGS=-m32" "CXXFLAGS=-m32" "LDFLAGS=-static -m32"
-make LDFLAGS=-all-static
+./configure --host=i586-linux --disable-shared --enable-static CFLAGS="--sysroot=/path_to_toolchain/x86-uClibc/i586-rorschack-linux-uclibc/sysroot -Os" LDFLAGS=--static
+i586-linux-strip -s src/xzdec/xzdec
 
 The xzdec binaries bundled with The Open GApps Project were compiled by @YashdSaraf
 
