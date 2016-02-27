@@ -117,23 +117,32 @@ if ( contains "$gapps_list" "hangouts" ); then
   unzip -o "$ZIP" "GApps/hangouts.tar.*" -d "$TMP"
   tarpath="$TMP/GApps/hangouts.tar"
   which_dpi "hangouts";
+  number="$(basename "$(find /data/app/com.google.android.talk-* | head -n1)" .apk | rev | cut -d- -f1)"
+  if [ -z "$number" ]; then
+    number="1"
+  fi
   if [ -e "$tarpath.xz" ]; then
-    $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
+    $TMP/xzdec "$tarpath.xz" | tar -x -C "$TMP" -f - "$dpiapkpath"
     rm -f "$tarpath.xz"
   elif [ -e "$tarpath.lz" ]; then
-    tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+    tar -xyf "$tarpath.lz" -C "$TMP" "$dpiapkpath"
     rm -f "$tarpath.lz"
   elif [ -e "$tarpath" ]; then
     tar -xf "$tarpath" -C $TMP "$dpiapkpath"
     rm -f "$tarpath"
   fi
-  number="$(basename "$(find /data/app/com.google.android.talk-* | head -n1)" .apk | rev | cut -d- -f1)"
-  if [ -z "$number" ]; then
-    number="1"
-  fi
   cp -rf $TMP/$dpiapkpath/app/Hangouts.apk /data/app/com.google.android.talk-$number.apk;
   rm -rf $TMP/$dpiapkpath;
-  tar -xyf "$tarpath" -C $TMP "hangouts/common";
+  if [ -e "$tarpath.xz" ]; then
+    $TMP/xzdec "$tarpath.xz" | tar -x -C "$TMP" -f - "hangouts/common"
+    rm -f "$tarpath.xz"
+  elif [ -e "$tarpath.lz" ]; then
+    tar -xyf "$tarpath.lz" -C $TMP "hangouts/common";
+    rm -f "$tarpath.lz"
+  elif [ -e "$tarpath" ]; then
+    tar -xf "$tarpath" -C $TMP "hangouts/common"
+    rm -f "$tarpath"
+  fi
   cp -rf $TMP/hangouts/common/lib* /data/app-lib/com.google.android.talk-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.talk-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.talk-$number"
@@ -145,23 +154,32 @@ if ( contains "$gapps_list" "googleplus" ); then
   unzip -o "$ZIP" "GApps/googleplus.tar.*" -d $TMP
   tarpath="$TMP/GApps/googleplus.tar"
   which_dpi "googleplus"
+  number="$(basename "$(find /data/app/com.google.android.apps.plus-* | head -n1)" .apk | rev | cut -d- -f1)"
+  if [ -z "$number" ]; then
+    number="1"
+  fi
   if [ -e "$tarpath.xz" ]; then
-    $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
+    $TMP/xzdec "$tarpath.xz" | tar -x -C "$TMP" -f - "$dpiapkpath"
     rm -f "$tarpath.xz"
   elif [ -e "$tarpath.lz" ]; then
-    tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+    tar -xyf "$tarpath.lz" -C "$TMP" "$dpiapkpath"
     rm -f "$tarpath.lz"
   elif [ -e "$tarpath" ]; then
     tar -xf "$tarpath" -C $TMP "$dpiapkpath"
     rm -f "$tarpath"
   fi
-  number="$(basename "$(find /data/app/com.google.android.apps.plus-* | head -n1)" .apk | rev | cut -d- -f1)"
-  if [ -z "$number" ]; then
-    number="1"
-  fi
   cp -rf $TMP/$dpiapkpath/app/PlusOne.apk /data/app/com.google.android.apps.plus-$number.apk;
   rm -rf $TMP/$dpiapkpath;
-  tar -xyf "$tarpath" -C $TMP "googleplus/common";
+  if [ -e "$tarpath.xz" ]; then
+    $TMP/xzdec "$tarpath.xz" | tar -x -C "$TMP" -f - "googleplus/common"
+    rm -f "$tarpath.xz"
+  elif [ -e "$tarpath.lz" ]; then
+    tar -xyf "$tarpath.lz" -C $TMP "googleplus/common";
+    rm -f "$tarpath.lz"
+  elif [ -e "$tarpath" ]; then
+    tar -xf "$tarpath" -C $TMP "googleplus/common"
+    rm -f "$tarpath"
+  fi
   cp -rf $TMP/googleplus/common/lib* /data/app-lib/com.google.android.apps.plus-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.apps.plus-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.apps.plus-$number"
@@ -173,23 +191,32 @@ if ( contains "$gapps_list" "photos" ); then
   unzip -o "$ZIP" "GApps/photos.tar.*" -d $TMP
   tarpath="$TMP/GApps/photos.tar"
   which_dpi "photos"
+  number="$(basename "$(find /data/app/com.google.android.apps.photos-* | head -n1)" .apk | rev | cut -d- -f1)"
+  if [ -z "$number" ]; then
+    number="1"
+  fi
   if [ -e "$tarpath.xz" ]; then
-    $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
+    $TMP/xzdec "$tarpath.xz" | tar -x -C "$TMP" -f - "$dpiapkpath"
     rm -f "$tarpath.xz"
   elif [ -e "$tarpath.lz" ]; then
-    tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+    tar -xyf "$tarpath.lz" -C "$TMP" "$dpiapkpath"
     rm -f "$tarpath.lz"
   elif [ -e "$tarpath" ]; then
     tar -xf "$tarpath" -C $TMP "$dpiapkpath"
     rm -f "$tarpath"
   fi
-  number="$(basename "$(find /data/app/com.google.android.apps.photos-* | head -n1)" .apk | rev | cut -d- -f1)"
-  if [ -z "$number" ]; then
-    number="1"
-  fi
   cp -rf $TMP/$dpiapkpath/app/Photos.apk /data/app/com.google.android.apps.photos-$number.apk;
   rm -rf $TMP/$dpiapkpath;
-  tar -xyf "$tarpath" -C $TMP "photos/common";
+  if [ -e "$tarpath.xz" ]; then
+    $TMP/xzdec "$tarpath.xz" | tar -x -C "$TMP" -f - "photos/common"
+    rm -f "$tarpath.xz"
+  elif [ -e "$tarpath.lz" ]; then
+    tar -xyf "$tarpath.lz" -C $TMP "photos/common";
+    rm -f "$tarpath.lz"
+  elif [ -e "$tarpath" ]; then
+    tar -xf "$tarpath" -C $TMP "photos/common"
+    rm -f "$tarpath"
+  fi
   cp -rf $TMP/photos/common/lib* /data/app-lib/com.google.android.apps.photos-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.apps.photos-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.apps.photos-$number"
@@ -201,23 +228,32 @@ if ( contains "$gapps_list" "youtube" ); then
   unzip -o "$ZIP" "GApps/youtube.tar.*" -d $TMP
   tarpath="$TMP/GApps/youtube.tar"
   which_dpi "youtube"
+  number="$(basename "$(find /data/app/com.google.android.youtube-* | head -n1)" .apk | rev | cut -d- -f1)"
+  if [ -z "$number" ]; then
+    number="1"
+  fi
   if [ -e "$tarpath.xz" ]; then
-    $TMP/xzdec "$tarpath" | tar -x -C "$TMP" -f - "$dpiapkpath"
+    $TMP/xzdec "$tarpath.xz" | tar -x -C "$TMP" -f - "$dpiapkpath"
     rm -f "$tarpath.xz"
   elif [ -e "$tarpath.lz" ]; then
-    tar -xyf "$tarpath" -C "$TMP" "$dpiapkpath"
+    tar -xyf "$tarpath.lz" -C "$TMP" "$dpiapkpath"
     rm -f "$tarpath.lz"
   elif [ -e "$tarpath" ]; then
     tar -xf "$tarpath" -C $TMP "$dpiapkpath"
     rm -f "$tarpath"
   fi
-  number="$(basename "$(find /data/app/com.google.android.youtube-* | head -n1)" .apk | rev | cut -d- -f1)"
-  if [ -z "$number" ]; then
-    number="1"
-  fi
   cp -rf $TMP/$dpiapkpath/app/YouTube.apk /data/app/com.google.android.youtube-$number.apk;
   rm -rf $TMP/$dpiapkpath;
-  tar -xyf "$tarpath" -C $TMP "youtube/common";
+  if [ -e "$tarpath.xz" ]; then
+    $TMP/xzdec "$tarpath.xz" | tar -x -C "$TMP" -f - "youtube/common"
+    rm -f "$tarpath.xz"
+  elif [ -e "$tarpath.lz" ]; then
+    tar -xyf "$tarpath.lz" -C $TMP "youtube/common";
+    rm -f "$tarpath.lz"
+  elif [ -e "$tarpath" ]; then
+    tar -xf "$tarpath" -C $TMP "youtube/common"
+    rm -f "$tarpath"
+  fi
   cp -rf $TMP/youtube/common/lib* /data/app-lib/com.google.android.youtube-$number/;
   set_perm 1000 1000 644 "/data/app/com.google.android.youtube-$number.apk"
   set_perm_recursive 1000 1000 755 644 "/data/app-lib/com.google.android.youtube-$number"

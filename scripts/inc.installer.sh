@@ -665,10 +665,7 @@ extract_app() {
   unzip -o "$ZIP" "$1.tar*" -d "$TMP" # wildcard for suffix
   app_name="$(basename "$1")"
   which_dpi "$app_name"
-  if [ "$dpiapkpath" != "unknown" ]; then #technically not necessary, 'unknown' folder would not exist anyway
-    folder_extract "$tarpath" "$dpiapkpath"
-  fi
-  folder_extract "$tarpath" "$app_name/common"
+  folder_extract "$tarpath" "$dpiapkpath" "$app_name/common"
 }
 
 exxit() {
@@ -704,18 +701,24 @@ exxit() {
 
 folder_extract() {
   if [ -e "$1.xz" ]; then
-    $TMP/xzdec "$1.xz" | tar -x -C "$TMP" -f - "$2"
-    rm -f "$tarpath.xz"
+    for f in "$2" "$3"; do
+      $TMP/xzdec "$1.xz" | tar -x -C "$TMP" -f - "$f"
+      install_extracted "$f"
+    done
+    rm -f "$1.xz"
   elif [ -e "$1.lz" ]; then
-    tar -xyf "$1.lz" -C $TMP "$2"
-    rm -f "$tarpath.lz"
+    for f in "$2" "$3"; do
+      tar -xyf "$1.lz" -C $TMP "$f"
+      install_extracted "$f"
+    done
+    rm -f "$1.lz"
   elif [ -e "$1" ]; then
-    tar -xf "$1" -C $TMP "$2"
-    rm -f "$tarpath"
+    for f in "$2" "$3"; do
+      tar -xf "$1" -C $TMP "$f"
+      install_extracted "$f"
+    done
+    rm -f "$1"
   fi
-  bkup_list=$'\n'"$(find "$TMP/$2/" -type f | cut -d/ -f5-)${bkup_list}"
-  cp -rf "$TMP/$2/." "/system/"
-  rm -rf "$TMP/$2"
 }
 
 get_appsize() {
@@ -745,6 +748,12 @@ get_prop() {
   else
     printf "$prop"
   fi
+}
+
+install_extracted() {
+  cp -rf "$TMP/$1/." "/system/"
+  bkup_list=$'\n'"$(find "$TMP/$1/" -type f | cut -d/ -f5-)${bkup_list}"
+  rm -rf "$TMP/$1"
 }
 
 log() {
