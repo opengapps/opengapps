@@ -243,6 +243,7 @@ browser_list="
 app/Browser'"$REMOVALSUFFIX"'
 app/BrowserProviderProxy'"$REMOVALSUFFIX"'
 app/Chromium'"$REMOVALSUFFIX"'
+app/PA_Browser'"$REMOVALSUFFIX"'
 priv-app/BLUOpera'"$REMOVALSUFFIX"'
 priv-app/BLUOperaPreinstall'"$REMOVALSUFFIX"'
 ";
