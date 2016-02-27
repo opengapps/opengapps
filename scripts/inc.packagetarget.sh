@@ -86,22 +86,23 @@ bundlelicense() {
 }
 
 compressapp() {
-  xzcompathack "$2"
-  case "$COMPRESSION" in
+  compression="$COMPRESSION"
+  compressioncompathack "$2"
+  case "$compression" in
     xz) checktools xz
-        CSUF=".xz"
+        csuf=".xz"
         compress() {
           XZ_OPT='-9e -C crc32' tar --remove-files -cJf "$1.tar.xz" "$1"
         }
     ;;
     lz) checktools lzip
-        CSUF=".lz"
+        csuf=".lz"
         compress() {
           tar --remove-files -cf - "$1" | lzip -m 273 -s 128MiB -o "$1.tar" #.lz is added by lzip; specify the compression parameters manually to get good results
         }
     ;;
     none)
-        CSUF=""
+        csuf=""
         compress() {
           tar --remove-files -cf "$1.tar" "$1"
         }
@@ -110,11 +111,11 @@ compressapp() {
   esac
   hash="$(tar -cf - "$2" | md5sum | cut -f1 -d' ')"
 
-  if [ -f "$CACHE/$hash.tar$CSUF" ]; then #we have this compressed app in cache
+  if [ -f "$CACHE/$hash.tar$csuf" ]; then #we have this compressed app in cache
     echo "Fetching $1$2 from the cache"
     rm -rf "$2" #remove the folder
-    touch -a "$CACHE/$hash.tar$CSUF" #mark this cache object as recently accessed
-    cp "$CACHE/$hash.tar$CSUF" "$2.tar$CSUF" #copy from the cache
+    touch -a "$CACHE/$hash.tar$csuf" #mark this cache object as recently accessed
+    cp "$CACHE/$hash.tar$csuf" "$2.tar$csuf" #copy from the cache
   else
     if [ -n "$3" ] && [ -n "$4" ]; then
       echo "Thread: $3 | FreeRAM: $4 | Compressing Package: $1$2"
@@ -126,9 +127,9 @@ compressapp() {
       echo "ERROR: compressing $1$2 failed, aborting."
       exit 1
     fi
-    cp "$2.tar$CSUF" "$CACHE/$hash.tar$CSUF" #copy into the cache
+    cp "$2.tar$csuf" "$CACHE/$hash.tar$csuf" #copy into the cache
   fi
-  touch -d "2008-02-28 21:33:46.000000000 +0100" "$2.tar$CSUF"
+  touch -d "2008-02-28 21:33:46.000000000 +0100" "$2.tar$csuf"
   sync
 }
 
