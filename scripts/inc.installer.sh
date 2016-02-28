@@ -700,24 +700,26 @@ exxit() {
 }
 
 folder_extract() {
-  if [ -e "$1.xz" ]; then
-    for f in "$2" "$3"; do
-      $TMP/xzdec "$1.xz" | tar -x -C "$TMP" -f - "$f"
+  archive="$1"
+  shift
+  if [ -e "$archive.xz" ]; then
+    for f in "$@"; do
+      $TMP/xzdec "$archive.xz" | tar -x -C "$TMP" -f - "$f"
       install_extracted "$f"
     done
-    rm -f "$1.xz"
-  elif [ -e "$1.lz" ]; then
-    for f in "$2" "$3"; do
-      tar -xyf "$1.lz" -C $TMP "$f"
+    rm -f "$archive.xz"
+  elif [ -e "$archive.lz" ]; then
+    for f in "$@"; do
+      tar -xyf "$archive.lz" -C $TMP "$f"
       install_extracted "$f"
     done
-    rm -f "$1.lz"
-  elif [ -e "$1" ]; then
-    for f in "$2" "$3"; do
-      tar -xf "$1" -C $TMP "$f"
+    rm -f "$archive.lz"
+  elif [ -e "$archive" ]; then
+    for f in "$@"; do
+      tar -xf "$archive" -C $TMP "$f"
       install_extracted "$f"
     done
-    rm -f "$1"
+    rm -f "$archive"
   fi
 }
 
