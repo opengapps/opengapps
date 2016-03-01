@@ -12,6 +12,8 @@
 #    GNU General Public License for more details.
 #
 
+# set your own APKMIRROR_EMAIL and/or APKMIRROR_NAME environment variables if they differ from your git credentials
+
 command -v realpath >/dev/null 2>&1 || { echo "realpath is required but it's not installed, aborting." >&2; exit 1; }
 TOP="$(realpath .)"
 SOURCES="$TOP/sources"
@@ -62,6 +64,7 @@ createcommit(){
   esac
 }
 
+newapks=""
 for arch in $(ls "$SOURCES"); do
   cd "$SOURCES/$arch"
   echo "Resetting $arch to HEAD before staging new commits..."
@@ -71,6 +74,12 @@ for arch in $(ls "$SOURCES"); do
     createcommit "$apk" "$arch"
   done
   changes="$(git shortlog origin/master..HEAD)"
+  addnewapks="$(git diff --name-only --diff-filter=A origin/master..HEAD | cut -f 2 | sed "s#^#$SOURCES/$arch/#")"
+  if [ -n "$addnewapks" ]; then
+    newapks="$newapks
+$addnewapks"
+  fi
+
   if [ -n "$changes" ]; then
     echo "$changes"
     echo "Do you want to push these commits to the $arch repository? [y/N]"
@@ -81,4 +90,29 @@ for arch in $(ls "$SOURCES"); do
     esac
   fi
 done
+if [ -n "$newapks" ]; then
+  if [ -n "$APKMIRROR_EMAIL" ]; then
+    email="$APKMIRROR_EMAIL"
+  else
+    email="$(git config user.email)"
+  fi
+  if [ -n "$APKMIRROR_NAME" ]; then
+    name="$APKMIRROR_NAME"
+  else
+    name="$(git config user.name)"
+  fi
+  echo "$newapks"
+  echo "Do you want to submit these APKs to APKmirror.com using $name (OpenGApps.org) <$email>? [y/N]"
+  IFS= read -r REPLY
+  case "$REPLY" in
+      y*|Y*)
+            for apk in $newapks; do
+              echo "Uploading $apk to APKmirror.com..."
+              filename="$(basename "$apk")"
+              curl -s -S -X POST -F "fullname=$name (OpenGApps.org)" -F "email=$email" -F "changes=" -F "file=@$apk;filename=$filename" "http://www.apkmirror.com/wp-content/plugins/UploadManager/inc/upload.php" > /dev/null
+            done
+            ;;
+          *)  echo "Did NOT submit to APKmirror.com";;
+  esac
+fi
 cd "$TOP"
