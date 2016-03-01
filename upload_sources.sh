@@ -74,7 +74,7 @@ for arch in $(ls "$SOURCES"); do
     createcommit "$apk" "$arch"
   done
   changes="$(git shortlog origin/master..HEAD)"
-  addnewapks="$(git diff --name-only --diff-filter=A origin/master..HEAD | cut -f 2 | sed "s#^#$SOURCES/$arch/#")"
+  addnewapks="$(git diff --name-only --diff-filter=AM origin/master..HEAD | grep ".apk" | cut -f 2 | sed "s#^#$SOURCES/$arch/#")"
   if [ -n "$addnewapks" ]; then
     newapks="$newapks
 $addnewapks"
