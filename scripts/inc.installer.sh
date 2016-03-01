@@ -1168,7 +1168,7 @@ else
   # If not explictly defined, check whitelist
   case $device_name in
     ryu|angler|bullhead|shamu|volantis*|hammerhead|sprout*) newcamera_compat="true[whitelist]";;
-    *) newcamera_compat="false"
+    *) newcamera_compat="false";;
   esac
 fi
 
@@ -1177,19 +1177,26 @@ if ( grep -qiE '^forceclean$' "$g_conf" ); then # true or false to override the 
   forceclean="true"
 else
   forceclean="false"
-fi;
+fi
 
 # Check for skipswypelibs Override in gapps-config
 if ( grep -qiE '^skipswypelibs$' $g_conf ); then # true or false to override the default selection
   skipswypelibs="true"
 else
   skipswypelibs="false"
-fi;
+fi
+
+# Check for substituteswypelibs Override in gapps-config
+if ( grep -qiE '^substituteswypelibs$' $g_conf ); then # true or false to override the default selection
+  substituteswypelibs="true"
+else
+  substituteswypelibs="false"
+fi
 
 # Remove any files from gapps-remove.txt that should not be processed for automatic removal
 for bypass_file in $removal_bypass_list; do
-  sed -i "\:${bypass_file}:d" $gapps_removal_list;
-done;
+  sed -i "\:${bypass_file}:d" $gapps_removal_list
+done
 
 # Is this a 'Clean' or 'Dirty' install
 if ( clean_inst ); then
