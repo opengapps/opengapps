@@ -69,12 +69,12 @@ for arch in $(ls "$SOURCES"); do
   cd "$SOURCES/$arch"
   echo "Resetting $arch to HEAD before staging new commits..."
   git reset -q HEAD #make sure we are not including any other files are already tracked, output is silenced, not to confuse the user with the next output
-  apks="$(git status -uall --porcelain | grep ".apk" | grep -e "?? " | cut -c4-)" #get the new apks
+  apks="$(git status -uall --porcelain | grep '.apk$' | grep -e "?? " | cut -c4-)" #get the new apks
   for apk in $apks; do
     createcommit "$apk" "$arch"
   done
   changes="$(git shortlog origin/master..HEAD)"
-  addnewapks="$(git diff --name-only --diff-filter=AM origin/master..HEAD | grep ".apk" | cut -f 2 | sed "s#^#$SOURCES/$arch/#")"
+  addnewapks="$(git diff --name-only --diff-filter=AM origin/master..HEAD | grep '.apk$' | cut -f 2 | sed "s#^#$SOURCES/$arch/#")"
   if [ -n "$addnewapks" ]; then
     newapks="$newapks
 $addnewapks"
