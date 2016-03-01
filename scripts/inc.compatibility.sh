@@ -169,6 +169,13 @@ if ( contains "$gapps_list" "googleplus" ); then
   kitkatdata_folder_extract "googleplus" "$dpiapkpath" "com.google.android.apps.plus" "PlusOne.apk"
   gapps_list=${gapps_list/googleplus}
 fi
+# Handle broken lib configuration on KitKat by putting Messenger on /data/
+if ( contains "$gapps_list" "messenger" ); then
+  unzip -o "$ZIP" "GApps/messenger.tar*" -d "$TMP"
+  which_dpi "messenger"
+  kitkatdata_folder_extract "messenger" "$dpiapkpath" "com.google.android.apps.messaging" "PrebuiltBugle.apk"
+  gapps_list=${gapps_list/messenger}
+fi
 # Handle broken lib configuration on KitKat by putting Photos on /data/
 if ( contains "$gapps_list" "photos" ); then
   unzip -o "$ZIP" "GApps/photos.tar*" -d "$TMP"
