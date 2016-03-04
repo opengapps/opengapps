@@ -260,12 +260,14 @@ EOFILE
 
 versionnamehack(){
   case "$package" in
-    #the Drive/Docs/Sheets/Slides variate even the last two different digits of the versionName per DPI variant, so we only take the first 10 chars
-    com.google.android.apps.docs*) versionname="$(echo "$versionname" | cut -c 1-10)";;
-    #the Fitness variate the last 3 digits per DPI variant
-    com.google.android.apps.fitness) versionname="$(echo "$versionname" | cut -c 1-7)";;
-    #the Project FI variates with different lengths at the end, but begin string is always 8 long
-    com.google.android.apps.tycho) versionname="$(echo "$versionname" | cut -c 1-8)";;
+    #the Drive/Docs/Sheets/Slides variate after the last dot per arch and dpi, so we only take the first 4 fields
+    com.google.android.apps.docs*) versionname="$(echo "$versionname" | cut -d '.' -f 1-4)";;
+    #the Fitness variate after the dash per dpi, so we only take before it
+    com.google.android.apps.fitness) versionname="$(echo "$versionname" | cut -d '-' -f 1)";;
+    #the Project FI variate after the dash per dpi, so we only take before it
+    com.google.android.apps.tycho) versionname="$(echo "$versionname" | cut -d '-' -f 1)";;
+    #the Google Search app variates after the 3 dots per SDK and after the 4th dot per arch, so we only take the first 3 fields
+    com.google.android.googlequicksearchbox) versionname="$(echo "$versionname" | cut -d '.' -f 1-3)";;
   esac
 }
 
