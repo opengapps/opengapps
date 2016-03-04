@@ -13,21 +13,23 @@ Please **don't** file directly any GitHub issues to file problems with the Pre-b
 
 Build your own Open GApps
 ---------------
-**These scripts assume you have a [GitHub account](https://github.com/join) and have set-up [SSH authentication](https://help.github.com/articles/set-up-git/#connecting-over-ssh).**
+**The git commands and scripts assume you have a [GitHub account](https://github.com/join) and have set-up [SSH authentication](https://help.github.com/articles/set-up-git/#connecting-over-ssh).**
 
 If you want to build your own version of Open GApps, you'll need to fetch the git sources:
 
-To initialize your local repository using the Open GApps source tree, use a command like:
+To initialize your local repository using the Open GApps source tree, clone the main repository with the command:
 ```
 git clone git@github.com:opengapps/opengapps.git
 ```
-Then sync the submodules to get the original APK sources as provided by Google.
+Then sync the submodules to get the original APK sources as provided by Google. Take not that these repositories are very large (in the order of GiBs).
 You can also use this command to update the sources at a later moment to their most recent version:
 ```
 ./download_sources.sh [--shallow] [arch]
 ```
 * ```--shallow``` will order to fetch only the latest snapshot of the APKs (reduces space used and amount of data to be retrieved by git, by not fetching the APKs' history)
 * ```arch``` can be one of the following "arm, arm64, x86, x86_64" to fetch only data required for specified architecture (note that fallback architectures will be be fetched too)
+
+**To build Open GApps you'll need the Android build tools installed and set-up in your $PATH. If you use Ubuntu you can check out [@mfonville's Android build tools for Ubuntu](http://mfonville.github.io/android-build-tools/).**
 
 To build Open GApps for all platforms and all Android releases:
 ```
