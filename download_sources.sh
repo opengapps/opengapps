@@ -44,3 +44,4 @@ for module in $modules; do
     exit 1
   fi
 done
+git submodule foreach "git checkout origin/master"
