@@ -136,6 +136,7 @@ pkg_names="'"$SUPPORTEDVARIANTS"'";
 # Installer Name (32 chars Total, excluding "")
 installer_name="Open GApps '"$VARIANT"' '"$PLATFORM"' - ";
 
+req_android_sdk="'"$API"'";
 req_android_version="'"$PLATFORM"'";
 
 '"$KEYBDLIBS"'
@@ -577,7 +578,7 @@ nowebview_msg="NOTE: The Stock/AOSP WebView was NOT removed as requested to ensu
 non_open_gapps_msg="INSTALLATION FAILURE: Open GApps can only be installed on top of an existing\nOpen GApps installation. Since you are currently using another GApps package, you\nwill need to wipe (format) your system partition before installing Open GApps.\n";
 fornexus_open_gapps_msg="NOTE: The installer detected that you already have Stock ROM GApps installed.\nThe installer will now continue, but please be aware that there could be problems.\n";
 recovery_compression_msg="INSTALLATION FAILURE: Your ROM uses transparent compression, but your recovery\ndoes not support this feature, resulting in corrupt files.\nPlease update your recovery before flashing ANY package to prevent corruption.\n";
-rom_version_msg="INSTALLATION FAILURE: This GApps package can only be installed on a $req_android_version.x ROM.\n";
+rom_android_version_msg="INSTALLATION FAILURE: This GApps package can only be installed on a $req_android_version.x ROM.\n";
 simulation_msg="TEST INSTALL: This was only a simulated install. NO CHANGES WERE MADE TO YOUR\nDEVICE. To complete the installation remove 'Test' from your gapps-config.\n";
 system_space_msg="INSTALLATION FAILURE: Your device does not have sufficient space available in\nthe system partition to install this GApps package as currently configured.\nYou will need to switch to a smaller GApps package or use gapps-config to\nreduce the installed size.\n";
 user_multiplefound_msg="NOTE: All User Application Removals included in gapps-config were unable to be\nprocessed as requested because multiple versions of the app were found on your\ndevice. See the log portion below for the name(s) of the application(s).\n";
@@ -1064,7 +1065,9 @@ fi;
 # Get ROM Android version
 ui_print "- Gathering device & ROM information"
 ui_print " "
-rom_android_version="$(get_prop "ro.build.version.release")"
+
+# Get ROM SDK version
+rom_build_sdk="$(get_prop "ro.build.version.sdk")"
 
 # Get Device Type
 if echo "$(get_prop "ro.build.characteristics")" | grep -qi "tablet"; then
@@ -1075,28 +1078,18 @@ else
   device_type=phone
 fi
 
-# Get ROM Version
-for field in ro.modversion ro.build.version.incremental; do
-  rom_version="$(get_prop "$field")"
-  if [ "${#rom_version}" -ge "2" ]; then
-    break;
-  fi;
-  rom_version="n/a"
-done
-
 echo "# Begin Open GApps Install Log" > $g_log;
 echo ----------------------------------------------------------------------------- >> $g_log;
-log "ROM Android Version" "$rom_android_version";
 
 # Check to make certain user has proper version ROM Installed
-if [ ! "${rom_android_version:0:3}" = "$req_android_version" ]; then
+if [ ! "$rom_build_sdk" = "$req_android_sdk" ]; then
   ui_print "*** Incompatible Android ROM detected ***";
   ui_print " ";
   ui_print "This GApps pkg is for Android $req_android_version.x ONLY";
   ui_print " ";
   ui_print "******* GApps Installation failed *******";
   ui_print " ";
-  install_note="${install_note}rom_version_msg"$'\n'; # make note that ROM Version is not compatible with these GApps
+  install_note="${install_note}rom_android_version_msg"$'\n'; # make note that ROM Version is not compatible with these GApps
   abort "$E_ROMVER";
 fi;
 
@@ -1235,8 +1228,11 @@ tee -a "$build/$1" > /dev/null <<'EOFILE'
   *) cameragoogle_compat=true;;
 esac;
 
-log "ROM ID" "$(get_prop "ro.build.display.id")"
-log "ROM Version" "$rom_version"
+log "ROM Android version" "$(get_prop "ro.build.version.release")"
+log "ROM Build ID" "$(get_prop "ro.build.display.id")"
+log "ROM Version increment" "$(get_prop "ro.build.version.incremental")"
+log "ROM SDK version" "$rom_build_sdk"
+log "ROM/Recovery modversion" "$(get_prop "ro.modversion")"
 log "Device Recovery" "$recovery"
 log "Device Name" "$device_name"
 log "Device Model" "$(get_prop "ro.product.model")"
