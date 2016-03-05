@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
@@ -12,6 +12,8 @@
 #    GNU General Public License for more details.
 #
 command -v git >/dev/null 2>&1 || { echo "git is required but it's not installed.  Aborting." >&2; exit 1; }
+SCRIPT="$(readlink -f "$0")"
+SCRIPTPATH="$(dirname "$SCRIPT")"
 
 argument() {
   case $1 in
@@ -37,11 +39,13 @@ for arg in "$@"; do
   argument $arg
 done
 
+pushd "$SCRIPTPATH" > /dev/null
 for module in $modules; do
-  git submodule update --init --remote --rebase $depth -- sources/$module
+  git submodule update --init --remote $depth -- sources/$module # --rebase is specifed in .gitmodules
   if [ $? -ne 0 ]; then
     echo "ERROR during git execution, aborted!"
     exit 1
   fi
 done
-git submodule foreach "git checkout origin/master"
+git submodule foreach -q 'branch="$(git config -f "$toplevel/.gitmodules" "submodule.$name.branch")"; git checkout -q "$branch"; git pull -q --rebase'
+popd > /dev/null
