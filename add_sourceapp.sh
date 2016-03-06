@@ -118,14 +118,15 @@ addapk() {
     fi
   fi
 
-  if ! verifyapk "$apk"; then
-    if [ -n "$notinzip" ]; then
-      echo "ERROR: The following files were mentioned in the signed manifest of $1 but are not present in the APK:
-$notinzip"
-    else
-      echo "ERROR: $1 contains files or a certificate not signed by Google. APK not imported";
-    fi
-    echo "ERROR: Unsigned or incomplete APKs are not allowed. APK is not imported."
+  verifyapk "$apk"
+  verified="$?"
+  if [ "$verified" != 0 ]; then
+    case "$verified" in
+      $INCOMPLETEFILES) echo "ERROR: The following files were mentioned in the signed manifest of $1 but are not present in the APK:
+$notinzip";;
+      $INVALIDCERT)     echo "ERROR: $1 contains files or a certificate not signed by Google. APK not imported";;
+      $UNSIGNEDFILES)   echo "ERROR: Unsigned or incomplete APKs are not allowed. APK is not imported.";;
+    esac
     return 1
   fi
   echo "APK is complete, certificate is valid and signed by Google"
