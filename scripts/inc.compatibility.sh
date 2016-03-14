@@ -127,13 +127,10 @@ kitkatdata_folder_extract() {
   fi
   if [ -e "$TMP/GApps/$1.tar.xz" ]; then
     $TMP/xzdec "$TMP/GApps/$1.tar.xz" | tar -x -C "$TMP" -f - "$2"
-    rm -f "$TMP/GApps/$1.tar.xz"
   elif [ -e "$TMP/GApps/$1.tar.lz" ]; then
     tar -xyf "$TMP/GApps/$1.tar.lz" -C "$TMP" "$2"
-    rm -f "$TMP/GApps/$1.tar.lz"
   elif [ -e "$TMP/GApps/$1.tar" ]; then
     tar -xf "$TMP/GApps/$1.tar" -C "$TMP" "$2"
-    rm -f "$TMP/GApps/$1.tar"
   fi
   cp -rf "$TMP/$2/app/$4" "/data/app/$3-$number.apk"
   rm -rf "$TMP/$2"
