@@ -30,6 +30,7 @@ commonscripts() {
   makeinstallersh "installer.sh"
   bundlebusybox "busybox"
   bundlexz "xzdec"
+  bundlezip "zip"
   makeupdatebinary "META-INF/com/google/android/update-binary" "busybox" "installer.sh" # execute as last, it contains $EXTRACTFILES from the previous commands
   bundlelicense #optionally add a LICENSE file to the package
 }
@@ -72,6 +73,16 @@ bundlexz() {
     x86*) xzdecbin="xzdec-x86";;
   esac
   copy "$SCRIPTS/xz-resources/$xzdecbin" "$build/$1"
+  EXTRACTFILES="$EXTRACTFILES $1"
+  CHMODXFILES="$CHMODXFILES $1"
+}
+
+bundlezip() {
+  case "$ARCH" in #Include zip binary
+    arm*) zipbin="zip-arm";;
+    x86*) zipbin="zip-x86";;
+  esac
+  copy "$SCRIPTS/infozip-resources/$zipbin" "$build/$1"
   EXTRACTFILES="$EXTRACTFILES $1"
   CHMODXFILES="$CHMODXFILES $1"
 }
@@ -157,6 +168,10 @@ createzip() {
   for d in $(ls -d */ | grep -v "META-INF"); do #notice that d will end with a slash, ls is safe here because there are no directories with spaces
     cd "$build/$d"
     for f in $(ls); do # ls is safe here because there are no directories with spaces
+      apk="$(find "$f/" -name "*.apk" -type f | head -n 1)"  # we assume the classes*.dex are around the same size in all APK variants
+      if [ -f "$apk" ] && ! (unzip -ql "$apk" | grep -q "META-INF/MANIFEST.MF" && unzip -p "$apk" "META-INF/MANIFEST.MF" | grep -q "$classes.dex"); then
+        printf "%s\t%s\t%d\n" "$f" "odex" "$(($(unzip -ql "$apk" "classes*.dex" | tail -n 1 | awk '{print $1}') / 512))" >> "$build/app_sizes.txt"  # divide by 1024 for KiB, multiply with 2 because oat is often 2*classes.dex size
+      fi
       for g in $(ls "$f"); do
         foldersize="$(du -ck "$f/$g/" | tail -n1 | awk '{ print $1 }')"
         printf "%s\t%s\t%d\n" "$f" "$g" "$foldersize" >> "$build/app_sizes.txt"

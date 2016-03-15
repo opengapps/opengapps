@@ -13,6 +13,8 @@
 makegprop(){
   echo "# begin addon properties
 ro.addon.type=gapps
+ro.addon.arch=$ARCH
+ro.addon.sdk=$API
 ro.addon.platform=$PLATFORM
 ro.addon.open_type=$VARIANT
 ro.addon.open_version=$DATE
@@ -80,13 +82,13 @@ makeupdatebinary(){
 #    This Open GApps installer-runtime is because of the Open GApps installable
 #    zip exception de-facto LGPLv3 licensed.
 #
-export ZIP="$3"
+export OPENGAZIP="$3"
 export OUTFD="/proc/self/fd/$2"
 export TMP="/tmp"
 bb="$TMP/'"$2"'"
 l="$TMP/bin"
 for f in '"$EXTRACTFILES"'; do
-  unzip -o "$ZIP" "$f" -d "$TMP";
+  unzip -o "$OPENGAZIP" "$f" -d "$TMP";
 done
 for f in '"$CHMODXFILES"'; do
   chmod +x "$TMP/$f";
@@ -136,6 +138,7 @@ pkg_names="'"$SUPPORTEDVARIANTS"'";
 # Installer Name (32 chars Total, excluding "")
 installer_name="Open GApps '"$VARIANT"' '"$PLATFORM"' - ";
 
+req_android_arch="'"$ARCH"'";
 req_android_sdk="'"$API"'";
 req_android_version="'"$PLATFORM"'";
 
@@ -594,7 +597,7 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
-zip_folder="$(dirname "$ZIP")";
+zip_folder="$(dirname "$OPENGAZIP")";
 g_prop=/system/etc/g.prop
 PROPFILES="$g_prop /system/default.prop /system/build.prop /data/local.prop /default.prop /build.prop"
 bkup_tail=$TMP/bkup_tail.sh;
@@ -627,18 +630,27 @@ abort() {
 }
 
 ch_con() {
-  LD_LIBRARY_PATH=/system/lib /system/lib64 /system/toolbox chcon -h u:object_r:system_file:s0 "$1";
-  LD_LIBRARY_PATH=/system/lib /system/lib64 /system/bin/toolbox chcon -h u:object_r:system_file:s0 "$1";
+  LD_LIBRARY_PATH='/system/lib:/system/lib64:/system/toolbox' chcon -h u:object_r:system_file:s0 "$1";
+  LD_LIBRARY_PATH='/system/lib:/system/lib64:/system/bin/toolbox' chcon -h u:object_r:system_file:s0 "$1";
   chcon -h u:object_r:system_file:s0 "$1";
 }
 
 ch_con_recursive() {
   dirs=$(echo "$@" | awk '{ print substr($0, index($0,$1)) }');
   for i in $dirs; do
-    find "$i" -exec LD_LIBRARY_PATH=/system/lib /system/lib64 /system/toolbox chcon -h u:object_r:system_file:s0 {} +;
-    find "$i" -exec LD_LIBRARY_PATH=/system/lib /system/lib64 /system/bin/toolbox chcon -h u:object_r:system_file:s0 {} +;
+    find "$i" -exec LD_LIBRARY_PATH='/system/lib:/system/lib64:/system/toolbox' chcon -h u:object_r:system_file:s0 {} +;
+    find "$i" -exec LD_LIBRARY_PATH='/system/lib:/system/lib64:/system/bin/toolbox' chcon -h u:object_r:system_file:s0 {} +;
     find "$i" -exec chcon -h u:object_r:system_file:s0 {} +;
   done;
+}
+
+checkmanifest() {
+  if [ -f "$1" ] && (unzip -ql "$1" | grep -q "META-INF/MANIFEST.MF"); then  # strict, only files
+    unzip -p "$1" "META-INF/MANIFEST.MF" | grep -q "$2"
+    return "$?"
+  else
+    return 0
+  fi
 }
 
 complete_gapps_list() {
@@ -663,7 +675,7 @@ clean_inst() {
 
 extract_app() {
   tarpath="$TMP/$1.tar" # NB no suffix specified here
-  unzip -o "$ZIP" "$1.tar*" -d "$TMP" # wildcard for suffix
+  unzip -o "$OPENGAZIP" "$1.tar*" -d "$TMP" # wildcard for suffix
   app_name="$(basename "$1")"
   which_dpi "$app_name"
   folder_extract "$tarpath" "$dpiapkpath" "$app_name/common"
@@ -728,7 +740,7 @@ get_appsize() {
   app_name="$(basename "$1")";
   which_dpi "$app_name";
   app_density="$(basename "$dpiapkpath")";
-  appsize="$(cat $TMP/app_sizes.txt | grep -E "$app_name.*($app_density|common)" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')";
+  appsize="$(cat $TMP/app_sizes.txt | grep -E "$app_name.*($app_density|common|odex)" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')";
 }
 
 get_file_prop() {
@@ -755,6 +767,16 @@ get_prop() {
 
 install_extracted() {
   cp -rf "$TMP/$1/." "/system/"
+  if [ "$preodex" = "true" ]; then
+    installedapkpaths="$(find "$TMP/$1/" -name "*.apk" -type f | cut -d/ -f5-)"
+    for installedapkpath in $installedapkpaths; do  # TODO fix spaces-handling
+      if ! checkmanifest "/system/$installedapkpath" "classes.dex"; then
+        ui_print "- pre-ODEX-ing $gapp_name";
+        log "pre-ODEX-ing" "$gapp_name";
+        odexapk "/system/$installedapkpath"
+      fi
+    done
+  fi
   bkup_list=$'\n'"$(find "$TMP/$1/" -type f | cut -d/ -f5-)${bkup_list}"
   rm -rf "$TMP/$1"
 }
@@ -775,6 +797,27 @@ obsolete_gapps_list() {
   cat <<EOF
 $remove_list
 EOF
+}
+
+odexapk() {
+  if [ -f "$1" ]; then  # strict, only files
+    apkdir="$(dirname "$1")"
+    apkname="$(basename "$1" ".apk")"  # Take note not to use -s, it is not supported in busybox
+    unzip -q -o "$1" "classes*.dex" -d "$apkdir"
+    eval '$TMP/zip -d "$1" "classes*.dex"'
+    dexfiles="$(find "$apkdir" -name "classes*.dex")"
+    if [ -n "$dexfiles" ]; then
+      dex="LD_LIBRARY_PATH='/system/lib:/system/lib64' /system/bin/dex2oat"
+      for d in $dexfiles; do
+        dex="$dex --dex-file=\"$d\""
+        bkup_list=$'\n'"${d#\/system\/}${bkup_list}"  # Backup the dex for re-generating oat in the future
+      done
+      dex="install -d \"$apkdir/oat/$req_android_arch\" && $dex --instruction-set=\"$req_android_arch\" --oat-file=\"$apkdir/oat/$req_android_arch/$apkname.odex\""
+      eval "$dex"
+      # Add the dex2oat command to addon.d for re-running during a restore
+      sed -i "\:# Re-pre-ODEX APKs (from GApps Installer):a \    $dex" $bkup_tail
+    fi
+  fi
 }
 
 quit() {
@@ -1172,6 +1215,21 @@ else
   forceclean="false"
 fi
 
+# Check for Pre-Odex support or NoPreODEX Override in gapps-config
+if [ "$rom_build_sdk" -lt "21" ]; then
+  preodex="false [Only 5.0+]"
+elif [ "$(get_prop "persist.sys.dalvik.vm.lib.2")" != "libart.so" ]; then
+  preodex="false [No ART]"
+elif ! command -v "$TMP/zip" >/dev/null 2>&1; then
+  preodex="false [No Info-Zip]"
+elif ! command -v "dex2oat" >/dev/null 2>&1; then
+  preodex="false [No dex2oat]"
+elif ( grep -qiE '^nopreodex$' "$g_conf" ); then # true or false to override the default selection
+  preodex="false [nopreodex]"
+else
+  preodex="true"
+fi
+
 # Check for skipswypelibs Override in gapps-config
 if ( grep -qiE '^skipswypelibs$' $g_conf ); then # true or false to override the default selection
   skipswypelibs="true"
@@ -1240,6 +1298,7 @@ log "Device Type" "$device_type"
 log "Device CPU" "$device_architecture"
 log "Display Density Used" "$density"
 log "Install Type" "$install_type"
+log "Smart ART Pre-ODEX" "$preodex"
 log "Google Camera Installed¹" "$cameragoogle_inst"
 log "FaceUnlock Compatible" "$faceunlock_compat"
 log "Google Camera Compatible" "$cameragoogle_compat"
@@ -1730,7 +1789,7 @@ done;
 
 # Add swypelibs size to core, if it will be installed
 if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false" ]; then
-  unzip -o "$ZIP" "Optional/swypelibs.tar.*" -d "$TMP"
+  unzip -o "$OPENGAZIP" "Optional/swypelibs.tar.*" -d "$TMP"
   if [ -e "$TMP/Optional/swypelibs.tar.xz" ]; then
     keybd_lib_size=$(tar -tvJf "$TMP/Optional/swypelibs.tar.xz" "swypelibs" 2>/dev/null | awk 'BEGIN { app_size=0; } { file_size=$3; app_size=app_size+file_size; } END { printf "%.0f\n", app_size / 1024; }');
   elif [ -e "$TMP/Optional/swypelibs.tar.lz" ]; then
@@ -1894,11 +1953,11 @@ done;
 # _____________________________________________________________________________________________________________________
 #                                                  Perform Installs
 ui_print "- Installing core GApps";
-ui_print " ";
 set_progress 0.15;
 for gapp_name in $core_gapps_list; do
   extract_app "Core/$gapp_name";
 done;
+ui_print " ";
 set_progress 0.25;
 
 EOFILE
@@ -1915,7 +1974,7 @@ prog_bar=3000; # Set Progress Bar start point (0.3000) for below
 # Install the rest of GApps still in $gapps_list
 for gapp_name in $gapps_list; do
   ui_print "- Installing $gapp_name";
-  log "- Installing " "$gapp_name";
+  log "Installing" "$gapp_name";
   extract_app "GApps/$gapp_name"; # Installing User Selected GApps
   prog_bar=$((prog_bar + incr_amt));
   set_progress 0.$prog_bar;

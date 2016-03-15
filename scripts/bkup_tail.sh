@@ -53,6 +53,8 @@ case "$1" in
   post-restore)
     # Recreate required symlinks (from GApps Installer)
 
+    # Re-pre-ODEX APKs (from GApps Installer)
+
     # Remove any empty folders we may have created during the removal process
     for i in /system/app /system/priv-app /system/vendor/pittpatt /system/usr/srec /system/vendor/pittpatt; do
         find $i -type d | xargs -r rmdir -p --ignore-fail-on-non-empty;

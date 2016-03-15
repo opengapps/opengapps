@@ -14,7 +14,7 @@
 checktools() {
   missing=""
   # Check existance of specified tools and notify user of missing tools
-  for command in $@; do
+  for command in "$@"; do
     # To check pseudo tool "coreutils" we check one of it's tools absent from any other package
     if [ "$command" = "coreutils" ]; then command="basename"; fi
 
