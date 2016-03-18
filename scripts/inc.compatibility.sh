@@ -28,7 +28,7 @@ esac' >> "$1"
 }
 
 hotwordadditionhack(){
-  if [ "$API" -ge "23" ]; then
+  if [ "$API" -ge "23" ] && [ "$ARCH" = "arm64" ]; then
     tee -a "$1" > /dev/null <<'EOFILE'
 # On Marshmallow; If we're installing search we must install hotword too (if it's not already there)
 if ( contains "$gapps_list" "search" ) && ( ! contains "$gapps_list" "hotword" ); then
@@ -297,8 +297,10 @@ api23hack(){
     gappspico="$gappspico
 googletts
 packageinstallergoogle"
-    gappsnano="$gappsnano
+    if [ "$ARCH" = "arm64" ]; then
+      gappsnano="$gappsnano
 hotword"
+    fi
     gappsmini="$gappsmini
 calculatorgoogle"
     gappsstock="$gappsstock

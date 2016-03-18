@@ -1431,7 +1431,7 @@ fi;
 
 EOFILE
 provisionremovalhack "$build/$1" #pre-Marshmallow Provision always has to be removed
-hotwordadditionhack "$build/$1" #Marshmallow (64 bit) requires HotwordEnrollment for OK Google support in Search
+hotwordadditionhack "$build/$1" #Marshmallow (arm64) requires HotwordEnrollment for OK Google support in Search
 tee -a "$build/$1" > /dev/null <<'EOFILE'
 # Verify device is FaceUnlock compatible BEFORE we allow it in $gapps_list
 if ( contains "$gapps_list" "faceunlock" ) && [ $faceunlock_compat = "false" ]; then
