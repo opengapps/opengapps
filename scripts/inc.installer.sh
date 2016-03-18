@@ -630,16 +630,12 @@ abort() {
 }
 
 ch_con() {
-  LD_LIBRARY_PATH='/system/lib:/system/lib64:/system/toolbox' chcon -h u:object_r:system_file:s0 "$1";
-  LD_LIBRARY_PATH='/system/lib:/system/lib64:/system/bin/toolbox' chcon -h u:object_r:system_file:s0 "$1";
   chcon -h u:object_r:system_file:s0 "$1";
 }
 
 ch_con_recursive() {
   dirs=$(echo "$@" | awk '{ print substr($0, index($0,$1)) }');
   for i in $dirs; do
-    find "$i" -exec LD_LIBRARY_PATH='/system/lib:/system/lib64:/system/toolbox' chcon -h u:object_r:system_file:s0 {} +;
-    find "$i" -exec LD_LIBRARY_PATH='/system/lib:/system/lib64:/system/bin/toolbox' chcon -h u:object_r:system_file:s0 {} +;
     find "$i" -exec chcon -h u:object_r:system_file:s0 {} +;
   done;
 }
