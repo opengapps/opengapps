@@ -2,12 +2,21 @@ Getting the latest pre-built Open GApps
 ---------------
 The latest version of pre-built Open GApps can be found at http://opengapps.org
 
+[![Gitter](https://img.shields.io/gitter/room/opengapps/general.js.svg)](https://gitter.im/opengapps/general)
+
+|Arch |Total|Latest|
+|----:|:----|:-----|
+|[ARM](http://opengapps.org/arch=arm)|[![ARM Releases](https://img.shields.io/github/downloads/opengapps/arm/total.svg)](http://opengapps.org/arch=arm)|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/arm/latest/total.svg)](http://opengapps.org/arch=arm)|
+|[ARM64](http://opengapps.org/arch=arm64)|[![ARM64 Releases](https://img.shields.io/github/downloads/opengapps/arm64/total.svg)](http://opengapps.org/arch=arm64)|[![Latest ARM64](https://img.shields.io/github/downloads/opengapps/arm64/latest/total.svg)](http://opengapps.org/arch=arm64)|
+|[x86](http://opengapps.org/arch=x86)|[![x86 Releases](https://img.shields.io/github/downloads/opengapps/x86/total.svg)](http://opengapps.org/arch=x86)|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/x86/latest/total.svg)](http://opengapps.org/arch=x86)|
+|[x86_64](http://opengapps.org/arch=x86_64)|[![x86_64 Releases](https://img.shields.io/github/downloads/opengapps/x86_64/total.svg)](http://opengapps.org/arch=x86_64)|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/x86_64/latest/total.svg)](http://opengapps.org/arch=x86_64)|
+
 Support for the pre-built packages from OpenGApps.org
 ---------------
 If you have any questions check out the [Open GApps Wiki](https://github.com/opengapps/opengapps/wiki) especially the [FAQ](https://github.com/opengapps/opengapps/wiki/FAQ) answers most questions.
-If you can't find the answer to your question use the [XDA Q&A Thread](http://forum.xda-developers.com/showthread.php?t=3124506) to receive support. *Don't forget to add at least the Open GApps installer debug log and if experiencing Force Closures also include a logcat*.
+If you can't find the answer to your question use the [XDA Q&A Thread](http://forum.xda-developers.com/showthread.php?t=3124506) or join us on [Gitter](https://gitter.im/opengapps/general) to receive support. *Don't forget to add at least the Open GApps installer debug log and if experiencing Force Closures also include a logcat*.
 
-If you did find a bug in the Pre-built OpenGApps.org packages you can report it at the [XDA Open GApps Development Thread](http://forum.xda-developers.com/android/software/Open-GApps-t3098071). *Also on this thread you need to include at minimum the Open GApps installer debug log and if applicable a logcat*.
+If you did find a bug in the Pre-built OpenGApps.org packages you can report it at the [XDA Open GApps Development Thread](http://forum.xda-developers.com/android/software/Open-GApps-t3098071) or [Gitter](https://gitter.im/opengapps/general). *Also on this thread you need to include at minimum the Open GApps installer debug log and if applicable a logcat*.
 
 Please **don't** file directly any GitHub issues to file problems with the Pre-built packages. The GitHub issues tracker is only used for issues concerning the Open GApps Project scripts themselves.
 
