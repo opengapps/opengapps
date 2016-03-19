@@ -1212,8 +1212,8 @@ else
 fi
 
 # Check for Pre-Odex support or NoPreODEX Override in gapps-config
-if [ "$rom_build_sdk" -lt "21" ]; then
-  preodex="false [Only 5.0+]"
+if [ "$rom_build_sdk" -lt "23" ]; then
+  preodex="false [Only 6.0+]"
 elif [ "$(get_prop "persist.sys.dalvik.vm.lib.2")" != "libart.so" ]; then
   preodex="false [No ART]"
 elif ! command -v "$TMP/zip" >/dev/null 2>&1; then
