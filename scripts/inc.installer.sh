@@ -1076,7 +1076,7 @@ if [ "$g_conf" ]; then
   g_conf_orig="$g_conf";
   g_conf="$TMP/proc_gconf";
 
-  sed -r -e 's/\r//g' -e 's|#.*||g' -e 's/^[ \t]*//g' -e 's/[ \t]*$//g' -e '/^$/d' "$g_conf_orig" > "$g_conf"; # UNIX line-endings, strip comments+emptylines+spaces+tabs
+  sed -r -e 's/\r//g' -e 's|#.*||g' -e 's/^[ \t ]*//g' -e 's/[ \t ]*$//g' -e '/^$/d' "$g_conf_orig" > "$g_conf"; # UNIX line-endings, strip comments+emptylines+spaces+tabs
 
   # include mentioned as a *whole word* (surrounded by space/tabs or start/end or directly followed by a comment) and is itself NOT a comment (should not be possible because of sed above)
   if ( grep -qiE '^([^#]*[[:blank:]]+)?include($|#|[[:blank:]])' "$g_conf" ); then
