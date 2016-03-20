@@ -17,6 +17,12 @@ preparebuildarea() {
   rm -rf "$build"
   install -d "$build"
   install -d "$CACHE"
+  logfile=""
+  if [ -n "$VERSIONLOG" ]; then
+    logfile="$(eval "echo \"$VERSIONLOG\"")"
+    install -d "$(dirname "$logfile")"
+    printf "%-44s| %-6s|%3s| %-27s| %s\n-------------------------------------------------------------------------------------------\n" "Application / File" "Arch." "API" "Version Name" "DPIs" > "$logfile"
+  fi
 }
 
 copy() {
@@ -70,6 +76,9 @@ buildsystemlib() {
 
   if getsystemlibforapi "$libname" "$usearch" "$API"; then
     printf "%44s %6s-%s\n" "$libname" "$usearch" "$api"
+    if [ -n "$logfile" ]; then
+      printf "%-44s| %-6s| %s|\n" "$libname" "$usearch" "$api" >> "$logfile"
+    fi
     install -D -p "$sourcelib" "$build/$liblocation/$targetlib"
   else
     fallback="true"
@@ -138,15 +147,24 @@ buildapp() {
         baseversionname=$versionname
         buildlib "$dpivariant" "$liblocation" "$usearch" #Use the libs from this baseversion
         printf "%44s %6s-%-2s %27s" "$package" "$usearch" "$api" "$baseversionname"
+        if [ -n "$logfile" ]; then
+          printf "%-44s| %-6s| %-2s| %-27s|" "$package" "$usearch" "$api" "$baseversionname" >> "$logfile"
+        fi
       fi
       if [ "$versionname" = "$baseversionname" ]; then
         density=$(basename "$(dirname "$dpivariant")")
         buildapk "$dpivariant" "$ziplocation/$density/$targetlocation"
         printf " %s" "$density"
+        if [ -n "$logfile" ]; then
+          printf " %s" "$density" >> "$logfile"
+        fi
         echo "$ziplocation/$density/" >> "$build/app_densities.txt"
       fi
     done
     printf "\n"
+    if [ -n "$logfile" ]; then
+      printf "\n" >> "$logfile"
+    fi
   else
     get_fallback_arch "$usearch"
     if [ "$usearch" != "$fallback_arch" ]; then

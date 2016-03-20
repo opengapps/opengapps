@@ -217,7 +217,11 @@ createzip() {
   echo "INFO: Total size compressed applications: $(du -hs "$build" | awk '{ print $1 }')"
 
   unsignedzip="$BUILD/$ARCH/$API/$VARIANT.zip"
-  signedzip="$OUT/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.zip"
+  if [ -n "$OUTFILE" ]; then
+    signedzip="$( eval "echo \"$OUTFILE\"")"
+  else
+    signedzip="$OUTFOLDER/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE-UNOFFICIAL.zip"
+  fi
 
   if [ -f "$unsignedzip" ]; then
     rm "$unsignedzip"
@@ -231,7 +235,7 @@ createzip() {
 }
 
 signzip() {
-  install -d "$OUT"
+  install -d "$(dirname "$signedzip")"
   if [ -f "$signedzip" ]
   then
     rm "$signedzip"

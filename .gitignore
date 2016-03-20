@@ -10,6 +10,7 @@
 # Generated files
 cache/
 build/
+log/
 out/
 
 # Local configuration file (sdk path, etc)

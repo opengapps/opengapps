@@ -23,7 +23,7 @@ VARIANTS := super stock full mini micro nano pico aroma
 BUILDDIR := $(TOPDIR)/build
 CACHEDIR := $(TOPDIR)/cache
 OUTDIR := $(TOPDIR)/out
-LOG_BUILD := /tmp/gapps_log
+LOGDIR := $(TOPDIR)/log
 
 define make-gapps
 #We first define 'all' so that this is the primary make target
@@ -39,10 +39,10 @@ $1:
 	$(variant = $(word 3, $(subst -, ,$1)))
 	@if [ "$(api)" -ge "$(LOWEST_API_$(platform))" ] && [ -n "$(variant)" ] ; then\
 		echo "Generating Open GApps $(variant) package for $(platform) with API level $(api)...";\
-		$(BUILD_GAPPS) $(platform) $(api) $(variant) 2>&1 | tee $(LOG_BUILD);\
+		$(BUILD_GAPPS) $(platform) $(api) $(variant) 2>&1;\
 	elif [ "$(api)" -ge "$(LOWEST_API_$(platform))" ] && [ -z "$(variant)" ] ; then\
 		for variant in $(VARIANTS);do\
-			$(BUILD_GAPPS) $(platform) $(api) $$$$variant 2>&1 | tee $(LOG_BUILD);\
+			$(BUILD_GAPPS) $(platform) $(api) $$$$variant 2>&1;\
 		done;\
 	else\
 		echo "Illegal combination of Platform and API";exit 1;\
@@ -67,7 +67,8 @@ tidycache:
 
 clean:
 	@rm -fr "$(BUILDDIR)"
-	@echo "$(tput setaf 2)Build directory removed!$(tput sgr 0)"
+	@rm -fr "$(LOGDIR)"
+	@echo "$(tput setaf 2)Build & log directory removed!$(tput sgr 0)"
 
 distclean: clean
 	@rm -fr "$(CACHEDIR)"

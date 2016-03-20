@@ -26,13 +26,16 @@ API="$2"
 VARIANT="$3"
 BUILD="$TOP/build"
 CACHE="$TOP/cache"
-OUT="$TOP/out"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 CERTIFICATES="$SCRIPTS/certificates"
-#CERTIFICATEFILE="" # this can be set to a filepath to use as certificate file for signing
-#KEYFILE="" # this can be set to a filepath to use as key file for signing
-#OPENGAPPSLICENSEFILE="" # this can be set to a filepath to include as a LICENSE file
+#CERTIFICATEFILE=""  # this can be set to a filepath to use as certificate file for signing
+#KEYFILE=""  # this can be set to a filepath to use as key file for signing
+#OPENGAPPSLICENSEFILE=""  # this can be set to a filepath to include as a LICENSE file
+OUTFOLDER="$TOP/out"
+#OUTFILE='$OUTFOLDER/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.zip'  # this can be set to a filepath to use as alternative outputfile; use ' to allow variables to be evaluated later
+LOGFOLDER="$TOP/log"
+#VERSIONLOG='$LOGFOLDER/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.versionlog.txt'  # if set to a non-zero value a version log will be created at the set filepath; use ' to allow variables to be evaluated later
 COMPRESSION="xz" # lz # none # this sets the default compression method, override is possible in compressapp
 . "$SCRIPTS/inc.aromadata.sh"
 . "$SCRIPTS/inc.buildhelper.sh"
