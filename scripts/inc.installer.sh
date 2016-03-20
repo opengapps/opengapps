@@ -1430,7 +1430,7 @@ else
 fi;
 
 EOFILE
-provisionremovalhack "$build/$1" #pre-Marshmallow Provision always has to be removed
+provisionsetupwizardhack "$build/$1" #pre-Marshmallow Provision always has to be removed, in Marshmallow this applies to CMSetupWizard instead
 hotwordadditionhack "$build/$1" #Marshmallow (arm64) requires HotwordEnrollment for OK Google support in Search
 tee -a "$build/$1" > /dev/null <<'EOFILE'
 # Verify device is FaceUnlock compatible BEFORE we allow it in $gapps_list
