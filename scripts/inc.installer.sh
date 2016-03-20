@@ -799,8 +799,11 @@ odexapk() {
   if [ -f "$1" ]; then  # strict, only files
     apkdir="$(dirname "$1")"
     apkname="$(basename "$1" ".apk")"  # Take note not to use -s, it is not supported in busybox
-    unzip -q -o "$1" "classes*.dex" -d "$apkdir"
+    install -d "$TMP/classesdex"
+    unzip -q -o "$1" "classes*.dex" -d "$TMP/classesdex/"  # extract to temporary location first, to avoid potential disk space shortage
     eval '$TMP/zip -d "$1" "classes*.dex"'
+    cp "$TMP/classesdex/"* "$apkdir"
+    rm -rf "$TMP/classesdex/"
     dexfiles="$(find "$apkdir" -name "classes*.dex")"
     if [ -n "$dexfiles" ]; then
       dex="LD_LIBRARY_PATH='/system/lib:/system/lib64' /system/bin/dex2oat"
