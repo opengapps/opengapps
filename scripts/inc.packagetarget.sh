@@ -170,7 +170,7 @@ createzip() {
     for f in $(ls); do # ls is safe here because there are no directories with spaces
       apk="$(find "$f/" -name "*.apk" -type f | head -n 1)"  # we assume the classes*.dex are around the same size in all APK variants
       if [ -f "$apk" ] && ! (unzip -ql "$apk" | grep -q "META-INF/MANIFEST.MF" && unzip -p "$apk" "META-INF/MANIFEST.MF" | grep -q "$classes.dex"); then
-        printf "%s\t%s\t%d\n" "$f" "odex" "$(($(unzip -ql "$apk" "classes*.dex" | tail -n 1 | awk '{print $1}') / 512))" >> "$build/app_sizes.txt"  # divide by 1024 for KiB, multiply with 2 because oat is often 2*classes.dex size
+        printf "%s\t%s\t%d\n" "$f" "odex" "$(($(echo "$(unzip -ql "$apk" "classes*.dex" | tail -n 1)" | awk '{print $1"*(("$2"/2)+2)/1024"}')))" >> "$build/app_sizes.txt"  # estimation heuristic: size-dexfiles * ((#-dexfiles/2)+2); bytes -> KiB
       fi
       for g in $(ls "$f"); do
         foldersize="$(du -ck "$f/$g/" | tail -n1 | awk '{ print $1 }')"
