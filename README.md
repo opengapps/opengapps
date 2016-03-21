@@ -16,7 +16,7 @@ Support for the pre-built packages from OpenGApps.org
 If you have any questions check out the [Open GApps Wiki](https://github.com/opengapps/opengapps/wiki) especially the [FAQ](https://github.com/opengapps/opengapps/wiki/FAQ) answers most questions.
 If you can't find the answer to your question use the [XDA Q&A Thread](http://forum.xda-developers.com/showthread.php?t=3124506) or join us on [Gitter](https://gitter.im/opengapps/general) to receive support. *Don't forget to add at least the Open GApps installer debug log and if experiencing Force Closures also include a logcat*.
 
-If you did find a bug in the Pre-built OpenGApps.org packages you can report it at the [XDA Open GApps Development Thread](http://forum.xda-developers.com/android/software/Open-GApps-t3098071) or [Gitter](https://gitter.im/opengapps/general). *Also on this thread you need to include at minimum the Open GApps installer debug log and if applicable a logcat*.
+If you did find a bug in the Pre-built OpenGApps.org packages you can report it at the [XDA Open GApps Development Thread](http://forum.xda-developers.com/android/software/Open-GApps-t3098071). *Remember to include at minimum the Open GApps installer debug log and if applicable a logcat*.
 
 Please **don't** file directly any GitHub issues to file problems with the Pre-built packages. The GitHub issues tracker is only used for issues concerning the Open GApps Project scripts themselves.
 
