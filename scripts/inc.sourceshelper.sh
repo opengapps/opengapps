@@ -20,6 +20,7 @@ GOOGLECERT="Issuer: C=US, ST=C(A|alifornia), L=Mountain View, O=Google((|,) Inc(
 INCOMPLETEFILES=1
 INVALIDCERT=2
 UNSIGNEDFILES=3
+APKTOOLFAILED=11
 
 getapkproperties(){
   apkproperties="$(aapt dump badging "$1" 2>/dev/null)"
@@ -112,6 +113,18 @@ getarchitecturesfromlib() {
   done
   if [ -z "$architectures" ]; then #If the package really has no native code
     architectures="all"
+  fi
+}
+
+getsetupwizardproduct() {
+  # Setupwizard has various variations, depending on product type. We need to decompile the APK to find this value
+  # this function is not part of the regular getapkproperties script because it is heavy and only necessary when adding an APK
+  tmpdir="$(mktemp -d)"
+  if java -jar "$APKTOOL" -q d -b -f -s -o "$tmpdir" "$1"; then
+    product="$(grep '<string name="product">' "$tmpdir/res/values/strings.xml" | sed -r 's#.*<string name="product">([^<]*)</string>#\1#')"
+    rm -rf "$tmpdir"
+  else
+    return $APKTOOLFAILED
   fi
 }
 

@@ -274,6 +274,17 @@ versionnamehack(){
   esac
 }
 
+api19hack(){
+  # On KitKat there is only 1 kind of setupwizard without a product type
+  if [ "$API" -le "19" ]; then
+  gappscore="$gappscore
+setupwizard"
+  else
+  gappscore="$gappscore
+setupwizarddefault"
+  fi
+}
+
 api21hack(){
   if [ "$API" -ge "21" ]; then
     gappsmini="$gappsmini

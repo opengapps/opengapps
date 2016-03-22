@@ -17,13 +17,14 @@ TOP="$(realpath .)"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 CERTIFICATES="$SCRIPTS/certificates"
+APKTOOL="$SCRIPTS/apktool-resources/apktool_2.0.3.jar"
 . "$SCRIPTS/inc.compatibility.sh"
 . "$SCRIPTS/inc.sourceshelper.sh"
 . "$SCRIPTS/inc.tools.sh"
 BETA=""
 
 # Check tools
-checktools aapt file coreutils jarsigner keytool openssl unzip
+checktools aapt file coreutils java jarsigner keytool openssl unzip
 
 installapk() {
   architecture="$1"
@@ -87,6 +88,17 @@ addapk() {
   apk="$1"
   getapkproperties "$apk"
 
+  if [ "$package" = "com.google.android.setupwizard" ]; then
+    if getsetupwizardproduct "$apk"; then
+      if [ -n "$product" ]; then
+        package="$package.$product"
+      fi
+    else
+      echo "ERROR: Failed to retrieve SetupWizard product-type of $apk"
+      return 1
+    fi
+  fi
+
   echo "Importing $name"
   echo "Package $package | VersionName $versionname | VersionCode $versioncode | API level $sdkversion"
   if [ "$dpis" = "nodpi" ]; then
@@ -122,9 +134,9 @@ addapk() {
   verified="$?"
   if [ "$verified" != 0 ]; then
     case "$verified" in
-      $INCOMPLETEFILES) echo "ERROR: The following files were mentioned in the signed manifest of $1 but are not present in the APK:
+      $INCOMPLETEFILES) echo "ERROR: The following files were mentioned in the signed manifest of $apk but are not present in the APK:
 $notinzip";;
-      $INVALIDCERT)     echo "ERROR: $1 contains files or a certificate not signed by Google. APK not imported";;
+      $INVALIDCERT)     echo "ERROR: $apk contains files or a certificate not signed by Google. APK not imported";;
       $UNSIGNEDFILES)   echo "ERROR: Unsigned or incomplete APKs are not allowed. APK is not imported.";;
     esac
     return 1
