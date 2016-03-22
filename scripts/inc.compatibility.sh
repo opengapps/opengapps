@@ -281,7 +281,8 @@ api19hack(){
 setupwizard"
   else
   gappscore="$gappscore
-setupwizarddefault"
+setupwizarddefault
+setupwizardtablet"
   fi
 }
 

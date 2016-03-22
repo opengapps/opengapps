@@ -1954,7 +1954,11 @@ done;
 ui_print "- Installing core GApps";
 set_progress 0.15;
 for gapp_name in $core_gapps_list; do
-  extract_app "Core/$gapp_name";
+  case $gapp_name in
+    setupwizarddefault) if [ "$device_type" != "tablet" ]; then extract_app "Core/$gapp_name"; fi;;
+    setupwizardtablet)  if [ "$device_type"  = "tablet" ]; then extract_app "Core/$gapp_name"; fi;;
+    *)  extract_app "Core/$gapp_name";;
+  esac
 done;
 ui_print " ";
 set_progress 0.25;
