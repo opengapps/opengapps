@@ -1742,7 +1742,7 @@ fi;
 
 # Removing old Chrome libraries
 obsolete_libs_list="";
-for f in $(find /system/lib /system/lib64 -name 'libchrome*.so' 2>/dev/null); do
+for f in $(find /system/lib /system/lib64 -name 'libchrome.*.so' 2>/dev/null); do
   obsolete_libs_list="${obsolete_libs_list}$f"$'\n';
 done;
 
