@@ -146,9 +146,9 @@ buildapp() {
       if [ -z "$baseversionname" ]; then
         baseversionname=$versionname
         buildlib "$dpivariant" "$liblocation" "$usearch" #Use the libs from this baseversion
-        printf "%44s %6s-%-2s %27s" "$package" "$usearch" "$api" "$baseversionname"
+        printf "%44s %6s-%-2s %27s" "$1" "$usearch" "$api" "$baseversionname"  # use $1 instead of $package to show the foldername packagename instead of the getapkproperties-name to get the setupwizard name right
         if [ -n "$logfile" ]; then
-          printf "%-44s| %-6s| %-2s| %-27s|" "$package" "$usearch" "$api" "$baseversionname" >> "$logfile"
+          printf "%-44s| %-6s| %-2s| %-27s|" "$1" "$usearch" "$api" "$baseversionname" >> "$logfile"
         fi
       fi
       if [ "$versionname" = "$baseversionname" ]; then
