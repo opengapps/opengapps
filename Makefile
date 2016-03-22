@@ -40,10 +40,12 @@ $1:
 	@if [ "$(api)" -ge "$(LOWEST_API_$(platform))" ] && [ -n "$(variant)" ] ; then\
 		echo "Generating Open GApps $(variant) package for $(platform) with API level $(api)...";\
 		$(BUILD_GAPPS) $(platform) $(api) $(variant) 2>&1;\
+		exit 0;\
 	elif [ "$(api)" -ge "$(LOWEST_API_$(platform))" ] && [ -z "$(variant)" ] ; then\
 		for variant in $(VARIANTS);do\
 			$(BUILD_GAPPS) $(platform) $(api) $$$$variant 2>&1;\
 		done;\
+		exit 0;\
 	else\
 		echo "Illegal combination of Platform and API";exit 1;\
 	fi
