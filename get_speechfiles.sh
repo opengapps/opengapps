@@ -39,3 +39,6 @@ for firstapk in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces wi
   done
   break
 done
+
+# The real latest voice data is at http://dl.google.com/dl/android/voice/en-us/v215/en-US-v215-f19.zip
+# But we don't know how to discover this URL in a nice way.
