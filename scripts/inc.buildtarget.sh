@@ -253,7 +253,10 @@ get_package_info(){
     youtube)                  packagetype="GApps"; packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
     zhuyin)                   packagetype="GApps"; packagename="com.google.android.apps.inputmethod.zhuyin"; packagetarget="app/GoogleZhuyinIME";;
 
-    swypelibs)                packagetype="Optional"; packagelibs="libjni_latinimegoogle.so";;
+    swypelibs)                packagetype="Optional"; packagelibs="libjni_latinimegoogle.so"
+                              if [ "$API" -ge "23" ]; then  # On Marshmallow+ there is an extra lib
+                                packagelibs="$packagelibs libjni_keyboarddecoder.so"
+                              fi;;
 
     *)              echo "ERROR! Missing build rule for application with keyword $1"; exit 1;;
   esac
