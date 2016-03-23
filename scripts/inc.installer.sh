@@ -45,16 +45,8 @@ $gapps_remove"
       done
     done
     for file in $packagefiles; do
-      if [ "$file" = "etc" ];then
-        gapps_remove="$(find "$SOURCES/all/" -mindepth 3 -printf "%P\n" -name "*" | grep "etc/" | sed 's#^#/system/#' | sort | uniq)
+      gapps_remove="/system/$file
 $gapps_remove"
-      elif [ "$file" = "framework" ];then
-        gapps_remove="$(find "$SOURCES/all/" -mindepth 2 -printf "%P\n" -name "*" | grep "framework/" | sed 's#^#/system/#' | sort | uniq)
-$gapps_remove"
-      else
-        gapps_remove="/system/$file
-$gapps_remove"
-      fi
     done
     for extraline in $packagegappsremove; do
       gapps_remove="/system/$extraline
