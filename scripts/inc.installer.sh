@@ -670,34 +670,35 @@ extract_app() {
 }
 
 exxit() {
-  set_progress 0.98;
+  set_progress 0.98
   if ( ! grep -qiE '^ *nodebug *($|#)+' "$g_conf" ); then
     if [ "$g_conf" ]; then # copy gapps-config files to debug logs folder
-      cp -f "$g_conf_orig" $TMP/logs/gapps-config_original.txt;
-      cp -f "$g_conf" $TMP/logs/gapps-config_processed.txt;
-    fi;
-    ls -alZR /system > $TMP/logs/System_Files_After.txt;
-    df -k > $TMP/logs/Device_Space_After.txt;
-    cp -f "$log_folder/open_gapps_log.txt" $TMP/logs;
+      cp -f "$g_conf_orig" $TMP/logs/gapps-config_original.txt
+      cp -f "$g_conf" $TMP/logs/gapps-config_processed.txt
+    fi
+    ls -alZR /system > $TMP/logs/System_Files_After.txt
+    df -k > $TMP/logs/Device_Space_After.txt
+    cp -f "$log_folder/open_gapps_log.txt" $TMP/logs
     for f in $PROPFILES; do
       cp -f "$f" "$TMP/logs"
     done
-    cp -f /system/addon.d/70-gapps.sh $TMP/logs;
-    cp -f $gapps_removal_list "$TMP/logs/gapps-remove_revised.txt";
-    cp -f $rec_cache_log $TMP/logs/Recovery_cache.log;
-    cp -f $rec_tmp_log $TMP/logs/Recovery_tmp.log;
-    cd $TMP;
-    tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" logs/*;
-    cd /;
-  fi;
-  find $TMP/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +;
-  set_progress 1.0;
-  ui_print "- Unmounting $mounts";
-  ui_print " ";
+    cp -f /system/addon.d/70-gapps.sh $TMP/logs
+    cp -f $gapps_removal_list "$TMP/logs/gapps-remove_revised.txt"
+    cp -f $rec_cache_log $TMP/logs/Recovery_cache.log
+    cp -f $rec_tmp_log $TMP/logs/Recovery_tmp.log
+    logcat -d -f $TMP/logs/logcat
+    cd $TMP
+    tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" logs/*
+    cd /
+  fi
+  find $TMP/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +
+  set_progress 1.0
+  ui_print "- Unmounting $mounts"
+  ui_print " "
   for m in $mounts; do
     umount "$m"
   done
-  exit "$1";
+  exit "$1"
 }
 
 folder_extract() {
