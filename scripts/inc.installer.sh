@@ -320,10 +320,10 @@ app/DashClock'"$REMOVALSUFFIX"'
 ";
 
 # Must be used when Google Dialer is installed
-#dialerstock_list="
-#priv-app/Dialer'"$REMOVALSUFFIX"'
-#priv-app/FineOSDialer'"$REMOVALSUFFIX"'
-#";
+dialerstock_list="
+priv-app/Dialer'"$REMOVALSUFFIX"'
+priv-app/FineOSDialer'"$REMOVALSUFFIX"'
+";
 
 email_list="
 app/Email'"$REMOVALSUFFIX"'
@@ -581,7 +581,7 @@ user_notfound_msg="NOTE: All User Application Removals included in gapps-config 
 del_conflict_msg="!!! WARNING !!! - Duplicate files were found between your ROM and this GApps\npackage. This is likely due to your ROM's dev including Google proprietary\nfiles in the ROM. The duplicate files are shown in the log portion below.\n";
 
 nogooglecontacts_removal_msg="NOTE: The Stock/AOSP Contacts is not available on your\nROM (anymore), the Google equivalent will not be removed."
-#nogoogledialer_removal_msg="NOTE: The Stock/AOSP Dialer is not available on your\nROM (anymore), the Google equivalent will not be removed."
+nogoogledialer_removal_msg="NOTE: The Stock/AOSP Dialer is not available on your\nROM (anymore), the Google equivalent will not be removed."
 nogooglekeyboard_removal_msg="NOTE: The Stock/AOSP Keyboard is not available on your\nROM (anymore), the Google equivalent will not be removed."
 nogooglepackageinstaller_removal_msg="NOTE: The Stock/AOSP Package Installer is not\navailable on your ROM (anymore), the Google equivalent will not be removed."
 nogoogletag_removal_msg="NOTE: The Stock/AOSP NFC Tag is not available on your\nROM (anymore), the Google equivalent will not be removed."
@@ -1278,6 +1278,12 @@ tee -a "$build/$1" > /dev/null <<'EOFILE'
   *) cameragoogle_compat=true;;
 esac;
 
+## TEMPORARY HACK WHILE GOOGLE DIALER IS STILL INCOMPATIBLE WITH MANY DEVICES AND NOT A DEFAULT SELECTED PART OF THE PACKAGE ##
+if ( grep -qiE '^dialergoogle$' $g_conf ); then
+  gapps_list="${gapps_list}dialergoogle"$'\n';
+fi
+## --- ##
+
 log "ROM Android version" "$(get_prop "ro.build.version.release")"
 log "ROM Build ID" "$(get_prop "ro.build.display.id")"
 log "ROM Version increment" "$(get_prop "ro.build.version.incremental")"
@@ -1609,22 +1615,22 @@ if [ "$ignoregooglecontacts" = "true" ]; then
   fi
 fi
 
-#ignoregoogledialer="true"
-#for f in $dialerstock_list; do
-#  if [ -e "/system/$f" ]; then
-#    ignoregoogledialer="false"
-#    break; #at least 1 aosp stock file is present
-#  fi
-#done;
-#if [ "$ignoregoogledialer" = "true" ]; then
-#  if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
-#    sed -i "\:/system/priv-app/GoogleDialer:d" $gapps_removal_list;
-#    ignoregoogledialer="true[NoRemove]"
-#    install_note="${install_note}nogoogledialer_removal"$'\n'; # make note that Google Dialer will not be removed
-#  else
-#    ignoregoogledialer="false[DialerGoogle]"
-#  fi
-#fi
+ignoregoogledialer="true"
+for f in $dialerstock_list; do
+  if [ -e "/system/$f" ]; then
+    ignoregoogledialer="false"
+    break; #at least 1 aosp stock file is present
+  fi
+done;
+if [ "$ignoregoogledialer" = "true" ]; then
+  if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+    sed -i "\:/system/priv-app/GoogleDialer:d" $gapps_removal_list;
+    ignoregoogledialer="true[NoRemove]"
+    install_note="${install_note}nogoogledialer_removal"$'\n'; # make note that Google Dialer will not be removed
+  else
+    ignoregoogledialer="false[DialerGoogle]"
+  fi
+fi
 
 ignoregooglekeyboard="true"
 for f in $keyboardstock_list; do
@@ -1762,7 +1768,7 @@ log "Remove Stock/AOSP Launcher" "$remove_launcher";
 log "Remove Stock/AOSP MMS App" "$remove_mms";
 log "Remove Stock/AOSP Pico TTS" "$remove_picotts";
 log "Ignore Google Contacts" "$ignoregooglecontacts";
-#log "Ignore Google Dialer" "$ignoregoogledialer";
+log "Ignore Google Dialer" "$ignoregoogledialer";
 log "Ignore Google Keyboard" "$ignoregooglekeyboard";
 log "Ignore Google Package Installer" "$ignoregooglepackageinstaller";
 log "Ignore Google NFC Tag" "$ignoregoogletag";

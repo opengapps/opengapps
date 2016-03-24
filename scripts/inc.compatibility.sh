@@ -379,9 +379,9 @@ packageinstallergoogle"
 calculatorgoogle"
     gappsstock="$gappsstock
 contactsgoogle"
-#dialergoogle"
     gappsstock_optional="$gappsstock_optional
-cameragooglelegacy"
+cameragooglelegacy
+dialergoogle"
 
     webviewstocklibs='lib/$WebView_lib_filename
 lib64/$WebView_lib_filename
