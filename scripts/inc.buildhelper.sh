@@ -21,7 +21,7 @@ preparebuildarea() {
   if [ -n "$VERSIONLOG" ]; then
     logfile="$(eval "echo \"$VERSIONLOG\"")"
     install -d "$(dirname "$logfile")"
-    printf "%-44s| %-6s|%3s| %-27s| %s\n-------------------------------------------------------------------------------------------\n" "Application / File" "Arch." "API" "Version Name" "DPIs" > "$logfile"
+    printf "%-46s| %-6s|%3s| %-27s| %s\n---------------------------------------------------------------------------------------------\n" "Application / File" "Arch." "API" "Version Name" "DPIs" > "$logfile"
   fi
 }
 
@@ -75,9 +75,9 @@ buildsystemlib() {
   esac
 
   if getsystemlibforapi "$libname" "$usearch" "$API"; then
-    printf "%44s %6s-%s\n" "$libname" "$usearch" "$api"
+    printf "%46s %6s-%s\n" "$libname" "$usearch" "$api"
     if [ -n "$logfile" ]; then
-      printf "%-44s| %-6s| %s|\n" "$libname" "$usearch" "$api" >> "$logfile"
+      printf "%-46s| %-6s| %s|\n" "$libname" "$usearch" "$api" >> "$logfile"
     fi
     install -D -p "$sourcelib" "$build/$liblocation/$targetlib"
   else
@@ -146,9 +146,9 @@ buildapp() {
       if [ -z "$baseversionname" ]; then
         baseversionname=$versionname
         buildlib "$dpivariant" "$liblocation" "$usearch" #Use the libs from this baseversion
-        printf "%44s %6s-%-2s %27s" "$1" "$usearch" "$api" "$baseversionname"  # use $1 instead of $package to show the foldername packagename instead of the getapkproperties-name to get the setupwizard name right
+        printf "%46s %6s-%-2s %27s" "$1" "$usearch" "$api" "$baseversionname"  # use $1 instead of $package to show the foldername packagename instead of the getapkproperties-name to get the setupwizard name right
         if [ -n "$logfile" ]; then
-          printf "%-44s| %-6s| %-2s| %-27s|" "$1" "$usearch" "$api" "$baseversionname" >> "$logfile"
+          printf "%-46s| %-6s| %-2s| %-27s|" "$1" "$usearch" "$api" "$baseversionname" >> "$logfile"
         fi
       fi
       if [ "$versionname" = "$baseversionname" ]; then
