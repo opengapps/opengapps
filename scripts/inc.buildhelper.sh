@@ -21,7 +21,7 @@ preparebuildarea() {
   if [ -n "$VERSIONLOG" ]; then
     logfile="$(eval "echo \"$VERSIONLOG\"")"
     install -d "$(dirname "$logfile")"
-    printf "%-46s| %-6s|%3s| %-27s| %s\n-------------------------------------------------------------------------------------------\n" "Application / File" "Arch." "API" "Version Name" "DPIs" > "$logfile"
+    printf "%-46s| %-6s|%3s| %-27s| %s\n---------------------------------------------------------------------------------------------\n" "Application / File" "Arch." "API" "Version Name" "DPIs" > "$logfile"
   fi
 }
 
