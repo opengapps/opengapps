@@ -29,6 +29,14 @@ argument() {
     --shallow)
       depth="--depth=1"
     ;;
+    --i-would-really-like-my-diskspace-back)
+      for module in $modules; do
+        git submodule deinit -f sources/$module
+        rm -rf .git/modules/sources/$module
+      done
+      echo "NOTICE: All local sources removed! Find more donations for a larger hard disk..."
+      exit 1
+    ;;
   esac
 }
 
