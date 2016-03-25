@@ -228,8 +228,7 @@ createzip() {
   fi
   cd "$build"
   echo "Packaging and signing $signedzip..."
-  # Store only the files in the zip without compressing them (-0 switch): further compression will be useless and will slow down the building process
-  zip -q -r -D -X -0 "$unsignedzip" ./* #don't doublequote zipfolders, contains multiple (safe) arguments
+  zip -q -r -D -X -$ZIPCOMPRESSIONLEVEL "$unsignedzip" ./* #don't doublequote zipfolders, contains multiple (safe) arguments
   cd "$TOP"
   signzip
 }
