@@ -21,7 +21,7 @@ preparebuildarea() {
   if [ -n "$VERSIONLOG" ]; then
     logfile="$(eval "echo \"$VERSIONLOG\"")"
     install -d "$(dirname "$logfile")"
-    printf "%-46s| %-6s|%3s| %-27s| %s\n---------------------------------------------------------------------------------------------\n" "Application / File" "Arch." "API" "Version Name" "DPIs" > "$logfile"
+    printf "%-6s%3s| %-46s| %-27s| %s\n---------------------------------------------------------------------------------------------\n" "Arch." "API" "Application / File / Folder" "Version Name" "DPIs" > "$logfile"
   fi
 }
 
@@ -46,10 +46,11 @@ buildfile() {
     else
       targetdir="$build/$2/$(dirname "$1")"
     fi
-    if [ "$usearch" != "$ARCH" ]; then
-      echo "INFO: Falling back from $ARCH to $usearch for file $1"
-    fi
     install -d "$targetdir"
+    printf "%6s    %s\n" "$usearch" "$1"
+    if [ -n "$logfile" ]; then
+      printf "%6s   | %-s\n" "$usearch" "$1">> "$logfile"
+    fi
     copy "$SOURCES/$usearch/$1" "$targetdir" #if we have a file specific to this architecture
   else
     get_fallback_arch "$usearch"
@@ -75,9 +76,9 @@ buildsystemlib() {
   esac
 
   if getsystemlibforapi "$libname" "$usearch" "$API"; then
-    printf "%46s %6s-%s\n" "$libname" "$usearch" "$api"
+    printf "%6s-%s %s\n" "$usearch" "$api" "$libname"
     if [ -n "$logfile" ]; then
-      printf "%-46s| %-6s| %s|\n" "$libname" "$usearch" "$api" >> "$logfile"
+      printf "%6s-%s| %-s\n" "$usearch" "$api" "$libname" >> "$logfile"
     fi
     install -D -p "$sourcelib" "$build/$liblocation/$targetlib"
   else
@@ -146,9 +147,9 @@ buildapp() {
       if [ -z "$baseversionname" ]; then
         baseversionname=$versionname
         buildlib "$dpivariant" "$liblocation" "$usearch" #Use the libs from this baseversion
-        printf "%46s %6s-%-2s %27s" "$1" "$usearch" "$api" "$baseversionname"  # use $1 instead of $package to show the foldername packagename instead of the getapkproperties-name to get the setupwizard name right
+        printf "%6s-%-2s %-46s %27s" "$usearch" "$api" "$1" "$baseversionname"  # use $1 instead of $package to show the foldername packagename instead of the getapkproperties-name to get the setupwizard name right
         if [ -n "$logfile" ]; then
-          printf "%-46s| %-6s| %-2s| %-27s|" "$1" "$usearch" "$api" "$baseversionname" >> "$logfile"
+          printf "%6s-%-2s| %-46s| %-27s|" "$usearch" "$api" "$1" "$baseversionname" >> "$logfile"
         fi
       fi
       if [ "$versionname" = "$baseversionname" ]; then
