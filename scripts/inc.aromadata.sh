@@ -265,8 +265,8 @@ form(
       "exdebug",     "<b>NoDebug</b>",       "To disable the creation of the debug log",                      "check",
       "extest",     "<b>Test</b>",       "To perform a simulation generating a detailed log, but <u>WILL NOT MAKE ANY CHANGES</u> to your device.",                      "check",
       "exswype",     "<b>SkipSwypelibs</b>",       "To avoid the installation of the Google Swype libraries for the AOSP Keyboard",                      "check",
-      "exclean",     "<b>ForceClean</b>",       "To ignore the detection of dirty installations and force the installer to behave as if it concerns a clean install <u>DO NOT REPORT ANY BUGS IF USED</u>",                      "check"
-      "DialerGoogle","<b>Google Dialer</b>",       "(CAREFUL! Not compatible with all devices; EXPERIMENTAL!)",                      "check",
+      "exclean",     "<b>ForceClean</b>",       "To ignore the detection of dirty installations and force the installer to behave as if it concerns a clean install <u>DO NOT REPORT ANY BUGS IF USED</u>",                      "check",
+      "DialerGoogle","<b>Google Dialer</b>",       "(CAREFUL! Not compatible with all devices; EXPERIMENTAL!)",                      "check"
 );
 
 ##############################################
