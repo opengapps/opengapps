@@ -37,6 +37,7 @@ OUTFOLDER="$TOP/out"
 LOGFOLDER="$TOP/log"
 #VERSIONLOG='$LOGFOLDER/open_gapps-$ARCH-$PLATFORM-$VARIANT-$DATE.versionlog.txt'  # if set to a non-zero value a version log will be created at the set filepath; use ' to allow variables to be evaluated later
 COMPRESSION="xz" # lz # none # this sets the default compression method, override is possible in compressapp
+#ZIPALIGNRECOMPRESS=""  # if set to a non-zero value, APKs will be recompressed with zopfli during zipalign
 ZIPCOMPRESSIONLEVEL="0"  # Store only the files in the zip without compressing them (-0 switch): further compression will be useless and will slow down the building process
 . "$SCRIPTS/inc.aromadata.sh"
 . "$SCRIPTS/inc.buildhelper.sh"

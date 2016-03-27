@@ -13,7 +13,11 @@
 alignbuild() {
   for f in $(find "$build" -name '*.apk'); do
     mv "$f" "$f.orig"
-    zipalign -f -p 4 "$f.orig" "$f" #consider recompression with Zopfli using -z for production use
+    zopfli=""
+    if [ -n "$ZIPALIGNRECOMPRESS" ]; then
+      zopfli="-z"
+    fi
+    zipalign -f -p $zopfli 4 "$f.orig" "$f"
     rm "$f.orig"
   done
 }
