@@ -6,10 +6,10 @@ The latest version of pre-built Open GApps can be found at http://opengapps.org
 
 |Arch |Total|Latest|
 |----:|:----|:-----|
-|[ARM](http://opengapps.org/arch=arm)|[![ARM Releases](https://img.shields.io/github/downloads/opengapps/arm/total.svg)](http://opengapps.org/arch=arm)|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/arm/latest/total.svg)](http://opengapps.org/arch=arm)|
-|[ARM64](http://opengapps.org/arch=arm64)|[![ARM64 Releases](https://img.shields.io/github/downloads/opengapps/arm64/total.svg)](http://opengapps.org/arch=arm64)|[![Latest ARM64](https://img.shields.io/github/downloads/opengapps/arm64/latest/total.svg)](http://opengapps.org/arch=arm64)|
-|[x86](http://opengapps.org/arch=x86)|[![x86 Releases](https://img.shields.io/github/downloads/opengapps/x86/total.svg)](http://opengapps.org/arch=x86)|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/x86/latest/total.svg)](http://opengapps.org/arch=x86)|
-|[x86_64](http://opengapps.org/arch=x86_64)|[![x86_64 Releases](https://img.shields.io/github/downloads/opengapps/x86_64/total.svg)](http://opengapps.org/arch=x86_64)|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/x86_64/latest/total.svg)](http://opengapps.org/arch=x86_64)|
+|[ARM](http://opengapps.org/?arch=arm)|[![ARM Releases](https://img.shields.io/github/downloads/opengapps/arm/total.svg)](http://opengapps.org/?arch=arm)|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/arm/latest/total.svg)](http://opengapps.org/?arch=arm)|
+|[ARM64](http://opengapps.org/?arch=arm64)|[![ARM64 Releases](https://img.shields.io/github/downloads/opengapps/arm64/total.svg)](http://opengapps.org/?arch=arm64)|[![Latest ARM64](https://img.shields.io/github/downloads/opengapps/arm64/latest/total.svg)](http://opengapps.org/?arch=arm64)|
+|[x86](http://opengapps.org/?arch=x86)|[![x86 Releases](https://img.shields.io/github/downloads/opengapps/x86/total.svg)](http://opengapps.org/?arch=x86)|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/x86/latest/total.svg)](http://opengapps.org/?arch=x86)|
+|[x86_64](http://opengapps.org/?arch=x86_64)|[![x86_64 Releases](https://img.shields.io/github/downloads/opengapps/x86_64/total.svg)](http://opengapps.org/?arch=x86_64)|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/x86_64/latest/total.svg)](http://opengapps.org/?arch=x86_64)|
 
 Support for the pre-built packages from OpenGApps.org
 ---------------
