@@ -264,7 +264,9 @@ form(
     "extra",     "Advanced Options",        "",                                         "group",
       "exdebug",     "<b>NoDebug</b>",       "To disable the creation of the debug log",                      "check",
       "extest",     "<b>Test</b>",       "To perform a simulation generating a detailed log, but <u>WILL NOT MAKE ANY CHANGES</u> to your device.",                      "check",
-      "exswype",     "<b>SkipSwypelibs</b>",       "To avoid the installation of the Google Swype libraries for the AOSP Keyboard",                      "check",
+      "exswype",     "<b>SkipSwypelibs</b>",       "To skip/remove the installation of the Google Swype libraries for the AOSP Keyboard",                      "check",
+      "exsubstitute","<b>SubstituteSwypelibs</b>", "To overwrite the AOSP Keyboard libraries with the Google Swype libraries instead of adding",                      "check",
+      "exnopreodex",   "<b>NoPreODEX</b>",           "To disable the smart Pre-ODEX-ing on Marshmallow+ ROMs",                      "check",
       "exclean",     "<b>ForceClean</b>",       "To ignore the detection of dirty installations and force the installer to behave as if it concerns a clean install <u>DO NOT REPORT ANY BUGS IF USED</u>",                      "check",
       "DialerGoogle","<b>Google Dialer</b>",       "(CAREFUL! Not compatible with all devices; EXPERIMENTAL!)",                      "check"
 );
@@ -289,6 +291,16 @@ if
   prop("extra.prop", "exswype")=="1"
 then
   appendvar("gapps", "skipswypelibs\n");
+endif;
+if
+  prop("extra.prop", "exsubstitute")=="1"
+then
+  appendvar("gapps", "substituteswypelibs\n");
+endif;
+if
+  prop("extra.prop", "exnopreodex")=="1"
+then
+  appendvar("gapps", "nopreodex\n");
 endif;
 if
   prop("extra.prop", "exclean")=="1"
