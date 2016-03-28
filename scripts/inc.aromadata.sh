@@ -684,9 +684,9 @@ then
 endif;
 
 if
-  prop("rem.prop", "CMEleven")=="1"
+  prop("rem.prop", "CMMusic")=="1"
 then
-  appendvar("gapps", "CMEleven\n");
+  appendvar("gapps", "CMMusic\n");
 endif;
 
 if
