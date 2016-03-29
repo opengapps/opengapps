@@ -307,6 +307,11 @@ if
 then
   appendvar("gapps", "forceclean\n");
 endif;
+if
+  prop("extra.prop", "DialerGoogle")=="1"
+then
+  appendvar("gapps", "DialerGoogle\n");
+endif;
 
 # INCLUDE/EXCLUDE
 if
@@ -384,12 +389,6 @@ if
   prop("gapps.prop", "ContactsGoogle")=="1"
 then
   appendvar("gapps", "ContactsGoogle\n");
-endif;
-
-if
-  prop("gapps.prop", "DialerGoogle")=="1"
-then
-  appendvar("gapps", "DialerGoogle\n");
 endif;
 
 if
