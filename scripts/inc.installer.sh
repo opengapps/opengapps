@@ -729,7 +729,11 @@ get_appsize() {
   app_name="$(basename "$1")";
   which_dpi "$app_name";
   app_density="$(basename "$dpiapkpath")";
-  appsize="$(cat $TMP/app_sizes.txt | grep -E "$app_name.*($app_density|common|odex)" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')";
+  case $preodex in
+    true*) odexsize="|odex";;
+    *) odexsize="";;
+  esac
+  appsize="$(cat $TMP/app_sizes.txt | grep -E "$app_name.*($app_density|common$odexsize)" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')";
 }
 
 get_file_prop() {
@@ -756,16 +760,18 @@ get_prop() {
 
 install_extracted() {
   cp -rf "$TMP/$1/." "/system/"
-  if [ "$preodex" = "true" ]; then
-    installedapkpaths="$(find "$TMP/$1/" -name "*.apk" -type f | cut -d/ -f5-)"
-    for installedapkpath in $installedapkpaths; do  # TODO fix spaces-handling
-      if ! checkmanifest "/system/$installedapkpath" "classes.dex"; then
-        ui_print "- pre-ODEX-ing $gapp_name";
-        log "pre-ODEX-ing" "$gapp_name";
-        odexapk "/system/$installedapkpath"
-      fi
-    done
-  fi
+  case $preodex in
+    true*)
+      installedapkpaths="$(find "$TMP/$1/" -name "*.apk" -type f | cut -d/ -f5-)"
+      for installedapkpath in $installedapkpaths; do  # TODO fix spaces-handling
+        if ! checkmanifest "/system/$installedapkpath" "classes.dex"; then
+          ui_print "- pre-ODEX-ing $gapp_name";
+          log "pre-ODEX-ing" "$gapp_name";
+          odexapk "/system/$installedapkpath"
+        fi
+      done
+    ;;
+  esac
   bkup_list=$'\n'"$(find "$TMP/$1/" -type f | cut -d/ -f5-)${bkup_list}"
   rm -rf "$TMP/$1"
 }
@@ -1218,8 +1224,10 @@ elif ! command -v "dex2oat" >/dev/null 2>&1; then
   preodex="false [No dex2oat]"
 elif ( grep -qiE '^nopreodex$' "$g_conf" ); then # true or false to override the default selection
   preodex="false [nopreodex]"
+elif ( grep -qiE '^preodex$' "$g_conf" ); then # true or false to override the default selection
+  preodex="true [preodex]"
 else
-  preodex="true"
+  preodex="false"  #temporarily changed to false by default until we sort the issues out
 fi
 
 # Check for skipswypelibs Override in gapps-config
