@@ -37,8 +37,9 @@ argument(){
     x86)    filterapparchs="${filterapparchs} x86";;
     x86_64) filterapparchs="${filterapparchs} x86_64";;
     *-*)    buildarch="$(echo "$1" | cut -f 1 -d '-')"
-            maxsdk="$(echo "$1" | cut -f 2 -d '-')";;
-    *)      maxsdk="$1";;
+            maxsdk="$(echo "$1" | cut -f 2 -d '-')"
+            [ ! -z "${maxsdk##*[!0-9]*}" ] || { echo "ERROR: invalid argument" && exit 1; };;
+    *)      [ ! -z "${1##*[!0-9]*}" ] && maxsdk="$1" || { echo "ERROR: invalid argument" && exit 1; };;
   esac
 }
 
