@@ -1,0 +1,56 @@
+### LICENSE:
+#
+# Insert license here :D
+#
+### LANGUAGE STRING RESOURCE FILE
+#
+#   Language  : Russian
+#   By        : Alexander Lartsev
+#
+
+#
+#--- COMMON SYSTEM STRING RESOURCES
+#
+text_ok=OK
+text_next=Далее
+text_back=Назад
+text_yes=Да
+text_no=Нет
+text_about=О
+text_calibrating=Инструменты Калибрации
+text_quit=Завершить установку
+text_quit_msg=Вы уверены,что хотите покинуть установщик?
+
+#
+#-- CUSTOM STRING RESOURCE
+#
+common.for=для
+
+langtest.title=Тест языка
+langtest.multiline=Этот текст находится в langs/ru.lang\
+Используйте backslash перед добавлением новой строчки\
+\
+Вы можете также сделать <b>Форматирование</b> внутри языковых ресурсов.\
+\
+Спасибо за использование AROMA Установщика
+
+#-- Конец строки без слэша для многострочного текста
+
+themes.title=Выбрать тему
+themes.desc=Пожалуйста выберите тему установщика,которую вы хотите использовать в этом тесте установки:
+
+welcome.title=Добро пожаловать
+welcome.text1=Вы собираетесь узнать об установке
+welcome.text2=AROMA установщик первый и единственный СЕНСОРНЫЙ и НАСТРАИВАЕМЫЙ Установщик ANDROID прошивок в Мире.
+welcome.version=ВЕРСИЯ
+welcome.codename=КОДОВОЕ НАЗВАНИЕ
+welcome.updated=ОБНОВЛЕНО
+welcome.next=Нажмите "Далее",что продолжить установку...
+
+terms.title=Условия и Положения
+terms.desc=Пожалуйста прочитайте внимательно Условия и Положения The AROMA Установщика Ниже.
+terms.check=Я соглашаюсь с этими Условиями и Положениями...
+terms.confirm=Пожалуйста проверьте соглашение...
+
+changelog.title=Список изменений
+changelog.desc=Список изменений AROMA установщика
