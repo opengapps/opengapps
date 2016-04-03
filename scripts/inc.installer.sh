@@ -238,6 +238,7 @@ vendor/bundled-app/Boxer'"$REMOVALSUFFIX"'
 browser_list="
 app/Browser'"$REMOVALSUFFIX"'
 app/BrowserProviderProxy'"$REMOVALSUFFIX"'
+app/YuBrowser'"$REMOVALSUFFIX"'
 app/Chromium'"$REMOVALSUFFIX"'
 app/PA_Browser'"$REMOVALSUFFIX"'
 priv-app/BLUOpera'"$REMOVALSUFFIX"'
