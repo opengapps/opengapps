@@ -330,6 +330,7 @@ priv-app/FineOSDialer'"$REMOVALSUFFIX"'
 email_list="
 app/Email'"$REMOVALSUFFIX"'
 app/PrebuiltEmailGoogle'"$REMOVALSUFFIX"'
+priv-app/Email'"$REMOVALSUFFIX"'
 ";
 
 exchangestock_list="
