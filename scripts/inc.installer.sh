@@ -243,6 +243,7 @@ app/Chromium'"$REMOVALSUFFIX"'
 app/PA_Browser'"$REMOVALSUFFIX"'
 priv-app/BLUOpera'"$REMOVALSUFFIX"'
 priv-app/BLUOperaPreinstall'"$REMOVALSUFFIX"'
+priv-app/Browser'"$REMOVALSUFFIX"'
 ";
 
 basicdreams_list="
