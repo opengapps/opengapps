@@ -215,6 +215,7 @@ holospiral
 keyboardstock
 livewallpapers
 lockclock
+mms
 noisefield
 phasebeam
 photophase
