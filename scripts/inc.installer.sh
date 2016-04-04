@@ -370,6 +370,7 @@ app/LatinIME'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPal'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalPortuguesebrPack'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalSpanishLatinPack'"$REMOVALSUFFIX"'
+priv-app/MZInput'"$REMOVALSUFFIX"'
 ";
 
 launcher_list="
