@@ -1,11 +1,23 @@
-### LICENSE:
+﻿### LICENSE:
 #
-# Insert license here :D
+# Copyright (C) 2011 Ahmad Amarullah ( http://amarullz.com/ )
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 #
 ### LANGUAGE STRING RESOURCE FILE
 #
 #   Language  : German
-#   By        : xdevs23
+#   By        : Kalashnikitty (Midian666), xdevs23
 #
 
 #
@@ -17,9 +29,9 @@ text_back=Zurück
 text_yes=Ja
 text_no=Nein
 text_about=Über
-text_calibrating=Kalibrierungswerkzeuge
-text_quit=Installation verlassen
-text_quit_msg=Möchtest du wirklich die Installation verlassen?
+text_calibrating=Kalibrierung
+text_quit=Installation beenden
+text_quit_msg=Installer wirklich beenden?
 
 #
 #-- CUSTOM STRING RESOURCE
@@ -27,31 +39,31 @@ text_quit_msg=Möchtest du wirklich die Installation verlassen?
 common.for=für
 
 langtest.title=Sprachen-Test
-langtest.multiline=Dieser Text ist in langs/de.lang enthalten\
-Benutze ein Backslash, um in eine neue Zeile zu wechseln.\
+langtest.multiline=Dieser Text ist in/de.lang\
+Benutze Backslash, bevor du eine neue Zeile beginnst \
 \
-Du kannst auch den Text innerhalb der Datei <b>formatieren</b>.\
+Möglich sind auch <b> Formatierungen </b> innerhalb eines Textes.\
 \
-Danke, dass du AROMA Installer verwendest!
+Danke das du den AROMA Installer benutzt.
 
 #-- End of string without any backslash for multiline text
 
 
-themes.title=Design auswählen
-themes.desc=Bitte die Sprache auswählen, die du in diesem Sprachen-Test verwenden möchtest:
+themes.title=Thema wählen
+themes.desc=Bitte wähle das Installations Thema, welches du während der Installation testen möchtest:
 
 welcome.title=Willkommen
-welcome.text1=Du bist gerade dabei folgendes zu installieren: 
-welcome.text2=AROMA Installer ist der erste personalisierbare ROM INSTALLER der ganzen Welt.
+welcome.text1=Du bist dabei zu Installieren
+welcome.text2=Der AROMA Installer war das erste und das einzige anpassbare Touch Installer für ANDROID der Welt.
 welcome.version=VERSION
 welcome.codename=CODENAME
-welcome.updated=UPDATED
-welcome.next=Bitte 'Weiter' drücken, um die Installation fortzusetzen...
+welcome.updated=AKTUALISIERT
+welcome.next=Weiter drücken, um mit der Installation fortzufahren...
 
 terms.title=Nutzungsbedingungen
 terms.desc=Bitte die AROMA Nutzungsbedingungen sorgfältig durchlesen und akzeptieren.
 terms.check=Ich akzeptiere diese Nutzungsbedingungen...
-terms.confirm=Bitte die Nutzungsbedingungen überprüfen...
+terms.confirm=Nutzungsbedingungen überprüfen...
 
 changelog.title=Changelog
 changelog.desc=AROMA Installer Changelog

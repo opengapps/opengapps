@@ -1,0 +1,69 @@
+﻿### LICENSE:
+#
+# Copyright (C) 2011 Ahmad Amarullah ( http://amarullz.com/ )
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+### LANGUAGE STRING RESOURCE FILE
+#
+#   Language  : French
+#   By        : RolluS (Team MyUI) & mickey-r
+#
+
+#
+#--- COMMON SYSTEM STRING RESOURCE
+#
+text_ok=OK
+text_next=Suivant
+text_back=Précédent
+text_yes=Oui
+text_no=Non
+text_about=À propos
+text_calibrating=Outils de calibration
+text_quit=Quitter l'installation
+text_quit_msg=Êtes-vous sûre de vouloir quitter l'installation?
+
+#
+#-- CUSTOM STRING RESOURCE
+#
+common.for=pour
+
+langtest.title=Test du language
+langtest.multiline=Ce texte se trouve dans langs/fr.lang\
+Utiliser un antislash avant "Entrée" pour ajouter une ligne\
+\
+Vous pouvez aussi faire une <b>Mise en forme</b> dans les textes de ressource de langue.\
+\
+Merci d'utiliser AROMA Installer
+
+#-- End of string without any backslash for multiline text
+
+
+themes.title=Choisir le thème
+themes.desc=Merci de sélectionner le thème que vous souhaiter utiliser lors de ce test d'installation:
+
+welcome.title=Bienvenue
+welcome.text1=Vous aller installer
+welcome.text2=AROMA Installer est le premier et le seul Installateur de ROM ANDROID ROM tactile au niveau mondial.
+welcome.version=VERSION
+welcome.codename=NON DE CODE
+welcome.updated=MISE A JOUR
+welcome.next=Pressez Suivant pour continuer l'installation...
+
+terms.title=Conditions d'utilisation
+terms.desc=Merci de lire attentivement les Conditions d'utilisation de AROMA Installer.
+terms.check=Je suis d'accord avec ces Conditions d'utilisation...
+terms.confirm=Lire les conditions...
+
+changelog.title=Note de version
+changelog.desc=Changement apporté aux version d'AROMA Installer

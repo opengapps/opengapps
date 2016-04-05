@@ -1,0 +1,69 @@
+﻿### LICENSE:
+#
+# Copyright (C) 2011 Ahmad Amarullah ( http://amarullz.com/ )
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+### LANGUAGE STRING RESOURCE FILE
+#
+#   Language  : English
+#   By        : amarullz
+#
+
+#
+#--- COMMON SYSTEM STRING RESOURCE
+#
+text_ok=אישור
+text_next=הבא
+text_back=הקודם
+text_yes=כן
+text_no=לא
+text_about=אודות
+text_calibrating=כלים לכיול
+text_quit=צא מההתקנה
+text_quit_msg=האם אתה בטוח שאתה רוצה לצאת מההתקנה?
+
+#
+#-- CUSTOM STRING RESOURCE
+#
+common.for=עבור
+
+langtest.title=בדיקת שפה
+langtest.multiline=הטקסט הזה נמצא ב- langs/en.lang\
+השתמש בבקסלאש לפני אנטר בשביל לעבור לשורה חדשה\
+\
+אתה גם יכול <b>לפרמט</b> בתוך מאגר הנתונים של השפה.\
+\
+תודה לך עבור השימוש בהתקנת ארומה.
+
+#-- End of string without any backslash for multiline text
+
+
+themes.title=בחר ערכת נושא
+themes.desc=אנא בחר ערכת נושא שתרצה להשתמש בבדיקת ההתקנה:
+
+welcome.title=ברוכים הבאים
+welcome.text1=אתה עומד להתקין את
+welcome.text2=התקנת ארומה היא ההתקנה הראשונה והיחידה שמאפשרת התקנת מגע מותאמת אישית.
+welcome.version=גירסא
+welcome.codename=CODENAME
+welcome.updated=מעודכן
+welcome.next=לחץ הבא כדי להמשיך בהתקנה...
+
+terms.title=תנאי שימוש
+terms.desc=נא לקרוא בעיון את מתקין ארומה תנאי שימוש להלן.
+terms.check=אני מסכים לתנאי שימוש אלו...
+terms.confirm=נא סמן את ההסכמה...
+
+changelog.title=דוח שינויים
+changelog.desc=דוח שינויים של התקנת ארומה

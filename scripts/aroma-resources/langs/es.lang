@@ -1,0 +1,69 @@
+﻿### LICENSE:
+#
+# Copyright (C) 2011 Ahmad Amarullah ( http://amarullz.com/ )
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+### LANGUAGE STRING RESOURCE FILE
+#
+#   Language  : Espanol
+#   By        : amarullz + google translate
+#
+
+#
+#--- COMMON SYSTEM STRING RESOURCE
+#
+text_ok=Aceptar
+text_next=Siguiente
+text_back=Atrás
+text_yes=Sí
+text_no=No
+text_about=Acerca de
+text_calibrating=Calibrar pantalla
+text_quit=Salir de la instalación
+text_quit_msg=¿Seguro que quieres salir?
+
+#
+#-- CUSTOM STRING RESOURCE
+#
+common.for=para
+
+langtest.title=Prueba de Lenguaje
+langtest.multiline=Este texto está en langs/es.lang\
+Usa la barra invertida al final del texto para marcar el salto de línea\
+\
+También puedes aplicar <b>Formato</b> al texto.\
+\
+Gracias por usar AROMA Installer
+
+#-- End of string without any backslash for multiline text
+
+
+themes.title=Selecciona un Tema
+themes.desc=Por favor, selecciona el tema gráfico que quieres usar en esta prueba de instalación:
+
+welcome.title=Bienvenido
+welcome.text1=Estás a punto de instalar
+welcome.text2=AROMA Installer fue el primer y el único instalador del mundo táctil y personalizable para ROMs Android.
+welcome.version=VERSIÓN
+welcome.codename=CODENAME
+welcome.updated=ACTUALIZADO
+welcome.next=Pulsa Siguiente para continuar la instalación...
+
+terms.title=Términos y Condiciones
+terms.desc=Por favor, lea cuidadosamente los términos y condiciones de AROMA Installer.
+terms.check=Estoy de acuerdo con estos Términos y Condiciones...
+terms.confirm=Por favor, revise el acuerdo...
+
+changelog.title=Historial de cambios
+changelog.desc=Historial de cambios de AROMA Installer
