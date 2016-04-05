@@ -1,0 +1,57 @@
+### LICENSE:
+#
+# Insert license here :D
+#
+### LANGUAGE STRING RESOURCE FILE
+#
+#   Language  : German
+#   By        : xdevs23
+#
+
+#
+#--- COMMON SYSTEM STRING RESOURCE
+#
+text_ok=OK
+text_next=Weiter
+text_back=Zurück
+text_yes=Ja
+text_no=Nein
+text_about=Über
+text_calibrating=Kalibrierungswerkzeuge
+text_quit=Installation verlassen
+text_quit_msg=Möchtest du wirklich die Installation verlassen?
+
+#
+#-- CUSTOM STRING RESOURCE
+#
+common.for=für
+
+langtest.title=Sprachen-Test
+langtest.multiline=Dieser Text ist in langs/de.lang enthalten\
+Benutze ein Backslash, um in eine neue Zeile zu wechseln.\
+\
+Du kannst auch den Text innerhalb der Datei <b>formatieren</b>.\
+\
+Danke, dass du AROMA Installer verwendest!
+
+#-- End of string without any backslash for multiline text
+
+
+themes.title=Design auswählen
+themes.desc=Bitte die Sprache auswählen, die du in diesem Sprachen-Test verwenden möchtest:
+
+welcome.title=Willkommen
+welcome.text1=Du bist gerade dabei folgendes zu installieren: 
+welcome.text2=AROMA Installer ist der erste personalisierbare ROM INSTALLER der ganzen Welt.
+welcome.version=VERSION
+welcome.codename=CODENAME
+welcome.updated=UPDATED
+welcome.next=Bitte 'Weiter' drücken, um die Installation fortzusetzen...
+
+terms.title=Nutzungsbedingungen
+terms.desc=Bitte die AROMA Nutzungsbedingungen sorgfältig durchlesen und akzeptieren.
+terms.check=Ich akzeptiere diese Nutzungsbedingungen...
+terms.confirm=Bitte die Nutzungsbedingungen überprüfen...
+
+changelog.title=Changelog
+changelog.desc=AROMA Installer Changelog
