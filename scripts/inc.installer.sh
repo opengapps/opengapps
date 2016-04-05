@@ -244,6 +244,7 @@ app/Chromium'"$REMOVALSUFFIX"'
 app/PA_Browser'"$REMOVALSUFFIX"'
 priv-app/BLUOpera'"$REMOVALSUFFIX"'
 priv-app/BLUOperaPreinstall'"$REMOVALSUFFIX"'
+priv-app/Browser'"$REMOVALSUFFIX"'
 ";
 
 basicdreams_list="
@@ -330,6 +331,7 @@ priv-app/FineOSDialer'"$REMOVALSUFFIX"'
 email_list="
 app/Email'"$REMOVALSUFFIX"'
 app/PrebuiltEmailGoogle'"$REMOVALSUFFIX"'
+priv-app/Email'"$REMOVALSUFFIX"'
 ";
 
 exchangestock_list="
@@ -369,6 +371,7 @@ app/LatinIME'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPal'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalPortuguesebrPack'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalSpanishLatinPack'"$REMOVALSUFFIX"'
+priv-app/MZInput'"$REMOVALSUFFIX"'
 ";
 
 launcher_list="
