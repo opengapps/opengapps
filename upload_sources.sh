@@ -40,10 +40,10 @@ createcommit(){
   eval "lowestapi=\$LOWESTAPI_$2"
   if [ "$sdkversion" -le "$lowestapi" ]; then
     for s in $(seq 1 "$((sdkversion))"); do
-      paths="$(git ls-tree -r --name-only master "$type/$name/$s")"
+      paths="$(git ls-tree -r --name-only master "$type/$package/$s")"
       if [ -n "$paths" ]; then
         for d in $(printf "$dpis" | sed 's/-/ /g'); do
-          existing="$(echo "$paths" | grep -o "$type/$name/$s/*$d*")"
+          existing="$(echo "$paths" | grep -o "$type/$package/$s/*$d*")"
           if [ -n "$existing" ]; then
             git rm -q -r --ignore-unmatch "$existing" # We are already in "$SOURCES/$arch"
           fi
