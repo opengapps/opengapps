@@ -79,6 +79,7 @@ export OUTFD="/proc/self/fd/$2"
 export TMP="/tmp"
 bb="$TMP/'"$2"'"
 l="$TMP/bin"
+setenforce 0
 for f in '"$EXTRACTFILES"'; do
   unzip -o "$OPENGAZIP" "$f" -d "$TMP";
 done
