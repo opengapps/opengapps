@@ -96,14 +96,14 @@ for i in $($bb --list); do
     exit 1
   fi
 done
-PATH="$l:$PATH" $bb bash "$TMP/'"$3"'" "$@"
+PATH="$l:$PATH" $bb ash "$TMP/'"$3"'" "$@"
 exit "$?"'> "$build/$1"
 }
 
 makeinstallersh(){
 get_fallback_arch "$ARCH" #make sure that $fallback_arch will be available
 EXTRACTFILES="$EXTRACTFILES $1"
-echo '#!/sbin/bash
+echo '#!/sbin/ash
 #This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
