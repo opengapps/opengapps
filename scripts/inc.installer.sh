@@ -975,6 +975,11 @@ which_dpi() {
 }
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Pre-Install Info
+# Are we on an Android device is or is a really stupid person running this script on their computer?
+if [ -e "/etc/lsb-release" ] || [ -n "$OSTYPE" ]; then
+  echo "Don't run this on your computer! You need to flash the Open GApps zip on an Android Recovery!"
+  exit 1
+fi
 # Get GApps Version and GApps Type from g.prop extracted at top of script
 gapps_version=$(get_file_prop "$TMP/g.prop" "ro.addon.open_version")
 gapps_type=$(get_file_prop "$TMP/g.prop" "ro.addon.open_type")
