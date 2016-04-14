@@ -1813,7 +1813,6 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false"
   fi
   rm -f "$TMP/Optional/swypelibs.tar.xz" "$TMP/Optional/swypelibs.tar.lz"
   core_size=$((core_size + keybd_lib_size)); # Add Keyboard Lib size to core, if it exists
-  log "SwypeLibs" "$keybd_lib_size (KB)";
 fi
 
 # Read and save system partition size details
