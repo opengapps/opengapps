@@ -551,12 +551,6 @@ obsolete_list="
 /system/priv-app/Wallet'"$REMOVALSUFFIX"'
 ";
 
-# Obsolete files from old configs and frameworks no longer included
-obsolete_list="${obsolete_list}
-/system/etc/permissions/com.google.android.camera2.xml
-/system/framework/com.google.android.camera2.jar
-";
-
 # Old addon.d backup scripts as we will be replacing with updated version during install
 oldscript_list="
 /system/etc/g.prop
