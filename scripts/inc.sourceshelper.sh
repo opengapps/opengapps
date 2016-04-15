@@ -15,6 +15,7 @@ LOWESTAPI_arm="19"
 LOWESTAPI_arm64="21"
 LOWESTAPI_x86="19"
 LOWESTAPI_x86_64="21"
+LOWESTAPI_leanback="21"
 GOOGLECERT="Issuer: C=US, ST=C(A|alifornia), L=Mountain View, O=Google((|,) Inc(|.)|), OU=(Google((|,) Inc(|.)|)|Android), CN="
 #IMPORTCERTS="" #if this value is set to non-zero, new certificates matching above regexp will be imported
 INCOMPLETEFILES=1

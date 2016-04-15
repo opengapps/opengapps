@@ -29,6 +29,9 @@ checktools aapt file coreutils java jarsigner keytool openssl unzip
 installapk() {
   architecture="$1"
   eval "lowestapi=\$LOWESTAPI_$architecture"
+  if [ -n "$leanback" ] && [ "$lowestapi" -lt "$LOWESTAPI_leanback" ]; then
+    lowestapi="$LOWESTAPI_leanback"
+  fi
   existing=""
 
   if [ "$sdkversion" -lt "$lowestapi" ]; then
