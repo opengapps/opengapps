@@ -65,7 +65,8 @@ createcommit(){
 }
 
 newapks=""
-for arch in $(ls "$SOURCES"); do
+for archfolder in $SOURCES/*; do
+  arch="$(basename "$archfolder")"
   cd "$SOURCES/$arch"
   echo "Resetting $arch to HEAD before staging new commits..."
   git reset -q HEAD #make sure we are not including any other files are already tracked, output is silenced, not to confuse the user with the next output
@@ -112,7 +113,7 @@ if [ -n "$newapks" ]; then
               curl -s -S -X POST -F "fullname=$name (OpenGApps.org)" -F "email=$email" -F "changes=" -F "file=@$apk;filename=$filename" "http://www.apkmirror.com/wp-content/plugins/UploadManager/inc/upload.php" > /dev/null
             done
             ;;
-          *)  echo "Did NOT submit to APKmirror.com";;
+      *)    echo "Did NOT submit to APKmirror.com";;
   esac
 fi
 cd "$TOP"
