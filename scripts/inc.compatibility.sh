@@ -131,7 +131,7 @@ fi';;
          KEYBDINSTALLCODE="";;
     esac
   else # on KitKat we need to replace the aosp lib with a symlink, it has no 64bit libs
-    case "$ARCH" in #only arm-based platforms have swypelibs on KitKat 
+    case "$ARCH" in #only arm-based platforms have swypelibs on KitKat
       arm*)
         gappscore_optional="swypelibs $gappscore_optional"
         REQDLIST="/system/lib/libjni_latinime.so
@@ -344,6 +344,8 @@ hotword"
     fi
     gappsmini="$gappsmini
 taggoogle"
+    gappsstock="$gappsstock
+contactsgoogle"
     miniremove="$miniremove
 clockstock
 tagstock"
@@ -371,8 +373,6 @@ googletts
 packageinstallergoogle"
     gappsmini="$gappsmini
 calculatorgoogle"
-    gappsstock="$gappsstock
-contactsgoogle"
     gappsstock_optional="$gappsstock_optional
 cameragooglelegacy
 dialergoogle"
