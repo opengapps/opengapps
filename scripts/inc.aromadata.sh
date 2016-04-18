@@ -134,7 +134,6 @@ form(
 
     "gapps",     "Choose GApps which you want to add on install/exclude list",        "",                                         "group",
       "AndroidPay",     "<b>Android Pay</b>",       "",                      "check",
-      "AndroidForWork",     "<b>Android For Work</b>",       "",                      "check",
       "Books",     "<b>Google Play Books</b>",       "",                      "check",
       "CalculatorGoogle",     "<b>Google Calculator</b>",       "",                      "check",
       "CalendarGoogle",     "<b>Google Calendar</b>",       "",                      "check",
@@ -144,6 +143,8 @@ form(
       "ClockGoogle",     "<b>Google Clock</b>",       "",                      "check",
       "CloudPrint",     "<b>Google Cloud Print</b>",       "",                      "check",
       "ContactsGoogle",     "<b>Google Contacts</b>",       "",                      "check",
+      "DialerFramework",     "<b>Dialer Framework</b>",       "Necessary for Google Dialer compatibility",                      "check",
+      "DialerGoogle",     "<b>Google Dialer</b>",       "",                      "check",
       "DMAgent",     "<b>Google Apps Device Policy</b>",       "",                      "check",
       "Docs",     "<b>Google Docs</b>",       "",                      "check",
       "Drive",     "<b>Google Drive</b>",       "",                      "check",
@@ -268,7 +269,7 @@ form(
       "exsubstitute","<b>SubstituteSwypelibs</b>", "To overwrite the AOSP Keyboard libraries with the Google Swype libraries instead of adding",                      "check",
       "exnopreodex",   "<b>NoPreODEX</b>",           "To disable the smart Pre-ODEX-ing on Marshmallow+ ROMs",                      "check",
       "exclean",     "<b>ForceClean</b>",       "To ignore the detection of dirty installations and force the installer to behave as if it concerns a clean install <u>DO NOT REPORT ANY BUGS IF USED</u>",                      "check",
-      "DialerGoogle","<b>Google Dialer</b>",       "(CAREFUL! Not compatible with all devices; EXPERIMENTAL!)",                      "check"
+      "exforcedialer",     "<b>ForceDialer</b>",       "Override Google Dialer compatibility whitelist",                      "check"
 );
 
 ##############################################
@@ -308,9 +309,9 @@ then
   appendvar("gapps", "forceclean\n");
 endif;
 if
-  prop("extra.prop", "DialerGoogle")=="1"
+  prop("extra.prop", "exforcedialer")=="1"
 then
-  appendvar("gapps", "DialerGoogle\n");
+  appendvar("gapps", "forcedialer\n");
 endif;
 
 # INCLUDE/EXCLUDE
@@ -329,12 +330,6 @@ if
   prop("gapps.prop", "AndroidPay")=="1"
 then
   appendvar("gapps", "AndroidPay\n");
-endif;
-
-if
-  prop("gapps.prop", "AndroidForWork")=="1"
-then
-  appendvar("gapps", "AndroidForWork\n");
 endif;
 
 if
@@ -389,6 +384,18 @@ if
   prop("gapps.prop", "ContactsGoogle")=="1"
 then
   appendvar("gapps", "ContactsGoogle\n");
+endif;
+
+if
+  prop("gapps.prop", "DialerFramework")=="1"
+then
+  appendvar("gapps", "DialerFramework\n");
+endif;
+
+if
+  prop("gapps.prop", "DialerGoogle")=="1"
+then
+  appendvar("gapps", "DialerGoogle\n");
 endif;
 
 if
