@@ -564,9 +564,11 @@ remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript
 #                                             Installer Error Messages
 arch_compat_msg="INSTALLATION FAILURE: This Open GApps package cannot be installed on this\ndevice's architecture. Please download the correct version for your device.\n";
 camera_sys_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera\ncan only be installed during a Clean Install or as an update to an existing\nGApps Installation.\n";
-camera_compat_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera is\nNOT compatible with your device if installed in the system partition. Try\ninstalling from the Play Store instead.\n";
+camera_compat_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera\nis NOT compatible with your device if installed on the system partition. Try\ninstalling from the Play Store instead.\n";
+dialerframework_msg="WARNING: Dialer Framework has/will not be installed as requested. Dialer Framework\nis NOT compatible with your device. You can override by adding\n'ForceDialer' to your gapps-config.\n";
+dialergoogle_msg="WARNING: Google Dialer has/will not be installed as requested. Dialer Framework\nmust be added to the GApps installation if you want to install the Google\nDialer.\n";
 faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";
-googlenow_msg="WARNING: Google Now Launcher has/will not be installed as requested. Google\nSearch must be added to the GApps installation if you want to install the Google\nNow Launcher.\n";
+googlenow_msg="WARNING: Google Now Launcher has/will not be installed as requested. Google Search\nmust be added to the GApps installation if you want to install the Google\nNow Launcher.\n";
 projectfi_msg="WARNING: Project Fi has/will not be installed as requested. GCS must be\nadded to the GApps installation if you want to install the Project Fi app.\n";
 nobuildprop="INSTALLATION FAILURE: The installed ROM has no build.prop or equivalent\n";
 nokeyboard_msg="NOTE: The Stock/AOSP keyboard was NOT removed as requested to ensure your device\nwas not accidentally left with no keyboard installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
@@ -1195,7 +1197,7 @@ fi
 # Set density to unknown if it's still empty
 test -z "$density" && density="unknown"
 
-#Check for Camera API v2 availability
+# Check for Camera API v2 availability
 cameraapi="$(get_prop "camera2.portability.force_api")"
 camerahal="$(get_prop "persist.camera.HAL3.enabled")"
 if [ -n "$cameraapi" ]; then #we check first for the existence of this key, it takes precedence if set to any value
@@ -1213,6 +1215,17 @@ else
     *) newcamera_compat="false";;
   esac
 fi
+
+# Check for Google Dialer compatibility
+case $device_name in
+  angler|bullhead|shamu|hammerhead*|sprout*) googledialer_compat="true[whitelist]";;
+  *)# Check for Dialer Override in gapps-config
+    if ( grep -qiE '^forcedialer$' "$g_conf" ); then # true or false to override the default selection
+      googledialer_compat="true[forcedialer]"
+    else
+      googledialer_compat="false"
+    fi;;
+esac
 
 # Check for Clean Override in gapps-config
 if ( grep -qiE '^forceclean$' "$g_conf" ); then # true or false to override the default selection
@@ -1294,12 +1307,6 @@ tee -a "$build/$1" > /dev/null <<'EOFILE'
   *) cameragoogle_compat=true;;
 esac;
 
-## TEMPORARY HACK WHILE GOOGLE DIALER IS STILL INCOMPATIBLE WITH MANY DEVICES AND NOT A DEFAULT SELECTED PART OF THE PACKAGE ##
-if ( grep -qiE '^dialergoogle$' $g_conf ); then
-  gapps_list="${gapps_list}dialergoogle"$'\n';
-fi
-## --- ##
-
 log "ROM Android version" "$(get_prop "ro.build.version.release")"
 log "ROM Build ID" "$(get_prop "ro.build.display.id")"
 log "ROM Version increment" "$(get_prop "ro.build.version.incremental")"
@@ -1317,6 +1324,7 @@ log "Google Camera Installed¹" "$cameragoogle_inst"
 log "FaceUnlock Compatible" "$faceunlock_compat"
 log "Google Camera Compatible" "$cameragoogle_compat"
 log "New Camera API Compatible" "$newcamera_compat"
+log "Google Dialer Compatible" "$googledialer_compat"
 log_close="                  ¹ Previously installed with Open GApps\n$log_close"
 
 # Determine if a GApps package is installed and
@@ -1475,9 +1483,26 @@ if ( ! contains "$gapps_list" "photos" ) && ( ! grep -qiE '^gallery$' "$g_conf" 
   remove_gallery="false[NO_Photos]";
 fi;
 
-# If $device_type is 'tablet' make certain we're not installing messenger
-if ( contains "$gapps_list" "messenger" ) && [ $device_type = "tablet" ]; then
+# If $device_type is not a 'phone' make certain we're not installing messenger
+if ( contains "$gapps_list" "messenger" ) && [ $device_type != "phone" ]; then
   gapps_list=${gapps_list/messenger}; # we'll prevent messenger from being installed since this isn't a phone
+fi;
+
+# If $device_type is not a 'phone' make certain we're not installing dialerframework (implies no dialergoogle)
+if ( contains "$gapps_list" "dialerframework" ) && [ $device_type != "phone" ]; then
+  gapps_list=${gapps_list/dialerframework}; # we'll prevent dialerframework from being installed since this isn't a phone
+fi;
+
+# If the device is not Google Dialer compatible make certain we're not installing dialerframework (implies no dialergoogle)
+if ( contains "$gapps_list" "dialerframework" ) && [ $googledialer_compat = "false" ]; then
+  gapps_list=${gapps_list/dialerframework}; # we'll prevent dialerframework from being installed since it isn't compatible
+  install_note="${install_note}dialerframework_msg"$'\n'; # make note that Dialer Framework will NOT be installed as user requested
+fi;
+
+# If we're NOT installing dialerframework then we MUST REMOVE dialergoogle from  $gapps_list (if it's currently there)
+if ( ! contains "$gapps_list" "dialerframework" ) && ( contains "$gapps_list" "dialergoogle" ); then
+  gapps_list=${gapps_list/dialergoogle};
+  install_note="${install_note}dialergoogle_msg"$'\n'; # make note that Google Dialer will NOT be installed as user requested
 fi;
 
 # If we're NOT installing hangouts or messenger make certain 'mms' is NOT in $aosp_remove_list UNLESS 'mms' is in $g_conf
@@ -2093,6 +2118,13 @@ quit;
 
 ui_print "- Installation complete!";
 ui_print " ";
+
+if ( contains "$gapps_list" "dialergoogle" ); then
+  ui_print "You installed Google Dialer.";
+  ui_print "Please set it as default Phone";
+  ui_print "application to prevent calls";
+  ui_print "from rebooting your device.";
+fi
 exxit 0;
 EOFILE
 }

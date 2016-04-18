@@ -369,13 +369,15 @@ webviewstock"
 api23hack(){
   if [ "$API" -ge "23" ]; then
     gappspico="$gappspico
+dialerframework
 googletts
 packageinstallergoogle"
     gappsmini="$gappsmini
 calculatorgoogle"
-    gappsstock_optional="$gappsstock_optional
-cameragooglelegacy
+    gappsstock="$gappsstock
 dialergoogle"
+    gappsstock_optional="$gappsstock_optional
+cameragooglelegacy"
 
     webviewstocklibs='lib/$WebView_lib_filename
 lib64/$WebView_lib_filename
