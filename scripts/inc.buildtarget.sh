@@ -27,8 +27,7 @@ vending"
 
 gappscore_optional=""
 
-gappssuper="androidforwork
-androidpay
+gappssuper="androidpay
 dmagent
 earth
 gcs
@@ -232,7 +231,6 @@ get_package_info(){
     setupwizardtablet )       packagetype="Core"; packagename="com.google.android.setupwizard.tablet"; packagetarget="priv-app/SetupWizard";;
     vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
 
-    androidforwork)           packagetype="GApps"; packagename="com.google.android.androidforwork"; packagetarget="priv-app/AndroidForWork";;
     androidpay)               packagetype="GApps"; packagename="com.google.android.apps.walletnfcrel"; packagetarget="app/Wallet";;
     books)                    packagetype="GApps"; packagename="com.google.android.apps.books"; packagetarget="app/Books";;
     calculatorgoogle)         packagetype="GApps"; packagename="com.google.android.calculator"; packagetarget="app/CalculatorGoogle";;
