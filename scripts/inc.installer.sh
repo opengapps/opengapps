@@ -1217,27 +1217,31 @@ test -z "$density" && density="unknown"
 # Check for Camera API v2 availability
 cameraapi="$(get_prop "camera2.portability.force_api")"
 camerahal="$(get_prop "persist.camera.HAL3.enabled")"
-if [ -n "$cameraapi" ]; then #we check first for the existence of this key, it takes precedence if set to any value
-  if [ "$cameraapi" -ge "2" ]; then
-    newcamera_compat="true[force_api]"
-  else
-    newcamera_compat="false[force_api]"
-  fi
-elif [ -n "$camerahal" ] && [ "$camerahal" -ge "1" ]; then
-  newcamera_compat="true"
+if ( grep -qiE '^forcenewcamera$' "$g_conf" ); then  # takes precedence over any detection
+  newcamera_compat="true[forcenewcamera]"
 else
-  # If not explictly defined, check whitelist
-  case $device_name in
-    ryu|angler|bullhead|shamu|volantis*|flounder*|hammerhead*|sprout*) newcamera_compat="true[whitelist]";;
-    *) newcamera_compat="false";;
-  esac
+  if [ -n "$cameraapi" ]; then  # we check first for the existence of this key, it takes precedence if set to any value
+    if [ "$cameraapi" -ge "2" ]; then
+      newcamera_compat="true[force_api]"
+    else
+      newcamera_compat="false[force_api]"
+    fi
+  elif [ -n "$camerahal" ] && [ "$camerahal" -ge "1" ]; then
+    newcamera_compat="true"
+  else
+    # If not explictly defined, check whitelist
+    case $device_name in
+      ryu|angler|bullhead|shamu|volantis*|flounder*|hammerhead*|sprout*) newcamera_compat="true[whitelist]";;
+      *) newcamera_compat="false";;
+    esac
+  fi
 fi
 
 # Check for Google Dialer compatibility
 case $device_name in
   angler|bullhead|shamu|hammerhead*|sprout*) googledialer_compat="true[whitelist]";;
   *)# Check for Dialer Override in gapps-config
-    if ( grep -qiE '^forcedialer$' "$g_conf" ); then # true or false to override the default selection
+    if ( grep -qiE '^forcedialer$' "$g_conf" ); then
       googledialer_compat="true[forcedialer]"
     else
       googledialer_compat="false"
@@ -1245,7 +1249,7 @@ case $device_name in
 esac
 
 # Check for Clean Override in gapps-config
-if ( grep -qiE '^forceclean$' "$g_conf" ); then # true or false to override the default selection
+if ( grep -qiE '^forceclean$' "$g_conf" ); then
   forceclean="true"
 else
   forceclean="false"
@@ -1260,23 +1264,23 @@ elif ! command -v "$TMP/zip" >/dev/null 2>&1; then
   preodex="false [No Info-Zip]"
 elif ! command -v "dex2oat" >/dev/null 2>&1; then
   preodex="false [No dex2oat]"
-elif ( grep -qiE '^nopreodex$' "$g_conf" ); then # true or false to override the default selection
+elif ( grep -qiE '^nopreodex$' "$g_conf" ); then
   preodex="false [nopreodex]"
-elif ( grep -qiE '^preodex$' "$g_conf" ); then # true or false to override the default selection
+elif ( grep -qiE '^preodex$' "$g_conf" ); then
   preodex="true [preodex]"
 else
   preodex="false"  #temporarily changed to false by default until we sort the issues out
 fi
 
 # Check for skipswypelibs Override in gapps-config
-if ( grep -qiE '^skipswypelibs$' $g_conf ); then # true or false to override the default selection
+if ( grep -qiE '^skipswypelibs$' $g_conf ); then
   skipswypelibs="true"
 else
   skipswypelibs="false"
 fi
 
 # Check for substituteswypelibs Override in gapps-config
-if ( grep -qiE '^substituteswypelibs$' $g_conf ); then # true or false to override the default selection
+if ( grep -qiE '^substituteswypelibs$' $g_conf ); then
   substituteswypelibs="true"
 else
   substituteswypelibs="false"
