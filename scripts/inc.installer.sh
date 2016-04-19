@@ -1839,7 +1839,11 @@ ui_print " ";
 # Perform calculations of core applications
 core_size=0;
 for gapp_name in $core_gapps_list; do
-  get_appsize "Core/$gapp_name";
+  case $gapp_name in
+    setupwizarddefault) if [ "$device_type" != "tablet" ]; then get_appsize "Core/$gapp_name"; fi;;
+    setupwizardtablet)  if [ "$device_type"  = "tablet" ]; then get_appsize "Core/$gapp_name"; fi;;
+    *)  get_appsize "Core/$gapp_name";;
+  esac
   core_size=$((core_size + appsize));
 done;
 
