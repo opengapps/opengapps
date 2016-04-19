@@ -685,6 +685,9 @@ extract_app() {
 
 exxit() {
   set_progress 0.98
+  if [ "$skipvendorlibs" = "true" ]; then
+    umount /system/vendor  # unmount tmpfs
+  fi
   if ( ! grep -qiE '^ *nodebug *($|#)+' "$g_conf" ); then
     if [ "$g_conf" ]; then # copy gapps-config files to debug logs folder
       cp -f "$g_conf_orig" $TMP/logs/gapps-config_original.txt
@@ -1299,18 +1302,26 @@ else
   preodex="false"  #temporarily changed to false by default until we sort the issues out
 fi
 
-# Check for skipswypelibs Override in gapps-config
+# Check for skipswypelibs in gapps-config
 if ( grep -qiE '^skipswypelibs$' $g_conf ); then
   skipswypelibs="true"
 else
   skipswypelibs="false"
 fi
 
-# Check for substituteswypelibs Override in gapps-config
+# Check for substituteswypelibs in gapps-config
 if ( grep -qiE '^substituteswypelibs$' $g_conf ); then
   substituteswypelibs="true"
 else
   substituteswypelibs="false"
+fi
+
+# Check for skipvendorlibs in gapps-config
+if ( grep -qiE '^skipvendorlibs$' $g_conf ); then
+  skipvendorlibs="true"
+  mount -t tmpfs tmpfs /system/vendor  # by mounting a tmpfs on this location, we hide the existing files from any operations
+else
+  skipvendorlibs="false"
 fi
 
 # Remove any files from gapps-remove.txt that should not be processed for automatic removal
