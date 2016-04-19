@@ -32,10 +32,10 @@ commonscripts() {
   makegappsremovetxt "gapps-remove.txt"
   makegprop "g.prop"
   makeinstallersh "installer.sh"
-  bundlebusybox "busybox"
-  bundlexz "xzdec"
-  bundlezip "zip"
-  makeupdatebinary "META-INF/com/google/android/update-binary" "busybox" "installer.sh" # execute as last, it contains $EXTRACTFILES from the previous commands
+  bundlebusybox
+  bundlexzdec
+  bundlezip
+  makeupdatebinary "META-INF/com/google/android/update-binary" "busybox" "installer.sh" "$EXTRACTFILES" "$CHMODXFILES" # execute as last so that $EXTRACTFILES and $CHMODXFILES are complete
   bundlelicense #optionally add a LICENSE file to the package
 }
 
@@ -66,19 +66,19 @@ bundlebusybox() {
     arm*) busyboxbin="busybox-arm";;
     x86*) busyboxbin="busybox-x86";;
   esac
-  copy "$SCRIPTS/busybox-resources/$busyboxbin" "$build/$1"
-  EXTRACTFILES="$EXTRACTFILES $1"
-  CHMODXFILES="$CHMODXFILES $1"
+  copy "$SCRIPTS/busybox-resources/$busyboxbin" "$build/$busyboxbin"
+  EXTRACTFILES="$EXTRACTFILES $busyboxbin"
+  CHMODXFILES="$CHMODXFILES $busyboxbin"
 }
 
-bundlexz() {
+bundlexzdec() {
   case "$ARCH" in #Include xzdec binary
     arm*) xzdecbin="xzdec-arm";;
     x86*) xzdecbin="xzdec-x86";;
   esac
-  copy "$SCRIPTS/xz-resources/$xzdecbin" "$build/$1"
-  EXTRACTFILES="$EXTRACTFILES $1"
-  CHMODXFILES="$CHMODXFILES $1"
+  copy "$SCRIPTS/xz-resources/$xzdecbin" "$build/$xzdecbin"
+  EXTRACTFILES="$EXTRACTFILES $xzdecbin"
+  CHMODXFILES="$CHMODXFILES $xzdecbin"
 }
 
 bundlezip() {
@@ -86,9 +86,9 @@ bundlezip() {
     arm*) zipbin="zip-arm";;
     x86*) zipbin="zip-x86";;
   esac
-  copy "$SCRIPTS/infozip-resources/$zipbin" "$build/$1"
-  EXTRACTFILES="$EXTRACTFILES $1"
-  CHMODXFILES="$CHMODXFILES $1"
+  copy "$SCRIPTS/infozip-resources/$zipbin" "$build/$zipbin"
+  EXTRACTFILES="$EXTRACTFILES $zipbin"
+  CHMODXFILES="$CHMODXFILES $zipbin"
 }
 
 bundlelicense() {

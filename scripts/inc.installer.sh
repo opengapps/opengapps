@@ -77,27 +77,37 @@ makeupdatebinary(){
 export OPENGAZIP="$3"
 export OUTFD="/proc/self/fd/$2"
 export TMP="/tmp"
-bb="$TMP/'"$2"'"
+case "$(uname -m)" in
+  *86*) export BINARCH="x86";;  # e.g. Zenfone is i686
+  *ar*) export BINARCH="arm";; # i.e. armv7l and aarch64
+esac
+bb="$TMP/'"$2"'-$BINARCH"
 l="$TMP/bin"
 setenforce 0
-for f in '"$EXTRACTFILES"'; do
+for f in '"$4"'; do
   unzip -o "$OPENGAZIP" "$f" -d "$TMP";
 done
-for f in '"$CHMODXFILES"'; do
+for f in '"$5"'; do
   chmod +x "$TMP/$f";
 done
-install -d "$l"
-for i in $($bb --list); do
-  if ! ln -sf "$bb" "$l/$i" && ! $bb ln -sf "$bb" "$l/$i" && ! $bb ln -f "$bb" "$l/$i" ; then
-    echo "ui_print ERROR 10: Failed to set-up Open GApps'"'"' pre-bundled '"$2"' binary" > "$OUTFD"
-    echo "ui_print" > "$OUTFD"
-    echo "ui_print Please use TWRP as recovery instead" > "$OUTFD"
-    echo "ui_print" > "$OUTFD"
-    exit 1
-  fi
-done
-PATH="$l:$PATH" $bb ash "$TMP/'"$3"'" "$@"
-exit "$?"'> "$build/$1"
+if [ -e "$bb" ]; then
+  install -d "$l"
+  for i in $($bb --list); do
+    if ! ln -sf "$bb" "$l/$i" && ! $bb ln -sf "$bb" "$l/$i" && ! $bb ln -f "$bb" "$l/$i" ; then
+      echo "ui_print ERROR 10: Failed to set-up Open GApps'"'"' pre-bundled '"$2"'" > "$OUTFD"
+      echo "ui_print" > "$OUTFD"
+      echo "ui_print Please use TWRP as recovery instead" > "$OUTFD"
+      echo "ui_print" > "$OUTFD"
+      exit 1
+    fi
+  done
+  PATH="$l:$PATH" $bb ash "$TMP/'"$3"'" "$@"
+  exit "$?"
+else
+  echo "ui_print ERROR 64: Wrong architecture to set-up Open GApps'"'"' pre-bundled '"$2"'" > "$OUTFD"
+  echo "ui_print" > "$OUTFD"
+  exit 1
+fi'> "$build/$1"
 }
 
 makeinstallersh(){
@@ -710,7 +720,7 @@ folder_extract() {
   shift
   if [ -e "$archive.xz" ]; then
     for f in "$@"; do
-      $TMP/xzdec "$archive.xz" | tar -x -C "$TMP" -f - "$f"
+      $TMP/xzdec-$BINARCH "$archive.xz" | tar -x -C "$TMP" -f - "$f"
       install_extracted "$f"
     done
     rm -f "$archive.xz"
@@ -814,7 +824,7 @@ odexapk() {
     apkname="$(basename "$1" ".apk")"  # Take note not to use -s, it is not supported in busybox
     install -d "$TMP/classesdex"
     unzip -q -o "$1" "classes*.dex" -d "$TMP/classesdex/"  # extract to temporary location first, to avoid potential disk space shortage
-    eval '$TMP/zip -d "$1" "classes*.dex"'
+    eval '$TMP/zip-$BINARCH -d "$1" "classes*.dex"'
     cp "$TMP/classesdex/"* "$apkdir"
     rm -rf "$TMP/classesdex/"
     dexfiles="$(find "$apkdir" -name "classes*.dex")"
@@ -1260,7 +1270,7 @@ if [ "$rom_build_sdk" -lt "23" ]; then
   preodex="false [Only 6.0+]"
 elif [ "$(get_prop "persist.sys.dalvik.vm.lib.2")" != "libart.so" ] && [ "$(get_prop "persist.sys.dalvik.vm.lib.2")" != "libart" ]; then
   preodex="false [No ART]"
-elif ! command -v "$TMP/zip" >/dev/null 2>&1; then
+elif ! command -v "$TMP/zip-$BINARCH" >/dev/null 2>&1; then
   preodex="false [No Info-Zip]"
 elif ! command -v "dex2oat" >/dev/null 2>&1; then
   preodex="false [No dex2oat]"
@@ -1338,6 +1348,8 @@ log "Device Name" "$device_name"
 log "Device Model" "$(get_prop "ro.product.model")"
 log "Device Type" "$device_type"
 log "Device CPU" "$device_architecture"
+log "Installer Platform" "$BINARCH"
+log "ROM Platform" "$arch"
 log "Display Density Used" "$density"
 log "Install Type" "$install_type"
 log "Smart ART Pre-ODEX" "$preodex"
