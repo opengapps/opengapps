@@ -101,7 +101,6 @@ exit "$?"'> "$build/$1"
 }
 
 makeinstallersh(){
-get_fallback_arch "$ARCH" #make sure that $fallback_arch will be available
 EXTRACTFILES="$EXTRACTFILES $1"
 echo '#!/sbin/ash
 #This file is part of The Open GApps script of @mfonville.
@@ -741,6 +740,16 @@ get_appsize() {
   appsize="$(cat $TMP/app_sizes.txt | grep -E "$app_name.*($app_density|common$odexsize)" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')";
 }
 
+get_fallback_arch(){
+  case "$1" in
+    arm)    fallback_arch="all";;
+    arm64)  fallback_arch="arm";;
+    x86)    fallback_arch="arm";; #by using libhoudini
+    x86_64) fallback_arch="x86";; #e.g. chain: x86_64->x86->arm->all
+    *)      fallback_arch="$1";; #return original arch if no fallback available
+  esac
+}
+
 get_file_prop() {
   grep "^$2=" "$1" | cut -d= -f2
 }
@@ -1150,28 +1159,36 @@ device_architecture="$(get_prop "ro.product.cpu.abilist")"
 if [ -z "$device_architecture" ]; then
   device_architecture="$(get_prop "ro.product.cpu.abi")"
 fi
-EOFILE
-printf 'if ! (echo "$device_architecture" | '>> "$build/$1"
-case "$ARCH" in
-  arm)    printf 'grep -i "armeabi" | grep -qiv "arm64"'>> "$build/$1";;
-  arm64)  printf 'grep -qi "arm64"'>> "$build/$1";;
-  x86)    printf 'grep -i "x86" | grep -qiv "x86_64"'>> "$build/$1";;
-  x86_64) printf 'grep -qi "x86_64"'>> "$build/$1";;
+
+case "$device_architecture" in
+  *x86_64*) arch="x86_64"; libfolder="lib64";;
+  *x86*) arch="x86"; libfolder="lib";;
+  *arm64*) arch="arm64"; libfolder="lib64";;
+  *armeabi*) arch="arm"; libfolder="lib";;
+  *) arch="unknown";;
 esac
+
+EOFILE
+echo "for targetarch in $ARCH abort; do" >> "$build/$1"  # we add abort as latest entry to detect if there is no match
 tee -a "$build/$1" > /dev/null <<'EOFILE'
-); then
-  ui_print "***** Incompatible Device Detected *****";
-  ui_print " ";
-  ui_print "This Open GApps package cannot be";
-  ui_print "installed on this device's architecture.";
-  ui_print "Please download the correct version for";
-  ui_print "your device: $device_architecture";
-  ui_print " ";
-  ui_print "******* GApps Installation failed *******";
-  ui_print " ";
-  install_note="${install_note}arch_compat_msg"$'\n'; # make note that Open GApps are not compatible with architecture
-  abort "$E_ARCH";
-fi;
+  if [ "$arch" = "$targetarch" ]; then
+    break # arch matches
+  elif [ "abort" = "$targetarch" ]; then
+    ui_print "***** Incompatible Device Detected *****"
+    ui_print " "
+    ui_print "This Open GApps package cannot be"
+    ui_print "installed on this device's architecture."
+    ui_print "Please download the correct version for"
+    ui_print "your device: $arch"
+    ui_print " "
+    ui_print "******* GApps Installation failed *******"
+    ui_print " "
+    install_note="${install_note}arch_compat_msg"$'\n' # make note that Open GApps are not compatible with architecture
+    abort "$E_ARCH"
+  fi
+done
+
+get_fallback_arch "$arch" #make sure that $fallback_arch will be available
 
 # Determine Recovery Type and Version
 for rec_log in $rec_tmp_log $rec_cache_log; do
@@ -2022,42 +2039,42 @@ for gapp_name in $gapps_list; do
   set_progress 0.$prog_bar;
 done;
 
-EOFILE
-echo '# Create FaceLock lib symlink if installed
+# Create FaceLock lib symlink if installed
 if ( contains "$gapps_list" "faceunlock" ); then
-  install -d "/system/app/FaceLock/lib/'"$ARCH"'";
-  ln -sfn "/system/'"$LIBFOLDER"'/$faceLock_lib_filename" "/system/app/FaceLock/lib/'"$ARCH"'/$faceLock_lib_filename"; # create required symlink
+  install -d "/system/app/FaceLock/lib/$arch"
+  ln -sfn "/system/$libfolder/$faceLock_lib_filename" "/system/app/FaceLock/lib/$arch/$faceLock_lib_filename"
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$faceLock_lib_filename\" \"/system/app/FaceLock/lib/'"$ARCH"'/$faceLock_lib_filename\"" $bkup_tail;
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/FaceLock/lib/'"$ARCH"'\"" $bkup_tail;
-fi;
-' >> "$build/$1"
-echo '# Create TVRemote lib symlink if installed
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/$libfolder/$faceLock_lib_filename\" \"/system/app/FaceLock/lib/$arch/$faceLock_lib_filename\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/FaceLock/lib/$arch\"" $bkup_tail
+fi
+
+# Create TVRemote lib symlink if installed
 if ( contains "$gapps_list" "tvremote" ); then
-  install -d "/system/app/AtvRemoteService/lib/'"$ARCH"'";
-  ln -sfn "/system/'"$LIBFOLDER"'/$atvremote_lib_filename" "/system/app/AtvRemoteService/lib/'"$ARCH"'/$atvremote_lib_filename"; # create required symlink
+  install -d "/system/app/AtvRemoteService/lib/$arch"
+  ln -sfn "/system/$libfolder/$atvremote_lib_filename" "/system/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename"
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$atvremote_lib_filename\" \"/system/app/AtvRemoteService/lib/'"$ARCH"'/$atvremote_lib_filename\"" $bkup_tail;
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/AtvRemoteService/lib/'"$ARCH"'\"" $bkup_tail;
-fi;
-' >> "$build/$1"
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/$libfolder/$atvremote_lib_filename\" \"/system/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/AtvRemoteService/lib/$arch\"" $bkup_tail
+fi
+
+EOFILE
 if [ "$API" -lt "23" ]; then
   echo '# Create WebView lib symlink if WebView was installed
 if ( contains "$gapps_list" "webviewgoogle" ); then
-  install -d "/system/app/WebViewGoogle/lib/'"$ARCH"'";
-  ln -sfn "/system/'"$LIBFOLDER"'/$WebView_lib_filename" "/system/app/WebViewGoogle/lib/'"$ARCH"'/$WebView_lib_filename"; # create required symlink' >> "$build/$1"
-  if [ "$LIBFOLDER" = "lib64" ]; then #on 64bit we also need to add 32 bit libs
-    echo '  install -d "/system/app/WebViewGoogle/lib/'"$fallback_arch"'";
-  ln -sfn "/system/lib/$WebView_lib_filename" "/system/app/WebViewGoogle/lib/'"$fallback_arch"'/$WebView_lib_filename"; # create required symlink' >> "$build/$1"
+  install -d "/system/app/WebViewGoogle/lib/$arch"
+  ln -sfn "/system/$libfolder/$WebView_lib_filename" "/system/app/WebViewGoogle/lib/$arch/$WebView_lib_filename"
+  # Add same code to backup script to insure symlinks are recreated on addon.d restore
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/$libfolder/$WebView_lib_filename\" \"/system/app/WebViewGoogle/lib/$arch/$WebView_lib_filename\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/WebViewGoogle/lib/$arch\"" $bkup_tail
+  if [ "$libfolder" = "lib64" ]; then #on 64bit we also need to add 32 bit libs
+    install -d "/system/app/WebViewGoogle/lib/$fallback_arch"
+    ln -sfn "/system/lib/$WebView_lib_filename" "/system/app/WebViewGoogle/lib/$fallback_arch/$WebView_lib_filename"
+    # Add same code to backup script to insure symlinks are recreated on addon.d restore
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/lib/$WebView_lib_filename\" \"/system/app/WebViewGoogle/lib/$fallback_arch/$WebView_lib_filename\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/WebViewGoogle/lib/$fallback_arch\"" $bkup_tail
   fi
-  echo '  # Add same code to backup script to insure symlinks are recreated on addon.d restore' >> "$build/$1"
-  if [ "$LIBFOLDER" = "lib64" ]; then #on 64bit we also need to add 32 bit libs
-    echo '  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/lib/$WebView_lib_filename\" \"/system/app/WebViewGoogle/lib/'"$fallback_arch"'/$WebView_lib_filename\"" $bkup_tail;
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/WebViewGoogle/lib/'"$fallback_arch"'\"" $bkup_tail;' >> "$build/$1"
-  fi
-  echo '  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/'"$LIBFOLDER"'/$WebView_lib_filename\" \"/system/app/WebViewGoogle/lib/'"$ARCH"'/$WebView_lib_filename\"" $bkup_tail;
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/WebViewGoogle/lib/'"$ARCH"'\"" $bkup_tail;
-fi;' >> "$build/$1"
+fi
+' >> "$build/$1"
 fi
 tee -a "$build/$1" > /dev/null <<'EOFILE'
 
