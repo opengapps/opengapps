@@ -71,9 +71,10 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
       keybd_lib_target="$keybd_lib_google"
       ln -sfn "/system/$libfolder/$keybd_lib_aosp" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp" # relink aosp as the normal link
     fi
-    ui_print "- Installing swypelibs"
-    log "Installing " "swypelibs"
-    extract_app "Optional/swypelibs"
+    get_apparch "Optional/swypelibs"
+    ui_print "- Installing swypelibs-$apparch"
+    log "Installing " "swypelib-$apparchs"
+    extract_app "Optional/swypelibs-$apparch"
     install -d "/system/app/LatinIME/$libfolder/$arch"
     ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_target" # create required symlink
     ln -sfn "/system/$libfolder/$keybd_dec_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_dec_google" # create required symlink
@@ -110,9 +111,10 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
       keybd_lib_target="$keybd_lib_google"
       ln -sfn "/system/$libfolder/$keybd_lib_aosp" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp" # relink aosp as the normal link
     fi
-    ui_print "- Installing swypelibs"
-    log "Installing " "swypelibs"
-    extract_app "Optional/swypelibs"
+    get_apparch "Optional/swypelibs"
+    ui_print "- Installing swypelibs-$apparch"
+    log "Installing " "swypelib-$apparchs"
+    extract_app "Optional/swypelibs-$apparch"
     install -d "/system/app/LatinIME/$libfolder/$arch"
     ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_target" # create required symlink
 
@@ -142,9 +144,10 @@ keybd_lib_aosp="libjni_latinime.so"'
         KEYBDINSTALLCODE='# Install/Remove SwypeLibs
 if ( ! contains "$gapps_list" "keyboardgoogle" ); then
   if [ "$skipswypelibs" = "false" ]; then
-    ui_print "- Installing swypelibs"
-    log "Installing " "swypelibs"
-    extract_app "Optional/swypelibs"
+    get_apparch "Optional/swypelibs"
+    ui_print "- Installing swypelibs-$apparch"
+    log "Installing " "swypelib-$apparchs"
+    extract_app "Optional/swypelibs-$apparch"
     ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/$libfolder/$keybd_lib_aosp" # create required symlink
 
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
@@ -175,6 +178,7 @@ kitkatdata_folder_extract() {
   if [ -z "$number" ]; then
     number="1"
   fi
+  # On KitKat we know that these applications are arm and x86 and are using no fallbacks
   if [ -e "$TMP/GApps/$1.tar.xz" ]; then
     $TMP/xzdec "$TMP/GApps/$1.tar.xz" | tar -x -C "$TMP" -f - "$2"
   elif [ -e "$TMP/GApps/$1.tar.lz" ]; then
@@ -204,37 +208,37 @@ install -d /data/app/
 install -d /data/app-lib/
 # Handle broken lib configuration on KitKat by putting Hangouts on /data/
 if ( contains "$gapps_list" "hangouts" ); then
-  unzip -o "$ZIP" "GApps/hangouts.tar*" -d "$TMP"
-  which_dpi "hangouts"
-  kitkatdata_folder_extract "hangouts" "$dpiapkpath" "com.google.android.talk" "Hangouts.apk"
+  unzip -o "$ZIP" "GApps/hangouts-$arch.tar*" -d "$TMP"
+  which_dpi "hangouts-$arch"
+  kitkatdata_folder_extract "hangouts-$arch" "$dpiapkpath" "com.google.android.talk" "Hangouts.apk"
   gapps_list=${gapps_list/hangouts}
 fi
 # Handle broken lib configuration on KitKat by putting Google+ on /data/
 if ( contains "$gapps_list" "googleplus" ); then
-  unzip -o "$ZIP" "GApps/googleplus.tar*" -d "$TMP"
-  which_dpi "googleplus"
-  kitkatdata_folder_extract "googleplus" "$dpiapkpath" "com.google.android.apps.plus" "PlusOne.apk"
+  unzip -o "$ZIP" "GApps/googleplus-$arch.tar*" -d "$TMP"
+  which_dpi "googleplus-$arch"
+  kitkatdata_folder_extract "googleplus-$arch" "$dpiapkpath" "com.google.android.apps.plus" "PlusOne.apk"
   gapps_list=${gapps_list/googleplus}
 fi
 # Handle broken lib configuration on KitKat by putting Messenger on /data/
 if ( contains "$gapps_list" "messenger" ); then
-  unzip -o "$ZIP" "GApps/messenger.tar*" -d "$TMP"
-  which_dpi "messenger"
-  kitkatdata_folder_extract "messenger" "$dpiapkpath" "com.google.android.apps.messaging" "PrebuiltBugle.apk"
+  unzip -o "$ZIP" "GApps/messenger-$arch.tar*" -d "$TMP"
+  which_dpi "messenger-$arch"
+  kitkatdata_folder_extract "messenger-$arch" "$dpiapkpath" "com.google.android.apps.messaging" "PrebuiltBugle.apk"
   gapps_list=${gapps_list/messenger}
 fi
 # Handle broken lib configuration on KitKat by putting Photos on /data/
 if ( contains "$gapps_list" "photos" ); then
-  unzip -o "$ZIP" "GApps/photos.tar*" -d "$TMP"
-  which_dpi "photos"
-  kitkatdata_folder_extract "photos" "$dpiapkpath" "com.google.android.apps.photos" "Photos.apk"
+  unzip -o "$ZIP" "GApps/photos-$arch.tar*" -d "$TMP"
+  which_dpi "photos-$arch"
+  kitkatdata_folder_extract "photos-$arch" "$dpiapkpath" "com.google.android.apps.photos" "Photos.apk"
   gapps_list=${gapps_list/photos}
 fi
 # Handle broken lib configuration on KitKat by putting YouTube on /data/
 if ( contains "$gapps_list" "youtube" ); then
-  unzip -o "$ZIP" "GApps/youtube.tar*" -d "$TMP"
-  which_dpi "youtube"
-  kitkatdata_folder_extract "youtube" "$dpiapkpath" "com.google.android.youtube" "YouTube.apk"
+  unzip -o "$ZIP" "GApps/youtube-$arch.tar*" -d "$TMP"
+  which_dpi "youtube-$arch"
+  kitkatdata_folder_extract "youtube-$arch" "$dpiapkpath" "com.google.android.youtube" "YouTube.apk"
   gapps_list=${gapps_list/youtube}
 fi'
   else

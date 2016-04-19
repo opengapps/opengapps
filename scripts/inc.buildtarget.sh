@@ -190,10 +190,10 @@ for app in $gapps; do
     buildapp "$packagename" "$packagemaxapi" "$packagetype/$app" "$packagetarget"
   fi
   for file in $packagefiles; do
-    buildfile "$file" "$packagetype/$app/common"
+    buildfile "$file" "$packagetype/$app" "common"
   done
   for lib in $packagelibs; do
-    buildsystemlib "$lib" "$packagetype/$app/common"
+    buildsystemlib "$lib" "$packagetype/$app" "common"
   done
 done
 

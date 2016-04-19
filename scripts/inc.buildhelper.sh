@@ -37,14 +37,14 @@ copy() {
 }
 
 buildfile() {
-  if [ -z "$3" ]; then usearch="$ARCH"
-  else usearch="$3"; fi #allows for an override
+  if [ -z "$4" ]; then usearch="$ARCH"
+  else usearch="$4"; fi #allows for an override
 
   if [ -e "$SOURCES/$usearch/$1" ]; then #check if directory or file exists
     if [ -d "$SOURCES/$usearch/$1" ]; then #if we are handling a directory
-      targetdir="$build/$2/$1"
+      targetdir="$build/$2-$usearch/$3/$1"
     else
-      targetdir="$build/$2/$(dirname "$1")"
+      targetdir="$build/$2-$usearch/$3/$(dirname "$1")"
     fi
     install -d "$targetdir"
     printf "%6s    %s\n" "$usearch" "$1"
@@ -55,7 +55,7 @@ buildfile() {
   else
     get_fallback_arch "$usearch"
     if [ "$usearch" != "$fallback_arch" ]; then
-      buildfile "$1" "$2" "$fallback_arch"
+      buildfile "$1" "$2" "$3" "$fallback_arch"
     else
       echo "ERROR: No fallback available. Failed to build file $1"
       exit 1
@@ -65,9 +65,10 @@ buildfile() {
 
 buildsystemlib() {
   libname="$1"
-  liblocation="$2"
-  if [ -z "$3" ]; then usearch="$ARCH"
-  else usearch="$3"; fi #allows for an override
+  ziplocation="$2"
+  targetlocation="$3"
+  if [ -z "$4" ]; then usearch="$ARCH"
+  else usearch="$4"; fi #allows for an override
 
   fallback=""
   case "$libname" in
@@ -80,14 +81,14 @@ buildsystemlib() {
     if [ -n "$logfile" ]; then
       printf "%6s-%s| %-s\n" "$usearch" "$api" "$libname" >> "$logfile"
     fi
-    install -D -p "$sourcelib" "$build/$liblocation/$targetlib"
+    install -D -p "$sourcelib" "$build/$ziplocation-$usearch/$targetlocation/$targetlib"
   else
     fallback="true"
   fi
   if [ -n "$fallback" ]; then
     get_fallback_arch "$usearch"
     if [ "$usearch" != "$fallback_arch" ]; then
-      buildsystemlib "$libname" "$liblocation" "$fallback_arch"
+      buildsystemlib "$libname" "$ziplocation" "$targetlocation" "$fallback_arch"
     else
       echo "ERROR: No fallback available. Failed to build lib $libname"
       exit 1
@@ -139,9 +140,9 @@ buildapp() {
       versionnamehack #Some packages have a different versionname, when the actual version is equal
       systemlibhack #Some packages want their libs installed as system libs
       if [ "$API" -le "19" ] || [ "$systemlib" = "true" ]; then
-        liblocation="$ziplocation/common"
+        liblocation="$ziplocation-$usearch/common"
       else
-        liblocation="$ziplocation/common/$targetlocation"
+        liblocation="$ziplocation-$usearch/common/$targetlocation"
       fi
 
       if [ -z "$baseversionname" ]; then
@@ -154,12 +155,12 @@ buildapp() {
       fi
       if [ "$versionname" = "$baseversionname" ]; then
         density=$(basename "$(dirname "$dpivariant")")
-        buildapk "$dpivariant" "$ziplocation/$density/$targetlocation"
+        buildapk "$dpivariant" "$ziplocation-$usearch/$density/$targetlocation"
         printf " %s" "$density"
         if [ -n "$logfile" ]; then
           printf " %s" "$density" >> "$logfile"
         fi
-        echo "$ziplocation/$density/" >> "$build/app_densities.txt"
+        echo "$ziplocation-$usearch/$density/" >> "$build/app_densities.txt"
       fi
     done
     printf "\n"
