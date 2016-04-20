@@ -73,7 +73,7 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     fi
     get_apparch "Optional/swypelibs"
     ui_print "- Installing swypelibs-$apparch"
-    log "Installing " "swypelib-$apparchs"
+    log "Installing " "swypelibs-$apparch"
     extract_app "Optional/swypelibs-$apparch"
     install -d "/system/app/LatinIME/$libfolder/$arch"
     ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_target" # create required symlink
@@ -113,7 +113,7 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     fi
     get_apparch "Optional/swypelibs"
     ui_print "- Installing swypelibs-$apparch"
-    log "Installing " "swypelib-$apparchs"
+    log "Installing " "swypelibs-$apparch"
     extract_app "Optional/swypelibs-$apparch"
     install -d "/system/app/LatinIME/$libfolder/$arch"
     ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_target" # create required symlink
@@ -146,7 +146,7 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
   if [ "$skipswypelibs" = "false" ]; then
     get_apparch "Optional/swypelibs"
     ui_print "- Installing swypelibs-$apparch"
-    log "Installing " "swypelib-$apparchs"
+    log "Installing " "swypelibs-$apparch"
     extract_app "Optional/swypelibs-$apparch"
     ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/$libfolder/$keybd_lib_aosp" # create required symlink
 
