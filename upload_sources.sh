@@ -12,6 +12,7 @@
 #    GNU General Public License for more details.
 #
 
+# set your own OPENGAPPSGIT_EMAIL and/or OPENGAPPSGIT_NAME environment variables if they differ from your regular git credentials
 # set your own APKMIRROR_EMAIL and/or APKMIRROR_NAME environment variables if they differ from your git credentials
 
 command -v realpath >/dev/null 2>&1 || { echo "realpath is required but it's not installed, aborting." >&2; exit 1; }
@@ -54,10 +55,10 @@ createcommit(){
   # We don't have to care about empty direcories with git (see http://stackoverflow.com/a/10075480/3315861 for more details.)
   git add "$1"
   git status -s -uno
-  echo "Do you want to commit these changes as $name $2-$sdkversion $versionname ($dpis)? [y/N]"
+  echo "Commit this as '$name $2-$sdkversion $versionname ($dpis)' by $username <$email>? [y/N]"
   IFS= read -r REPLY
   case "$REPLY" in
-    y*|Y*)  git commit -q -m"$name $2-$sdkversion $versionname ($dpis)"
+    y*|Y*)  git commit -q -m "$name $2-$sdkversion $versionname ($dpis)" --author="$username <$email>"
             echo "Committed $1";;
         *)  git reset -q HEAD
             echo "Did NOT commit $1";;
@@ -68,6 +69,19 @@ newapks=""
 for archfolder in $SOURCES/*; do
   arch="$(basename "$archfolder")"
   cd "$SOURCES/$arch"
+
+  # We set this per architecture repo, because the settings might differ per submodule
+  if [ -n "$OPENGAPPSGIT_EMAIL" ]; then
+    email="$OPENGAPPSGIT_EMAIL"
+  else
+    email="$(git config user.email)"
+  fi
+  if [ -n "$OPENGAPPSGIT_NAME" ]; then
+    username="$OPENGAPPSGIT_NAME"
+  else
+    username="$(git config user.name)"
+  fi
+
   echo "Resetting $arch to HEAD before staging new commits..."
   git reset -q HEAD #make sure we are not including any other files are already tracked, output is silenced, not to confuse the user with the next output
   apks="$(git status -uall --porcelain | grep '.apk$' | grep -e "?? " | cut -c4-)" #get the new apks
@@ -83,10 +97,10 @@ $addnewapks"
 
   if [ -n "$changes" ]; then
     echo "$changes"
-    echo "Do you want to push these commits to the $arch repository? [y/N]"
+    echo "Push these commits to the '$arch' repository? [y/N]"
     IFS= read -r REPLY
     case "$REPLY" in
-        y*|Y*)  git push origin HEAD:master ;;
+        y*|Y*)  git push origin HEAD:master;;
             *)  echo "Did NOT push $arch";;
     esac
   fi
