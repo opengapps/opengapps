@@ -675,6 +675,11 @@ clean_inst() {
   return 0;
 }
 
+exists_in_zip(){
+  unzip -l "$OPENGAZIP" "$1" | grep -q "$1"
+  return $?
+}
+
 extract_app() {
   tarpath="$TMP/$1.tar" # NB no suffix specified here
   unzip -o "$OPENGAZIP" "$1.tar*" -d "$TMP" # wildcard for suffix
@@ -748,15 +753,33 @@ get_apparch() {
   else
     apparch="$2"
   fi
-  if unzip -l "$OPENGAZIP" "$1-$apparch.*" | grep -q "$1-$apparch."; then  # add the . to make sure it is not a substring being matched
-    return
+  if exists_in_zip "$1-$apparch.*"; then  # add the . to make sure it is not a substring being matched
+    return 0
   else
     get_fallback_arch "$apparch"
     if [ "$apparch" != "$fallback_arch" ]; then
       get_apparch "$1" "$fallback_arch"
+      return $?
     else
-      apparch=""  # this should NEVER happen
+      apparch=""  # No arch-specific package
+      return 1
     fi
+  fi
+}
+
+get_apparchives(){
+  apparchives=""
+  if get_apparch "$1"; then
+    apparchives="$1-$apparch"
+  fi
+  if exists_in_zip "$1-common.*"; then
+    apparchives="$1-common $apparchives"
+  fi
+  if exists_in_zip "$1-lib-$arch.*"; then
+    apparchives="$1-lib-$arch $apparchives"
+  fi
+  if [ -n "$fbarch" ] && exists_in_zip "$1-lib-$fbarch.*"; then
+    apparchives="$1-lib-$fbarch $apparchives"
   fi
 }
 
@@ -1202,8 +1225,12 @@ EOFILE
 echo "for targetarch in $ARCH abort; do" >> "$build/$1"  # we add abort as latest entry to detect if there is no match
 tee -a "$build/$1" > /dev/null <<'EOFILE'
   if [ "$arch" = "$targetarch" ]; then
-    get_fallback_arch "$arch"
-    fbarch="$fallback_arch"
+    if [ "$libfolder" = "lib64" ]; then #on 64bit we also need to install 32 bit libs from the fbarch
+      get_fallback_arch "$arch"
+      fbarch="$fallback_arch"
+    else
+      fbarch=""
+    fi
     break
   elif [ "abort" = "$targetarch" ]; then
     ui_print "***** Incompatible Device Detected *****"
@@ -1883,20 +1910,21 @@ ui_print " ";
 # Perform calculations of core applications
 core_size=0;
 for gapp_name in $core_gapps_list; do
-  get_apparch "Core/$gapp_name"
-  case $gapp_name in
-    setupwizarddefault) if [ "$device_type" != "tablet" ]; then get_appsize "Core/$gapp_name-$apparch"; fi;;
-    setupwizardtablet)  if [ "$device_type"  = "tablet" ]; then get_appsize "Core/$gapp_name-$apparch"; fi;;
-    *) get_appsize "Core/$gapp_name-$apparch";;
-  esac
-  core_size=$((core_size + appsize))
+  get_apparchives "Core/$gapp_name"
+  for archive in $apparchives; do
+    case $gapp_name in
+      setupwizarddefault) if [ "$device_type" != "tablet" ]; then get_appsize "$archive"; fi;;
+      setupwizardtablet)  if [ "$device_type"  = "tablet" ]; then get_appsize "$archive"; fi;;
+      *) get_appsize "$archive";;
+    esac
+    core_size=$((core_size + appsize))
+  done
 done;
 
 # Add swypelibs size to core, if it will be installed
 if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false" ]; then
-  get_apparch "Optional/swypelibs"
-  get_appsize "Optional/swypelibs-$apparch"
-  core_size=$((core_size + keybd_lib_size)) # Add Keyboard Lib size to core, if it exists
+  get_appsize "Optional/swypelibs-lib-$arch"  # Keep it simple, swypelibs is only lib-$arch
+  core_size=$((core_size + keybd_lib_size))  # Add Keyboard Lib size to core, if it exists
 fi
 
 # Read and save system partition size details
@@ -1957,13 +1985,17 @@ post_install_size_kb=$((post_install_size_kb - core_size)) # Add Core GApps
 log_sub "Install" "Core²" $core_size $post_install_size_kb
 
 for gapp_name in $gapps_list; do
-  get_apparch "GApps/$gapp_name"
-  get_appsize "GApps/$gapp_name-$apparch"
+  get_apparchives "GApps/$gapp_name"
+  total_appsize=0
+  for archive in $apparchives; do
+    get_appsize "$archive"
+    total_appsize=$((total_appsize + $appsize))
+  done
 EOFILE
 echo "$DATASIZESCODE" >> "$build/$1"
 tee -a "$build/$1" > /dev/null <<'EOFILE'
-  post_install_size_kb=$((post_install_size_kb - appsize))
-  log_sub "Install" "$gapp_name³" "$appsize" $post_install_size_kb
+  post_install_size_kb=$((post_install_size_kb - total_appsize))
+  log_sub "Install" "$gapp_name³" "$total_appsize" $post_install_size_kb
 done;
 
 # Perform calculations of required Buffer Size
@@ -2053,12 +2085,14 @@ done;
 ui_print "- Installing core GApps";
 set_progress 0.15;
 for gapp_name in $core_gapps_list; do
-  get_apparch "Core/$gapp_name"
-  case $gapp_name in
-    setupwizarddefault) if [ "$device_type" != "tablet" ]; then extract_app "Core/$gapp_name-$apparch"; fi;;
-    setupwizardtablet)  if [ "$device_type"  = "tablet" ]; then extract_app "Core/$gapp_name-$apparch"; fi;;
-    *)  extract_app "Core/$gapp_name-$apparch";;
-  esac
+  get_apparchives "Core/$gapp_name"
+  for archive in $apparchives; do
+    case $gapp_name in
+      setupwizarddefault) if [ "$device_type" != "tablet" ]; then extract_app "$archive"; fi;;
+      setupwizardtablet)  if [ "$device_type"  = "tablet" ]; then extract_app "$archive"; fi;;
+      *)  extract_app "$archive";;
+    esac
+  done
 done;
 ui_print " ";
 set_progress 0.25;
@@ -2076,10 +2110,12 @@ prog_bar=3000; # Set Progress Bar start point (0.3000) for below
 
 # Install the rest of GApps still in $gapps_list
 for gapp_name in $gapps_list; do
-  get_apparch "GApps/$gapp_name"
-  ui_print "- Installing $gapp_name-$apparch"
-  log "Installing" "$gapp_name-$apparch"
-  extract_app "GApps/$gapp_name-$apparch" # Installing User Selected GApps
+  ui_print "- Installing $gapp_name"
+  log "Installing" "$gapp_name"
+  get_apparchives "GApps/$gapp_name"
+  for archive in $apparchives; do
+    extract_app "$archive" # Installing User Selected GApps
+  done
   prog_bar=$((prog_bar + incr_amt))
   set_progress 0.$prog_bar
 done;
@@ -2111,7 +2147,7 @@ if ( contains "$gapps_list" "webviewgoogle" ); then
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/$libfolder/$WebView_lib_filename\" \"/system/app/WebViewGoogle/lib/$arch/$WebView_lib_filename\"" $bkup_tail
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/WebViewGoogle/lib/$arch\"" $bkup_tail
-  if [ "$libfolder" = "lib64" ]; then #on 64bit we also need to add 32 bit libs
+  if [ -n "$fbarch" ]; then  # on 64bit we also need to add 32 bit libs
     install -d "/system/app/WebViewGoogle/lib/$fbarch"
     ln -sfn "/system/lib/$WebView_lib_filename" "/system/app/WebViewGoogle/lib/$fbarch/$WebView_lib_filename"
     # Add same code to backup script to insure symlinks are recreated on addon.d restore

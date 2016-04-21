@@ -40,11 +40,16 @@ buildfile() {
   if [ -z "$4" ]; then usearch="$ARCH"
   else usearch="$4"; fi #allows for an override
 
+  case "$usearch" in
+    all) targetarch="common";;  # technically with our currrent APKs-set, every that is 'all' is de-facto also 'common'
+    *) targetarch="$usearch";;
+  esac
+
   if [ -e "$SOURCES/$usearch/$1" ]; then #check if directory or file exists
     if [ -d "$SOURCES/$usearch/$1" ]; then #if we are handling a directory
-      targetdir="$build/$2-$usearch/$3/$1"
+      targetdir="$build/$2-$targetarch/$3/$1"
     else
-      targetdir="$build/$2-$usearch/$3/$(dirname "$1")"
+      targetdir="$build/$2-$targetarch/$3/$(dirname "$1")"
     fi
     install -d "$targetdir"
     printf "%6s    %s\n" "$usearch" "$1"
@@ -76,12 +81,17 @@ buildsystemlib() {
     fallback="true";;
   esac
 
+  case "$usearch" in
+    all) targetarch="common";;  # technically with our currrent APKs-set, every that is 'all' is de-facto also 'common'
+    *) targetarch="$usearch";;
+  esac
+
   if getsystemlibforapi "$libname" "$usearch" "$API"; then
     printf "%6s-%s %s\n" "$usearch" "$api" "$libname"
     if [ -n "$logfile" ]; then
       printf "%6s-%s| %-s\n" "$usearch" "$api" "$libname" >> "$logfile"
     fi
-    install -D -p "$sourcelib" "$build/$ziplocation-$usearch/$targetlocation/$targetlib"
+    install -D -p "$sourcelib" "$build/$ziplocation-lib-$targetarch/$targetlocation/$targetlib"
   else
     fallback="true"
   fi
