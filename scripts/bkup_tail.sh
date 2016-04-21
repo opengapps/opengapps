@@ -56,7 +56,7 @@ case "$1" in
     # Re-pre-ODEX APKs (from GApps Installer)
 
     # Remove any empty folders we may have created during the removal process
-    for i in /system/app /system/priv-app /system/vendor/pittpatt /system/usr/srec /system/vendor/pittpatt; do
+    for i in /system/app /system/priv-app /system/vendor/pittpatt /system/usr/srec; do
         find $i -type d | xargs -r rmdir -p --ignore-fail-on-non-empty;
     done;
     # Fix ownership/permissions and clean up after backup and restore from /sdcard
