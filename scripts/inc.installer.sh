@@ -845,7 +845,7 @@ install_extracted() {
 }
 
 log() {
-  printf "%30s | %s\n" "$1" "$2" >> $g_log;
+  printf "%31s | %s\n" "$1" "$2" >> $g_log;
 }
 
 log_add() {
@@ -889,7 +889,7 @@ odexapk() {
 quit() {
   set_progress 0.94;
   install_note=$(echo "${install_note}" | sort -r | sed '/^$/d'); # sort Installation Notes & remove empty lines
-  echo ----------------------------------------------------------------------------- >> $g_log;
+  echo ------------------------------------------------------------------ >> $g_log;
   echo -e "$log_close" >> $g_log;
 
   # Add Installation Notes to log to help user better understand conflicts/errors
@@ -1192,7 +1192,7 @@ else
 fi
 
 echo "# Begin Open GApps Install Log" > $g_log;
-echo ----------------------------------------------------------------------------- >> $g_log;
+echo ------------------------------------------------------------------ >> $g_log;
 
 # Check to make certain user has proper version ROM Installed
 if [ ! "$rom_build_sdk" = "$req_android_sdk" ]; then
@@ -1408,12 +1408,11 @@ log "ROM Platform" "$arch"
 log "Display Density Used" "$density"
 log "Install Type" "$install_type"
 log "Smart ART Pre-ODEX" "$preodex"
-log "Google Camera Installed¹" "$cameragoogle_inst"
+log "Google Camera already installed" "$cameragoogle_inst"
 log "FaceUnlock Compatible" "$faceunlock_compat"
 log "Google Camera Compatible" "$cameragoogle_compat"
 log "New Camera API Compatible" "$newcamera_compat"
 log "Google Dialer Compatible" "$googledialer_compat"
-log_close="                  ¹ Previously installed with Open GApps\n$log_close"
 
 # Determine if a GApps package is installed and
 # the version, type, and whether it's an Open GApps package
@@ -1948,7 +1947,7 @@ reclaimed_removal_space_kb=$(du -ck $(obsolete_gapps_list) | tail -n 1 | awk '{ 
 
 # Add information to calc.log that will later be added to open_gapps.log to assist user with app removals
 post_install_size_kb=$((free_system_size_kb + reclaimed_gapps_space_kb)); # Add opening calculations
-echo ----------------------------------------------------------------------------- > $calc_log;
+echo ------------------------------------------------------------------ > $calc_log;
 printf "%7s | %26s |   %7s | %7s\n" "TYPE " "DESCRIPTION       " "SIZE" "  TOTAL" >> $calc_log;
 printf "%7s | %26s |   %7d | %7d\n" "" "Current Free Space" "$free_system_size_kb" "$free_system_size_kb" >> $calc_log;
 printf "%7s | %26s | + %7d | %7d\n" "Remove" "Existing GApps" "$reclaimed_gapps_space_kb" $post_install_size_kb >> $calc_log;
@@ -1975,14 +1974,14 @@ for remove_folder in $user_remove_folder_list; do
   if [ -e "$remove_folder" ]; then
     folder_size_kb=$(du -ck "$remove_folder" | tail -n 1 | awk '{ print $1 }');
     post_install_size_kb=$((post_install_size_kb + folder_size_kb));
-    log_add "Remove" "$(basename "$remove_folder")°" "$folder_size_kb" $post_install_size_kb;
+    log_add "Remove" "$(basename "$remove_folder")*" "$folder_size_kb" $post_install_size_kb;
   fi;
 done;
 
 # Perform calculations of GApps files that will be installed
 set_progress 0.09
 post_install_size_kb=$((post_install_size_kb - core_size)) # Add Core GApps
-log_sub "Install" "Core²" $core_size $post_install_size_kb
+log_sub "Install" "Core" $core_size $post_install_size_kb
 
 for gapp_name in $gapps_list; do
   get_apparchives "GApps/$gapp_name"
@@ -1995,7 +1994,7 @@ EOFILE
 echo "$DATASIZESCODE" >> "$build/$1"
 tee -a "$build/$1" > /dev/null <<'EOFILE'
   post_install_size_kb=$((post_install_size_kb - total_appsize))
-  log_sub "Install" "$gapp_name³" "$total_appsize" $post_install_size_kb
+  log_sub "Install" "$gapp_name" "$total_appsize" $post_install_size_kb
 done;
 
 # Perform calculations of required Buffer Size
@@ -2005,25 +2004,23 @@ if ( grep -qiE '^smallbuffer$' "$g_conf" ); then
 fi
 
 post_install_size_kb=$((post_install_size_kb - buffer_size_kb));
-log_sub "" "Buffer Space²" "$buffer_size_kb" $post_install_size_kb;
-echo ----------------------------------------------------------------------------- >> $calc_log;
+log_sub "" "Buffer Space" "$buffer_size_kb" $post_install_size_kb;
+echo ------------------------------------------------------------------ >> $calc_log;
 
 if [ "$post_install_size_kb" -ge 0 ]; then
   printf "%47s | %7d\n" "  Post Install Free Space" $post_install_size_kb >> $calc_log;
-  log "Post Install Free Space (KB)" "$post_install_size_kb       << See Calculations Below";
+  log "Post Install Free Space (KB)" "$post_install_size_kb   << See Calculations Below";
 else
   additional_size_kb=$((post_install_size_kb * -1));
   printf "%47s | %7d\n" "Additional Space Required" $additional_size_kb >> $calc_log;
-  log "Additional Space Required (KB)" "$additional_size_kb       << See Calculations Below";
+  log "Additional Space Required (KB)" "$additional_size_kb   << See Calculations Below";
 fi;
 
 # Finish up Calculation Log
-echo ----------------------------------------------------------------------------- >> $calc_log;
+echo ------------------------------------------------------------------ >> $calc_log;
 if [ -n "$user_remove_folder_list" ]; then
-  echo "              ° User Requested Removal" >> $calc_log;
+  echo "              * User Requested Removal" >> $calc_log;
 fi;
-echo "              ² Required (ALWAYS Installed)" >> $calc_log;
-echo "              ³ Optional (may be removed)" >> $calc_log;
 
 # Check whether there's enough free space to complete this installation
 if [ "$post_install_size_kb" -lt 0 ]; then
@@ -2111,7 +2108,6 @@ prog_bar=3000; # Set Progress Bar start point (0.3000) for below
 # Install the rest of GApps still in $gapps_list
 for gapp_name in $gapps_list; do
   ui_print "- Installing $gapp_name"
-  log "Installing" "$gapp_name"
   get_apparchives "GApps/$gapp_name"
   for archive in $apparchives; do
     extract_app "$archive" # Installing User Selected GApps
