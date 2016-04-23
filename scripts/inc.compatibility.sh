@@ -267,17 +267,11 @@ minapihack(){
   esac
 }
 
-provisionsetupwizardhack(){
-  if [ "$API" -le "22" ]; then  #pre-Marshmallow Provision always has to be removed
+provisionremovalhack(){
+  if [ "$API" -le "22" ]; then
     tee -a "$1" > /dev/null <<'EOFILE'
 # On Pre-Marshmallow the Provision folder always has to be removed (it conflicts with SetupWizard)
 aosp_remove_list="${aosp_remove_list}provision"$'\n';
-
-EOFILE
-  else  #in Marshmallow CMSetupWizard always has to be removed
-    tee -a "$1" > /dev/null <<'EOFILE'
-# On Marshmallow the CMSetupWizard folder always has to be removed (it conflicts with SetupWizard)
-aosp_remove_list="${aosp_remove_list}cmsetupwizard"$'\n';
 
 EOFILE
   fi
