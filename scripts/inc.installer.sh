@@ -215,6 +215,7 @@ cmaudiofx
 cmaccount
 cmfilemanager
 cmmusic
+cmscreencast
 cmsetupwizard
 cmupdater
 cmwallpapers
@@ -310,13 +311,17 @@ app/Eleven'"$REMOVALSUFFIX"'
 app/Music'"$REMOVALSUFFIX"'
 ";
 
-cmupdater_list="
-priv-app/CMUpdater'"$REMOVALSUFFIX"'
+cmscreencast_list="
+priv-app/Screencast'"$REMOVALSUFFIX"'
 ";
 
 cmsetupwizard_list="
 app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
 priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
+";
+
+cmupdater_list="
+priv-app/CMUpdater'"$REMOVALSUFFIX"'
 ";
 
 cmwallpapers_list="
