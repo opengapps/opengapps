@@ -208,6 +208,7 @@ default_stock_remove_list="
 optional_aosp_remove_list="
 boxer
 basicdreams
+calculatorstock
 calendarstock
 camerastock
 clockstock
@@ -220,9 +221,11 @@ cmsetupwizard
 cmupdater
 cmwallpapers
 dashclock
+email
 exchangestock
 fmradio
 galaxy
+gallery
 holospiral
 keyboardstock
 livewallpapers
@@ -232,6 +235,7 @@ noisefield
 phasebeam
 photophase
 phototable
+picotts
 provision
 simtoolkit
 studio
