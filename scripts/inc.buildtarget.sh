@@ -72,7 +72,6 @@ youtube"
 
 #googletts for micro is defined in inc.compatibility.sh api23hack
 gappsmicro="calendargoogle
-exchangegoogle
 gmail
 googlenow"
 
@@ -254,7 +253,6 @@ get_package_info(){
     drive)                    packagetype="GApps"; packagename="com.google.android.apps.docs"; packagetarget="app/Drive";;
     ears)                     packagetype="GApps"; packagename="com.google.android.ears"; packagetarget="app/GoogleEars";;
     earth)                    packagetype="GApps"; packagename="com.google.earth"; packagetarget="app/GoogleEarth";;
-    exchangegoogle)           packagetype="GApps"; packagename="com.google.android.gm.exchange"; packagetarget="app/PrebuiltExchange3Google";;
     facedetect)               packagetype="GApps";
                               if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib of libfilterpack_facedetect.so
                                 packagelibs="libfilterpack_facedetect.so+fallback";

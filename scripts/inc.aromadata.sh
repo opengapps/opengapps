@@ -150,7 +150,6 @@ form(
       "Drive",     "<b>Google Drive</b>",       "",                      "check",
       "Ears",     "<b>Sound Search for Google Play</b>",       "",                      "check",
       "Earth",     "<b>Google Earth</b>",       "",                      "check",
-      "ExchangeGoogle",     "<b>Google Exchange Services</b>",       "",                      "check",
       "FaceDetect",     "<b>Face Detection for Media</b>",       "",                      "check",
       "FaceUnlock",     "<b>Face Unlock</b>",       "",                      "check",
       "Fitness",     "<b>Google Fit</b>",       "",                      "check",
@@ -233,7 +232,7 @@ form(
       "CMWallpapers",     "<b>CyanogenMod Wallpapers</b>",       "",                      "check",
       "DashClock",     "<b>DashClock Widget</b>",       "(a widget found in certain ROMs)",                      "check",
       "Email",     "<b>Stock/AOSP Email</b>",       "",                      "check",
-      "ExchangeStock",     "<b>Stock/AOSP Exchange Services</b>",       "(automatically removed when Google Exchange Services is installed)",                      "check",
+      "ExchangeStock",     "<b>Stock/AOSP Exchange Services</b>",       "(automatically removed when Gmail is installed)",                      "check",
       "FMRadio",     "<b>Stock/AOSP FM Radio</b>",       "(not found on all devices or ROM's)",                      "check",
       "Galaxy",     "<b>Galaxy Live Wallpaper</b>",       "",                      "check",
       "Gallery",     "<b>Stock/AOSP Gallery</b>",       "(automatically removed when Google Photos is installed)",                      "check",
@@ -426,12 +425,6 @@ if
   prop("gapps.prop", "Earth")=="1"
 then
   appendvar("gapps", "Earth\n");
-endif;
-
-if
-  prop("gapps.prop", "ExchangeGoogle")=="1"
-then
-  appendvar("gapps", "ExchangeGoogle\n");
 endif;
 
 if
