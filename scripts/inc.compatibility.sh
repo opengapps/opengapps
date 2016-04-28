@@ -165,7 +165,7 @@ kitkatdatahack(){
     fi'
     DATAINSTALLCODE='
 kitkatdata_folder_extract() {
-  number="$(basename "$(find "/data/app/$4-"* | head -n1)" .apk | rev | cut -d- -f1)"
+  number="$(basename "$(find "/data/app/$3-"* | head -n1)" .apk | rev | cut -d- -f1)"
   if [ -z "$number" ]; then
     number="1"
   fi
@@ -199,35 +199,35 @@ install -d /data/app/
 install -d /data/app-lib/
 # Handle broken lib configuration on KitKat by putting Hangouts on /data/
 if ( contains "$gapps_list" "hangouts" ); then
-  unzip -o "$ZIP" "GApps/hangouts-$arch.tar*" -d "$TMP"
+  unzip -o "$OPENGAZIP" "GApps/hangouts-$arch.tar*" -d "$TMP"
   which_dpi "hangouts-$arch"  # Keep it simple, only 32 bit arch on kitkat and no weird libs for these apps
   kitkatdata_folder_extract "hangouts-$arch" "$dpiapkpath" "com.google.android.talk" "Hangouts.apk"
   gapps_list=${gapps_list/hangouts}
 fi
 # Handle broken lib configuration on KitKat by putting Google+ on /data/
 if ( contains "$gapps_list" "googleplus" ); then
-  unzip -o "$ZIP" "GApps/googleplus-$arch.tar*" -d "$TMP"
+  unzip -o "$OPENGAZIP" "GApps/googleplus-$arch.tar*" -d "$TMP"
   which_dpi "googleplus-$arch"  # Keep it simple, only 32 bit arch on kitkat and no weird libs for these apps
   kitkatdata_folder_extract "googleplus-$arch" "$dpiapkpath" "com.google.android.apps.plus" "PlusOne.apk"
   gapps_list=${gapps_list/googleplus}
 fi
 # Handle broken lib configuration on KitKat by putting Messenger on /data/
 if ( contains "$gapps_list" "messenger" ); then
-  unzip -o "$ZIP" "GApps/messenger-$arch.tar*" -d "$TMP"
+  unzip -o "$OPENGAZIP" "GApps/messenger-$arch.tar*" -d "$TMP"
   which_dpi "messenger-$arch"  # Keep it simple, only 32 bit arch on kitkat and no weird libs for these apps
   kitkatdata_folder_extract "messenger-$arch" "$dpiapkpath" "com.google.android.apps.messaging" "PrebuiltBugle.apk"
   gapps_list=${gapps_list/messenger}
 fi
 # Handle broken lib configuration on KitKat by putting Photos on /data/
 if ( contains "$gapps_list" "photos" ); then
-  unzip -o "$ZIP" "GApps/photos-$arch.tar*" -d "$TMP"
+  unzip -o "$OPENGAZIP" "GApps/photos-$arch.tar*" -d "$TMP"
   which_dpi "photos-$arch"  # Keep it simple, only 32 bit arch on kitkat and no weird libs for these apps
   kitkatdata_folder_extract "photos-$arch" "$dpiapkpath" "com.google.android.apps.photos" "Photos.apk"
   gapps_list=${gapps_list/photos}
 fi
 # Handle broken lib configuration on KitKat by putting YouTube on /data/
 if ( contains "$gapps_list" "youtube" ); then
-  unzip -o "$ZIP" "GApps/youtube-$arch.tar*" -d "$TMP"
+  unzip -o "$OPENGAZIP" "GApps/youtube-$arch.tar*" -d "$TMP"
   which_dpi "youtube-$arch"  # Keep it simple, only 32 bit arch on kitkat and no weird libs for these apps
   kitkatdata_folder_extract "youtube-$arch" "$dpiapkpath" "com.google.android.youtube" "YouTube.apk"
   gapps_list=${gapps_list/youtube}
