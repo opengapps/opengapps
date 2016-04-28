@@ -160,7 +160,7 @@ fi';;
 kitkatdatahack(){
   if [ "$API" -le "19" ]; then
     DATASIZESCODE='    # Broken lib configuration on KitKat, so some apps do not count for the /system space because they are on /data
-    if [ "$gapp_name" = "hangouts" ] || [ "$gapp_name" = "googleplus" ] || [ "$gapp_name" = "photos" ] || [ "$gapp_name" = "youtube" ]; then
+    if [ "$gapp_name" = "hangouts" ] || [ "$gapp_name" = "googleplus" ] || [ "$gapp_name" = "messenger" ] || [ "$gapp_name" = "photos" ] || [ "$gapp_name" = "youtube" ]; then
         total_appsize=0;
     fi'
     DATAINSTALLCODE='
