@@ -219,6 +219,7 @@ cmscreencast
 cmsetupwizard
 cmupdater
 cmwallpapers
+cmweatherprovider
 dashclock
 exchangestock
 fmradio
@@ -325,6 +326,10 @@ priv-app/CMUpdater'"$REMOVALSUFFIX"'
 
 cmwallpapers_list="
 app/CMWallpapers'"$REMOVALSUFFIX"'
+";
+
+cmweatherprovider_list="
+priv-app/WeatherProvider'"$REMOVALSUFFIX"'
 ";
 
 # Must be used when Google Contacts is installed
