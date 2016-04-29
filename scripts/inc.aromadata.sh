@@ -232,7 +232,7 @@ form(
       "CMWallpapers",     "<b>CyanogenMod Wallpapers</b>",       "",                      "check",
       "DashClock",     "<b>DashClock Widget</b>",       "(a widget found in certain ROMs)",                      "check",
       "Email",     "<b>Stock/AOSP Email</b>",       "",                      "check",
-      "ExchangeStock",     "<b>Stock/AOSP Exchange Services</b>",       "(automatically removed when Email is being removed)",                      "check",
+      "ExchangeStock",     "<b>Stock/AOSP Exchange Services</b>",       "(automatically removed when Gmail is installed)",                      "check",
       "FMRadio",     "<b>Stock/AOSP FM Radio</b>",       "(not found on all devices or ROM's)",                      "check",
       "Galaxy",     "<b>Galaxy Live Wallpaper</b>",       "",                      "check",
       "Gallery",     "<b>Stock/AOSP Gallery</b>",       "(automatically removed when Google Photos is installed)",                      "check",
