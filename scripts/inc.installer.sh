@@ -1684,8 +1684,8 @@ if ( contains "$gapps_list" "clockgoogle" ) && ( ! contains "$aosp_remove_list" 
   aosp_remove_list="${aosp_remove_list}clockstock"$'\n';
 fi;
 
-# If we're installing gmail we must ADD exchangestock to $aosp_remove_list (if it's not already there)
-if ( contains "$gapps_list" "gmail" ) && ( ! contains "$aosp_remove_list" "exchangestock" ); then
+# If we're installing exchangegoogle we must ADD exchangestock to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "exchangegoogle" ) && ( ! contains "$aosp_remove_list" "exchangestock" ); then
   aosp_remove_list="${aosp_remove_list}exchangestock"$'\n';
 fi;
 
