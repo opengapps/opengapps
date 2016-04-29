@@ -63,6 +63,7 @@ getapkproperties(){
     "com.google.android.contacts" |\
     "com.google.android.dialer" |\
     "com.google.android.feedback" |\
+    "com.google.android.gm.exchange" |\
     "com.google.android.gms" |\
     "com.google.android.gms.leanback" |\
     "com.google.android.googlequicksearchbox" |\
