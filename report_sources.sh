@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
@@ -36,6 +36,10 @@ argument(){
     arm64)  filterapparchs="${filterapparchs} arm64";;
     x86)    filterapparchs="${filterapparchs} x86";;
     x86_64) filterapparchs="${filterapparchs} x86_64";;
+    max*mb) filtermaxsize="${1:3:-2}"
+            [ ! -z "${filtermaxsize##*[!0-9]*}" ] || { echo "ERROR: invalid argument" && exit 1; };;
+    min*mb) filterminsize="${1:3:-2}"
+            [ ! -z "${filterminsize##*[!0-9]*}" ] || { echo "ERROR: invalid argument" && exit 1; };;
     *-*)    buildarch="$(echo "$1" | cut -f 1 -d '-')"
             maxsdk="$(echo "$1" | cut -f 2 -d '-')"
             [ ! -z "${maxsdk##*[!0-9]*}" ] || { echo "ERROR: invalid argument" && exit 1; };;
@@ -49,6 +53,8 @@ nohelp=""
 noleanback=""
 nosig=""
 filterapparchs=""
+filtermaxsize=""
+filterminsize=""
 buildarch=""
 maxsdk="99"
 
@@ -69,6 +75,8 @@ if [ -z "$hash" ] && [ -z "$nohelp" ]; then
 * Example command: './report_sources.sh arm-22'
 === AND ===
 * hash: If you add hash as an extra argument, the result will not be returned as human readable, but with a unique hash for the resultset
+* max*mb: If you specify a number for *, the result will only include APKs that are at most that size (or equal) in (rounded) MiBs
+* min*mb: If you specify a number for *, the result will only include APKs that are at least that size (or equal) in (rounded) MiBs
 * nobeta: If you add nobeta as an extra argument, the result will not include the apps that are marked as beta (=ending on .beta)
 * nohelp: If you add nohelp as an extra argument, the result will not include this helptext (not necessary if hash is used)
 * noleanback: If you add noleanback as an extra argument, the result will not include the apps that are marked as leanback (=ending on .leanback)
@@ -107,18 +115,21 @@ for appname in $allapps; do
         appdpis="$(printf "%s" "$appdpifiles" | awk -F '/' '{print $(NF-1)}' | sort | uniq)"
         for dpi in $appdpis; do
           appversionfile="$(find "$SOURCES/$arch/" -iname "*.apk" -ipath "*/$appname/$sdk/$dpi/*" | head -n 1)"
-          getapkproperties "$appversionfile" #set versionname and versioncode
-          if [ -z "$nosig" ]; then
-            if verifyapk "$appversionfile" "silent"; then
-              signed="ok"
+          apksize="$(du --apparent-size -m "$appversionfile" | cut -f 1)"
+          if { [ -z "$filtermaxsize" ] || [ "$apksize" -le "$filtermaxsize" ];} && { [ -z "$filterminsize" ] || [ "$apksize" -ge "$filterminsize" ];} then
+            getapkproperties "$appversionfile" #set versionname and versioncode
+            if [ -z "$nosig" ]; then
+              if verifyapk "$appversionfile" "silent"; then
+                signed="ok"
+              else
+                signed="fail"
+              fi
             else
-              signed="fail"
+              signed="skip"
             fi
-          else
-            signed="skip"
+            result="$result
+$(printf "%46s|%6s|%3s|%15s|%27s|%10s|%3s|%4s" "$appname" "$arch" "$sdk" "$dpi" "$versionname" "$versioncode" "$apksize" "$signed")"
           fi
-          result="$result
-$(printf "%46s|%6s|%3s|%15s|%27s|%10s|%3s|%4s" "$appname" "$arch" "$sdk" "$dpi" "$versionname" "$versioncode" "$(du --apparent-size -m "$appversionfile" | cut -f 1)" "$signed")"
         done
         if [ -n "$buildarch" ]; then
           break 2 #when selecting for the build of a specified architeture and sdk, only one architecture result is enough
