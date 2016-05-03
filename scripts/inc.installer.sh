@@ -94,11 +94,14 @@ if [ -e "$bb" ]; then
   install -d "$l"
   for i in $($bb --list); do
     if ! ln -sf "$bb" "$l/$i" && ! $bb ln -sf "$bb" "$l/$i" && ! $bb ln -f "$bb" "$l/$i" ; then
-      echo "ui_print ERROR 10: Failed to set-up Open GApps'"'"' pre-bundled '"$2"'" > "$OUTFD"
-      echo "ui_print" > "$OUTFD"
-      echo "ui_print Please use TWRP as recovery instead" > "$OUTFD"
-      echo "ui_print" > "$OUTFD"
-      exit 1
+      # create script wrapper if symlinking and hardlinking failed because of restrictive selinux policy
+      if ! echo "#!$bb" > "$l/$i" || ! chmod +x "$l/$i" ; then
+        echo "ui_print ERROR 10: Failed to set-up Open GApps'"'"' pre-bundled '"$2"'" > "$OUTFD"
+        echo "ui_print" > "$OUTFD"
+        echo "ui_print Please use TWRP as recovery instead" > "$OUTFD"
+        echo "ui_print" > "$OUTFD"
+        exit 1
+      fi
     fi
   done
   PATH="$l:$PATH" $bb ash "$TMP/'"$3"'" "$@"
