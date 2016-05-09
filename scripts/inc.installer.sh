@@ -1212,6 +1212,8 @@ if [ ! "$rom_build_sdk" = "$req_android_sdk" ]; then
   ui_print "*** Incompatible Android ROM detected ***";
   ui_print " ";
   ui_print "This GApps pkg is for Android $req_android_version.x ONLY";
+  ui_print "Please download the correct version for"
+  ui_print "your ROM: $(get_prop "ro.build.version.release") (SDK $rom_build_sdk)"
   ui_print " ";
   ui_print "******* GApps Installation failed *******";
   ui_print " ";
