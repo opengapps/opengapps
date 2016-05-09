@@ -160,7 +160,7 @@ fi';;
 kitkatdatahack(){
   if [ "$API" -le "19" ]; then
     DATASIZESCODE='    # Broken lib configuration on KitKat, so some apps do not count for the /system space because they are on /data
-    if [ "$gapp_name" = "hangouts" ] || [ "$gapp_name" = "googleplus" ] || [ "$gapp_name" = "messenger" ] || [ "$gapp_name" = "photos" ] || [ "$gapp_name" = "youtube" ]; then
+    if [ "$gapp_name" = "hangouts" ] || [ "$gapp_name" = "googleplus" ] || [ "$gapp_name" = "messenger" ] || [ "$gapp_name" = "photos" ] || [ "$gapp_name" = "street" ] || [ "$gapp_name" = "youtube" ]; then
         total_appsize=0;
     fi'
     DATAINSTALLCODE='
@@ -224,6 +224,13 @@ if ( contains "$gapps_list" "photos" ); then
   which_dpi "photos-$arch"  # Keep it simple, only 32 bit arch on kitkat and no weird libs for these apps
   kitkatdata_folder_extract "photos-$arch" "$dpiapkpath" "com.google.android.apps.photos" "Photos.apk"
   gapps_list=${gapps_list/photos}
+fi
+# Handle broken lib configuration on KitKat by putting StreetView on /data/
+if ( contains "$gapps_list" "street" ); then
+  unzip -o "$OPENGAZIP" "GApps/street-$arch.tar*" -d "$TMP"
+  which_dpi "street-$arch"  # Keep it simple, only 32 bit arch on kitkat and no weird libs for these apps
+  kitkatdata_folder_extract "street-$arch" "$dpiapkpath" "com.google.android.street" "Street.apk"
+  gapps_list=${gapps_list/street}
 fi
 # Handle broken lib configuration on KitKat by putting YouTube on /data/
 if ( contains "$gapps_list" "youtube" ); then
