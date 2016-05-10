@@ -1311,7 +1311,7 @@ fi
 
 # Check for Google Dialer compatibility
 case $device_name in
-  angler|bullhead|shamu|hammerhead*|sprout*|quark|himaul|klte*|d80*) googledialer_compat="true[whitelist]";;  # Nexus, Moto Maxx, One M9, GalaxyS5(+variants), LG2(+variants)
+  angler|bacon|bullhead|shamu|hammerhead*|sprout*|quark|himaul|klte*|d80*) googledialer_compat="true[whitelist]";;  # Nexus, OnePlus One, Moto Maxx, One M9, GalaxyS5(+variants), LG2(+variants)
   *)# Check for Dialer Override in gapps-config
     if ( grep -qiE '^forcedialer$' "$g_conf" ); then
       googledialer_compat="true[forcedialer]"
