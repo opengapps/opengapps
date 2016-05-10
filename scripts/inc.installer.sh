@@ -1303,7 +1303,7 @@ else
   else
     # If not explictly defined, check whitelist
     case $device_name in
-      ryu|angler|bullhead|shamu|volantis*|flounder*|hammerhead*|sprout*) newcamera_compat="true[whitelist]";;
+      ryu|angler|bacon|bullhead|shamu|volantis*|flounder*|hammerhead*|sprout*) newcamera_compat="true[whitelist]";;
       *) newcamera_compat="false";;
     esac
   fi
