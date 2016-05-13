@@ -587,7 +587,6 @@ remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript
 arch_compat_msg="INSTALLATION FAILURE: This Open GApps package cannot be installed on this\ndevice's architecture. Please download the correct version for your device.\n";
 camera_sys_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera\ncan only be installed during a Clean Install or as an update to an existing\nGApps Installation.\n";
 camera_compat_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera\nis NOT compatible with your device if installed on the system partition. Try\ninstalling from the Play Store instead.\n";
-dialerframework_msg="WARNING: Dialer Framework has/will not be installed as requested. Dialer Framework\nis NOT compatible with your device. You can override by adding\n'ForceDialer' to your gapps-config.\n";
 dialergoogle_msg="WARNING: Google Dialer has/will not be installed as requested. Dialer Framework\nmust be added to the GApps installation if you want to install the Google\nDialer.\n";
 faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";
 googlenow_msg="WARNING: Google Now Launcher has/will not be installed as requested. Google Search\nmust be added to the GApps installation if you want to install the Google\nNow Launcher.\n";
@@ -1309,17 +1308,6 @@ else
   fi
 fi
 
-# Check for Google Dialer compatibility
-case $device_name in
-  angler|bacon|A0001|bullhead|shamu|hammerhead*|sprout*|quark|himaul|klte*|d80*) googledialer_compat="true[whitelist]";;  # Nexus, OnePlus One(bacon and A0001), Moto Maxx, One M9, GalaxyS5(+variants), LG2(+variants)
-  *)# Check for Dialer Override in gapps-config
-    if ( grep -qiE '^forcedialer$' "$g_conf" ); then
-      googledialer_compat="true[forcedialer]"
-    else
-      googledialer_compat="false"
-    fi;;
-esac
-
 # Check for Clean Override in gapps-config
 if ( grep -qiE '^forceclean$' "$g_conf" ); then
   forceclean="true"
@@ -1427,7 +1415,6 @@ log "Google Camera already installed" "$cameragoogle_inst"
 log "FaceUnlock Compatible" "$faceunlock_compat"
 log "Google Camera Compatible" "$cameragoogle_compat"
 log "New Camera API Compatible" "$newcamera_compat"
-log "Google Dialer Compatible" "$googledialer_compat"
 
 # Determine if a GApps package is installed and
 # the version, type, and whether it's an Open GApps package
@@ -1593,12 +1580,6 @@ fi;
 # If $device_type is not a 'phone' make certain we're not installing dialerframework (implies no dialergoogle)
 if ( contains "$gapps_list" "dialerframework" ) && [ $device_type != "phone" ]; then
   gapps_list=${gapps_list/dialerframework}; # we'll prevent dialerframework from being installed since this isn't a phone
-fi;
-
-# If the device is not Google Dialer compatible make certain we're not installing dialerframework (implies no dialergoogle)
-if ( contains "$gapps_list" "dialerframework" ) && [ $googledialer_compat = "false" ]; then
-  gapps_list=${gapps_list/dialerframework}; # we'll prevent dialerframework from being installed since it isn't compatible
-  install_note="${install_note}dialerframework_msg"$'\n'; # make note that Dialer Framework will NOT be installed as user requested
 fi;
 
 # If we're NOT installing dialerframework then we MUST REMOVE dialergoogle from  $gapps_list (if it's currently there)
