@@ -569,9 +569,9 @@ reqd_list="
 obsolete_list="
 /system/priv-app/GoogleHome'"$REMOVALSUFFIX"'
 /system/priv-app/Hangouts'"$REMOVALSUFFIX"'
+/system/priv-app/PrebuiltExchange3Google'"$REMOVALSUFFIX"'
 /system/priv-app/talkback'"$REMOVALSUFFIX"'
 /system/priv-app/Wallet'"$REMOVALSUFFIX"'
-/system/app/PrebuiltExchange3Google'"$REMOVALSUFFIX"'
 ";
 
 # Old addon.d backup scripts as we will be replacing with updated version during install
