@@ -268,8 +268,7 @@ form(
       "exswype",     "<b>SkipSwypelibs</b>",       "To skip/remove the installation of the Google Swype libraries for the AOSP Keyboard",                      "check",
       "exsubstitute","<b>SubstituteSwypelibs</b>", "To overwrite the AOSP Keyboard libraries with the Google Swype libraries instead of adding",                      "check",
       "exnopreodex",   "<b>NoPreODEX</b>",           "To disable the smart Pre-ODEX-ing on Marshmallow+ ROMs",                      "check",
-      "exclean",     "<b>ForceClean</b>",       "To ignore the detection of dirty installations and force the installer to behave as if it concerns a clean install <u>DO NOT REPORT ANY BUGS IF USED</u>",                      "check",
-      "exforcedialer",     "<b>ForceDialer</b>",       "Override Google Dialer compatibility whitelist",                      "check"
+      "exclean",     "<b>ForceClean</b>",       "To ignore the detection of dirty installations and force the installer to behave as if it concerns a clean install <u>DO NOT REPORT ANY BUGS IF USED</u>",                      "check"
 );
 
 ##############################################
@@ -307,11 +306,6 @@ if
   prop("extra.prop", "exclean")=="1"
 then
   appendvar("gapps", "forceclean\n");
-endif;
-if
-  prop("extra.prop", "exforcedialer")=="1"
-then
-  appendvar("gapps", "forcedialer\n");
 endif;
 
 # INCLUDE/EXCLUDE
