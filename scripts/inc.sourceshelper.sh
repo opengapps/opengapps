@@ -125,10 +125,12 @@ getarchitecturesfromlib() {
 getsetupwizardproduct() {
   # Setupwizard has various variations, depending on product type. We need to decompile the APK to find this value
   # this function is not part of the regular getapkproperties script because it is heavy and only necessary when adding an APK
-  tmpdir="$(mktemp -d)"
-  if java -jar "$APKTOOL" -q d -b -f -s -o "$tmpdir" "$1"; then
-    product="$(grep '<string name="product">' "$tmpdir/res/values/strings.xml" | sed -r 's#.*<string name="product">([^<]*)</string>#\1#')"
-    rm -rf "$tmpdir"
+  tmpframedir="$(mktemp -d)"
+  tmpapkdir="$(mktemp -d)"
+  if java -jar "$APKTOOL" -q d -b -f -s -o "$tmpapkdir" -p "$tmpframedir" "$1"; then
+    product="$(grep '<string name="product">' "$tmpapkdir/res/values/strings.xml" | sed -r 's#.*<string name="product">([^<]*)</string>#\1#')"
+    rm -rf "$tmpapkdir"
+    rm -rf "$tmpframedir"
   else
     return $APKTOOLFAILED
   fi
