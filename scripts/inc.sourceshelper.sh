@@ -139,7 +139,7 @@ getsetupwizardproduct() {
 verifyapk() {
   notinzip=""
   if importcert "$1" "$2"; then #always import, because sometimes new certificates are supplied but it would never be detected because the exitcode of jarsigner -verify would be 0, because the existing certificates would suffice
-    if ! jarsigner -verify -keystore "$CERTIFICATES/opengapps.keystore" -strict "$1" 1>/dev/null 2>&1; then
+    if ! timeout 1m jarsigner -verify -keystore "$CERTIFICATES/opengapps.keystore" -strict "$1" 1>/dev/null 2>&1; then  # timeout added because sometimes jarsigner can get stuck for an unknown reason
       return $UNSIGNEDFILES #contains files not signed by Google. APK not imported
     fi
   else
