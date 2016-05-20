@@ -212,7 +212,7 @@ for argument in "$@"; do
       *aarch64*)      addlib "$file" "arm64";;
       *32-bit*intel*) addlib "$file" "x86";;
       *32-bit*arm*)   addlib "$file" "arm";;
-      *)              echo "ERROR: File $f has an unrecognized filetype!";;
+      *)              echo "ERROR: File $file has an unrecognized filetype!";;
     esac
   else
     echo "ERROR: File $file does not exist!"
