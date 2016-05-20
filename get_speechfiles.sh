@@ -17,7 +17,9 @@ TOP="$(realpath .)"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 SPEECHFOLDER="$SOURCES/all/usr/srec/en-US"
+# shellcheck source=scripts/inc.buildhelper.sh
 . "$SCRIPTS/inc.buildhelper.sh"
+# shellcheck source=scripts/inc.tools.sh
 . "$SCRIPTS/inc.tools.sh"
 
 # Check tools

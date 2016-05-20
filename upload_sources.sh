@@ -19,8 +19,11 @@ command -v realpath >/dev/null 2>&1 || { echo "realpath is required but it's not
 TOP="$(realpath .)"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
+# shellcheck source=scripts/inc.compatibility.sh
 . "$SCRIPTS/inc.compatibility.sh"
+# shellcheck source=scripts/inc.sourceshelper.sh
 . "$SCRIPTS/inc.sourceshelper.sh"
+# shellcheck source=scripts/inc.tools.sh
 . "$SCRIPTS/inc.tools.sh"
 
 # Check tools
