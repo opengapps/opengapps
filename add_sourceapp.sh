@@ -39,7 +39,7 @@ installapk() {
 
   if [ "$sdkversion" -lt "$lowestapi" ]; then
     for s in $(seq "$(($sdkversion + 1))" "$lowestapi"); do
-      for d in $(printf "$dpis" | sed 's/-/ /g'); do
+      for d in $(printf "%s" "$dpis" | sed 's/-/ /g'); do
         existing="$(find "$SOURCES/$architecture/$type/$package/$s/" -type d -name "*$d*" | sort -r | cut -c1-)" 2>/dev/null
         if [ -e "$existing" ];then
           echo "ERROR: API level is lower than minimum level $lowestapi and lower than existing level $s of the same package"
@@ -52,7 +52,7 @@ installapk() {
   #targetlocation: sources/platform/type/package/sdkversion/dpi1-dpi2-dpi3/versioncode.apk
   target="$SOURCES/$1/$type/$package/$sdkversion/$dpis"
 
-  for d in $(printf "$dpis" | sed 's/-/ /g'); do
+  for d in $(printf "%s" "$dpis" | sed 's/-/ /g'); do
     existingpath="$(find "$SOURCES/$architecture/$type/$package/$sdkversion/" -type d -name "*$d*" | sort -r | cut -c1-)" 2>/dev/null
     if [ -n "$existingpath" ]; then
       existing="$(find "$existingpath/" -name "*.apk" | sort -r | cut -c1-)" 2>/dev/null #we only look for lowercase .apk, since basename later assumes the same
@@ -78,7 +78,7 @@ installapk() {
 
   if [ "$sdkversion" -le "$lowestapi" ]; then
     for s in $(seq 1 "$((sdkversion - 1))"); do
-      for d in $(printf "$dpis" | sed 's/-/ /g'); do
+      for d in $(printf "%s" "$dpis" | sed 's/-/ /g'); do
         remove="$(find "$SOURCES/$architecture/$type/$package/$s/" -type d -name "*$d*" | sort -r | cut -c1-)" 2>/dev/null
         if [ -e "$remove" ]; then
           rm -rf "$remove"

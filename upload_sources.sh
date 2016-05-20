@@ -46,7 +46,7 @@ createcommit(){
     for s in $(seq 1 "$((sdkversion))"); do
       paths="$(git ls-tree -r --name-only master "$type/$package/$s")"
       if [ -n "$paths" ]; then
-        for d in $(printf "$dpis" | sed 's/-/ /g'); do
+        for d in $(printf "%s" "$dpis" | sed 's/-/ /g'); do
           existing="$(echo "$paths" | grep -o "$type/$package/$s/*$d*")"
           if [ -n "$existing" ]; then
             git rm -q -r --ignore-unmatch "$existing" # We are already in "$SOURCES/$arch"

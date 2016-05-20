@@ -32,7 +32,7 @@ for firstapk in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces wi
   manifesturl="$(unzip -p "$firstapk" "res/raw/configuration" | grep -oa 'http://cache.pack.google.com/edgedl/android/voice/en-us/manifest_v[0-9]*.txt')"
   fileurls="$(wget -q -O - "$manifesturl")"
   for fileurl in $fileurls; do
-    filename="$(printf "$fileurl" | cut -d '-' -f 1)"
+    filename="$(printf "%s" "$fileurl" | cut -d '-' -f 1)"
     case "$fileurl" in
       *.gz) wget -q -O "$SPEECHFOLDER/$filename.gz" "http://cache.pack.google.com/edgedl/android/voice/en-us/$fileurl"
             gunzip -f "$SPEECHFOLDER/$filename.gz";;
