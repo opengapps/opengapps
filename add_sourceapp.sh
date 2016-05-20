@@ -38,7 +38,7 @@ installapk() {
   existing=""
 
   if [ "$sdkversion" -lt "$lowestapi" ]; then
-    for s in $(seq "$(($sdkversion + 1))" "$lowestapi"); do
+    for s in $(seq "$((sdkversion + 1))" "$lowestapi"); do
       for d in $(printf "%s" "$dpis" | sed 's/-/ /g'); do
         existing="$(find "$SOURCES/$architecture/$type/$package/$s/" -type d -name "*$d*" | sort -r | cut -c1-)" 2>/dev/null
         if [ -e "$existing" ];then
