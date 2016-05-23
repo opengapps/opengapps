@@ -39,13 +39,21 @@ LOGFOLDER="$TOP/log"
 COMPRESSION="xz" # lz # none # this sets the default compression method, override is possible in compressapp
 #ZIPALIGNRECOMPRESS=""  # if set to a non-zero value, APKs will be recompressed with zopfli during zipalign
 ZIPCOMPRESSIONLEVEL="0"  # Store only the files in the zip without compressing them (-0 switch): further compression will be useless and will slow down the building process
+# shellcheck source=scripts/inc.aromadata.sh
 . "$SCRIPTS/inc.aromadata.sh"
+# shellcheck source=scripts/inc.buildhelper.sh
 . "$SCRIPTS/inc.buildhelper.sh"
+# shellcheck source=scripts/inc.buildtarget.sh
 . "$SCRIPTS/inc.buildtarget.sh"
+# shellcheck source=scripts/inc.compatibility.sh
 . "$SCRIPTS/inc.compatibility.sh"
+# shellcheck source=scripts/inc.installer.sh
 . "$SCRIPTS/inc.installer.sh"
+# shellcheck source=scripts/inc.packagetarget.sh
 . "$SCRIPTS/inc.packagetarget.sh"
+# shellcheck source=scripts/inc.sourceshelper.sh
 . "$SCRIPTS/inc.sourceshelper.sh"
+# shellcheck source=scripts/inc.tools.sh
 . "$SCRIPTS/inc.tools.sh"
 
 # Check tools
