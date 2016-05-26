@@ -2215,6 +2215,7 @@ if ( contains "$gapps_list" "dialergoogle" ); then
   ui_print "Please set it as default Phone";
   ui_print "application to prevent calls";
   ui_print "from rebooting your device.";
+  ui_print "See https://goo.gl/LTIJ0o";
 fi
 exxit 0;
 EOFILE
