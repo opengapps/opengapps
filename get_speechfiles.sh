@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
@@ -23,24 +23,23 @@ SPEECHFOLDER="$SOURCES/all/usr/srec/en-US"
 . "$SCRIPTS/inc.tools.sh"
 
 # Check tools
-checktools gunzip wget
+checktools coreutils gunzip wget
 
-getapksforapi "com.google.android.googlequicksearchbox" "arm" "22"
-
-for firstapk in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
-  firstapk="$(echo "$firstapk" | tr '' ' ')" #and we place the spaces back again
-  manifesturl="$(unzip -p "$firstapk" "res/raw/configuration" | grep -oa 'http://cache.pack.google.com/edgedl/android/voice/en-us/manifest_v[0-9]*.txt')"
-  fileurls="$(wget -q -O - "$manifesturl")"
-  for fileurl in $fileurls; do
-    filename="$(printf "%s" "$fileurl" | cut -d '-' -f 1)"
-    case "$fileurl" in
-      *.gz) wget -q -O "$SPEECHFOLDER/$filename.gz" "http://cache.pack.google.com/edgedl/android/voice/en-us/$fileurl"
-            gunzip -f "$SPEECHFOLDER/$filename.gz";;
-      *)    wget -q -O "$SPEECHFOLDER/$filename" "http://cache.pack.google.com/edgedl/android/voice/en-us/$fileurl";;
-    esac
-  done
-  break
+manifesturl="https://www.gstatic.com/android/voicesearch/production_2016_04_08_14_33_37_6f706ca387f0e3cce36bb34e19fa76338283fb206c10da9a9f90426e"
+fileurls="$(wget -q -O - "$manifesturl" | grep -a en-US | grep -a -o -E "http.*en-US[^.]*.zip")"
+versions="$(echo "$fileurls" | grep -o -E "/v[0-9]+/")"
+useversion="0"
+for version in $versions; do
+  if [ "${version:2:-1}" -gt "$useversion" ]; then
+    useversion="${version:2:-1}"
+  fi
 done
-
-# The real latest voice data is at http://dl.google.com/dl/android/voice/en-us/v215/en-US-v215-f19.zip
-# But we don't know how to discover this URL in a nice way.
+if [ "$useversion" -gt "0" ]; then
+  tmpfile="$(mktemp)"
+  wget -q -O "$tmpfile" "$(echo "$fileurls" | grep "$useversion" | head -n 1)"
+  install -d "$SPEECHFOLDER"
+  unzip "$tmpfile" -d "$SPEECHFOLDER"
+  rm "$tmpfile"
+else
+  echo "No valid en-US version found in online manifest"
+fi
