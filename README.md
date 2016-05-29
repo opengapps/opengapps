@@ -58,7 +58,7 @@ To add updated source APKs to the sources archive (you can add more than one at 
 ```
 ./add_sourceapp.sh [/path/to/the/files/you/want/to/add.apk]* [beta] [/apps/that/should/be/marked/as/beta.apk...]*
 ```
-For contributors, updated sources can be uploaded. Either without an argument for every architecture, or with one ore more argument for a subset of architectures:
+For contributors, updated sources can be uploaded. Either without an argument for every architecture, or with one or more arguments for a subset of architectures:
 ```
 ./upload_sources.sh [archs]*
 ```
