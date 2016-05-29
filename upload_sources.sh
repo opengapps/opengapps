@@ -16,7 +16,8 @@
 # set your own APKMIRROR_EMAIL and/or APKMIRROR_NAME environment variables if they differ from your git credentials
 
 command -v realpath >/dev/null 2>&1 || { echo "realpath is required but it's not installed, aborting." >&2; exit 1; }
-TOP="$(realpath .)"
+SCRIPT="$(readlink -f "$0")"
+TOP="$(dirname "$SCRIPT")"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 # shellcheck source=scripts/inc.compatibility.sh
@@ -69,9 +70,18 @@ createcommit(){
 }
 
 newapks=""
-for archfolder in $SOURCES/*; do
-  arch="$(basename "$archfolder")"
-  cd "$SOURCES/$arch"
+modules=""
+
+for arg in "$@"; do
+  modules="$modules $arg"
+done
+
+if [ -z "$modules" ]; then
+  modules="all arm arm64 x86 x86_64"
+fi
+
+for arch in $modules; do
+  cd "$SOURCES/$arch" || continue
 
   # We set this per architecture repo, because the settings might differ per submodule
   if [ -n "$OPENGAPPSGIT_EMAIL" ]; then
