@@ -290,6 +290,7 @@ priv-app/Camera'"$REMOVALSUFFIX"'
 priv-app/Camera2'"$REMOVALSUFFIX"'
 app/MotCamera'"$REMOVALSUFFIX"'
 priv-app/MotCamera'"$REMOVALSUFFIX"'
+priv-app/MiuiCamera'"$REMOVALSUFFIX"'
 app/Snap'"$REMOVALSUFFIX"'
 app/FineOSCamera'"$REMOVALSUFFIX"'
 ";
@@ -365,9 +366,11 @@ priv-app/Exchange2'"$REMOVALSUFFIX"'
 ";
 
 fmradio_list="
+app/FM'"$REMOVALSUFFIX"'
 app/FM2'"$REMOVALSUFFIX"'
 app/FMRecord'"$REMOVALSUFFIX"'
 priv-app/FMRadio'"$REMOVALSUFFIX"'
+priv-app/MiuiRadio'"$REMOVALSUFFIX"'
 ";
 
 galaxy_list="
@@ -383,6 +386,7 @@ app/MotGallery'"$REMOVALSUFFIX"'
 priv-app/MotGallery'"$REMOVALSUFFIX"'
 app/MediaShortcuts'"$REMOVALSUFFIX"'
 priv-app/MediaShortcuts'"$REMOVALSUFFIX"'
+priv-app/MiuiGallery'"$REMOVALSUFFIX"'
 priv-app/FineOSGallery'"$REMOVALSUFFIX"'
 ";
 
@@ -418,6 +422,7 @@ priv-app/FlymeLauncher'"$REMOVALSUFFIX"'
 priv-app/Launcher2'"$REMOVALSUFFIX"'
 priv-app/Launcher3'"$REMOVALSUFFIX"'
 priv-app/LiquidLauncher'"$REMOVALSUFFIX"'
+priv-app/MiuiHome'"$REMOVALSUFFIX"'
 priv-app/Paclauncher'"$REMOVALSUFFIX"'
 priv-app/SlimLauncher'"$REMOVALSUFFIX"'
 priv-app/Trebuchet'"$REMOVALSUFFIX"'
