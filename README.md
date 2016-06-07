@@ -30,7 +30,7 @@ To initialize your local repository using the Open GApps source tree, clone the 
 ```
 git clone git@github.com:opengapps/opengapps.git
 ```
-Then sync the submodules to get the original APK sources as provided by Google. Take not that these repositories are very large (in the order of GiBs).
+Then sync the submodules to get the original APK sources as provided by Google. Take note that these repositories are very large (in the order of GiBs).
 You can also use this command to update the sources at a later moment to their most recent version:
 ```
 ./download_sources.sh [--shallow] [arch]
