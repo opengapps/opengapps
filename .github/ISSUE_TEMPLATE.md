@@ -38,6 +38,6 @@ If you have found an issue with a pre-built OpenGApps.org package please use [XD
 
 **Installation debug log and logcat of FC:**
 
-![Debug log of the Open GApps installation](url)
+[Debug log of the Open GApps installation](url)
 
-![A logcat of the moment I receive the force closure (if applicable)](url)
+[A logcat of the moment I receive the force closure (if applicable)](url)
