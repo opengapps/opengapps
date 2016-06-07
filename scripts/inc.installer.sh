@@ -215,9 +215,9 @@ calculatorstock
 calendarstock
 clockstock
 cmaudiofx
-cmaccount
-cmfilemanager
-cmmusic
+account
+filemanager
+music
 cmscreencast
 cmsetupwizard
 cmupdater
@@ -247,6 +247,17 @@ whisperpush
 ";
 # _____________________________________________________________________________________________________________________
 #                                             Stock/AOSP/ROM File Removal Lists
+account_list="
+app/MzAccount'"$REMOVALSUFFIX"'
+app/XiaomiAccount'"$REMOVALSUFFIX"'
+priv-app/CMAccount'"$REMOVALSUFFIX"'
+";
+
+audiofx_list="
+priv-app/AudioFX'"$REMOVALSUFFIX"'
+priv-app/MusicFX'"$REMOVALSUFFIX"'
+";
+
 boxer_list="
 vendor/bundled-app/Boxer'"$REMOVALSUFFIX"'
 ";
@@ -300,21 +311,10 @@ app/DeskClock'"$REMOVALSUFFIX"'
 app/FineOSDeskClock'"$REMOVALSUFFIX"'
 ";
 
-cmaccount_list="
-priv-app/CMAccount'"$REMOVALSUFFIX"'
-";
-
-cmaudiofx_list="
-priv-app/AudioFX'"$REMOVALSUFFIX"'
-";
-
-cmfilemanager_list="
+filemanager_list="
 app/CMFileManager'"$REMOVALSUFFIX"'
-";
-
-cmmusic_list="
-app/Eleven'"$REMOVALSUFFIX"'
-app/Music'"$REMOVALSUFFIX"'
+app/FileExplorer'"$REMOVALSUFFIX"'
+app/FileManager'"$REMOVALSUFFIX"'
 ";
 
 cmscreencast_list="
@@ -441,6 +441,12 @@ mms_list="
 app/messaging'"$REMOVALSUFFIX"'
 priv-app/Mms'"$REMOVALSUFFIX"'
 priv-app/FineOSMms'"$REMOVALSUFFIX"'
+";
+
+music_list="
+app/Eleven'"$REMOVALSUFFIX"'
+app/Music'"$REMOVALSUFFIX"'
+priv-app/Music'"$REMOVALSUFFIX"'
 ";
 
 noisefield_list="
