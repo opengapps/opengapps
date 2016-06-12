@@ -67,6 +67,10 @@ case "$API" in
   *)  echo "ERROR: Unknown API version! Aborting..."; exit 1;;
 esac
 
+if [ "$API" -lt "21" ] && [ "$ARCH" != "arm" ] && [ "$ARCH" != "x86" ]; then
+  echo "ERROR! Platform $ARCH cannot be built on API level $API"; exit 1
+fi
+
 get_supported_variants "$VARIANT"
 SUPPORTEDVARIANTS="$supported_variants"
 GAPPSREMOVEVARIANT="$gappsremove_variant"
@@ -88,6 +92,7 @@ if [ "$API" -lt "22" ]; then
     super|tvstock)  echo "ERROR! Variant $VARIANT cannot be built on API level $API"; exit 1;;
   esac
 fi;
+echo "Generating Open GApps $VARIANT package for $ARCH with API level $API..."
 
 kitkatpathshack	#kitkat has different apk and lib paths which impact installer.data
 kitkatdatahack #kitkat installs some applications on /data/ instead of /system/
