@@ -22,7 +22,7 @@ Please **don't** file directly any GitHub issues to file problems with the Pre-b
 
 Build your own Open GApps
 ---------------
-**The git commands and scripts assume you have a [GitHub account](https://github.com/join) and have set-up [SSH authentication](https://help.github.com/articles/set-up-git/#connecting-over-ssh).**
+**The example git commands assume you have a [GitHub account](https://github.com/join) and have set-up [SSH authentication](https://help.github.com/articles/set-up-git/#connecting-over-ssh).**
 
 If you want to build your own version of Open GApps, you'll need to fetch the git sources:
 
@@ -46,13 +46,13 @@ make
 ```
 To build Open GApps for a specific Android release on a specific platform,
 define both the platform and the API level of that release, seperated by a dash and optionally add the variant with another dash.
-Two examples (for building for Android 5.1 on ARM):
+Two examples (for building for Android 6.0 on ARM):
 ```
-make arm-22
+make arm-23
 ```
 or
 ```
-make arm-22-stock
+make arm-23-stock
 ```
 To add updated source APKs to the sources archive (you can add more than one at once):
 ```
