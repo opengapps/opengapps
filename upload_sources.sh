@@ -28,6 +28,7 @@ SCRIPTS="$TOP/scripts"
 . "$SCRIPTS/inc.tools.sh"
 
 # Check tools
+PATH="$SCRIPTS/androidsdk-resources:$PATH"  # temporary hack to prefer our own older (x86_64) aapt that gives the application label correctly
 checktools aapt coreutils git
 
 createcommit(){

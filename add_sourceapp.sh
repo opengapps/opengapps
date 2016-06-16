@@ -27,6 +27,7 @@ APKTOOL="$SCRIPTS/apktool-resources/apktool_2.1.1.jar"
 BETA=""
 
 # Check tools
+PATH="$SCRIPTS/androidsdk-resources:$PATH"  # temporary hack to prefer our own older (x86_64) aapt that gives the application label correctly
 checktools aapt file coreutils java jarsigner keytool openssl unzip
 
 installapk() {
