@@ -2212,19 +2212,53 @@ set_progress 0.88;
 ch_con_recursive "/system/app" "/system/framework" "/system/lib" "/system/lib64" "/system/priv-app" "/system/usr/srec" "/system/vendor/pittpatt" "/system/etc/permissions" "/system/etc/preferred-apps" "/system/addon.d";
 ch_con "$g_prop"
 
-set_progress 0.92;
-quit;
+set_progress 0.92
+quit
 
-ui_print "- Installation complete!";
-ui_print " ";
+ui_print "- Installation complete!"
+ui_print " "
 
 if ( contains "$gapps_list" "dialergoogle" ); then
-  ui_print "You installed Google Dialer.";
-  ui_print "Please set it as default Phone";
-  ui_print "application to prevent calls";
-  ui_print "from rebooting your device.";
-  ui_print "See https://goo.gl/LTIJ0o";
+  ui_print "You installed Google Dialer."
+  ui_print "Please set it as default Phone"
+  ui_print "application to prevent calls"
+  ui_print "from rebooting your device."
+  ui_print "See https://goo.gl/LTIJ0o"
+
+  # set Google Dialer as default; based on the work of osm0sis @ xda-developers
+  setver="122"  # lowest version in MM, tagged at 6.0.0
+  setsec="/data/system/users/0/settings_secure.xml"
+  if [ -f "$setsec" ]; then
+    if grep -q 'dialer_default_application' "$setsec"; then
+      if ! grep -q 'dialer_default_application" value="com.google.android.dialer' "$setsec"; then
+        curentry="$(grep -o 'dialer_default_application" value=.*$' "$setsec")"
+        newentry='dialer_default_application" value="com.google.android.dialer" package="android" />\r'
+        sed -i "s;${curentry};${newentry};" "$setsec"
+      fi
+    else
+      max="0"
+      for i in $(grep -o 'id=.*$' "$setsec" | cut -d '"' -f 2); do
+        test "$i" -gt "$max" && max="$i"
+      done
+      entry='<setting id="'"$((max + 1))"'" name="dialer_default_application" value="com.google.android.dialer" package="android" />\r'
+      sed -i "/<settings version=\"/a\ \ ${entry}" "$setsec"
+    fi
+  else
+    if [ ! -d "/data/system/users/0" ]; then
+      install -d "/data/system/users/0"
+      chown -R 1000:1000 "/data/system"
+      chmod -R 775 "/data/system"
+      chmod 700 "/data/system/users/0"
+    fi
+    { echo "<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>\r";
+    echo '<settings version="'$setver'">\r';
+    echo '  <setting id="1" name="dialer_default_application" value="com.google.android.dialer" package="android" />\r';
+    echo '</settings>'; } > "$setsec"
+  fi
+  chown 1000:1000 "$setsec"
+  chmod 600 "$setsec"
 fi
-exxit 0;
+
+exxit 0
 EOFILE
 }
