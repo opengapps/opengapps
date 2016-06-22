@@ -1,0 +1,5 @@
+aapt has been copied from build-tools_r24-rc4-macosx.zip
+
+because in the final build-tools for r24 it does not give the application-label correctly anymore
+
+Google's Android SDK license applies on this binary
