@@ -2250,10 +2250,10 @@ if ( contains "$gapps_list" "dialergoogle" ); then
       chmod -R 775 "/data/system"
       chmod 700 "/data/system/users/0"
     fi
-    { echo "<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>\r";
-    echo '<settings version="'$setver'">\r';
-    echo '  <setting id="1" name="dialer_default_application" value="com.google.android.dialer" package="android" />\r';
-    echo '</settings>'; } > "$setsec"
+    { echo -e "<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>\r";
+    echo -e '<settings version="'$setver'">\r';
+    echo -e '  <setting id="1" name="dialer_default_application" value="com.google.android.dialer" package="android" />\r';
+    echo -e '</settings>'; } > "$setsec"
   fi
   chown 1000:1000 "$setsec"
   chmod 600 "$setsec"
