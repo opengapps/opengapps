@@ -716,21 +716,21 @@ exxit() {
   fi
   if ( ! grep -qiE '^ *nodebug *($|#)+' "$g_conf" ); then
     if [ "$g_conf" ]; then # copy gapps-config files to debug logs folder
-      cp -f "$g_conf_orig" $TMP/logs/gapps-config_original.txt
-      cp -f "$g_conf" $TMP/logs/gapps-config_processed.txt
+      cp -f "$g_conf_orig" "$TMP/logs/gapps-config_original.txt"
+      cp -f "$g_conf" "$TMP/logs/gapps-config_processed.txt"
     fi
-    ls -alZR /system > $TMP/logs/System_Files_After.txt
-    df -k > $TMP/logs/Device_Space_After.txt
-    cp -f "$log_folder/open_gapps_log.txt" $TMP/logs
+    ls -alZR /system > "$TMP/logs/System_Files_After.txt"
+    df -k > "$TMP/logs/Device_Space_After.txt"
+    cp -f "$log_folder/open_gapps_log.txt" "$TMP/logs"
     for f in $PROPFILES; do
       cp -f "$f" "$TMP/logs"
     done
-    cp -f /system/addon.d/70-gapps.sh $TMP/logs
-    cp -f $gapps_removal_list "$TMP/logs/gapps-remove_revised.txt"
-    cp -f $rec_cache_log $TMP/logs/Recovery_cache.log
-    cp -f $rec_tmp_log $TMP/logs/Recovery_tmp.log
-    logcat -d -f $TMP/logs/logcat
-    cd $TMP
+    cp -f "/system/addon.d/70-gapps.sh" "$TMP/logs"
+    cp -f "$gapps_removal_list" "$TMP/logs/gapps-remove_revised.txt"
+    cp -f "$rec_cache_log" "$TMP/logs/Recovery_cache.log"
+    cp -f "$rec_tmp_log" "$TMP/logs/Recovery_tmp.log"
+    logcat -d -f "$TMP/logs/logcat"
+    cd "$TMP"
     tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" logs/*
     cd /
   fi
@@ -1889,6 +1889,7 @@ full_removal_list=$(echo "${full_removal_list}" | sed '/^$/d'); # Remove empty l
 remove_list=$(echo "${remove_list}" | sed '/^$/d'); # Remove empty lines from remove_list
 user_remove_folder_list=$(echo "${user_remove_folder_list}" | sed '/^$/d'); # Remove empty lines from User Application Removal list
 
+log "Installing GApps Zipfile" "$OPENGAZIP"
 log "Installing GApps Version" "$gapps_version";
 log "Installing GApps Type" "$gapps_type";
 log "Config Type" "$config_type";
