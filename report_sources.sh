@@ -94,8 +94,8 @@ case "$buildarch" in
   *)      fallbackarchs="";;
 esac
 
-result="$(printf "%46s|%6s|%3s|%15s|%28s|%10s|%3s|%4s" "Application Name" "Arch." "SDK" "DPI" "Version Name" "Version" "MiB" "Sig.")
---------------------------------------------------------------------------------------------------------------------------"
+result="$(printf "%46s|%6s|%3s|%15s|%33s|%10s|%3s|%4s" "Application Name" "Arch." "SDK" "DPI" "Version Name" "Version" "MiB" "Sig.")
+-------------------------------------------------------------------------------------------------------------------------------"
 searchstring="find '$SOURCES/' -iname '*.apk' $nobeta $noleanback | awk -F '/' '{print \$(NF-3)}' | sort | uniq"
 allapps="$(eval "$searchstring")"
 for appname in $allapps; do
@@ -131,7 +131,7 @@ for appname in $allapps; do
               signed="skip"
             fi
             result="$result
-$(printf "%46s|%6s|%3s|%15s|%28s|%10s|%3s|%4s" "$appname" "$arch" "$sdk" "$dpi" "$versionname" "$versioncode" "$apksize" "$signed")"
+$(printf "%46s|%6s|%3s|%15s|%33s|%10s|%3s|%4s" "$appname" "$arch" "$sdk" "$dpi" "$versionname" "$versioncode" "$apksize" "$signed")"
           fi
         done
         if [ -n "$buildarch" ]; then
