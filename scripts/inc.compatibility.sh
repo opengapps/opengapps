@@ -404,3 +404,11 @@ sdkversionhacks(){
     *) ;;
   esac
 }
+
+compressioncompathack(){
+  if [ "$API" -ge "23" ]; then
+    case "$1" in
+      googlecontactssync*) compression="none";; # Googlecontactssync extraction is broken on some devices with XZ on marshmallow, if we compress it in any way while the rest of the package is xz compressed
+    esac
+  fi
+}

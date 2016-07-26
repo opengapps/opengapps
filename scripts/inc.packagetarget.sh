@@ -102,6 +102,7 @@ bundlelicense() {
 
 compressapp() {
   compression="$COMPRESSION"
+  compressioncompathack "$2"
   case "$compression" in
     xz) checktools xz
         csuf=".xz"
