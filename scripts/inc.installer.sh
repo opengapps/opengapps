@@ -297,6 +297,7 @@ app/FineOSCamera'"$REMOVALSUFFIX"'
 
 clockstock_list="
 app/DeskClock'"$REMOVALSUFFIX"'
+app/DeskClock2'"$REMOVALSUFFIX"'
 app/FineOSDeskClock'"$REMOVALSUFFIX"'
 ";
 
@@ -313,6 +314,7 @@ app/CMFileManager'"$REMOVALSUFFIX"'
 ";
 
 cmmusic_list="
+app/Apollo'"$REMOVALSUFFIX"'
 app/Eleven'"$REMOVALSUFFIX"'
 app/Music'"$REMOVALSUFFIX"'
 ";
@@ -446,6 +448,10 @@ priv-app/FineOSMms'"$REMOVALSUFFIX"'
 noisefield_list="
 app/NoiseField'"$REMOVALSUFFIX"'
 ";
+
+omniswitch_list="
+priv-app/OmniSwitch'"$REMOVALSUFFIX"'
+"
 
 # Must be used when Google PackageInstaller is installed; non-capitalized spelling on Lenovo K3 Note
 packageinstallerstock_list="
