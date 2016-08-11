@@ -2,14 +2,15 @@ Getting the latest pre-built Open GApps
 ---------------
 The latest version of pre-built Open GApps can be found at http://opengapps.org
 
-|[Q&A Forum](http://forum.xda-developers.com/showthread.php?t=3124506)|[![XDA Q&A](https://img.shields.io/badge/Q%26A-on%20xda-de7300.svg?maxAge=86400)](http://forum.xda-developers.com/showthread.php?t=3124506)|
+|[Support Project](http://opengapps.org/donate)|[![Donate](https://img.shields.io/badge/donate-on%20paypal-009cde.svg?maxAge=86400)](http://opengapps.org/donate)|
 |----:|:-----|
-|**[Development Forum](http://forum.xda-developers.com/android/software/Open-GApps-t3098071)**|[![XDA Development](https://img.shields.io/badge/development-on%20xda-de7300.svg?maxAge=86400)](http://forum.xda-developers.com/android/software/Open-GApps-t3098071)|
-|**[Support Chat](https://gitter.im/opengapps/general)**|[![Gitter](https://img.shields.io/gitter/room/opengapps/general.js.svg?maxAge=86400)](https://gitter.im/opengapps/general)|
-|**[Latest ARM](http://opengapps.org/?arch=arm)**|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/arm/latest/total.svg?maxAge=86400)](http://opengapps.org/?arch=arm)|
-|**[Latest ARM64](http://opengapps.org/?arch=arm64)**|[![Latest ARM64](https://img.shields.io/github/downloads/opengapps/arm64/latest/total.svg?maxAge=86400)](http://opengapps.org/?arch=arm64)|
-|**[Latest x86](http://opengapps.org/?arch=x86)**|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/x86/latest/total.svg?maxAge=86400)](http://opengapps.org/?arch=x86)|
-|**[Latest x86_64](http://opengapps.org/?arch=x86_64)**|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/x86_64/latest/total.svg?maxAge=86400)](http://opengapps.org/?arch=x86_64)|
+|[Q&A Forum](http://forum.xda-developers.com/showthread.php?t=3124506)|[![XDA Q&A](https://img.shields.io/badge/Q%26A-on%20xda-de7300.svg?maxAge=86400)](http://forum.xda-developers.com/showthread.php?t=3124506)|
+|[Development Forum](http://forum.xda-developers.com/android/software/Open-GApps-t3098071)|[![XDA Development](https://img.shields.io/badge/development-on%20xda-de7300.svg?maxAge=86400)](http://forum.xda-developers.com/android/software/Open-GApps-t3098071)|
+|[Support Chat](https://gitter.im/opengapps/general)|[![Gitter](https://img.shields.io/gitter/room/opengapps/general.js.svg?maxAge=86400)](https://gitter.im/opengapps/general)|
+|[Latest ARM](http://opengapps.org/?arch=arm)|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/arm/latest/total.svg?maxAge=86400)](http://opengapps.org/?arch=arm)|
+|[Latest ARM64](http://opengapps.org/?arch=arm64)|[![Latest ARM64](https://img.shields.io/github/downloads/opengapps/arm64/latest/total.svg?maxAge=86400)](http://opengapps.org/?arch=arm64)|
+|[Latest x86](http://opengapps.org/?arch=x86)|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/x86/latest/total.svg?maxAge=86400)](http://opengapps.org/?arch=x86)|
+|[Latest x86_64](http://opengapps.org/?arch=x86_64)|[![Latest ARM](https://img.shields.io/github/downloads/opengapps/x86_64/latest/total.svg?maxAge=86400)](http://opengapps.org/?arch=x86_64)|
 
 Support for the pre-built packages from OpenGApps.org
 ---------------
