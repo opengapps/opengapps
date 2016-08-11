@@ -2,7 +2,7 @@ Getting the latest pre-built Open GApps
 ---------------
 The latest version of pre-built Open GApps can be found at http://opengapps.org
 
-|[Support Project](http://opengapps.org/donate)|[![XDA Q&A](https://img.shields.io/badge/donate-on%20paypal-009cde.svg?maxAge=86400)](http://opengapps.org/donate)|
+|[Support Project](http://opengapps.org/donate)|[![Donate](https://img.shields.io/badge/donate-on%20paypal-009cde.svg?maxAge=86400)](http://opengapps.org/donate)|
 |----:|:-----|
 |[Q&A Forum](http://forum.xda-developers.com/showthread.php?t=3124506)|[![XDA Q&A](https://img.shields.io/badge/Q%26A-on%20xda-de7300.svg?maxAge=86400)](http://forum.xda-developers.com/showthread.php?t=3124506)|
 |[Development Forum](http://forum.xda-developers.com/android/software/Open-GApps-t3098071)|[![XDA Development](https://img.shields.io/badge/development-on%20xda-de7300.svg?maxAge=86400)](http://forum.xda-developers.com/android/software/Open-GApps-t3098071)|
