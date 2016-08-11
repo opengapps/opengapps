@@ -339,6 +339,7 @@ api21hack(){
 hotword"
     fi
     gappsmini="$gappsmini
+calculatorgoogle
 taggoogle"
     gappsstock="$gappsstock
 contactsgoogle"
@@ -368,8 +369,6 @@ api23hack(){
 dialerframework
 googletts
 packageinstallergoogle"
-    gappsmini="$gappsmini
-calculatorgoogle"
     gappsstock="$gappsstock
 dialergoogle"
     gappsstock_optional="$gappsstock_optional
