@@ -227,6 +227,7 @@ dashclock
 exchangestock
 fmradio
 galaxy
+hexo
 holospiral
 keyboardstock
 livewallpapers
@@ -390,6 +391,10 @@ app/MediaShortcuts'"$REMOVALSUFFIX"'
 priv-app/MediaShortcuts'"$REMOVALSUFFIX"'
 priv-app/MiuiGallery'"$REMOVALSUFFIX"'
 priv-app/FineOSGallery'"$REMOVALSUFFIX"'
+";
+
+hexo_list="
+app/HexoLibre'"$REMOVALSUFFIX"'
 ";
 
 holospiral_list="
