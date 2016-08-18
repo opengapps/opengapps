@@ -1,8 +1,8 @@
 img.background=background
-img.titlebar=titlebar
-img.navbar=navbar
-img.dialog=dialog
-img.dialog.titlebar=dialog_titlebar
+img.titlebar=titlebar.9
+img.navbar=navbar.9
+img.dialog=dialog.9
+img.dialog.titlebar=dialog_titlebar.9
 img.progress=progress_empty.9
 img.prograss.fill=progress_full.9
 img.selection=button_press
@@ -64,4 +64,4 @@ config.transition_frame      = 5
 
 info.themename        = Material
 info.description      = Material Theme for AROMA Installer
-info.author           = Daniiiik49 (modified by raulx222)
+info.author           = Daniiiik49 (modified by raulx222, freetushkan)

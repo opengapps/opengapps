@@ -27,6 +27,7 @@ tee "$build/META-INF/com/google/android/aroma-config" > /dev/null <<'EOFILE'
 
 # ROM Info
 ini_set("rom_name", "Open GApps");
+ini_set("rom_version", "Daily");
 ini_set("rom_author", "Open GApps Team");
 ini_set("rom_date", zipprop("g.prop", "ro.addon.open_version"));
 ini_set("text_quit", "Exit");
@@ -47,20 +48,17 @@ theme("material_green");
 ##############################################
 # Welcome
 ##############################################
-viewbox(
+textbox(
   "Welcome",
-
-  "With AROMA Open GApps you can choose which GApps to install!\n\n\n\n" +
-  "Package Information\n\n" +
-
+  "With AROMA Open GApps you can choose which GApps to install!",
+  "@welcome",
+  "\n Package Information\n\n" +
     "   Name\t\t: <b><#scrollbar>" + ini_get("rom_name") + "</#></b>\n"+
     "   Author\t\t: <b><#scrollbar>" + ini_get("rom_author") + "</#></b>\n"+
     "   Supported devices: <b><#scrollbar>Any!</#></b>\n"+
     "   Supported Android: <b><#scrollbar>"+zipprop("g.prop", "ro.addon.platform")+"</#></b>\n"+
     "   Build date\t: <b><#scrollbar>" + ini_get("rom_date") + " </#></b>\n\n"+
-    "<b>For support and updates visit our site! <#scrollbar>(http://opengapps.org)</#></b>"+"\n\n\n\n",
-
-  "@welcome"
+    "<b>For support and updates visit our site! <#scrollbar>(http://opengapps.org)</#></b>"
 );
 
 ##############################################
@@ -96,10 +94,9 @@ endif;
 ##############################################
 checkviewbox(
   "Load Previous Choices",
-  "Load Previous Choices\n\n\n\n\n<b>Do you want to load your choices from a previous install?</b>\n\n",
+  "<b>Do you want to load your choices from a previous install?</b>\n\n",
   "@welcome",
-
-  "Load choices.", "1", "loadselections"
+  "Load choices", "1", "loadselections"
 );
 
 if
@@ -200,10 +197,10 @@ endif;
 
 form(
     "Default removal bypass",
-    "Careful, you can override the default removal of Stock/AOSP applications below. Please only select if you are sure you want them installed alongside the Google replacement.",
+    "Careful, you can override the default removal of Stock/AOSP applications below",
     "@default",
     bypass.prop,
-    "bypassrem",     "Bypass the automatic removal of Stock/AOSP apps",        "",     "group",
+    "bypassrem",     "Bypass the automatic removal of Stock/AOSP apps.\nPlease only select if you are sure you want them installed alongside the Google replacement.",        "",     "group",
       "+Browser",     "<b>+Browser</b>",      "",    "check",
       "+CameraStock", "<b>+CameraStock</b>",  "",    "check",
       "+Email",     "<b>+Email</b>",      "",        "check",
@@ -920,7 +917,7 @@ writetmpfile(".gapps-config", getvar("gapps"));
 
 textbox(
     "gapps-config",
-    "Your gapps-config file.",
+    "Your gapps-config file",
     "@update",
     read("tmp/aroma/.gapps-config")
 );
@@ -930,9 +927,8 @@ textbox(
 ##############################################
 checkviewbox(
   "Save Choices",
-  "Save Choices: /sdcard/Open-GApps\n\n\n\n\n<b>Do you want to save your choices? It will save time in future installations.</b>\n\n",
+  "<b>Do you want to save your choices?</b>\nThey are stored in /sdcard/Open-GApps\n\n",
   "@welcome",
-
   "Save Choices", "1", "saveselections"
 );
 if
@@ -943,12 +939,12 @@ endif;
 
 # Pre-Install
 ini_set("text_next", "Install GApps");
-viewbox(
-  "Save config and perform GApps install.",
-  "Are you ready to install GApps based on your preferences?\n\n\n\n\n" +
-  "Press <b>Install GApps</b> to perform the install.\n\n" +
-  "If you want to review or change any of your settings, press <b>Back</b>.",
-  "@install"
+textbox(
+  "Save config and perform GApps install",
+  "Are you ready to install GApps based on your preferences?",
+  "@install",
+  "\nPress <b>Install GApps</b> to perform the install.\n\n" +
+  "If you want to review or change any of your settings, press <b>Back</b>."
 );
 
 # Install
@@ -965,11 +961,9 @@ install(
 ini_set("text_next", "Finish");
 checkviewbox(
   "Installed",
-  "<b>Congratulations!</b>\n\n\n\n\n" +
-  "Open GApps has been installed into your device.",
+  "<b>Open GApps has been installed into your device</b>\n\n",
   "@welcome",
-
-  "Reboot your device now.", "0", "reboot_it"
+  "Reboot your device now", "0", "reboot_it"
 );
 
 #Reboot
