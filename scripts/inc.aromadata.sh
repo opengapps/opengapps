@@ -173,6 +173,7 @@ form(
       "Pinyin",     "<b>Google Pinyin Input</b>",       "",                      "check",
       "Photos",     "<b>Google Photos</b>",       "",                      "check",
       "PlayGames",     "<b>Google Play Games</b>",       "",                      "check",
+      "PrintService",     "<b>Print Service Recommendation Service</b>",       "",                      "check",
       "ProjectFi",     "<b>Project Fi by Google</b>",       "",                      "check",
       "Sheets",     "<b>Google Sheets</b>",       "",                      "check",
       "Slides",     "<b>Google Slides</b>",       "",                      "check",
@@ -182,6 +183,7 @@ form(
       "TagGoogle",     "<b>Google NFC Tags</b>",       "",                      "check",
       "Talkback",     "<b>Talkback</b>",       "",                      "check",
       "Translate",     "<b>Google Translate</b>",       "",                      "check",
+      "VRService",     "<b>Google VR Service</b>",       "",                      "check",
       "WebViewGoogle",     "<b>Android System WebView</b>",       "",                      "check",
       "YouTube",     "<b>YouTube</b>",       "",                      "check",
       "Zhuyin",     "<b>Google Zhuyin Input</b>",       "",                      "check"
@@ -576,6 +578,12 @@ then
 endif;
 
 if
+  prop("gapps.prop", "PrintService")=="1"
+then
+  appendvar("gapps", "PrintService\n");
+endif;
+
+if
   prop("gapps.prop", "ProjectFi")=="1"
 then
   appendvar("gapps", "ProjectFi\n");
@@ -627,6 +635,12 @@ if
   prop("gapps.prop", "Translate")=="1"
 then
   appendvar("gapps", "Translate\n");
+endif;
+
+if
+  prop("gapps.prop", "VRService")=="1"
+then
+  appendvar("gapps", "VRService\n");
 endif;
 
 if
