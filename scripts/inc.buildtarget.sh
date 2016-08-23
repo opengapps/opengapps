@@ -42,7 +42,8 @@ zhuyin"
 
 gappsstock="cameragoogle
 keyboardgoogle
-messenger"
+messenger
+vrservice"
 
 gappsstock_optional=""
 
@@ -265,11 +266,16 @@ get_package_info(){
                               fi;;
     faceunlock)               case "$ARCH" in #only arm based platforms
                                 arm*) packagetype="GApps"; packagename="com.android.facelock"; packagetarget="app/FaceLock";
-                                      packagefiles="vendor/pittpatt/";
-                                      if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib of librsdk.so
-                                        packagelibs="libfacelock_jni.so libfrsdk.so+fallback";
+                                      if [ "$API" -ge "24" ]; then  # On 7.0+ the facelock library is libfacenet.so
+                                        FACELOCKLIB="libfacenet.so"
+                                      else  # Before Nougat there is a pittpatt folder and libfacelock_jni
+                                        packagefiles="vendor/pittpatt/";
+                                        FACELOCKLIB="libfacelock_jni.so"
+                                      fi
+                                      if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib of libfrsdk.so
+                                        packagelibs="$FACELOCKLIB libfrsdk.so+fallback";
                                       else
-                                        packagelibs="libfacelock_jni.so libfrsdk.so";
+                                        packagelibs="$FACELOCKLIB libfrsdk.so";
                                       fi;;
                               esac;;
     fitness)                  packagetype="GApps"; packagename="com.google.android.apps.fitness"; packagetarget="app/FitnessPrebuilt";;
@@ -284,7 +290,12 @@ get_package_info(){
     japanese)                 packagetype="GApps"; packagename="com.google.android.inputmethod.japanese"; packagetarget="app/GoogleJapaneseInput";;
     korean)                   packagetype="GApps"; packagename="com.google.android.inputmethod.korean"; packagetarget="app/KoreanIME";;
     keep)                     packagetype="GApps"; packagename="com.google.android.keep"; packagetarget="app/PrebuiltKeep";;
-    keyboardgoogle)           packagetype="GApps"; packagename="com.google.android.inputmethod.latin"; packagetarget="app/LatinImeGoogle";; # LatinIMEGooglePrebuilt is path in Nougat
+    keyboardgoogle)           packagetype="GApps"; packagename="com.google.android.inputmethod.latin";
+                                if [ "$API" -ge "24" ]; then
+                                  packagetarget="app/LatinIMEGooglePrebuilt"
+                                else
+                                  packagetarget="app/LatinImeGoogle"
+                                fi;;
     maps)                     packagetype="GApps"; packagename="com.google.android.apps.maps"; packagetarget="app/Maps";;
     messenger)                packagetype="GApps"; packagename="com.google.android.apps.messaging"; packagetarget="app/PrebuiltBugle";;
     movies)                   packagetype="GApps"; packagename="com.google.android.videos"; packagetarget="app/Videos";;
@@ -342,7 +353,7 @@ get_package_info(){
 
     # Swypelibs
     swypelibs)                packagetype="Optional"; packagelibs="libjni_latinimegoogle.so";
-                              if [ "$API" -ge "23" ]; then  # On Marshmallow+ there is an extra lib
+                              if [ "$API" -eq "23" ]; then  # On Marshmallow there is an extra lib
                                 packagelibs="$packagelibs libjni_keyboarddecoder.so"
                               fi;;
 

@@ -148,7 +148,7 @@ req_android_sdk="'"$API"'";
 req_android_version="'"$PLATFORM"'";
 
 '"$KEYBDLIBS"'
-faceLock_lib_filename="libfacelock_jni.so";
+faceLock_lib_filename="'"$FACELOCKLIB"'";
 atvremote_lib_filename="libatv_uinputbridge.so"
 WebView_lib_filename="libwebviewchromium.so";
 
