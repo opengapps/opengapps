@@ -28,9 +28,9 @@ esac' >> "$1"
 }
 
 hotwordadditionhack(){
-  if [ "$API" -ge "21" ] && [ "$ARCH" = "arm64" ]; then
+  if [ "$API" -ge "21" ]; then
     tee -a "$1" > /dev/null <<'EOFILE'
-# On Marshmallow; If we're installing search we must install hotword too (if it's not already there)
+# If we're installing search we must install hotword too (if it's not already there)
 if ( contains "$gapps_list" "search" ) && ( ! contains "$gapps_list" "hotword" ); then
   gapps_list="${gapps_list}hotword"$'\n';
 fi;
