@@ -396,10 +396,31 @@ tvvoiceinput"
   fi
 }
 
+api24hack(){
+  if [ "$API" -ge "24" ]; then
+    gappscore="$gappscore
+extservices
+extshared"
+    gappsstock="$gappsstock
+vrservice"
+    gappssuper="$gappssuper
+printservice"
+  fi
+}
+
 sdkversionhacks(){
   case "$package" in
-    com.android.facelock) if [ "$versioncode" = "23" ]; then sdkversion="23"; fi;;
-    com.google.android.partnersetup) if [ "$versioncode" = "23" ]; then sdkversion="23"; fi;;
+    com.android.facelock|com.google.android.feedback|com.google.android.gsf.login|com.google.android.partnersetup|com.google.android.syncadapters.contacts)
+      case "$versioncode" in
+        23) sdkversion="23";;
+        24) sdkversion="24";;
+        *) ;;
+      esac;;
+    com.google.android.setupwizard)
+      case "$versioncode" in
+        224) sdkversion="24";;
+        *) ;;
+      esac;;
     *) ;;
   esac
 }

@@ -62,6 +62,7 @@ getapkproperties(){
     "com.google.android.configupdater" |\
     "com.google.android.contacts" |\
     "com.google.android.dialer" |\
+    "com.google.android.ext.services" |\
     "com.google.android.feedback" |\
     "com.google.android.gms" |\
     "com.google.android.gms.leanback" |\
