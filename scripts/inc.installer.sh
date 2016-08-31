@@ -1565,8 +1565,10 @@ else
   fi;
 fi;
 
+# Provision folder always has to be removed (it conflicts with SetupWizard)
+aosp_remove_list="${aosp_remove_list}provision"$'\n';
+
 EOFILE
-provisionremovalhack "$build/$1" #pre-Marshmallow Provision always has to be removed
 hotwordadditionhack "$build/$1" #HotwordEnrollment to support OK Google device-wide (requires compatible hardware)
 tee -a "$build/$1" > /dev/null <<'EOFILE'
 # Verify device is FaceUnlock compatible BEFORE we allow it in $gapps_list

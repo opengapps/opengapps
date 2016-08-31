@@ -247,7 +247,6 @@ form(
       "PhotoPhase",     "<b>PhotoPhase Live Wallpaper</b>",       "",                      "check",
       "PhotoTable",     "<b>PhotoTable Live Wallpaper</b>",       "",                      "check",
       "PicoTTS",     "<b>Stock/AOSP Text-to-Speech</b>",       "(automatically removed when Google TTS is installed)",                      "check",
-      "Provision",     "<b>Provision application (that can conflict with SetupWizard)</b>",       "(automatically removed on pre-Marshmallow installations)",                      "check",
       "SimToolKit",     "<b>Stock/AOSP Sim ToolKit</b>",       "",                      "check",
       "Studio",     "<b>Stock/AOSP Movie Studio</b>",       "",                      "check",
       "SykoPath",     "<b>SykoPath Layers Manager</b>",       "(found in certain ROM's)",                      "check",
@@ -836,12 +835,6 @@ if
   prop("rem.prop", "PicoTTS")=="1"
 then
   appendvar("gapps", "PicoTTS\n");
-endif;
-
-if
-  prop("rem.prop", "Provision")=="1"
-then
-  appendvar("gapps", "Provision\n");
 endif;
 
 if

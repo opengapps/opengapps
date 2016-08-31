@@ -278,16 +278,6 @@ minapihack(){
   esac
 }
 
-provisionremovalhack(){
-  if [ "$API" -le "22" ]; then
-    tee -a "$1" > /dev/null <<'EOFILE'
-# On Pre-Marshmallow the Provision folder always has to be removed (it conflicts with SetupWizard)
-aosp_remove_list="${aosp_remove_list}provision"$'\n';
-
-EOFILE
-  fi
-}
-
 systemlibhack(){
   case "$package" in
     com.google.android.webview) if [ "$API" -lt "23" ]; then #webview libs are only on /system/lib/ on pre-Marshmallow
