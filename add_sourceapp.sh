@@ -62,6 +62,11 @@ installapk() {
         existingversion=$(basename -s.apk "$existing")
         if [ "$versioncode" -gt "$existingversion" ]; then
           rm "$existing"
+          if [ -e "$existing.lz" ]; then
+            rm -f "$(dirname "$existing")/.gitignore"
+            rm -f "$existing.lz"
+            echo "Cleaned-up $existing.lz"
+          fi
           rmdir -p --ignore-fail-on-non-empty "$existingpath"
           install -D "$apk" "$target/$versioncode.apk"
           echo "Replaced with $target/$versioncode.apk"

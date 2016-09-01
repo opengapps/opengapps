@@ -29,7 +29,7 @@ SCRIPTS="$TOP/scripts"
 
 # Check tools
 PATH="$SCRIPTS/androidsdk-resources-$(uname):$PATH"  # temporary hack to prefer our own older (x86_64) aapt that gives the application label correctly
-checktools aapt coreutils git
+checktools aapt coreutils git lzip
 
 createcommit(){
   getapkproperties "$1"
@@ -70,6 +70,25 @@ createcommit(){
   esac
 }
 
+setprecommithook(){
+  tee "$(git rev-parse --git-dir)/hooks/pre-commit" > /dev/null <<'EOFILE'
+#!/bin/sh
+#
+for f in $(git diff --cached --name-only --diff-filter=ACM | grep '.apk$'); do
+  size="$(wc -c "$f" | awk '{print $1}')"  # slow, but available with same syntax on both linux and mac
+  if [ "$size" -gt "95000000" ]; then # Limit set at 95MB
+    echo "Compressing $f with lzip for GitHub"
+    lzip -9 -k -f "$f"
+    echo "$(basename "$f")" >> "$(dirname "$f")/.gitignore"
+    git rm -q --cached "$f"
+    git add "$f.lz"
+    git add "$(dirname "$f")/.gitignore"
+  fi
+done
+EOFILE
+chmod +x "$(git rev-parse --git-dir)/hooks/pre-commit"
+}
+
 newapks=""
 modules=""
 
@@ -96,6 +115,8 @@ for arch in $modules; do
     username="$(git config user.name)"
   fi
 
+  setprecommithook  # Make sure we are using lzip pre-commit hook
+
   echo "Resetting $arch to HEAD before staging new commits..."
   git reset -q HEAD #make sure we are not including any other files are already tracked, output is silenced, not to confuse the user with the next output
   apks="$(git status -uall --porcelain | grep '.apk$' | grep -e "?? " | cut -c4-)" #get the new apks
@@ -103,10 +124,15 @@ for arch in $modules; do
     createcommit "$apk" "$arch"
   done
   changes="$(git shortlog origin/master..HEAD)"
-  addnewapks="$(git diff --name-only --diff-filter=AM origin/master..HEAD | grep '.apk$' | cut -f 2 | sed "s#^#$SOURCES/$arch/#")"
+  addnewapks="$(git diff --name-only --diff-filter=ACM origin/master..HEAD | grep '.apk$' | cut -f 2 | sed "s#^#$SOURCES/$arch/#")"
+  addnewlzapks="$(git diff --name-only --diff-filter=ACM origin/master..HEAD | grep '.apk.lz$' | cut -f 2 | sed "s#^#$SOURCES/$arch/#" | sed 's#.lz$##')"  # cut off the .lz, we want to upload the actual APK to APKMirror
   if [ -n "$addnewapks" ]; then
     newapks="$newapks
 $addnewapks"
+  fi
+  if [ -n "$addnewlzapks" ]; then
+    newapks="$newapks
+$addnewlzapks"
   fi
 
   if [ -n "$changes" ]; then

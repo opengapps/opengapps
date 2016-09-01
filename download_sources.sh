@@ -11,9 +11,15 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-command -v git >/dev/null 2>&1 || { echo "git is required but it's not installed.  Aborting." >&2; exit 1; }
 SCRIPT="$(readlink -f "$0")"
-SCRIPTPATH="$(dirname "$SCRIPT")"
+TOP="$(dirname "$SCRIPT")"
+SCRIPTS="$TOP/scripts"
+
+# shellcheck source=scripts/inc.tools.sh
+. "$SCRIPTS/inc.tools.sh"
+
+# Check tools
+checktools git lzip
 
 argument() {
   case $1 in
@@ -40,6 +46,18 @@ argument() {
   esac
 }
 
+setposthook(){
+  install -d "$(git rev-parse --git-dir)/modules/sources/$1/hooks/"
+  tee "$(git rev-parse --git-dir)/modules/sources/$1/hooks/post-merge" "$(git rev-parse --git-dir)/modules/sources/$1/hooks/post-rewrite" "$(git rev-parse --git-dir)/modules/sources/$1/hooks/post-checkout"> /dev/null <<'EOFILE'
+#!/bin/sh
+#
+for f in $(git diff --name-only --diff-filter=ACM HEAD@{1}..HEAD@{0} -- | grep '.apk.lz$'); do
+  lzip -d -k -f "$f"
+done
+EOFILE
+  chmod +x "$(git rev-parse --git-dir)/modules/sources/$1/hooks/post-merge" "$(git rev-parse --git-dir)/modules/sources/$1/hooks/post-rewrite" "$(git rev-parse --git-dir)/modules/sources/$1/hooks/post-checkout"
+}
+
 depth=""
 modules="all arm arm64 x86 x86_64"
 
@@ -47,13 +65,14 @@ for arg in "$@"; do
   argument $arg
 done
 
-pushd "$SCRIPTPATH" > /dev/null
+pushd "$TOP" > /dev/null
 for module in $modules; do
-  git submodule update --init --remote $depth -- sources/$module # --rebase is specifed in .gitmodules
+  git submodule update --init --remote $depth -- "sources/$module" # --rebase is specifed in .gitmodules
   if [ $? -ne 0 ]; then
     echo "ERROR during git execution, aborted!"
     exit 1
   fi
+  setposthook "$module"  # TODO not sure if the hook is on time ready if the submodule is initialized for the first time, needs testing
 done
 git submodule foreach -q 'branch="$(git config -f "$toplevel/.gitmodules" "submodule.$name.branch")"; git checkout -q "$branch"; git pull -q $depth --rebase'
 popd > /dev/null
