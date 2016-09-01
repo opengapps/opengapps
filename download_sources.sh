@@ -46,18 +46,6 @@ argument() {
   esac
 }
 
-setposthook(){
-  install -d "$(git rev-parse --git-dir)/modules/sources/$1/hooks/"
-  tee "$(git rev-parse --git-dir)/modules/sources/$1/hooks/post-merge" "$(git rev-parse --git-dir)/modules/sources/$1/hooks/post-rewrite" "$(git rev-parse --git-dir)/modules/sources/$1/hooks/post-checkout"> /dev/null <<'EOFILE'
-#!/bin/sh
-#
-for f in $(git diff --name-only --diff-filter=ACM HEAD@{1}..HEAD@{0} -- | grep '.apk.lz$'); do
-  lzip -d -k -f "$f"
-done
-EOFILE
-  chmod +x "$(git rev-parse --git-dir)/modules/sources/$1/hooks/post-merge" "$(git rev-parse --git-dir)/modules/sources/$1/hooks/post-rewrite" "$(git rev-parse --git-dir)/modules/sources/$1/hooks/post-checkout"
-}
-
 depth=""
 modules="all arm arm64 x86 x86_64"
 
@@ -72,7 +60,13 @@ for module in $modules; do
     echo "ERROR during git execution, aborted!"
     exit 1
   fi
-  setposthook "$module"  # TODO not sure if the hook is on time ready if the submodule is initialized for the first time, needs testing
+  lzfiles="$(find "sources/$module/" -name "*.apk.lz")" 2>/dev/null
+  for f in $lzfiles; do
+    if ! [ -e "$(dirname "$f")/$(basename -s.lz "$f")" ]; then  # if this archive was not extracted yet
+      rm -f "$(dirname "$f")/"*.apk  # clean-up any old left over outdated APKs
+      lzip -d -k -f "$f"  # put our new APK in place
+    fi
+  done
 done
 git submodule foreach -q 'branch="$(git config -f "$toplevel/.gitmodules" "submodule.$name.branch")"; git checkout -q "$branch"; git pull -q $depth --rebase'
 popd > /dev/null
