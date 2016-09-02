@@ -294,6 +294,7 @@ app/MotCamera'"$REMOVALSUFFIX"'
 priv-app/MotCamera'"$REMOVALSUFFIX"'
 priv-app/MiuiCamera'"$REMOVALSUFFIX"'
 app/Snap'"$REMOVALSUFFIX"'
+priv-app/Snap'"$REMOVALSUFFIX"'
 app/FineOSCamera'"$REMOVALSUFFIX"'
 ";
 
