@@ -328,10 +328,8 @@ setupwizardtablet"
 
 api21hack(){
   if [ "$API" -ge "21" ]; then
-    if [ "$ARCH" = "arm64" ]; then
-      gappsnano="$gappsnano
+    gappsnano="$gappsnano
 hotword"
-    fi
     gappsmini="$gappsmini
 calculatorgoogle
 taggoogle"
