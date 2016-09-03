@@ -568,6 +568,7 @@ other_list="
 
 # Apps from app that need to be installed in priv-app
 privapp_list="
+/system/app/CanvasPackageInstaller'"$REMOVALSUFFIX"'
 /system/app/ConfigUpdater'"$REMOVALSUFFIX"'
 /system/app/GoogleBackupTransport'"$REMOVALSUFFIX"'
 /system/app/GoogleFeedback'"$REMOVALSUFFIX"'
@@ -2146,7 +2147,9 @@ if ( contains "$gapps_list" "faceunlock" ); then
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/FaceLock/lib/$arch\"" $bkup_tail
 fi
 
-# Create TVRemote lib symlink if installed
+EOFILE
+if [ "$API" -lt "24" ]; then  # Only 5.1 and 6.0
+  echo '# Create TVRemote lib symlink if installed
 if ( contains "$gapps_list" "tvremote" ); then
   install -d "/system/app/AtvRemoteService/lib/$arch"
   ln -sfn "/system/$libfolder/$atvremote_lib_filename" "/system/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename"
@@ -2154,8 +2157,9 @@ if ( contains "$gapps_list" "tvremote" ); then
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/$libfolder/$atvremote_lib_filename\" \"/system/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename\"" $bkup_tail
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/AtvRemoteService/lib/$arch\"" $bkup_tail
 fi
+' >> "$build/$1"
+fi
 
-EOFILE
 if [ "$API" -lt "23" ]; then
   echo '# Create WebView lib symlink if WebView was installed
 if ( contains "$gapps_list" "webviewgoogle" ); then

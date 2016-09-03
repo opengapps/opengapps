@@ -71,8 +71,10 @@ getapkproperties(){
     "com.google.android.gsf.login" |\
     "com.google.android.katniss.leanback" |\
     "com.google.android.leanbacklauncher.leanback" |\
+    "com.google.android.leanbacklauncher.recommendations.leanback" |\
     "com.google.android.onetimeinitializer" |\
     "com.google.android.packageinstaller" |\
+    "com.google.android.pano.packageinstaller" |\
     "com.google.android.partnersetup" |\
     "com.google.android.setupwizard" |\
     "com.google.android.tungsten.setupwraith" |\

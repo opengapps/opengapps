@@ -212,7 +212,7 @@ get_package_info(){
   packagegappsremove=""
   case "$1" in
     # Common GApps
-    configupdater)            packagetype="Core"; packagename="com.google.android.configupdater"; packagetarget="priv-app/ConfigUpdater";; #On Android TV this is in 'app'
+    configupdater)            packagetype="Core"; packagename="com.google.android.configupdater"; packagetarget="priv-app/ConfigUpdater";; #On Android TV 5.1 and 6.0 this is in 'app'
     googlebackuptransport)    packagetype="Core"; packagename="com.google.android.backuptransport"; packagetarget="priv-app/GoogleBackupTransport";;
     gsfcore)                  packagetype="Core"; packagename="com.google.android.gsf"; packagetarget="priv-app/GoogleServicesFramework";;
     talkback)                 packagetype="GApps"; packagename="com.google.android.marvin.talkback"; packagetarget="app/talkback";;
@@ -291,11 +291,11 @@ get_package_info(){
     korean)                   packagetype="GApps"; packagename="com.google.android.inputmethod.korean"; packagetarget="app/KoreanIME";;
     keep)                     packagetype="GApps"; packagename="com.google.android.keep"; packagetarget="app/PrebuiltKeep";;
     keyboardgoogle)           packagetype="GApps"; packagename="com.google.android.inputmethod.latin";
-                                if [ "$API" -ge "24" ]; then
-                                  packagetarget="app/LatinIMEGooglePrebuilt"
-                                else
-                                  packagetarget="app/LatinImeGoogle"
-                                fi;;
+                              if [ "$API" -ge "24" ]; then
+                                packagetarget="app/LatinIMEGooglePrebuilt"
+                              else
+                                packagetarget="app/LatinImeGoogle"
+                              fi;;
     maps)                     packagetype="GApps"; packagename="com.google.android.apps.maps"; packagetarget="app/Maps";;
     messenger)                packagetype="GApps"; packagename="com.google.android.apps.messaging"; packagetarget="app/PrebuiltBugle";;
     movies)                   packagetype="GApps"; packagename="com.google.android.videos"; packagetarget="app/Videos";;
@@ -326,7 +326,12 @@ get_package_info(){
     tvetc)                    packagetype="Core"; packagefiles="etc/sysconfig/google.xml etc/sysconfig/google_build.xml";;
     tvframework)              packagetype="Core"; packagefiles="etc/permissions/com.google.android.pano.v1.xml etc/permissions/com.google.android.tv.installed.xml etc/permissions/com.google.widevine.software.drm.xml framework/com.google.android.pano.v1.jar framework/com.google.widevine.software.drm.jar";;
     tvgmscore)                packagetype="Core"; packagename="com.google.android.gms.leanback"; packagetarget="priv-app/PrebuiltGmsCorePano";;
-    tvvending)                packagetype="Core"; packagename="com.android.vending.leanback"; packagetarget="priv-app/PhoneskyKamikazeCanvas";;
+    tvvending)                packagetype="Core"; packagename="com.android.vending.leanback";
+                              if [ "$API" -ge "24" ]; then
+                                packagetarget="priv-app/Tubesky"
+                              else
+                                packagetarget="priv-app/PhoneskyKamikazeCanvas"
+                              fi;;
 
     backdrop)                 packagetype="GApps"; packagename="com.google.android.backdrop.leanback"; packagetarget="app/Backdrop";;
     castreceiver)             packagetype="GApps"; packagename="com.google.android.apps.mediashell.leanback" packagetarget="priv-app/AndroidMediaShell";;
@@ -342,10 +347,14 @@ get_package_info(){
     tvkeyboardgoogle)         packagetype="GApps"; packagename="com.google.android.leanback.ime"; packagetarget="app/LeanbackIme";;
     tvmovies)                 packagetype="GApps"; packagename="com.google.android.videos.leanback"; packagetarget="app/VideosPano";;
     tvmusic)                  packagetype="GApps"; packagename="com.google.android.music"; packagetarget="app/Music2Pano";;  # Only change is the foldername
-    tvpackageinstallergoogle) packagetype="GApps"; packagename="com.google.android.pano.packageinstaller"; packagetarget="app/CanvasPackageInstaller";;  # This should not replace the regular package installer in priv-app
+    tvpackageinstallergoogle) packagetype="GApps"; packagename="com.google.android.pano.packageinstaller"; packagetarget="priv-app/CanvasPackageInstaller";;  # on 5.1 and 6.0 this was in 'app'
     tvpairing)                packagetype="GApps"; packagename="com.google.android.fugu.pairing"; packagetarget="app/FuguPairingTutorial";;
     tvplaygames)              packagetype="GApps"; packagename="com.google.android.play.games.leanback"; packagetarget="app/PlayGames";;  # Only change is leanback in the packagename
-    tvremote)                 packagetype="GApps"; packagename="com.google.android.tv.remote" packagetarget="priv-app/AtvRemoteService"; packagelibs="libatv_uinputbridge.so";;
+    tvrecommendations)        packagetype="GApps"; packagename="com.google.android.leanbacklauncher.recommendations.leanback"; packagetarget="priv-app/RecommendationsService";;
+    tvremote)                 packagetype="GApps"; packagename="com.google.android.tv.remote" packagetarget="priv-app/AtvRemoteService";
+                              if [ "$API" -lt "24" ]; then  # only 5.1 and 6.0
+                                packagelibs="libatv_uinputbridge.so"
+                              fi;;
     tvsearch)                 packagetype="GApps"; packagename="com.google.android.katniss.leanback"; packagetarget="priv-app/Katniss";;
     tvvoiceinput)             packagetype="GApps"; packagename="com.google.android.tv.voiceinput"; packagetarget="app/TvVoiceInput";;  # Only in 5.1
     tvwidget)                 packagetype="GApps"; packagename="com.google.android.atv.widget"; packagetarget="app/AtvWidget";;
