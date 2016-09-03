@@ -51,7 +51,7 @@ createcommit(){
         for d in $(printf "%s" "$dpis" | sed 's/-/ /g'); do
           existing="$(echo "$paths" | grep -o "$type/$package/$s/*$d*/*" | cut -f -4 -d '/')"
           if [ -n "$existing" ]; then
-            git rm -q -r --ignore-unmatch "$existing" # We are already in "$SOURCES/$arch"
+            git rm -q -r --ignore-unmatch -- "$existing*" # We are already in "$SOURCES/$arch"
           fi
         done
       fi
