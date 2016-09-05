@@ -33,7 +33,10 @@ commonscripts() {
   makegprop "g.prop"
   makeinstallersh "installer.sh"
   bundlebusybox
-  bundlexzdec
+  if [ "$VARIANT" = "aroma" ]; then
+    COMPRESSION="xz"  # Aroma does not play nice with the busybox built-in decompressors
+    bundlexzdec
+  fi
   bundlezip
   makeupdatebinary "META-INF/com/google/android/update-binary" "busybox" "installer.sh" "$EXTRACTFILES" "$CHMODXFILES" # execute as last so that $EXTRACTFILES and $CHMODXFILES are complete
   bundlelicense #optionally add a LICENSE file to the package
