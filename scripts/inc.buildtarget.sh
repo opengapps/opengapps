@@ -320,7 +320,12 @@ get_package_info(){
     zhuyin)                   packagetype="GApps"; packagename="com.google.android.apps.inputmethod.zhuyin"; packagetarget="app/GoogleZhuyinIME";;
 
     # TV GApps
-    bugreport)                packagetype="Core"; packagename="com.google.tungsten.bugreportsender"; packagetarget="app/BugReportSender";;
+    bugreport)                packagetype="Core"; packagetarget="app/BugReportSender";
+                              if [ "$API" -ge "24" ]; then
+                                packagename="com.google.tungsten.bugreportsender"
+                              else
+                                packagename="com.google.android.tv.bugreportsender"
+                              fi;;
     notouch)                  packagetype="Core"; packagename="com.google.android.gsf.notouch"; packagetarget="app/NoTouchAuthDelegate";;
     setupwraith)              packagetype="Core"; packagename="com.google.android.tungsten.setupwraith"; packagetarget="priv-app/SetupWraith";;
     tvetc)                    packagetype="Core"; packagefiles="etc/sysconfig/google.xml etc/sysconfig/google_build.xml";;
@@ -351,8 +356,11 @@ get_package_info(){
     tvpairing)                packagetype="GApps"; packagename="com.google.android.fugu.pairing"; packagetarget="app/FuguPairingTutorial";;
     tvplaygames)              packagetype="GApps"; packagename="com.google.android.play.games.leanback"; packagetarget="app/PlayGames";;  # Only change is leanback in the packagename
     tvrecommendations)        packagetype="GApps"; packagename="com.google.android.leanbacklauncher.recommendations.leanback"; packagetarget="priv-app/RecommendationsService";;
-    tvremote)                 packagetype="GApps"; packagename="com.google.android.tv.remote" packagetarget="priv-app/AtvRemoteService";
-                              if [ "$API" -lt "24" ]; then  # only 5.1 and 6.0
+    tvremote)                 packagetype="GApps";  packagetarget="priv-app/AtvRemoteService";
+                              if [ "$API" -ge "24" ]; then
+                                packagename="com.google.android.tv.remote.service.leanback"
+                              else
+                                packagename="com.google.android.tv.remote"
                                 packagelibs="libatv_uinputbridge.so"
                               fi;;
     tvsearch)                 packagetype="GApps"; packagename="com.google.android.katniss.leanback"; packagetarget="priv-app/Katniss";;

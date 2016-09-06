@@ -83,7 +83,8 @@ getapkproperties(){
     "com.google.android.tungsten.setupwraith" |\
     "com.google.android.tv.leanback" |\
     "com.google.android.tv.remote" |\
-    "com.google.android.tv.remotepairing") type="priv-app";;
+    "com.google.android.tv.remotepairing" |\
+    "com.google.android.tv.remote.service.leanback") type="priv-app";;
     *) type="app";;
   esac
 
