@@ -395,6 +395,9 @@ extshared"
     gappssuper="$gappssuper
 printservice"
 
+    gappstvcore="$gappstvcore
+extservices
+extshared"
     # On Nougat and higher the TV Recommendations exist
     gappstvstock="$gappstvstock
 tvrecommendations"
