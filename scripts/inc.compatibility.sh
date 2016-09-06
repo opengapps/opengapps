@@ -390,14 +390,14 @@ tvvoiceinput"
 api24hack(){
   if [ "$API" -ge "24" ]; then
     gappscore="$gappscore
-extservices
-extshared"
-    gappssuper="$gappssuper
-printservice"
+extservicesgoogle
+extsharedgoogle"
+    gappssuper="$gappsstock
+printservicegoogle"
 
     gappstvcore="$gappstvcore
-extservices
-extshared"
+extservicesgoogle
+extsharedgoogle"
     # On Nougat and higher the TV Recommendations exist
     gappstvstock="$gappstvstock
 tvrecommendations"

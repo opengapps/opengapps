@@ -225,6 +225,8 @@ cmwallpapers
 cmweatherprovider
 dashclock
 exchangestock
+extservicesstock
+extssharedstock
 fmradio
 galaxy
 hexo
@@ -236,6 +238,7 @@ noisefield
 phasebeam
 photophase
 phototable
+printservicestock
 provision
 simtoolkit
 studio
@@ -249,8 +252,7 @@ whisperpush
 # _____________________________________________________________________________________________________________________
 #                                             Stock/AOSP/ROM File Removal Lists
 boxer_list="
-vendor/bundled-app/Boxer'"$REMOVALSUFFIX"'
-";
+vendor/bundled-app/Boxer'"$REMOVALSUFFIX"'"
 
 browser_list="
 app/Browser'"$REMOVALSUFFIX"'
@@ -263,26 +265,22 @@ app/PA_Browser'"$REMOVALSUFFIX"'
 app/YuBrowser'"$REMOVALSUFFIX"'
 priv-app/BLUOpera'"$REMOVALSUFFIX"'
 priv-app/BLUOperaPreinstall'"$REMOVALSUFFIX"'
-priv-app/Browser'"$REMOVALSUFFIX"'
-";
+priv-app/Browser'"$REMOVALSUFFIX"'"
 
 basicdreams_list="
-app/BasicDreams'"$REMOVALSUFFIX"'
-";
+app/BasicDreams'"$REMOVALSUFFIX"'"
 
 # Must be used when GoogleCalculator is installed
 calculatorstock_list="
 app/Calculator'"$REMOVALSUFFIX"'
 app/ExactCalculator'"$REMOVALSUFFIX"'
-app/FineOSCalculator'"$REMOVALSUFFIX"'
-";
+app/FineOSCalculator'"$REMOVALSUFFIX"'"
 
 # Must be used when GoogleCalendar is installed
 calendarstock_list="
 app/Calendar'"$REMOVALSUFFIX"'
 priv-app/Calendar'"$REMOVALSUFFIX"'
-app/FineOSCalendar'"$REMOVALSUFFIX"'
-";
+app/FineOSCalendar'"$REMOVALSUFFIX"'"
 
 # Must be used when GoogleCamera is installed
 camerastock_list="
@@ -295,92 +293,80 @@ priv-app/MotCamera'"$REMOVALSUFFIX"'
 priv-app/MiuiCamera'"$REMOVALSUFFIX"'
 app/Snap'"$REMOVALSUFFIX"'
 priv-app/Snap'"$REMOVALSUFFIX"'
-app/FineOSCamera'"$REMOVALSUFFIX"'
-";
+app/FineOSCamera'"$REMOVALSUFFIX"'"
 
 clockstock_list="
 app/DeskClock'"$REMOVALSUFFIX"'
 app/DeskClock2'"$REMOVALSUFFIX"'
-app/FineOSDeskClock'"$REMOVALSUFFIX"'
-";
+app/FineOSDeskClock'"$REMOVALSUFFIX"'"
 
 cmaccount_list="
-priv-app/CMAccount'"$REMOVALSUFFIX"'
-";
+priv-app/CMAccount'"$REMOVALSUFFIX"'"
 
 cmaudiofx_list="
-priv-app/AudioFX'"$REMOVALSUFFIX"'
-";
+priv-app/AudioFX'"$REMOVALSUFFIX"'"
 
 cmfilemanager_list="
-app/CMFileManager'"$REMOVALSUFFIX"'
-";
+app/CMFileManager'"$REMOVALSUFFIX"'"
 
 cmmusic_list="
 app/Apollo'"$REMOVALSUFFIX"'
 app/Eleven'"$REMOVALSUFFIX"'
-app/Music'"$REMOVALSUFFIX"'
-";
+app/Music'"$REMOVALSUFFIX"'"
 
 cmscreencast_list="
-priv-app/Screencast'"$REMOVALSUFFIX"'
-";
+priv-app/Screencast'"$REMOVALSUFFIX"'"
 
 cmsetupwizard_list="
 app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
-priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
-";
+priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'"
 
 cmupdater_list="
-priv-app/CMUpdater'"$REMOVALSUFFIX"'
-";
+priv-app/CMUpdater'"$REMOVALSUFFIX"'"
 
 cmwallpapers_list="
-app/CMWallpapers'"$REMOVALSUFFIX"'
-";
+app/CMWallpapers'"$REMOVALSUFFIX"'"
 
 cmweatherprovider_list="
-priv-app/WeatherProvider'"$REMOVALSUFFIX"'
-";
+priv-app/WeatherProvider'"$REMOVALSUFFIX"'"
 
 # Must be used when Google Contacts is installed
 contactsstock_list="
 priv-app/Contacts'"$REMOVALSUFFIX"'
-priv-app/FineOSContacts'"$REMOVALSUFFIX"'
-";
+priv-app/FineOSContacts'"$REMOVALSUFFIX"'"
 
 dashclock_list="
-app/DashClock'"$REMOVALSUFFIX"'
-";
+app/DashClock'"$REMOVALSUFFIX"'"
 
 # Must be used when Google Dialer is installed
 dialerstock_list="
 priv-app/Dialer'"$REMOVALSUFFIX"'
-priv-app/FineOSDialer'"$REMOVALSUFFIX"'
-";
+priv-app/FineOSDialer'"$REMOVALSUFFIX"'"
 
 email_list="
 app/Email'"$REMOVALSUFFIX"'
 app/PrebuiltEmailGoogle'"$REMOVALSUFFIX"'
-priv-app/Email'"$REMOVALSUFFIX"'
-";
+priv-app/Email'"$REMOVALSUFFIX"'"
 
 exchangestock_list="
 app/Exchange2'"$REMOVALSUFFIX"'
-priv-app/Exchange2'"$REMOVALSUFFIX"'
-";
+priv-app/Exchange2'"$REMOVALSUFFIX"'"
+
+extservicesstock_list="
+priv-app/ExtServices'"$REMOVALSUFFIX"'"
+
+extssharedstock_list="
+app/ExtShared'"$REMOVALSUFFIX"'"
 
 fmradio_list="
 app/FM'"$REMOVALSUFFIX"'
 app/FM2'"$REMOVALSUFFIX"'
 app/FMRecord'"$REMOVALSUFFIX"'
 priv-app/FMRadio'"$REMOVALSUFFIX"'
-priv-app/MiuiRadio'"$REMOVALSUFFIX"'
-";
+priv-app/MiuiRadio'"$REMOVALSUFFIX"'"
 
 galaxy_list="
-app/Galaxy4'"$REMOVALSUFFIX"'
-";
+app/Galaxy4'"$REMOVALSUFFIX"'"
 
 gallery_list="
 app/Gallery'"$REMOVALSUFFIX"'
@@ -392,16 +378,13 @@ priv-app/MotGallery'"$REMOVALSUFFIX"'
 app/MediaShortcuts'"$REMOVALSUFFIX"'
 priv-app/MediaShortcuts'"$REMOVALSUFFIX"'
 priv-app/MiuiGallery'"$REMOVALSUFFIX"'
-priv-app/FineOSGallery'"$REMOVALSUFFIX"'
-";
+priv-app/FineOSGallery'"$REMOVALSUFFIX"'"
 
 hexo_list="
-app/HexoLibre'"$REMOVALSUFFIX"'
-";
+app/HexoLibre'"$REMOVALSUFFIX"'"
 
 holospiral_list="
-app/HoloSpiralWallpaper'"$REMOVALSUFFIX"'
-";
+app/HoloSpiralWallpaper'"$REMOVALSUFFIX"'"
 
 # Must be used when GoogleKeyboard is installed
 keyboardstock_list="
@@ -409,8 +392,7 @@ app/LatinIME'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPal'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalPortuguesebrPack'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalSpanishLatinPack'"$REMOVALSUFFIX"'
-priv-app/MZInput'"$REMOVALSUFFIX"'
-";
+priv-app/MZInput'"$REMOVALSUFFIX"'"
 
 launcher_list="
 app/CMHome'"$REMOVALSUFFIX"'
@@ -435,100 +417,83 @@ priv-app/MiuiHome'"$REMOVALSUFFIX"'
 priv-app/Paclauncher'"$REMOVALSUFFIX"'
 priv-app/SlimLauncher'"$REMOVALSUFFIX"'
 priv-app/Trebuchet'"$REMOVALSUFFIX"'
-priv-app/Nox'"$REMOVALSUFFIX"'
-";
+priv-app/Nox'"$REMOVALSUFFIX"'"
 
 livewallpapers_list="
-app/LiveWallpapers'"$REMOVALSUFFIX"'
-";
+app/LiveWallpapers'"$REMOVALSUFFIX"'"
 
 lockclock_list="
-app/LockClock'"$REMOVALSUFFIX"'
-";
+app/LockClock'"$REMOVALSUFFIX"'"
 
 mms_list="
 app/messaging'"$REMOVALSUFFIX"'
 priv-app/Mms'"$REMOVALSUFFIX"'
-priv-app/FineOSMms'"$REMOVALSUFFIX"'
-";
+priv-app/FineOSMms'"$REMOVALSUFFIX"'"
 
 noisefield_list="
-app/NoiseField'"$REMOVALSUFFIX"'
-";
+app/NoiseField'"$REMOVALSUFFIX"'"
 
 omniswitch_list="
-priv-app/OmniSwitch'"$REMOVALSUFFIX"'
-"
+priv-app/OmniSwitch'"$REMOVALSUFFIX"'"
 
 # Must be used when Google PackageInstaller is installed; non-capitalized spelling on Lenovo K3 Note
 packageinstallerstock_list="
 app/PackageInstaller'"$REMOVALSUFFIX"'
 priv-app/PackageInstaller'"$REMOVALSUFFIX"'
-priv-app/packageinstaller'"$REMOVALSUFFIX"'
-";
+priv-app/packageinstaller'"$REMOVALSUFFIX"'"
 
 phasebeam_list="
-app/PhaseBeam'"$REMOVALSUFFIX"'
-";
+app/PhaseBeam'"$REMOVALSUFFIX"'"
 
 photophase_list="
-app/PhotoPhase'"$REMOVALSUFFIX"'
-";
+app/PhotoPhase'"$REMOVALSUFFIX"'"
 
 phototable_list="
-app/PhotoTable'"$REMOVALSUFFIX"'
-";
+app/PhotoTable'"$REMOVALSUFFIX"'"
 
 picotts_list="
 app/PicoTts'"$REMOVALSUFFIX"'
 priv-app/PicoTts'"$REMOVALSUFFIX"'
 lib/libttscompat.so
 lib/libttspico.so
-tts
-";
+tts"
+
+printservicestock_list="
+app/PrintRecommendationService'"$REMOVALSUFFIX"'"
 
 provision_list="
 app/Provision'"$REMOVALSUFFIX"'
-priv-app/Provision'"$REMOVALSUFFIX"'
-"
+priv-app/Provision'"$REMOVALSUFFIX"'"
 
 simtoolkit_list="
-app/Stk'"$REMOVALSUFFIX"'
-";
+app/Stk'"$REMOVALSUFFIX"'"
 
 studio_list="
-app/VideoEditor'"$REMOVALSUFFIX"'
-";
+app/VideoEditor'"$REMOVALSUFFIX"'"
 
 sykopath_list="
-app/Layers'"$REMOVALSUFFIX"'
-";
+app/Layers'"$REMOVALSUFFIX"'"
 
 tagstock_list="
-priv-app/Tag'"$REMOVALSUFFIX"'
-";
+priv-app/Tag'"$REMOVALSUFFIX"'"
 
 terminal_list="
-app/Terminal'"$REMOVALSUFFIX"'
-";
+app/Terminal'"$REMOVALSUFFIX"'"
 
 themes_list="
 priv-app/ThemeChooser'"$REMOVALSUFFIX"'
-priv-app/ThemesProvider'"$REMOVALSUFFIX"'
-";
+priv-app/ThemesProvider'"$REMOVALSUFFIX"'"
 
 visualizationwallpapers_list="
-app/VisualizationWallpapers'"$REMOVALSUFFIX"'
-";
+app/VisualizationWallpapers'"$REMOVALSUFFIX"'"
 
 webviewstock_list="
 app/webview'"$REMOVALSUFFIX"'
 app/WebView'"$REMOVALSUFFIX"'
-'"$webviewstocklibs"'";
+'"$webviewstocklibs"'"
 
 whisperpush_list="
-app/WhisperPush'"$REMOVALSUFFIX"'
-";
+app/WhisperPush'"$REMOVALSUFFIX"'"
 # _____________________________________________________________________________________________________________________
 #                                             Permanently Removed Folders
 # Pieces that may be left over from AIO ROMs that can/will interfere with these GApps
@@ -1579,6 +1544,8 @@ fi;
 
 # Provision folder always has to be removed (it conflicts with SetupWizard)
 aosp_remove_list="${aosp_remove_list}provision"$'\n';
+# Remove AOSP Android Shared Services in favour of our Google versions of it
+aosp_remove_list="${aosp_remove_list}extsharedstock"$'\n'"extservicesstock"$'\n';
 
 EOFILE
 hotwordadditionhack "$build/$1" #HotwordEnrollment to support OK Google device-wide (requires compatible hardware)
@@ -1709,6 +1676,11 @@ fi;
 # If we're installing exchangegoogle we must ADD exchangestock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "exchangegoogle" ) && ( ! contains "$aosp_remove_list" "exchangestock" ); then
   aosp_remove_list="${aosp_remove_list}exchangestock"$'\n';
+fi;
+
+# If we're installing printservicegoogle we must ADD printservicestock to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "printservicegoogle" ) && ( ! contains "$aosp_remove_list" "printservicestock" ); then
+  aosp_remove_list="${aosp_remove_list}printservicestock"$'\n';
 fi;
 
 # If we're installing taggoogle we must ADD tagstock to $aosp_remove_list (if it's not already there)
