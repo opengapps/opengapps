@@ -422,9 +422,9 @@ sdkversionhacks(){
 }
 
 compressioncompathack(){
-  if [ "$API" -eq "23" ] && [ "$compression" = "xz" ]; then
+  if [ "$API" -eq "23" ]; then
     case "$1" in
-      googlecontactssync*) compression="none";;  # Googlecontactssync for Marshmallow extraction is broken with XZ, so use a plain tar instead
+      googlecontactssync*) compression="none";;  # Googlecontactssync for Marshmallow extraction is broken with compression, so use a plain tar instead
     esac
   fi
 }
