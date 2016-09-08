@@ -392,7 +392,7 @@ api24hack(){
     gappscore="$gappscore
 extservicesgoogle
 extsharedgoogle"
-    gappssuper="$gappsstock
+    gappsstock="$gappsstock
 printservicegoogle"
 
     gappstvcore="$gappstvcore
