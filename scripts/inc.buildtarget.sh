@@ -52,7 +52,6 @@ chrome
 cloudprint
 docs
 drive
-ears
 fitness
 googleplus
 keep
@@ -256,7 +255,6 @@ get_package_info(){
     dmagent)                  packagetype="GApps"; packagename="com.google.android.apps.enterprise.dmagent"; packagetarget="app/DMAgent";;
     docs)                     packagetype="GApps"; packagename="com.google.android.apps.docs.editors.docs"; packagetarget="app/EditorsDocs";;
     drive)                    packagetype="GApps"; packagename="com.google.android.apps.docs"; packagetarget="app/Drive";;
-    ears)                     packagetype="GApps"; packagename="com.google.android.ears"; packagetarget="app/GoogleEars";;
     earth)                    packagetype="GApps"; packagename="com.google.earth"; packagetarget="app/GoogleEarth";;
     exchangegoogle)           packagetype="GApps"; packagename="com.google.android.gm.exchange"; packagetarget="app/PrebuiltExchange3Google";;
     facedetect)               packagetype="GApps";
