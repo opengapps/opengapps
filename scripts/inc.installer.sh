@@ -647,8 +647,8 @@ ch_con_recursive() {
 }
 
 checkmanifest() {
-  if [ -f "$1" ] && (unzip -ql "$1" | grep -q "META-INF/MANIFEST.MF"); then  # strict, only files
-    unzip -p "$1" "META-INF/MANIFEST.MF" | grep -q "$2"
+  if [ -f "$1" ] && ("$TMP/unzip-$BINARCH" -ql "$1" | grep -q "META-INF/MANIFEST.MF"); then  # strict, only files
+    "$TMP/unzip-$BINARCH" -p "$1" "META-INF/MANIFEST.MF" | grep -q "$2"
     return "$?"
   else
     return 0
@@ -676,16 +676,16 @@ clean_inst() {
 }
 
 exists_in_zip(){
-  unzip -l "$OPENGAZIP" "$1" | grep -q "$1"
+  "$TMP/unzip-$BINARCH" -l "$OPENGAZIP" "$1" | grep -q "$1"
   return $?
 }
 
 extract_app() {
   tarpath="$TMP/$1.tar" # NB no suffix specified here
-  if unzip -o "$OPENGAZIP" "$1.tar*" -d "$TMP"; then # wildcard for suffix
+  if "$TMP/unzip-$BINARCH" -o "$OPENGAZIP" "$1.tar*" -d "$TMP"; then # wildcard for suffix
     app_name="$(basename "$1")"
     which_dpi "$app_name"
-    echo "Found $1 DPI path: $dpkiapkpath"
+    echo "Found $1 DPI path: $dpiapkpath"
     folder_extract "$tarpath" "$dpiapkpath" "$app_name/common"
   else
     echo "Failed to extract $1.tar* from $OPENGAZIP"
@@ -714,7 +714,7 @@ exxit() {
     cp -f "$rec_tmp_log" "$TMP/logs/Recovery_tmp.log"
     logcat -d -f "$TMP/logs/logcat"
     cd "$TMP"
-    tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" logs/*
+    "$TMP/tar-$BINARCH" -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" logs/*
     cd /
   fi
   find $TMP/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +
@@ -733,21 +733,21 @@ folder_extract() {
   if [ -e "$archive.xz" ]; then
     for f in "$@"; do
       if [ "$f" != "unknown" ]; then
-        $TMP/xzdec-$BINARCH "$archive.xz" | tar -x -C "$TMP" -f - "$f" && install_extracted "$f"
+        "$TMP/xzdec-$BINARCH" "$archive.xz" | "$TMP/tar-$BINARCH" -x -C "$TMP" -f - "$f" && install_extracted "$f"
       fi
     done
     rm -f "$archive.xz"
   elif [ -e "$archive.lz" ]; then
     for f in "$@"; do
       if [ "$f" != "unknown" ]; then
-        tar -xyf "$archive.lz" -C "$TMP" "$f" && install_extracted "$f"
+        "$TMP/tar-$BINARCH" -xf "$archive.lz" -C "$TMP" "$f" && install_extracted "$f"
       fi
     done
     rm -f "$archive.lz"
   elif [ -e "$archive" ]; then
     for f in "$@"; do
       if [ "$f" != "unknown" ]; then
-        tar -xf "$archive" -C "$TMP" "$f" && install_extracted "$f"
+        "$TMP/tar-$BINARCH" -xf "$archive" -C "$TMP" "$f" && install_extracted "$f"
       fi
     done
     rm -f "$archive"
@@ -874,7 +874,7 @@ odexapk() {
     apkdir="$(dirname "$1")"
     apkname="$(basename "$1" ".apk")"  # Take note not to use -s, it is not supported in busybox
     install -d "$TMP/classesdex"
-    unzip -q -o "$1" "classes*.dex" -d "$TMP/classesdex/"  # extract to temporary location first, to avoid potential disk space shortage
+    "$TMP/unzip-$BINARCH" -q -o "$1" "classes*.dex" -d "$TMP/classesdex/"  # extract to temporary location first, to avoid potential disk space shortage
     eval '$TMP/zip-$BINARCH -d "$1" "classes*.dex"'
     cp "$TMP/classesdex/"* "$apkdir"
     rm -rf "$TMP/classesdex/"

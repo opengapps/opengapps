@@ -37,6 +37,8 @@ commonscripts() {
     COMPRESSION="xz"  # Aroma does not play nice with the busybox built-in decompressors
     bundlexzdec
   fi
+  bundletar
+  bundleunzip
   bundlezip
   makeupdatebinary "META-INF/com/google/android/update-binary" "busybox" "installer.sh" "$EXTRACTFILES" "$CHMODXFILES" # execute as last so that $EXTRACTFILES and $CHMODXFILES are complete
   bundlelicense #optionally add a LICENSE file to the package
@@ -82,6 +84,26 @@ bundlexzdec() {
   copy "$SCRIPTS/xz-resources/$xzdecbin" "$build/$xzdecbin"
   EXTRACTFILES="$EXTRACTFILES $xzdecbin"
   CHMODXFILES="$CHMODXFILES $xzdecbin"
+}
+
+bundletar() {
+  case "$ARCH" in #Include tar binary
+    arm*) tarbin="tar-arm";;
+    x86*) tarbin="tar-x86";;
+  esac
+  copy "$SCRIPTS/tar-resources/$tarbin" "$build/$tarbin"
+  EXTRACTFILES="$EXTRACTFILES $tarbin"
+  CHMODXFILES="$CHMODXFILES $tarbin"
+}
+
+bundleunzip() {
+  case "$ARCH" in #Include unzip binary
+    arm*) unzipbin="unzip-arm";;
+    x86*) unzipbin="unzip-x86";;
+  esac
+  copy "$SCRIPTS/infozip-resources/$unzipbin" "$build/$unzipbin"
+  EXTRACTFILES="$EXTRACTFILES $unzipbin"
+  CHMODXFILES="$CHMODXFILES $unzipbin"
 }
 
 bundlezip() {
