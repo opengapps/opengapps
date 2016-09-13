@@ -682,10 +682,14 @@ exists_in_zip(){
 
 extract_app() {
   tarpath="$TMP/$1.tar" # NB no suffix specified here
-  unzip -o "$OPENGAZIP" "$1.tar*" -d "$TMP" # wildcard for suffix
-  app_name="$(basename "$1")"
-  which_dpi "$app_name"
-  folder_extract "$tarpath" "$dpiapkpath" "$app_name/common"
+  if unzip -o "$OPENGAZIP" "$1.tar*" -d "$TMP"; then # wildcard for suffix
+    app_name="$(basename "$1")"
+    which_dpi "$app_name"
+    echo "Found $1 DPI path: $dpkiapkpath"
+    folder_extract "$tarpath" "$dpiapkpath" "$app_name/common"
+  else
+    echo "Failed to extract $1.tar* from $OPENGAZIP"
+  fi
 }
 
 exxit() {
@@ -728,20 +732,23 @@ folder_extract() {
   shift
   if [ -e "$archive.xz" ]; then
     for f in "$@"; do
-      $TMP/xzdec-$BINARCH "$archive.xz" | tar -x -C "$TMP" -f - "$f"
-      install_extracted "$f"
+      if [ "$f" != "unknown" ]; then
+        $TMP/xzdec-$BINARCH "$archive.xz" | tar -x -C "$TMP" -f - "$f" && install_extracted "$f"
+      fi
     done
     rm -f "$archive.xz"
   elif [ -e "$archive.lz" ]; then
     for f in "$@"; do
-      tar -xyf "$archive.lz" -C $TMP "$f"
-      install_extracted "$f"
+      if [ "$f" != "unknown" ]; then
+        tar -xyf "$archive.lz" -C "$TMP" "$f" && install_extracted "$f"
+      fi
     done
     rm -f "$archive.lz"
   elif [ -e "$archive" ]; then
     for f in "$@"; do
-      tar -xf "$archive" -C $TMP "$f"
-      install_extracted "$f"
+      if [ "$f" != "unknown" ]; then
+        tar -xf "$archive" -C "$TMP" "$f" && install_extracted "$f"
+      fi
     done
     rm -f "$archive"
   fi
