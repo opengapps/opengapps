@@ -322,9 +322,9 @@ get_package_info(){
     # TV GApps
     bugreport)                packagetype="Core"; packagetarget="app/BugReportSender";
                               if [ "$API" -ge "24" ]; then
-                                packagename="com.google.tungsten.bugreportsender"
-                              else
                                 packagename="com.google.android.tv.bugreportsender"
+                              else
+                                packagename="com.google.tungsten.bugreportsender"
                               fi;;
     notouch)                  packagetype="Core"; packagename="com.google.android.gsf.notouch"; packagetarget="app/NoTouchAuthDelegate";;
     setupwraith)              packagetype="Core"; packagename="com.google.android.tungsten.setupwraith"; packagetarget="priv-app/SetupWraith";;
