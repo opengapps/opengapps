@@ -257,6 +257,7 @@ vendor/bundled-app/Boxer'"$REMOVALSUFFIX"'"
 browser_list="
 app/Browser'"$REMOVALSUFFIX"'
 app/Browser2'"$REMOVALSUFFIX"'
+app/BrowserIntl'"$REMOVALSUFFIX"'"
 app/BrowserProviderProxy'"$REMOVALSUFFIX"'
 app/Chromium'"$REMOVALSUFFIX"'
 app/Fluxion'"$REMOVALSUFFIX"'
@@ -266,6 +267,7 @@ app/YuBrowser'"$REMOVALSUFFIX"'
 priv-app/BLUOpera'"$REMOVALSUFFIX"'
 priv-app/BLUOperaPreinstall'"$REMOVALSUFFIX"'
 priv-app/Browser'"$REMOVALSUFFIX"'"
+priv-app/BrowserIntl'"$REMOVALSUFFIX"'"
 
 basicdreams_list="
 app/BasicDreams'"$REMOVALSUFFIX"'"
@@ -289,8 +291,12 @@ app/Camera2'"$REMOVALSUFFIX"'
 priv-app/Camera'"$REMOVALSUFFIX"'
 priv-app/Camera2'"$REMOVALSUFFIX"'
 app/MotCamera'"$REMOVALSUFFIX"'
+app/MtkCamera'"$REMOVALSUFFIX"'
+app/MTKCamera'"$REMOVALSUFFIX"'
 priv-app/MotCamera'"$REMOVALSUFFIX"'
 priv-app/MiuiCamera'"$REMOVALSUFFIX"'
+priv-app/MtkCamera'"$REMOVALSUFFIX"'
+priv-app/MTKCamera'"$REMOVALSUFFIX"'
 app/Snap'"$REMOVALSUFFIX"'
 priv-app/Snap'"$REMOVALSUFFIX"'
 app/FineOSCamera'"$REMOVALSUFFIX"'"
@@ -389,6 +395,7 @@ app/HoloSpiralWallpaper'"$REMOVALSUFFIX"'"
 # Must be used when GoogleKeyboard is installed
 keyboardstock_list="
 app/LatinIME'"$REMOVALSUFFIX"'
+app/MZInput'"$REMOVALSUFFIX"'"
 priv-app/BLUTouchPal'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalPortuguesebrPack'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalSpanishLatinPack'"$REMOVALSUFFIX"'
@@ -397,7 +404,10 @@ priv-app/MZInput'"$REMOVALSUFFIX"'"
 launcher_list="
 app/CMHome'"$REMOVALSUFFIX"'
 app/CustomLauncher3'"$REMOVALSUFFIX"'
+app/EasyLauncher'"$REMOVALSUFFIX"'
 app/Fluctuation'"$REMOVALSUFFIX"'
+app/FlymeLauncher'"$REMOVALSUFFIX"'
+app/FlymeLauncherIntl'"$REMOVALSUFFIX"'
 app/Launcher2'"$REMOVALSUFFIX"'
 app/Launcher3'"$REMOVALSUFFIX"'
 app/LiquidLauncher'"$REMOVALSUFFIX"'
@@ -410,6 +420,7 @@ priv-app/CustomLauncher3'"$REMOVALSUFFIX"'
 priv-app/EasyLauncher'"$REMOVALSUFFIX"'
 priv-app/Fluctuation'"$REMOVALSUFFIX"'
 priv-app/FlymeLauncher'"$REMOVALSUFFIX"'
+priv-app/FlymeLauncherIntl'"$REMOVALSUFFIX"'
 priv-app/Launcher2'"$REMOVALSUFFIX"'
 priv-app/Launcher3'"$REMOVALSUFFIX"'
 priv-app/LiquidLauncher'"$REMOVALSUFFIX"'
