@@ -395,11 +395,11 @@ app/HoloSpiralWallpaper'"$REMOVALSUFFIX"'"
 # Must be used when GoogleKeyboard is installed
 keyboardstock_list="
 app/LatinIME'"$REMOVALSUFFIX"'
-app/MZInput'"$REMOVALSUFFIX"'"
+app/MzInput'"$REMOVALSUFFIX"'"
 priv-app/BLUTouchPal'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalPortuguesebrPack'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalSpanishLatinPack'"$REMOVALSUFFIX"'
-priv-app/MZInput'"$REMOVALSUFFIX"'"
+priv-app/MzInput'"$REMOVALSUFFIX"'"
 
 launcher_list="
 app/CMHome'"$REMOVALSUFFIX"'
@@ -440,6 +440,24 @@ mms_list="
 app/messaging'"$REMOVALSUFFIX"'
 priv-app/Mms'"$REMOVALSUFFIX"'
 priv-app/FineOSMms'"$REMOVALSUFFIX"'"
+
+mzfilemanager_list="
+app/FileManager'"$REMOVALSUFFIX"'"
+
+mzpay_list="
+app/MzMPay'"$REMOVALSUFFIX"'"
+app/MzPay'"$REMOVALSUFFIX"'"
+
+mzsetupwizard_list="
+app/MzSetupWizard'"$REMOVALSUFFIX"'"
+
+mzupdater_list="
+app/MzUpdate'"$REMOVALSUFFIX"'"
+app/SystemUpdate'"$REMOVALSUFFIX"'"
+app/SystemUpdateAssistant'"$REMOVALSUFFIX"'"
+
+mzweatherlist="
+app/Weather'"$REMOVALSUFFIX"'"
 
 noisefield_list="
 app/NoiseField'"$REMOVALSUFFIX"'"
@@ -492,6 +510,7 @@ terminal_list="
 app/Terminal'"$REMOVALSUFFIX"'"
 
 themes_list="
+priv-app/CustomizeCenter'"$REMOVALSUFFIX"'"
 priv-app/ThemeChooser'"$REMOVALSUFFIX"'
 priv-app/ThemesProvider'"$REMOVALSUFFIX"'"
 
