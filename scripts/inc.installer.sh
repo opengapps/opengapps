@@ -257,6 +257,7 @@ vendor/bundled-app/Boxer'"$REMOVALSUFFIX"'"
 browser_list="
 app/Browser'"$REMOVALSUFFIX"'
 app/Browser2'"$REMOVALSUFFIX"'
+app/BrowserIntl'"$REMOVALSUFFIX"'"
 app/BrowserProviderProxy'"$REMOVALSUFFIX"'
 app/Chromium'"$REMOVALSUFFIX"'
 app/Fluxion'"$REMOVALSUFFIX"'
@@ -266,6 +267,7 @@ app/YuBrowser'"$REMOVALSUFFIX"'
 priv-app/BLUOpera'"$REMOVALSUFFIX"'
 priv-app/BLUOperaPreinstall'"$REMOVALSUFFIX"'
 priv-app/Browser'"$REMOVALSUFFIX"'"
+priv-app/BrowserIntl'"$REMOVALSUFFIX"'"
 
 basicdreams_list="
 app/BasicDreams'"$REMOVALSUFFIX"'"
@@ -405,6 +407,7 @@ app/CustomLauncher3'"$REMOVALSUFFIX"'
 app/EasyLauncher'"$REMOVALSUFFIX"'
 app/Fluctuation'"$REMOVALSUFFIX"'
 app/FlymeLauncher'"$REMOVALSUFFIX"'
+app/FlymeLauncherIntl'"$REMOVALSUFFIX"'
 app/Launcher2'"$REMOVALSUFFIX"'
 app/Launcher3'"$REMOVALSUFFIX"'
 app/LiquidLauncher'"$REMOVALSUFFIX"'
@@ -417,6 +420,7 @@ priv-app/CustomLauncher3'"$REMOVALSUFFIX"'
 priv-app/EasyLauncher'"$REMOVALSUFFIX"'
 priv-app/Fluctuation'"$REMOVALSUFFIX"'
 priv-app/FlymeLauncher'"$REMOVALSUFFIX"'
+priv-app/FlymeLauncherIntl'"$REMOVALSUFFIX"'
 priv-app/Launcher2'"$REMOVALSUFFIX"'
 priv-app/Launcher3'"$REMOVALSUFFIX"'
 priv-app/LiquidLauncher'"$REMOVALSUFFIX"'
