@@ -393,6 +393,7 @@ app/HoloSpiralWallpaper'"$REMOVALSUFFIX"'"
 # Must be used when GoogleKeyboard is installed
 keyboardstock_list="
 app/LatinIME'"$REMOVALSUFFIX"'
+app/MZInput'"$REMOVALSUFFIX"'"
 priv-app/BLUTouchPal'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalPortuguesebrPack'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalSpanishLatinPack'"$REMOVALSUFFIX"'
@@ -401,7 +402,9 @@ priv-app/MZInput'"$REMOVALSUFFIX"'"
 launcher_list="
 app/CMHome'"$REMOVALSUFFIX"'
 app/CustomLauncher3'"$REMOVALSUFFIX"'
+app/EasyLauncher'"$REMOVALSUFFIX"'
 app/Fluctuation'"$REMOVALSUFFIX"'
+app/FlymeLauncher'"$REMOVALSUFFIX"'
 app/Launcher2'"$REMOVALSUFFIX"'
 app/Launcher3'"$REMOVALSUFFIX"'
 app/LiquidLauncher'"$REMOVALSUFFIX"'
