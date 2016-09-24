@@ -257,7 +257,7 @@ vendor/bundled-app/Boxer'"$REMOVALSUFFIX"'"
 browser_list="
 app/Browser'"$REMOVALSUFFIX"'
 app/Browser2'"$REMOVALSUFFIX"'
-app/BrowserIntl'"$REMOVALSUFFIX"'"
+app/BrowserIntl'"$REMOVALSUFFIX"'
 app/BrowserProviderProxy'"$REMOVALSUFFIX"'
 app/Chromium'"$REMOVALSUFFIX"'
 app/Fluxion'"$REMOVALSUFFIX"'
@@ -266,7 +266,7 @@ app/PA_Browser'"$REMOVALSUFFIX"'
 app/YuBrowser'"$REMOVALSUFFIX"'
 priv-app/BLUOpera'"$REMOVALSUFFIX"'
 priv-app/BLUOperaPreinstall'"$REMOVALSUFFIX"'
-priv-app/Browser'"$REMOVALSUFFIX"'"
+priv-app/Browser'"$REMOVALSUFFIX"'
 priv-app/BrowserIntl'"$REMOVALSUFFIX"'"
 
 basicdreams_list="
@@ -395,7 +395,7 @@ app/HoloSpiralWallpaper'"$REMOVALSUFFIX"'"
 # Must be used when GoogleKeyboard is installed
 keyboardstock_list="
 app/LatinIME'"$REMOVALSUFFIX"'
-app/MzInput'"$REMOVALSUFFIX"'"
+app/MzInput'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPal'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalPortuguesebrPack'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalSpanishLatinPack'"$REMOVALSUFFIX"'
@@ -445,15 +445,15 @@ mzfilemanager_list="
 app/FileManager'"$REMOVALSUFFIX"'"
 
 mzpay_list="
-app/MzMPay'"$REMOVALSUFFIX"'"
+app/MzMPay'"$REMOVALSUFFIX"'
 app/MzPay'"$REMOVALSUFFIX"'"
 
 mzsetupwizard_list="
 app/MzSetupWizard'"$REMOVALSUFFIX"'"
 
 mzupdater_list="
-app/MzUpdate'"$REMOVALSUFFIX"'"
-app/SystemUpdate'"$REMOVALSUFFIX"'"
+app/MzUpdate'"$REMOVALSUFFIX"'
+app/SystemUpdate'"$REMOVALSUFFIX"'
 app/SystemUpdateAssistant'"$REMOVALSUFFIX"'"
 
 mzweatherlist="
@@ -510,7 +510,7 @@ terminal_list="
 app/Terminal'"$REMOVALSUFFIX"'"
 
 themes_list="
-priv-app/CustomizeCenter'"$REMOVALSUFFIX"'"
+priv-app/CustomizeCenter'"$REMOVALSUFFIX"'
 priv-app/ThemeChooser'"$REMOVALSUFFIX"'
 priv-app/ThemesProvider'"$REMOVALSUFFIX"'"
 
