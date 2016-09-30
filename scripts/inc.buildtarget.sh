@@ -194,6 +194,9 @@ for app in $gapps; do
   for file in $packagefiles; do
     buildfile "$file" "$packagetype/$app" "common"
   done
+  for framework in $packageframework; do
+    buildframework "$framework" "$packagetype/$app" "common"
+  done
   for lib in $packagelibs; do
     buildsystemlib "$lib" "$packagetype/$app" "common"
   done
@@ -208,6 +211,7 @@ get_package_info(){
   packagetype=""
   packagetarget=""
   packagefiles=""
+  packageframework=""
   packagelibs=""
   packagemaxapi="$API"
   packagegappsremove=""
@@ -224,7 +228,7 @@ get_package_info(){
 
     # Regular GApps
     defaultetc)               packagetype="Core"; packagefiles="etc/preferred-apps/google.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_vr_build.xml etc/sysconfig/whitelist_com.android.omadm.service.xml";;
-    defaultframework)         packagetype="Core"; packagefiles="etc/permissions/com.google.android.maps.xml etc/permissions/com.google.android.media.effects.xml etc/permissions/com.google.widevine.software.drm.xml framework/com.google.android.maps.jar framework/com.google.android.media.effects.jar framework/com.google.widevine.software.drm.jar";;
+    defaultframework)         packagetype="Core"; packagefiles="etc/permissions/com.google.android.maps.xml etc/permissions/com.google.android.media.effects.xml etc/permissions/com.google.widevine.software.drm.xml"; packageframework="com.google.android.maps.jar com.google.android.media.effects.jar com.google.widevine.software.drm.jar";;
     gmscore)                  packagetype="Core"; packagename="com.google.android.gms"; packagetarget="priv-app/PrebuiltGmsCore";;
     googlefeedback)           packagetype="Core"; packagename="com.google.android.feedback"; packagetarget="priv-app/GoogleFeedback";;
     googleonetimeinitializer) packagetype="Core"; packagename="com.google.android.onetimeinitializer"; packagetarget="priv-app/GoogleOneTimeInitializer";;
@@ -242,16 +246,16 @@ get_package_info(){
     calsync)                  packagetype="GApps"; packagename="com.google.android.syncadapters.calendar"; packagetarget="app/GoogleCalendarSyncAdapter";;
     cameragoogle)             packagetype="GApps"; packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera";
                               if [ "$API" -ge "23" ]; then  # On Marshmallow+ we use the new GoogleCamera
-                                packagefiles="etc/permissions/com.google.android.camera.experimental2015.xml framework/com.google.android.camera.experimental2015.jar"
+                                packagefiles="etc/permissions/com.google.android.camera.experimental2015.xml"; packageframework="com.google.android.camera.experimental2015.jar"
                               else
-                                packagefiles="etc/permissions/com.google.android.camera2.xml framework/com.google.android.camera2.jar"
+                                packagefiles="etc/permissions/com.google.android.camera2.xml"; packageframework="com.google.android.camera2.jar"
                               fi;;
-    cameragooglelegacy)       packagetype="GApps"; packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera"; packagemaxapi="22"; packagefiles="etc/permissions/com.google.android.camera2.xml framework/com.google.android.camera2.jar";;
+    cameragooglelegacy)       packagetype="GApps"; packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera"; packagemaxapi="22"; packagefiles="etc/permissions/com.google.android.camera2.xml"; packageframework="com.google.android.camera2.jar";;
     chrome)                   packagetype="GApps"; packagename="com.android.chrome"; packagetarget="app/Chrome";;
     clockgoogle)              packagetype="GApps"; packagename="com.google.android.deskclock"; packagetarget="app/PrebuiltDeskClockGoogle";;
     cloudprint)               packagetype="GApps"; packagename="com.google.android.apps.cloudprint"; packagetarget="app/CloudPrint2";;
     contactsgoogle)           packagetype="GApps"; packagename="com.google.android.contacts"; packagetarget="priv-app/GoogleContacts";;
-    dialerframework)          packagetype="GApps"; packagefiles="etc/permissions/com.google.android.dialer.support.xml framework/com.google.android.dialer.support.jar";;
+    dialerframework)          packagetype="GApps"; packagefiles="etc/permissions/com.google.android.dialer.support.xml"; packageframework="com.google.android.dialer.support.jar";;
     dialergoogle)             packagetype="GApps"; packagename="com.google.android.dialer"; packagetarget="priv-app/GoogleDialer";;
     dmagent)                  packagetype="GApps"; packagename="com.google.android.apps.enterprise.dmagent"; packagetarget="app/DMAgent";;
     docs)                     packagetype="GApps"; packagename="com.google.android.apps.docs.editors.docs"; packagetarget="app/EditorsDocs";;
@@ -329,7 +333,7 @@ get_package_info(){
     notouch)                  packagetype="Core"; packagename="com.google.android.gsf.notouch"; packagetarget="app/NoTouchAuthDelegate";;
     setupwraith)              packagetype="Core"; packagename="com.google.android.tungsten.setupwraith"; packagetarget="priv-app/SetupWraith";;
     tvetc)                    packagetype="Core"; packagefiles="etc/sysconfig/google.xml etc/sysconfig/google_build.xml";;
-    tvframework)              packagetype="Core"; packagefiles="etc/permissions/com.google.android.pano.v1.xml etc/permissions/com.google.android.tv.installed.xml etc/permissions/com.google.widevine.software.drm.xml framework/com.google.android.pano.v1.jar framework/com.google.widevine.software.drm.jar";;
+    tvframework)              packagetype="Core"; packagefiles="etc/permissions/com.google.android.pano.v1.xml etc/permissions/com.google.android.tv.installed.xml etc/permissions/com.google.widevine.software.drm.xml"; packageframework="com.google.android.pano.v1.jar com.google.widevine.software.drm.jar";;
     tvgmscore)                packagetype="Core"; packagename="com.google.android.gms.leanback"; packagetarget="priv-app/PrebuiltGmsCorePano";;
     tvvending)                packagetype="Core"; packagename="com.android.vending.leanback";
                               if [ "$API" -ge "24" ]; then

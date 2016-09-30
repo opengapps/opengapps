@@ -68,6 +68,35 @@ buildfile() {
   fi
 }
 
+buildframework() {
+  frameworkname="$1"
+  ziplocation="$2"
+  targetlocation="$3"
+  if [ -z "$4" ]; then usearch="$ARCH"
+  else usearch="$4"; fi #allows for an override
+
+  case "$usearch" in
+    all) targetarch="common";;  # technically with our currrent APKs-set, every that is 'all' is de-facto also 'common'
+    *) targetarch="$usearch";;
+  esac
+
+  if getframeworkforapi "$frameworkname" "$usearch" "$API"; then
+    printf "%6s-%s %s\n" "$usearch" "$api" "$frameworkname"
+    if [ -n "$logfile" ]; then
+      printf "%6s-%s| %-s\n" "$usearch" "$api" "$frameworkname" >> "$logfile"
+    fi
+    install -D -p "$sourceframework" "$build/$ziplocation-$targetarch/$targetlocation/$targetframework"
+  else
+    get_fallback_arch "$usearch"
+    if [ "$usearch" != "$fallback_arch" ]; then
+      buildframework "$frameworkname" "$ziplocation" "$targetlocation" "$fallback_arch"
+    else
+      echo "ERROR: No fallback available. Failed to build framework $frameworkname"
+      exit 1
+    fi
+  fi
+}
+
 buildsystemlib() {
   libname="$1"
   ziplocation="$2"
@@ -204,7 +233,7 @@ getapksforapi() {
 "  #We set IFS to newline here so that spaces can survive the for loop
   #sed copies filename to the beginning, to compare version, and later we remove it with cut
   maxsdkerrorapi=""
-  for foundapk in $(find $SOURCES/$2/*app/$1 -iname '*.apk' | sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2-); do
+  for foundapk in $(find $SOURCES/$2/*app/$1 -iname '*.apk' 2>/dev/null| sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2-); do
     foundpath="$(dirname "$(dirname "$foundapk")")"
     api="$(basename "$foundpath")"
     if [ "$maxsdkerrorapi" = "$api" ]; then
@@ -234,6 +263,31 @@ getapksforapi() {
   return 0 #return that it was a success
 }
 
+getframeworkforapi() {
+  #this functions finds the highest available acceptable framework for a given api and architecture
+  #$1 frameworkname, $2 arch, $3 api
+  sourceframework=""
+  OLDIFS="$IFS"
+  IFS="
+"  #We set IFS to newline here so that spaces can survive the for loop
+  for foundframework in $(find $SOURCES/$2/framework/ -iname "$1" 2>/dev/null| sort -r); do
+    api="$(basename "$(dirname "$foundframework")")"
+    if [ "$api" -le "$3" ]; then
+      sourceframework="$foundframework"
+      break
+    fi
+  done
+  IFS="$OLDIFS"
+  if [ -z "$sourceframework" ]; then
+    #echo "WARNING: No framework found compatible with API level $3 for framework $1 on $2, lowest found: $api"
+    return 1 #error
+  fi
+  apiframeworkpath="$(echo "$sourceframework" | awk -F'/' '{print $(NF-1)}')" # is api number
+  targetframework="$(echo "$sourceframework" | sed "s:^$SOURCES/$2/::" | sed "s:/$apiframeworkpath/:/:g")" # framework/frameworkname.jar
+  #$sourceframework, $targetframework and $api have the useful returnvalues
+  return 0 #return that it was a success
+}
+
 getsystemlibforapi() {
   #this functions finds the highest available acceptable lib for a given api and architecture
   #$1 libname, $2 arch, $3 api
@@ -241,7 +295,7 @@ getsystemlibforapi() {
   OLDIFS="$IFS"
   IFS="
 "  #We set IFS to newline here so that spaces can survive the for loop
-  for foundlib in $(find $SOURCES/$2/lib*/ $SOURCES/$2/vendor/lib*/ -iname "$1" | sort -r); do
+  for foundlib in $(find $SOURCES/$2/lib*/ $SOURCES/$2/vendor/lib*/ -iname "$1" 2>/dev/null| sort -r); do
     api="$(basename "$(dirname "$foundlib")")"
     if [ "$api" -le "$3" ]; then
       sourcelib="$foundlib"
@@ -250,11 +304,11 @@ getsystemlibforapi() {
   done
   IFS="$OLDIFS"
   if [ -z "$sourcelib" ]; then
-    echo "WARNING: No lib found compatible with API level $3 for lib $1 on $2, lowest found: $api"
+    #echo "WARNING: No lib found compatible with API level $3 for lib $1 on $2, lowest found: $api"
     return 1 #error
   fi
   apilibpath="$(echo "$sourcelib" | awk -F'/' '{print $(NF-1)}')" # is api number
-  targetlib="$(echo "$sourcelib" | sed "s:^$SOURCES/$2/::" | sed "s:/$apilibpath/:/:g")" # lib/lib.so
+  targetlib="$(echo "$sourcelib" | sed "s:^$SOURCES/$2/::" | sed "s:/$apilibpath/:/:g")" # lib/libname.so
   #$sourcelib, $targetlib and $api have the useful returnvalues
   return 0 #return that it was a success
 }
