@@ -234,6 +234,12 @@ holospiral
 keyboardstock
 livewallpapers
 lockclock
+mms
+mzfilemanager
+mzpay
+mzsetupwizard
+mzupdater
+mzweather
 noisefield
 phasebeam
 photophase
@@ -456,7 +462,7 @@ app/MzUpdate'"$REMOVALSUFFIX"'
 app/SystemUpdate'"$REMOVALSUFFIX"'
 app/SystemUpdateAssistant'"$REMOVALSUFFIX"'"
 
-mzweatherlist="
+mzweather_list="
 app/Weather'"$REMOVALSUFFIX"'"
 
 noisefield_list="
