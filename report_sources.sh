@@ -34,6 +34,7 @@ argument(){
     nohelp) nohelp="nohelp";;
     noleanback) noleanback="! -ipath '*.leanback*'";;
     nosig)  nosig="nosig";;
+    nostub) nostub="! -ipath '*.stub*'";;
     all)    filterapparchs="${filterapparchs} all";;
     arm)    filterapparchs="${filterapparchs} arm";;
     arm64)  filterapparchs="${filterapparchs} arm64";;
@@ -55,6 +56,7 @@ nobeta=""
 nohelp=""
 noleanback=""
 nosig=""
+nostub=""
 filterapparchs=""
 filtermaxsize=""
 filterminsize=""
@@ -84,6 +86,7 @@ if [ -z "$hash" ] && [ -z "$nohelp" ]; then
 * nohelp: If you add nohelp as an extra argument, the result will not include this helptext (not necessary if hash is used)
 * noleanback: If you add noleanback as an extra argument, the result will not include the apps that are marked as leanback (=ending on .leanback)
 * nosig: Skips signature checking (which takes a lot of CPU power); NB: this does change the hash result!
+* nostub: If you add nostub as an extra argument, the result will not include the apps that are marked as stub (=ending on .stub)
 * Example command: './report_sources.sh arm-22 hash'
 --------------------------------------------------------------------------------------------------------------------------"
 fi

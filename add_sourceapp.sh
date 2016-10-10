@@ -25,6 +25,7 @@ APKTOOL="$SCRIPTS/apktool-resources/apktool_2.2.0.jar"
 # shellcheck source=scripts/inc.tools.sh
 . "$SCRIPTS/inc.tools.sh"
 BETA=""
+STUB=""
 
 # Check tools
 PATH="$SCRIPTS/androidsdk-resources-$(uname):$PATH"  # temporary hack to prefer our own older (x86_64) aapt that gives the application label correctly
@@ -202,6 +203,10 @@ addlib() {
 for argument in "$@"; do
   if [ "$argument" = "beta" ]; then
     BETA="beta"
+    continue
+  fi
+  if [ "$argument" = "stub" ]; then
+    STUB="stub"
     continue
   fi
   file="$(readlink -f "$argument")"

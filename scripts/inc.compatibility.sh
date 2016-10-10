@@ -406,18 +406,13 @@ tvrecommendations"
 
 sdkversionhacks(){
   case "$package" in
-    com.android.facelock|com.google.android.feedback|com.google.android.gsf.login|com.google.android.partnersetup|com.google.android.syncadapters.contacts)
+    com.android.facelock|com.google.android.feedback|com.google.android.gsf.login|com.google.android.partnersetup|com.google.android.setupwizard|com.google.android.syncadapters.contacts)
       case "$versioncode" in
-        23) sdkversion="23";;
-        24) sdkversion="24";;
+        *23) sdkversion="23";;
+        *24) sdkversion="24";;
+        *25) sdkversion="25";;
         *) ;;
       esac;;
-    com.google.android.setupwizard)
-      case "$versioncode" in
-        224) sdkversion="24";;
-        *) ;;
-      esac;;
-    *) ;;
   esac
 }
 

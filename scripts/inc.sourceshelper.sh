@@ -55,6 +55,7 @@ getapkproperties(){
     "com.google.android.androidforwork" |\
     "com.google.android.apps.mediashell.leanback" |\
     "com.google.android.apps.gcs" |\
+    "com.google.android.apps.nexuslauncher" |\
     "com.google.android.athome.remotecontrol" |\
     "com.google.android.athome.globalkeyinterceptor" |\
     "com.google.android.atv.customization" |\
@@ -65,7 +66,9 @@ getapkproperties(){
     "com.google.android.ext.services" |\
     "com.google.android.feedback" |\
     "com.google.android.gms" |\
+    "com.google.android.gms.policy_auth" |\
     "com.google.android.gms.leanback" |\
+    "com.google.android.gms.setup" |\
     "com.google.android.googlequicksearchbox" |\
     "com.google.android.gsf" |\
     "com.google.android.gsf.login" |\
@@ -77,6 +80,7 @@ getapkproperties(){
     "com.google.android.pano.packageinstaller" |\
     "com.google.android.partnersetup" |\
     "com.google.android.setupwizard" |\
+    "com.google.android.storagemanager" |\
     "com.google.android.tungsten.setupwraith" |\
     "com.google.android.tag" |\
     "com.google.android.tungsten.overscan" |\
@@ -89,11 +93,22 @@ getapkproperties(){
   esac
 
   #we do this on purpose after the priv-app detection to emulate the priv-app of the normal app
+  if [ -n "$STUB" ]; then
+    package="$package.$STUB"  # xxx.stub
+  fi
   if [ -n "$BETA" ]; then
-    package="$package.$BETA"
+    package="$package.$BETA"  # xxx.stub.beta
   fi
 
+  stub="" #make sure value is initialized
   beta="" #make sure value is initialized
+  case "$1" in
+    *.stub/*) stub="stub"  #report stub status as a property
+              case "$package" in
+                *.stub);;
+                *) package="$package.stub";;  # set .stub in package name if not set yet
+              esac;;
+  esac
   case "$1" in
     *.beta/*) beta="beta"  #report beta status as a property
               case "$package" in
