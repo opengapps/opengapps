@@ -104,6 +104,7 @@ api21hack #only 5.0+ supports google tag
 api22hack #only 5.1+ supports google webview (Stock Google 5.0 ROMs too, but we merged stock and fornexus) and GCS
 api23hack #only on 6.0+ we also include Google Contacts, Dialer, Calculator, Packageinstaller and Configupdater
 api24hack #only on 7.0+ we also include Google ExtServices, ExtShared, PrintService, VR
+api25hack #only on 7.1+ we also include AndroidPlatform, GMSSetup, Pixel Launcher, StorageManager
 buildtarget
 alignbuild
 commonscripts

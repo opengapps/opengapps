@@ -404,6 +404,19 @@ tvrecommendations"
   fi
 }
 
+api25hack(){
+  if [ "$API" -ge "25" ]; then
+    gappscore="$gappscore
+androidplatform
+gmssetup"
+    gappsstock="$gappsstock
+pixelicons
+pixellauncher
+pixelwallpaper
+storagemanager"
+  fi
+}
+
 sdkversionhacks(){
   case "$package" in
     com.android.facelock|com.google.android.feedback|com.google.android.gsf.login|com.google.android.partnersetup|com.google.android.setupwizard|com.google.android.syncadapters.contacts)
