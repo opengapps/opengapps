@@ -619,12 +619,13 @@ nobuildprop="INSTALLATION FAILURE: The installed ROM has no build.prop or equiva
 nokeyboard_msg="NOTE: The Stock/AOSP keyboard was NOT removed as requested to ensure your device\nwas not accidentally left with no keyboard installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
 nolauncher_msg="NOTE: The Stock/AOSP Launcher was NOT removed as requested to ensure your device\nwas not accidentally left with no Launcher. If this was your intention, you can\nadd 'Override' to your gapps-config to override this protection.\n";
 nomms_msg="NOTE: The Stock/AOSP MMS app was NOT removed as requested to ensure your device\nwas not accidentally left with no way to receive text messages. If this WAS\nintentional, add 'Override' to your gapps-config to override this protection.\n";
-nowebview_msg="NOTE: The Stock/AOSP WebView was NOT removed as requested to ensure your device\nwas not accidentally left with no WebView installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
+nowebview_msg="NOTE: The Stock/AOSP WebView was NOT removed as requested to ensure your device\nwas not accidentally left with no WebViewProvider installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
 non_open_gapps_msg="INSTALLATION FAILURE: Open GApps can only be installed on top of an existing\nOpen GApps installation. Since you are currently using another GApps package, you\nwill need to wipe (format) your system partition before installing Open GApps.\n";
 fornexus_open_gapps_msg="NOTE: The installer detected that you already have Stock ROM GApps installed.\nThe installer will now continue, but please be aware that there could be problems.\n";
 recovery_compression_msg="INSTALLATION FAILURE: Your ROM uses transparent compression, but your recovery\ndoes not support this feature, resulting in corrupt files.\nPlease update your recovery before flashing ANY package to prevent corruption.\n";
 rom_android_version_msg="INSTALLATION FAILURE: This GApps package can only be installed on a $req_android_version.x ROM.\n";
 simulation_msg="TEST INSTALL: This was only a simulated install. NO CHANGES WERE MADE TO YOUR\nDEVICE. To complete the installation remove 'Test' from your gapps-config.\n";
+stubwebview_msg="NOTE: Stub WebView was installed instead of Google WebView because your device\nhas already Chrome installed as WebViewProvier. If you still want Google WebView,\nyou can add 'Override' to your gapps-config to override this redundancy protection.\n";
 system_space_msg="INSTALLATION FAILURE: Your device does not have sufficient space available in\nthe system partition to install this GApps package as currently configured.\nYou will need to switch to a smaller GApps package or use gapps-config to\nreduce the installed size.\n";
 user_multiplefound_msg="NOTE: All User Application Removals included in gapps-config were unable to be\nprocessed as requested because multiple versions of the app were found on your\ndevice. See the log portion below for the name(s) of the application(s).\n";
 user_notfound_msg="NOTE: All User Application Removals included in gapps-config were unable to be\nremoved as requested because the files were not found on your device. See the\nlog portion below for the name(s) of the application(s).\n";
@@ -635,7 +636,7 @@ nogoogledialer_removal_msg="NOTE: The Stock/AOSP Dialer is not available on your
 nogooglekeyboard_removal_msg="NOTE: The Stock/AOSP Keyboard is not available on your\nROM (anymore), the Google equivalent will not be removed."
 nogooglepackageinstaller_removal_msg="NOTE: The Stock/AOSP Package Installer is not\navailable on your ROM (anymore), the Google equivalent will not be removed."
 nogoogletag_removal_msg="NOTE: The Stock/AOSP NFC Tag is not available on your\nROM (anymore), the Google equivalent will not be removed."
-nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on your\nROM (anymore), the Google equivalent will not be removed."
+nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on your\nROM (anymore), not all Google WebViewProviders will be removed."
 
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
@@ -1591,7 +1592,8 @@ aosp_remove_list="${aosp_remove_list}provision"$'\n';
 aosp_remove_list="${aosp_remove_list}extsharedstock"$'\n'"extservicesstock"$'\n';
 
 EOFILE
-hotwordadditionhack "$build/$1" #HotwordEnrollment to support OK Google device-wide (requires compatible hardware)
+hotwordadditionhack "$build/$1"  # HotwordEnrollment to support OK Google device-wide (requires compatible hardware)
+webviewcheckhack "$build/$1"  # WebViewProvider rules differ Pre-Nougat and Nougat+
 tee -a "$build/$1" > /dev/null <<'EOFILE'
 # Verify device is FaceUnlock compatible BEFORE we allow it in $gapps_list
 if ( contains "$gapps_list" "faceunlock" ) && [ $faceunlock_compat = "false" ]; then
@@ -1731,17 +1733,6 @@ if ( contains "$gapps_list" "taggoogle" ) && ( ! contains "$aosp_remove_list" "t
   aosp_remove_list="${aosp_remove_list}tagstock"$'\n';
 fi;
 
-# If we're installing webviewgoogle we MUST ADD webviewstock to $aosp_remove_list (if it's not already there)
-if ( contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$aosp_remove_list" "webviewstock" ); then
-  aosp_remove_list="${aosp_remove_list}webviewstock"$'\n';
-fi;
-
-# If we're NOT installing webviewgoogle and webviewstock is in $aosp_remove_list then user must override removal protection
-if ( ! contains "$gapps_list" "webviewgoogle" ) && ( contains "$aosp_remove_list" "webviewstock" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
-  aosp_remove_list=${aosp_remove_list/webviewstock}; # we'll prevent webviewstock from being removed so user isn't left with no WebView
-  install_note="${install_note}nowebview_msg"$'\n'; # make note that Stock Webview can't be removed unless user Overrides
-fi;
-
 # If we're installing calculatorgoogle we MUST ADD calculatorstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "calculatorgoogle" ) && ( ! contains "$aosp_remove_list" "calculatorstock" ); then
   aosp_remove_list="${aosp_remove_list}calculatorstock"$'\n';
@@ -1866,22 +1857,9 @@ for f in $webviewstock_list; do
     break; #at least 1 aosp stock file is present
   fi
 done;
-if [ "$ignoregooglewebview" = "true" ]; then #No AOSP WebView
-  if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then #Don't remove Google WebView components if no Google WebView selected
-    sed -i "\:/system/lib/$WebView_lib_filename:d" $gapps_removal_list;
-    sed -i "\:/system/lib64/$WebView_lib_filename:d" $gapps_removal_list;
-    sed -i "\:/system/app/WebViewGoogle:d" $gapps_removal_list;
-    ignoregooglewebview="true[NoRemove]"
-    install_note="${install_note}nogooglewebview_removal"$'\n'; # make note that Google WebView will not be removed
-  else #No AOSP WebView, but Google WebView is being installed, no reason to protect the current components
-    ignoregooglewebview="false[WebViewGoogle]"
-  fi
-elif ( ! contains "$gapps_list" "webviewgoogle" ); then #AOSP WebView, and no Google WebView being installed, make sure to protect the current AOSP components that share name with Google WebView components
-  sed -i "\:/system/lib/$WebView_lib_filename:d" $gapps_removal_list;
-  sed -i "\:/system/lib64/$WebView_lib_filename:d" $gapps_removal_list;
-fi
 EOFILE
-camerav3compatibilityhack "$build/$1" #in marshmallow we need to use the legacy camera that uses the older api
+webviewignorehack "$build/$1"  # in Nougat Chrome and WebViewStub can also be used as WebViewProvider
+camerav3compatibilityhack "$build/$1"  # in Marshmallow we need to use the legacy camera that uses the older api
 tee -a "$build/$1" > /dev/null <<'EOFILE'
 
 # Process User Application Removals for calculations and subsequent removal

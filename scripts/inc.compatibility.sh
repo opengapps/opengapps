@@ -314,6 +314,98 @@ versionnamehack(){
   esac
 }
 
+webviewcheckhack(){
+  if [ "$API" -ge "24" ]; then
+    tee -a "$1" > /dev/null <<'EOFILE'
+# If we're installing chrome and webviewgoogle, replace it with webviewstub unless override removal protection
+if ( contains "$gapps_list" "chrome" ) && ( contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+  gapps_list=${gapps_list/webviewgoogle/webviewstub}
+  install_note="${install_note}stubwebview_msg"$'\n' # make note that Stub Webview unless user Overrides
+fi
+
+# If we're installing webviewgoogle we MUST ADD webviewstub to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$aosp_remove_list" "webviewstub" ); then
+  aosp_remove_list="${aosp_remove_list}webviewstub"$'\n'
+fi;
+
+# If we're installing webviewstub we MUST ADD webviewgoogle to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "webviewstub" ) && ( ! contains "$aosp_remove_list" "webviewgoogle" ); then
+  aosp_remove_list="${aosp_remove_list}webviewgoogle"$'\n'
+fi;
+
+# If we're installing webviewgoogle OR webviewstub we PREFER TO ADD webviewstock to $aosp_remove_list (if it's not already there)
+# TODO in the future we could consider this behaviour even if installing just Chrome
+if ( ( contains "$gapps_list" "webviewgoogle" ) || ( contains "$gapps_list" "webviewstub" ) ) && ( ! contains "$aosp_remove_list" "webviewstock" ); then
+  aosp_remove_list="${aosp_remove_list}webviewstock"$'\n'
+fi
+
+# If we're NOT installing webviewgoogle OR webviewstub OR chrome and webviewstock is in $aosp_remove_list then user must override removal protection
+if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$gapps_list" "webviewstub" ) && ( ! contains "$gapps_list" "chrome" ) && ( contains "$aosp_remove_list" "webviewstock" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+  aosp_remove_list=${aosp_remove_list/webviewstock} # we'll prevent webviewstock from being removed so user isn't left with no WebView
+  install_note="${install_note}nowebview_msg"$'\n' # make note that Stock Webview can't be removed unless user Overrides
+fi
+EOFILE
+  else
+    tee -a "$1" > /dev/null <<'EOFILE'
+# If we're installing webviewgoogle we SHOULD ADD webviewstock to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$aosp_remove_list" "webviewstock" ); then
+  aosp_remove_list="${aosp_remove_list}webviewstock"$'\n'
+fi
+
+# If we're NOT installing webviewgoogle and webviewstock is in $aosp_remove_list then user must override removal protection
+if ( ! contains "$gapps_list" "webviewgoogle" ) && ( contains "$aosp_remove_list" "webviewstock" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+  aosp_remove_list=${aosp_remove_list/webviewstock}; # we'll prevent webviewstock from being removed so user isn't left with no WebView
+  install_note="${install_note}nowebview_msg"$'\n' # make note that Stock Webview can't be removed unless user Overrides
+fi
+EOFILE
+  fi
+}
+
+webviewignorehack(){
+  if [ "$API" -ge "24" ]; then
+    tee -a "$1" > /dev/null <<'EOFILE'
+if [ "$ignoregooglewebview" = "true" ]; then  # No AOSP WebView
+  if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$gapps_list" "webviewstub" ) && ( ! contains "$gapps_list" "chrome" ) && ( ! grep -qiE '^override$' "$g_conf" ); then  # Don't remove components if no other WebViewProvider installed
+    if [ -d "/system/app/Chrome" ]; then
+      sed -i "\:/system/app/Chrome:d" $gapps_removal_list;
+      ignoregooglewebview="true[NoRemoveChrome]"
+    elif [ -d "/system/app/WebviewGoogle" ]; then
+      sed -i "\:/system/app/WebViewGoogle:d" $gapps_removal_list;
+      ignoregooglewebview="true[NoRemoveGoogle]"
+    elif [ -d "/system/app/WebviewStub" ]; then
+      sed -i "\:/system/app/WebViewStub:d" $gapps_removal_list;
+      ignoregooglewebview="true[NoRemoveStub]"
+    fi
+    install_note="${install_note}nogooglewebview_removal"$'\n'; # make note that Google WebView will not be removed
+  elif ( contains "$gapps_list" "webviewgoogle" ); then  # No AOSP WebView, but Google WebView is being installed, no reason to protect the current components
+    ignoregooglewebview="false[WebViewGoogle]"
+  elif ( contains "$gapps_list" "webviewstub" ); then  # No AOSP WebView, but WebView Stub is being installed, no reason to protect the current components
+    ignoregooglewebview="false[WebViewStub]"
+  elif ( contains "$gapps_list" "chrome" ); then  # No AOSP WebView, but Chrome is being installed, no reason to protect the current components
+    ignoregooglewebview="false[Chrome]"
+  fi
+fi
+EOFILE
+  else
+    tee -a "$1" > /dev/null <<'EOFILE'
+if [ "$ignoregooglewebview" = "true" ]; then  # No AOSP WebView
+  if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then  # Don't remove Google WebView components if no other WebViewProvider installed
+    sed -i "\:/system/lib/$WebView_lib_filename:d" $gapps_removal_list;
+    sed -i "\:/system/lib64/$WebView_lib_filename:d" $gapps_removal_list;
+    sed -i "\:/system/app/WebViewGoogle:d" $gapps_removal_list;
+    ignoregooglewebview="true[NoRemove]"
+    install_note="${install_note}nogooglewebview_removal"$'\n'; # make note that Google WebView will not be removed
+  else  # No AOSP WebView, but Google WebView is being installed, no reason to protect the current components
+    ignoregooglewebview="false[WebViewGoogle]"
+  fi
+elif ( ! contains "$gapps_list" "webviewgoogle" ); then  # AOSP WebView, but no Google WebView being installed, make sure to protect the current AOSP components that share name with Google WebView components (Pre-Marshmallow)
+  sed -i "\:/system/lib/$WebView_lib_filename:d" $gapps_removal_list;
+  sed -i "\:/system/lib64/$WebView_lib_filename:d" $gapps_removal_list;
+fi
+EOFILE
+  fi
+}
+
 api19hack(){
   # On KitKat there is only 1 kind of setupwizard without a product type
   if [ "$API" -le "19" ]; then
@@ -401,6 +493,9 @@ extsharedgoogle"
     # On Nougat and higher the TV Recommendations exist
     gappstvstock="$gappstvstock
 tvrecommendations"
+    # On Nougat and higher we might want to install the WebViewStub instead of WebViewGoogle in some situations
+    gappsstock_optional="$gappsstock_optional
+webviewstub"
   fi
 }
 
