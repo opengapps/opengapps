@@ -1494,7 +1494,7 @@ else
   log "Current GApps Version" "No GApps Installed"
 
   # Did this 6.0+ system already boot and generated runtime permissions
-  if [ -e /data/system/users/*/runtime-permissions.xml ]; then
+  if [ -e /data/system/users/0/runtime-permissions.xml ]; then
     # Check if permissions were granted to Google Setupwizard, this permissions should always be set in the file if GApps were installed before
     if ! grep -q "com.google.android.setupwizard" /data/system/users/*/runtime-permissions.xml; then
       # Purge the runtime permissions to prevent issues if flashing GApps for the first time on a dirty install
