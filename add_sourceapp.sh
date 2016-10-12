@@ -56,7 +56,7 @@ installapk() {
 
   for d in $(printf "%s" "$dpis" | sed 's/-/ /g'); do
     if [ "$sdkversion" -le "$lowestapi" ]; then
-      for s in $(seq 1 "$sdkversion"); do
+      for s in $(seq 1 "$lowestapi"); do
         existingpath="$(find "$SOURCES/$architecture/$type/$package/$s/" -type d -name "*$d*" | sort -r | cut -c1-)" 2>/dev/null
         if [ -n "$existingpath" ]; then
           break
