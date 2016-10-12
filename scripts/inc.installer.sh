@@ -611,6 +611,7 @@ remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript
 arch_compat_msg="INSTALLATION FAILURE: This Open GApps package cannot be installed on this\ndevice's architecture. Please download the correct version for your device.\n";
 camera_sys_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera\ncan only be installed during a Clean Install or as an update to an existing\nGApps Installation.\n";
 camera_compat_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera\nis NOT compatible with your device if installed on the system partition. Try\ninstalling from the Play Store instead.\n";
+cmcompatibility_msg="WARNING: PackageInstallerGoogle is not installed. Cyanogenmod is NOT\ncompatible with some Google Applications and Open GApps\n will skip their installation.\n";
 dialergoogle_msg="WARNING: Google Dialer has/will not be installed as requested. Dialer Framework\nmust be added to the GApps installation if you want to install the Google\nDialer.\n";
 faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";
 googlenow_msg="WARNING: Google Now Launcher has/will not be installed as requested. Google Search\nmust be added to the GApps installation if you want to install the Google\nNow Launcher.\n";
@@ -1340,6 +1341,11 @@ else
   fi
 fi
 
+cmcompatibilityhacks="false"
+case "$(get_prop "ro.build.flavor")" in
+  cm_*) cmcompatibilityhacks="true";;  # they do weird AOSP-breaking changes to their code breaking some GApps
+esac
+
 # Check for Clean Override in gapps-config
 if ( grep -qiE '^forceclean$' "$g_conf" ); then
   forceclean="true"
@@ -1595,6 +1601,12 @@ EOFILE
 hotwordadditionhack "$build/$1"  # HotwordEnrollment to support OK Google device-wide (requires compatible hardware)
 webviewcheckhack "$build/$1"  # WebViewProvider rules differ Pre-Nougat and Nougat+
 tee -a "$build/$1" > /dev/null <<'EOFILE'
+# Cyanogenmod breaks Google's PackageInstaller don't install it on CM
+if ( contains "$gapps_list" "packageinstallergoogle" ) && [ $cmcompatibilityhacks = "true" ]; then
+  gapps_list=${gapps_list/packageinstallergoogle};
+  install_note="${install_note}cmcompatibility_msg"$'\n'; # make note that CM compatibility hacks are applied
+fi;
+
 # Verify device is FaceUnlock compatible BEFORE we allow it in $gapps_list
 if ( contains "$gapps_list" "faceunlock" ) && [ $faceunlock_compat = "false" ]; then
   gapps_list=${gapps_list/faceunlock};
