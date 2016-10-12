@@ -55,17 +55,26 @@ installapk() {
   target="$SOURCES/$1/$type/$package/$sdkversion/$dpis"
 
   for d in $(printf "%s" "$dpis" | sed 's/-/ /g'); do
-    existingpath="$(find "$SOURCES/$architecture/$type/$package/$sdkversion/" -type d -name "*$d*" | sort -r | cut -c1-)" 2>/dev/null
+    if [ "$sdkversion" -le "$lowestapi" ]; then
+      for s in $(seq 1 "$sdkversion"); do
+        existingpath="$(find "$SOURCES/$architecture/$type/$package/$s/" -type d -name "*$d*" | sort -r | cut -c1-)" 2>/dev/null
+        if [ -n "$existingpath" ]; then
+          break
+        fi
+      done
+    else
+      existingpath="$(find "$SOURCES/$architecture/$type/$package/$sdkversion/" -type d -name "*$d*" | sort -r | cut -c1-)" 2>/dev/null
+    fi
     if [ -n "$existingpath" ]; then
       existing="$(find "$existingpath/" -name "*.apk" | sort -r | cut -c1-)" 2>/dev/null #we only look for lowercase .apk, since basename later assumes the same
       if [ -e "$existing" ]; then
         echo "Existing version $existing"
         existingversion=$(basename -s.apk "$existing")
         if [ "$versioncode" -gt "$existingversion" ]; then
-          rm "$existing"
+          rm -rf "$existing"
           if [ -e "$existing.lz" ]; then
-            rm -f "$(dirname "$existing")/.gitignore"
-            rm -f "$existing.lz"
+            rm -rf "$(dirname "$existing")/.gitignore"
+            rm -rf "$existing.lz"
             echo "Cleaned-up $existing.lz"
           fi
           rmdir -p --ignore-fail-on-non-empty "$existingpath"
@@ -81,19 +90,6 @@ installapk() {
   if [ -z "$existing" ]; then
     install -D "$apk" "$target/$versioncode.apk"
     echo "SUCCESS: Added $target/$versioncode.apk"
-  fi
-
-  if [ "$sdkversion" -le "$lowestapi" ]; then
-    for s in $(seq 1 "$((sdkversion - 1))"); do
-      for d in $(printf "%s" "$dpis" | sed 's/-/ /g'); do
-        remove="$(find "$SOURCES/$architecture/$type/$package/$s/" -type d -name "*$d*" | sort -r | cut -c1-)" 2>/dev/null
-        if [ -e "$remove" ]; then
-          rm -rf "$remove"
-          rmdir --ignore-fail-on-non-empty "$(dirname "$remove")"
-          echo "Cleaned up old API: $remove"
-        fi
-      done
-    done
   fi
 }
 
