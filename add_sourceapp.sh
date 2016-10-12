@@ -39,18 +39,6 @@ installapk() {
   fi
   existing=""
 
-  if [ "$sdkversion" -lt "$lowestapi" ]; then
-    for s in $(seq "$((sdkversion + 1))" "$lowestapi"); do
-      for d in $(printf "%s" "$dpis" | sed 's/-/ /g'); do
-        existing="$(find "$SOURCES/$architecture/$type/$package/$s/" -type d -name "*$d*" | sort -r | cut -c1-)" 2>/dev/null
-        if [ -e "$existing" ];then
-          echo "ERROR: API level is lower than minimum level $lowestapi and lower than existing level $s of the same package"
-          return 1;
-        fi
-      done
-    done
-  fi
-
   #targetlocation: sources/platform/type/package/sdkversion/dpi1-dpi2-dpi3/versioncode.apk
   target="$SOURCES/$1/$type/$package/$sdkversion/$dpis"
 
