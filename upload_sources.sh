@@ -49,7 +49,7 @@ createcommit(){
   git rm -q -r --ignore-unmatch "$(dirname "$1")"
   eval "lowestapi=\$LOWESTAPI_$2"
   if [ "$sdkversion" -le "$lowestapi" ]; then
-    for s in $(seq 1 "$((sdkversion))"); do
+    for s in $(seq 1 "$lowestapi"); do
       paths="$(git ls-tree -r --name-only master "$type/$package/$s")"
       if [ -n "$paths" ]; then
         for d in $(printf "%s" "$dpis" | sed 's/-/ /g'); do
