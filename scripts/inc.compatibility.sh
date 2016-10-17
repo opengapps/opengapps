@@ -496,6 +496,9 @@ tvrecommendations"
     # On Nougat and higher we might want to install the WebViewStub instead of WebViewGoogle in some situations
     gappsstock_optional="$gappsstock_optional
 webviewstub"
+  elif [ "$API" -ge "23" ]; then  # TODO temporary hack because of issues on Nougat
+    gappspico="$gappspico
+packageinstallergoogle"
   fi
 }
 
@@ -509,9 +512,6 @@ pixelicons
 pixellauncher
 pixelwallpaper
 storagemanager"
-  elif [ "$API" -ge "23" ]; then  # TODO temporary hack because of issues on Nougat
-    gappspico="$gappspico
-packageinstallergoogle"
   fi
 }
 
