@@ -170,14 +170,18 @@ form(
       "NewsWidget",     "<b>Google News & Weather</b>",       "",                      "check",
       "PackageInstallerGoogle",     "<b>Google PackageInstaller</b>",       "",                      "check",
       "Pinyin",     "<b>Google Pinyin Input</b>",       "",                      "check",
+#      "PixelIcons",     "<b>Pixel Icons</b>",       "",                      "check",
+#      "PixelLauncher",     "<b>Pixel Launcher</b>",       "",                      "check",
+#      "PixelWallpaper",     "<b>Pixel Wallpaper</b>",       "",                      "check",
       "Photos",     "<b>Google Photos</b>",       "",                      "check",
       "PlayGames",     "<b>Google Play Games</b>",       "",                      "check",
-      "PrintService",     "<b>Print Service Recommendation Service</b>",       "",                      "check",
+      "PrintServiceGoogle",     "<b>Print Service Recommendation Service</b>",       "",                      "check",
       "ProjectFi",     "<b>Project Fi by Google</b>",       "",                      "check",
       "Sheets",     "<b>Google Sheets</b>",       "",                      "check",
       "Slides",     "<b>Google Slides</b>",       "",                      "check",
       "Search",     "<b>Google Search</b>",       "To Exclude BOTH Google Search AND Google Now Launcher <#f00>OR</#> To Include Google Search AND OK Google Hotword Enrollment",                      "check",
       "Speech",     "<b>Offline Speech Files</b>",       "(Required for offline voice dicatation support)",                      "check",
+#      "StorageManager",     "<b>Storage Manager</b>",       "",                      "check",
       "Street",     "<b>Google Street View</b>",       "",                      "check",
       "TagGoogle",     "<b>Google NFC Tags</b>",       "",                      "check",
       "Talkback",     "<b>Talkback</b>",       "",                      "check",
@@ -265,7 +269,8 @@ form(
       "exswype",     "<b>SkipSwypelibs</b>",       "To skip/remove the installation of the Google Swype libraries for the AOSP Keyboard",                      "check",
       "exsubstitute","<b>SubstituteSwypelibs</b>", "To overwrite the AOSP Keyboard libraries with the Google Swype libraries instead of adding",                      "check",
       "exnopreodex",   "<b>NoPreODEX</b>",           "To disable the smart Pre-ODEX-ing on Marshmallow+ ROMs",                      "check",
-      "exclean",     "<b>ForceClean</b>",       "To ignore the detection of dirty installations and force the installer to behave as if it concerns a clean install <u>DO NOT REPORT ANY BUGS IF USED</u>",                      "check"
+      "exclean",     "<b>ForceClean</b>",       "To ignore the detection of dirty installations and force the installer to behave as if it concerns a clean install <u>DO NOT REPORT ANY BUGS IF USED</u>",                      "check",
+      "WebViewStub",     "<b>WebViewStub</b>",       "Placeholder for Google WebView, on 7.0+ automatically used instead of WebViewGoogle if Chrome is installed",                      "check"
 );
 
 ##############################################
@@ -303,6 +308,11 @@ if
   prop("extra.prop", "exclean")=="1"
 then
   appendvar("gapps", "forceclean\n");
+endif;
+if
+  prop("extra.prop", "WebViewStub")=="1"
+then
+  appendvar("gapps", "WebViewStub\n");
 endif;
 
 # INCLUDE/EXCLUDE
@@ -557,6 +567,24 @@ then
   appendvar("gapps", "Pinyin\n");
 endif;
 
+#if
+#  prop("gapps.prop", "PixelIcons")=="1"
+#then
+#  appendvar("gapps", "PixelIcons\n");
+#endif;
+
+#if
+#  prop("gapps.prop", "PixelLauncher")=="1"
+#then
+#  appendvar("gapps", "PixelLauncher\n");
+#endif;
+
+#if
+#  prop("gapps.prop", "PixelWallpaper")=="1"
+#then
+#  appendvar("gapps", "PixelWallpaper\n");
+#endif;
+
 if
   prop("gapps.prop", "Photos")=="1"
 then
@@ -570,9 +598,9 @@ then
 endif;
 
 if
-  prop("gapps.prop", "PrintService")=="1"
+  prop("gapps.prop", "PrintServiceGoogle")=="1"
 then
-  appendvar("gapps", "PrintService\n");
+  appendvar("gapps", "PrintServiceGoogle\n");
 endif;
 
 if
@@ -604,6 +632,12 @@ if
 then
   appendvar("gapps", "Speech\n");
 endif;
+
+#if
+#  prop("gapps.prop", "StorageManager")=="1"
+#then
+#  appendvar("gapps", "StorageManager\n");
+#endif;
 
 if
   prop("gapps.prop", "Street")=="1"
