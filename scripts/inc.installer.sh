@@ -837,7 +837,7 @@ get_appsize() {
     true*) odexsize="|odex";;
     *) odexsize="";;
   esac
-  appsize="$(cat $TMP/app_sizes.txt | grep -E "$app_name.*	($app_density|common$odexsize)" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')"
+  appsize="$(cat $TMP/app_sizes.txt | grep -E "$app_name.*[[:blank:]]($app_density|common$odexsize)[[:blank:]]" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')"
 }
 
 get_fallback_arch(){
