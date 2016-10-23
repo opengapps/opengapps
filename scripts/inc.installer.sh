@@ -612,9 +612,10 @@ arch_compat_msg="INSTALLATION FAILURE: This Open GApps package cannot be install
 camera_sys_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera\ncan only be installed during a Clean Install or as an update to an existing\nGApps Installation.\n";
 camera_compat_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera\nis NOT compatible with your device if installed on the system partition. Try\ninstalling from the Play Store instead.\n";
 cmcompatibility_msg="WARNING: PackageInstallerGoogle is not installed. Cyanogenmod is NOT\ncompatible with some Google Applications and Open GApps\n will skip their installation.\n";
-dialergoogle_msg="WARNING: Google Dialer has/will not be installed as requested. Dialer Framework\nmust be added to the GApps installation if you want to install the Google\nDialer.\n";
+dialergoogle_msg="WARNING: Google Dialer has/will not be installed as requested. Dialer Framework\nmust be added to the GApps installation if you want to install the\nGoogle Dialer.\n";
 faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";
-googlenow_msg="WARNING: Google Now Launcher has/will not be installed as requested. Google Search\nmust be added to the GApps installation if you want to install the Google\nNow Launcher.\n";
+googlenow_msg="WARNING: Google Now Launcher has/will not be installed as requested. Google Search\nmust be added to the GApps installation if you want to install the\nGoogle Now Launcher.\n";
+pixellauncher_msg="WARNING: Pixel Launcher has/will not be installed as requested. Wallpapers and\nGoogle Search must be added to the GApps installation if you want to install\nthe Pixel Launcher.\n";
 projectfi_msg="WARNING: Project Fi has/will not be installed as requested. GCS must be\nadded to the GApps installation if you want to install the Project Fi app.\n";
 nobuildprop="INSTALLATION FAILURE: The installed ROM has no build.prop or equivalent\n";
 nokeyboard_msg="NOTE: The Stock/AOSP keyboard was NOT removed as requested to ensure your device\nwas not accidentally left with no keyboard installed. If this was intentional,\nyou can add 'Override' to your gapps-config to override this protection.\n";
@@ -1666,20 +1667,38 @@ if ( ! contains "$gapps_list" "googletts" ) && ( ! grep -qiE '^picotts$' "$g_con
   remove_picotts="false[NO_GoogleTTS]";
 fi;
 
+# If we're NOT installing wallpapers then we MUST REMOVE pixellauncher from  $gapps_list (if it's currently there)
+if ( ! contains "$gapps_list" "wallpapers" ) && ( contains "$gapps_list" "pixellauncher" ); then
+  gapps_list=${gapps_list/pixellauncher};
+  install_note="${install_note}pixellauncher_msg"$'\n'; # make note that Google Now Launcher will NOT be installed as user requested
+fi;
+
+# If we're NOT installing search then we MUST REMOVE pixellauncher from  $gapps_list (if it's currently there)
+if ( ! contains "$gapps_list" "search" ) && ( contains "$gapps_list" "pixellauncher" ); then
+  gapps_list=${gapps_list/pixellauncher};
+  install_note="${install_note}pixellauncher_msg"$'\n'; # make note that Pixel Launcher will NOT be installed as user requested
+fi;
+
 # If we're NOT installing search then we MUST REMOVE googlenow from  $gapps_list (if it's currently there)
 if ( ! contains "$gapps_list" "search" ) && ( contains "$gapps_list" "googlenow" ); then
   gapps_list=${gapps_list/googlenow};
   install_note="${install_note}googlenow_msg"$'\n'; # make note that Google Now Launcher will NOT be installed as user requested
 fi;
 
-# If we're NOT installing googlenow make certain 'launcher' is NOT in $aosp_remove_list UNLESS 'launcher' is in $g_conf
-if ( ! contains "$gapps_list" "googlenow" ) && ( ! grep -qiE '^launcher$' "$g_conf" ); then
-  aosp_remove_list=${aosp_remove_list/launcher};
-  remove_launcher="false[NO_GoogleNow]";
+# If we're NOT installing search then we MUST REMOVE pixellauncher from  $gapps_list (if it's currently there)
+if ( ! contains "$gapps_list" "search" ) && ( contains "$gapps_list" "pixellauncher" ); then
+  gapps_list=${gapps_list/pixellauncher};
+  install_note="${install_note}pixellauncher_msg"$'\n'; # make note that Pixel Launcher will NOT be installed as user requested
 fi;
 
-# If we're NOT installing googlenow and launcher is in $aosp_remove_list then user must override removal protection
-if ( ! contains "$gapps_list" "googlenow" ) && ( contains "$aosp_remove_list" "launcher" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+# If we're NOT installing googlenow or pixellauncher make certain 'launcher' is NOT in $aosp_remove_list UNLESS 'launcher' is in $g_conf
+if ( ! contains "$gapps_list" "googlenow" ) && ( ! contains "$gapps_list" "pixellauncher" ) && ( ! grep -qiE '^launcher$' "$g_conf" ); then
+  aosp_remove_list=${aosp_remove_list/launcher};
+  remove_launcher="false[NO_GoogleNow/PixelLauncher]";
+fi;
+
+# If we're NOT installing googlenow or pixellauncher and launcher is in $aosp_remove_list then user must override removal protection
+if ( ! contains "$gapps_list" "googlenow" ) && ( ! contains "$gapps_list" "pixellauncher" ) && ( contains "$aosp_remove_list" "launcher" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/launcher}; # we'll prevent launcher from being removed so user isn't left with no Launcher
   remove_launcher="false[NO_Override]";
   install_note="${install_note}nolauncher_msg"$'\n'; # make note that Launcher can't be removed unless user Overrides

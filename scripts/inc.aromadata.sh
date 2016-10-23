@@ -152,7 +152,7 @@ form(
       "Fitness",     "<b>Google Fit</b>",       "",                      "check",
       "GCS",     "<b>Google Connectivity Services</b>",       "To Exclude BOTH Google Connectivity Services AND Project Fi by Google <#f00>OR</#> To Include Google Connectivity Services",                      "check",
       "Gmail",     "<b>Gmail</b>",       "",                      "check",
-      "GoogleNow",     "<b>Google Now Launcher</b>",       "",                      "check",
+      "GoogleNow",     "<b>Google Now Launcher</b>",       "(Google Search Required)",                      "check",
       "GooglePlus",     "<b>Google+</b>",       "",                      "check",
       "GoogleTTS",     "<b>Google Text-to-Speech</b>",       "",                      "check",
       "Hangouts",     "<b>Google Hangouts</b>",       "",                      "check",
@@ -170,23 +170,23 @@ form(
       "NewsWidget",     "<b>Google News & Weather</b>",       "",                      "check",
       "PackageInstallerGoogle",     "<b>Google PackageInstaller</b>",       "",                      "check",
       "Pinyin",     "<b>Google Pinyin Input</b>",       "",                      "check",
-#      "PixelIcons",     "<b>Pixel Icons</b>",       "",                      "check",
-#      "PixelLauncher",     "<b>Pixel Launcher</b>",       "",                      "check",
-#      "PixelWallpaper",     "<b>Pixel Wallpaper</b>",       "",                      "check",
+      "PixelIcons",     "<b>Pixel Icons</b>",       "",                      "check",
+      "PixelLauncher",     "<b>Pixel Launcher</b>",       "(Wallpapers and Google Search Required)",                      "check",
       "Photos",     "<b>Google Photos</b>",       "",                      "check",
       "PlayGames",     "<b>Google Play Games</b>",       "",                      "check",
       "PrintServiceGoogle",     "<b>Print Service Recommendation Service</b>",       "",                      "check",
       "ProjectFi",     "<b>Project Fi by Google</b>",       "",                      "check",
       "Sheets",     "<b>Google Sheets</b>",       "",                      "check",
       "Slides",     "<b>Google Slides</b>",       "",                      "check",
-      "Search",     "<b>Google Search</b>",       "To Exclude BOTH Google Search AND Google Now Launcher <#f00>OR</#> To Include Google Search AND OK Google Hotword Enrollment",                      "check",
+      "Search",     "<b>Google Search</b>",       "To Exclude Google Search AND Google Now Launcher AND Pixel Launcher <#f00>OR</#> To Include Google Search AND OK Google Hotword Enrollment",                      "check",
       "Speech",     "<b>Offline Speech Files</b>",       "(Required for offline voice dicatation support)",                      "check",
-#      "StorageManager",     "<b>Storage Manager</b>",       "",                      "check",
+      "StorageManager",     "<b>Storage Manager</b>",       "",                      "check",
       "Street",     "<b>Google Street View</b>",       "",                      "check",
       "TagGoogle",     "<b>Google NFC Tags</b>",       "",                      "check",
       "Talkback",     "<b>Talkback</b>",       "",                      "check",
       "Translate",     "<b>Google Translate</b>",       "",                      "check",
       "VRService",     "<b>Google VR Service</b>",       "",                      "check",
+      "Wallpapers",     "<b>Wallpapers</b>",       "To Exclude BOTH Wallpapers AND Pixel Launcher <#f00>OR</#> To Include Wallpapers",                      "check",
       "WebViewGoogle",     "<b>Android System WebView</b>",       "",                      "check",
       "YouTube",     "<b>YouTube</b>",       "",                      "check",
       "Zhuyin",     "<b>Google Zhuyin Input</b>",       "",                      "check"
@@ -580,9 +580,9 @@ endif;
 #endif;
 
 #if
-#  prop("gapps.prop", "PixelWallpaper")=="1"
+#  prop("gapps.prop", "Wallpapers")=="1"
 #then
-#  appendvar("gapps", "PixelWallpaper\n");
+#  appendvar("gapps", "Wallpapers\n");
 #endif;
 
 if

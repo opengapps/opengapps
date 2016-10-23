@@ -426,7 +426,8 @@ hotword"
 calculatorgoogle
 taggoogle"
     gappsstock="$gappsstock
-contactsgoogle"
+contactsgoogle
+pixellauncher"
     miniremove="$miniremove
 clockstock
 tagstock"
@@ -485,7 +486,8 @@ api24hack(){
 extservicesgoogle
 extsharedgoogle"
     gappsstock="$gappsstock
-printservicegoogle"
+printservicegoogle
+storagemanager"
 
     gappstvcore="$gappstvcore
 extservicesgoogle
@@ -508,10 +510,7 @@ api25hack(){
 androidplatform
 gmssetup"
     gappsstock="$gappsstock
-pixelicons
-pixellauncher
-pixelwallpaper
-storagemanager"
+pixelicons"
   fi
 }
 
