@@ -488,6 +488,8 @@ extsharedgoogle"
     gappsstock="$gappsstock
 printservicegoogle
 storagemanager"
+    stockremove="$stockremove
+storagemanagerstock"
 
     gappstvcore="$gappstvcore
 extservicesgoogle
