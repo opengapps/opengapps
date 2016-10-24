@@ -471,6 +471,9 @@ app/NoiseField'"$REMOVALSUFFIX"'"
 omniswitch_list="
 priv-app/OmniSwitch'"$REMOVALSUFFIX"'"
 
+storagemanagerstock_list="
+priv-app/StorageManager'"$REMOVALSUFFIX"'"
+
 # Must be used when Google PackageInstaller is installed; non-capitalized spelling on Lenovo K3 Note
 packageinstallerstock_list="
 app/PackageInstaller'"$REMOVALSUFFIX"'
