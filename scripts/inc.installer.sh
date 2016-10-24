@@ -1762,6 +1762,11 @@ if ( contains "$gapps_list" "printservicegoogle" ) && ( ! contains "$aosp_remove
   aosp_remove_list="${aosp_remove_list}printservicestock"$'\n';
 fi;
 
+# If we're installing storagemanagergoogle we must ADD storagemanagerstock to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "storagemanagergoogle" ) && ( ! contains "$aosp_remove_list" "storagemanagerstock" ); then
+  aosp_remove_list="${aosp_remove_list}storagemanagerstock"$'\n';
+fi;
+
 # If we're installing taggoogle we must ADD tagstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "taggoogle" ) && ( ! contains "$aosp_remove_list" "tagstock" ); then
   aosp_remove_list="${aosp_remove_list}tagstock"$'\n';
