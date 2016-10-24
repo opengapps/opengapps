@@ -487,7 +487,7 @@ extservicesgoogle
 extsharedgoogle"
     gappsstock="$gappsstock
 printservicegoogle
-storagemanager"
+storagemanagergoogle"
 
     gappstvcore="$gappstvcore
 extservicesgoogle
