@@ -503,6 +503,9 @@ priv-app/Provision'"$REMOVALSUFFIX"'"
 simtoolkit_list="
 app/Stk'"$REMOVALSUFFIX"'"
 
+storagemanagerstock_list="
+priv-app/StorageManager'"$REMOVALSUFFIX"'"
+
 studio_list="
 app/VideoEditor'"$REMOVALSUFFIX"'"
 
