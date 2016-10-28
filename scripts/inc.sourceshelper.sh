@@ -33,10 +33,15 @@ getapkproperties(){
   compatiblescreens="$(echo "$apkproperties" | grep -a "compatible-screens:'")" #the ' is added to prevent detection of lines that only have compatiblescreens but without any values
   native="$(echo "$apkproperties" | grep -av "alt-native-code:" | grep -a "native-code:" | sed 's/native-code://g' | sed "s/'//g") " # add a space at the end
   altnative="$(echo "$apkproperties" | grep -a "alt-native-code:" | sed 's/alt-native-code://g' | sed "s/'//g") " # add a space at the end
-  leanback="$(echo "$apkproperties" | grep -a "android.software.leanback" | awk -F [.\'] '{print $(NF-1)}')"
+  leanback="$(echo "$apkproperties" | grep -a "android.software.leanback" | awk -F [.\'] '{print $(NF-1)}')"  # 'leanback'
+  vrmode="$(echo "$apkproperties" | grep -a "android.software.vr.mode" | awk -F [.\'] '{print $(NF-2)$(NF-1)}')"  # 'vrmode'
   case "$versionname" in
     *leanback*) leanback="leanback";;
   esac
+
+  if [ -n "$vrmode" ]; then
+      package="$package.vrmode"  # special vrmode versions need a different packagename
+  fi
 
   if [ -n "$leanback" ]; then
     case "$package" in
