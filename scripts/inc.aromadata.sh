@@ -568,23 +568,23 @@ then
   appendvar("gapps", "Pinyin\n");
 endif;
 
-#if
-#  prop("gapps.prop", "PixelIcons")=="1"
-#then
-#  appendvar("gapps", "PixelIcons\n");
-#endif;
+if
+  prop("gapps.prop", "PixelIcons")=="1"
+then
+  appendvar("gapps", "PixelIcons\n");
+endif;
 
-#if
-#  prop("gapps.prop", "PixelLauncher")=="1"
-#then
-#  appendvar("gapps", "PixelLauncher\n");
-#endif;
+if
+  prop("gapps.prop", "PixelLauncher")=="1"
+then
+  appendvar("gapps", "PixelLauncher\n");
+endif;
 
-#if
-#  prop("gapps.prop", "Wallpapers")=="1"
-#then
-#  appendvar("gapps", "Wallpapers\n");
-#endif;
+if
+  prop("gapps.prop", "Wallpapers")=="1"
+then
+  appendvar("gapps", "Wallpapers\n");
+endif;
 
 if
   prop("gapps.prop", "Photos")=="1"
@@ -634,11 +634,11 @@ then
   appendvar("gapps", "Speech\n");
 endif;
 
-#if
-#  prop("gapps.prop", "StorageManagerGoogle")=="1"
-#then
-#  appendvar("gapps", "StorageManagerGoogle\n");
-#endif;
+if
+  prop("gapps.prop", "StorageManagerGoogle")=="1"
+then
+  appendvar("gapps", "StorageManagerGoogle\n");
+endif;
 
 if
   prop("gapps.prop", "Street")=="1"
