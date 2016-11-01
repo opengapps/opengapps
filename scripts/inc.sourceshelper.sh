@@ -40,7 +40,11 @@ getapkproperties(){
   esac
 
   if [ -n "$vrmode" ]; then
-      package="$package.vrmode"  # special vrmode versions need a different packagename
+    case "$package" in
+      com.android.vending*) ;;  # if package is Play Store, we can ignore the vrmode recognition
+      *) package="$package.vrmode"  # special vrmode versions need a different packagename
+    esac
+
   fi
 
   if [ -n "$leanback" ]; then
