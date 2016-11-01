@@ -35,7 +35,10 @@ createcommit(){
   getapkproperties "$1"
 
   if [ -n "$leanback" ]; then
-    name="$name ($leanback)"  # special leanback versions should be named like that in their commit
+    case "$package" in
+      *inputmethod*) ;;  # if package is an inputmethod, it will have leanback as feature described, but we don't want it recognized as such
+      *) name="$name ($leanback)"  # special leanback versions should be named like that in their commit
+    esac
   fi
 
   if [ -n "$vrmode" ]; then
