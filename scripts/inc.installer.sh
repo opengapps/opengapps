@@ -756,7 +756,7 @@ exxit() {
     cp -f "$rec_tmp_log" "$TMP/logs/Recovery_tmp.log"
     logcat -d -f "$TMP/logs/logcat"
     cd "$TMP"
-    "$TMP/tar-$BINARCH" -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" logs/*
+    tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" logs/*
     cd /
   fi
   find $TMP/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +
