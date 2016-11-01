@@ -39,7 +39,10 @@ createcommit(){
   fi
 
   if [ -n "$vrmode" ]; then
-    name="$name ($vrmode)"  # special vrmode versions should be named like that in their commit
+    case "$package" in
+      com.android.vending*) ;;  # if package is Play Store, we can ignore the vrmode recognition
+      *) name="$name ($vrmode)"  # special vrmode versions should be named like that in their commit
+    esac
   fi
 
   if [ -n "$stub" ]; then
