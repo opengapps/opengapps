@@ -16,12 +16,12 @@ Demanding a feature or functionality for your 1% use-case is not appreciated. Bu
 The Open GApps Project focuses on writing the scripts that enables everyone to build their own GApps package.
 The OpenGApps.org pre-built packages by the buildbot is an easy-to-use service but not the main focus of the project.
 
-###POSIX-compatible shell *will* hurt your brain
+### POSIX-compatible shell *will* hurt your brain
 The majority of the Open GApps Project consists of POSIX-compatible shell code. That means there are limitations in how well code
 can be structured (e.g. there are not even arrays available). This limits readability, so take into account when writing new code
 that it will by default already be hard to read by other developers, so don't make it more complicated than necessary.
 
-###Code structure
+### Code structure
 * Only commands meant for the end-user go in the root directory
 * The bulk of the code goes into the scripts/ directory
 * All support-files are marked as inc.* and are organized to be sourced in a logical place (i.e. ONLY the root script OR a low-level function)
@@ -31,7 +31,7 @@ that it will by default already be hard to read by other developers, so don't ma
 * Try to use functions whenever it can make otherwise repetitive statements more readable
 * APKs are stored in separate repositories, named after their CPU architecture in the sources/ directory
 
-###Code Styleguide
+### Code Styleguide
 * Use only POSIX-compatible code (but you can place markers where in the future you want to use bash)
 * Try to stick to latest Open Group specifications for command arguments, parameters and their structure
 * Try to use *""* as much as possible whenever passing an argument that should NOT be shell-globbed (i.e. 99% of the time)
@@ -41,7 +41,7 @@ that it will by default already be hard to read by other developers, so don't ma
 * If using a *;* or similar statement please put a space after it for readability
 * Use a *#* to document lines in or near functions if it is not directly apparent how they work
 
-###APK Uploads
+### APK Uploads
 * The Open GApps project offers ready-made tools to create commits and upload APKs to the sources-repositories
 * If not using the tools, please do try to mimic their commit-style (one app per commit; rebase no merging; replace no removing/adding; git message)
 * If possible NEVER remove an APK in one commit and putting its update in another commit. (It hinders git delta-compression)

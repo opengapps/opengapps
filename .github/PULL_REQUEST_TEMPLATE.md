@@ -4,5 +4,3 @@ Changes:
 -
 -
 -
-
-@opengapps/developers
