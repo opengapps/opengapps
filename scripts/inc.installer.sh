@@ -1121,6 +1121,7 @@ set_progress 0.01;
 for m in $mounts; do
   mount "$m"
 done
+grep -q "/system.*\sro[\s,]" /proc/mounts && mount -o remount,rw /system  # remount /system, sometimes necessary if mounted read-only
 
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
