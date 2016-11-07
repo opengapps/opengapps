@@ -233,7 +233,7 @@ getapksforapi() {
 "  #We set IFS to newline here so that spaces can survive the for loop
   #sed copies filename to the beginning, to compare version, and later we remove it with cut
   maxsdkerrorapi=""
-  for foundapk in $(find $SOURCES/$2/*app/$1 -iname '*.apk' 2>/dev/null| sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2-); do
+  for foundapk in $(find $SOURCES/$2/*app/$1 -iname '*.apk' 2>/dev/null| sed 's!.*/\(.*\)!\1/&!' | sort -r -n -t/ -k1,1 | cut -d/ -f2-); do
     foundpath="$(dirname "$(dirname "$foundapk")")"
     api="$(basename "$foundpath")"
     if [ "$maxsdkerrorapi" = "$api" ]; then
@@ -241,7 +241,7 @@ getapksforapi() {
     fi
     if [ "$api" -le "$3" ] && [ "$api" -ge "$minapi" ]; then
       #We need to keep them sorted
-      sourceapks="$(find "$foundpath" -iname '*.apk' | sed 's!.*/\(.*\)!\1/&!' | sort -r -t/ -k1,1 | cut -d/ -f2-)"
+      sourceapks="$(find "$foundpath" -iname '*.apk' | sed 's!.*/\(.*\)!\1/&!' | sort -r -n -t/ -k1,1 | cut -d/ -f2-)"
       for maxsdkapk in $sourceapks; do
         maxsdk="$(aapt dump badging "$maxsdkapk" 2>/dev/null | grep -a "maxSdkVersion:" | sed 's/maxSdkVersion://' | sed "s/'//g")"
         if [ -n "$maxsdk" ] && [ "$maxsdk" -lt "$3" ]; then
