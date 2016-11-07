@@ -1,6 +1,6 @@
 Getting the latest pre-built Open GApps
 ---------------
-The latest version of pre-built Open GApps can be found at http://opengapps.org
+The latest version of pre-built Open GApps can be found at http://opengapps.org and the [Open GApps App](http://opengapps.org/app/)
 
 |[Support Project](http://opengapps.org/donate)|[![Donate](https://img.shields.io/badge/donate-on%20paypal-009cde.svg?maxAge=86400)](http://opengapps.org/donate)|
 |----:|:-----|
