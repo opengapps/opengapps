@@ -426,8 +426,7 @@ hotword"
 calculatorgoogle
 taggoogle"
     gappsstock="$gappsstock
-contactsgoogle
-pixellauncher"
+contactsgoogle"
     miniremove="$miniremove
 clockstock
 tagstock"
@@ -455,7 +454,8 @@ dialerframework
 googletts
 "  # TODO packageinstallergoogle temporary disabled because of issues on Nougat ROMs
     gappsstock="$gappsstock
-dialergoogle"
+dialergoogle
+pixellauncher"
     gappsstock_optional="$gappsstock_optional
 cameragooglelegacy"
 
