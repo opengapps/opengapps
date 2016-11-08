@@ -256,7 +256,7 @@ get_package_info(){
                               else
                                 packagefiles="etc/permissions/com.google.android.camera2.xml"; packageframework="com.google.android.camera2.jar"
                               fi;;
-    cameragooglelegacy)       packagetype="GApps"; packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera"; packagemaxapi="22"; packagefiles="etc/permissions/com.google.android.camera2.xml"; packageframework="com.google.android.camera2.jar";;
+    cameragooglelegacy)       packagetype="GApps"; packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCameraLegacy"; packagemaxapi="22"; packagefiles="etc/permissions/com.google.android.camera2.xml"; packageframework="com.google.android.camera2.jar";;
     chrome)                   packagetype="GApps"; packagename="com.android.chrome"; packagetarget="app/Chrome";;
     clockgoogle)              packagetype="GApps"; packagename="com.google.android.deskclock"; packagetarget="app/PrebuiltDeskClockGoogle";;
     cloudprint)               packagetype="GApps"; packagename="com.google.android.apps.cloudprint"; packagetarget="app/CloudPrint2";;
