@@ -592,8 +592,9 @@ reqd_list="
 '"$REQDLIST"'
 ";
 
-# Remove from priv-app since it was moved to app and vice-versa
+# Remove from priv-app since it was moved to app and vice-versa or other path changes
 obsolete_list="
+/system/app/CalculatorGoogle
 /system/priv-app/GoogleHome'"$REMOVALSUFFIX"'
 /system/priv-app/Hangouts'"$REMOVALSUFFIX"'
 /system/priv-app/PrebuiltExchange3Google'"$REMOVALSUFFIX"'
