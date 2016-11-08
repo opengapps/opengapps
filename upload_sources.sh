@@ -43,9 +43,9 @@ createcommit(){
 
   if [ -n "$vrmode" ]; then
     case "$package" in
-      com.android.vending*)  ;;  # if package is Play Store, we can ignore the vrmode recognition
-      com.google.vr.vrcore*) ;;  # if package is Google VR Services, we can ignore the vrmode recognition
-      *) name="$name ($vrmode)"  # special vrmode versions should be named like that in their commit
+      com.google.android.apps.photos*)
+          name="$name ($vrmode)" ;;  # if package is whitelisted, we can add vrmode to the commit
+      *)                         ;;  # Otherwise ignore the vrmode flag
     esac
   fi
 
