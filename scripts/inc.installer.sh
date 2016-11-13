@@ -2265,7 +2265,7 @@ cat $bkup_tail >> /system/addon.d/70-gapps.sh;
 #                                                  Fix Permissions
 set_progress 0.83;
 ui_print " ";
-ui_print "- Fixing permissions & contexts";
+ui_print "- Fixing permissions";
 ui_print " ";
 set_perm_recursive 0 0 755 644 "/system/app" "/system/framework" "/system/lib" "/system/lib64" "/system/priv-app" "/system/usr/srec" "/system/vendor/pittpatt" "/system/etc/permissions" "/system/etc/preferred-apps";
 
