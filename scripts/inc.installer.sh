@@ -678,17 +678,6 @@ abort() {
   exxit "$1";
 }
 
-ch_con() {
-  chcon -h u:object_r:system_file:s0 "$1";
-}
-
-ch_con_recursive() {
-  dirs=$(echo "$@" | awk '{ print substr($0, index($0,$1)) }');
-  for i in $dirs; do
-    find "$i" -exec chcon -h u:object_r:system_file:s0 {} +;
-  done;
-}
-
 checkmanifest() {
   if [ -f "$1" ] && ("$TMP/unzip-$BINARCH" -ql "$1" | grep -q "META-INF/MANIFEST.MF"); then  # strict, only files
     "$TMP/unzip-$BINARCH" -p "$1" "META-INF/MANIFEST.MF" | grep -q "$2"
@@ -2287,11 +2276,6 @@ set_progress 0.87;
 find /system/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; # Change pittpatt folders to root:shell per Google Factory Settings
 
 set_perm 0 0 644 "$g_prop"
-
-# Set contexts on all files we installed
-set_progress 0.88;
-ch_con_recursive "/system/app" "/system/framework" "/system/lib" "/system/lib64" "/system/priv-app" "/system/usr/srec" "/system/vendor/pittpatt" "/system/etc/permissions" "/system/etc/preferred-apps" "/system/addon.d";
-ch_con "$g_prop"
 
 set_progress 0.92
 quit
