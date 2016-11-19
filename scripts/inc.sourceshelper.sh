@@ -40,22 +40,6 @@ getapkproperties(){
     *leanback*) leanback="leanback";;
   esac
 
-  if [ -n "$watch" ]; then
-    case "$package" in
-      com.google.android.gms*)
-          package="$package.watch" ;;  # special watch versions need a different packagename
-      *)                           ;;  # Otherwise ignore the watch flag
-    esac
-  fi
-
-  if [ -n "$vrmode" ]; then
-    case "$package" in
-      com.google.android.apps.photos*)
-          package="$package.vrmode" ;;  # special vrmode versions need a different packagename
-      *)                            ;;  # Otherwise ignore the vrmode flag
-    esac
-  fi
-
   if [ -n "$leanback" ]; then
     case "$package" in
       *inputmethod*) ;; #if package is an inputmethod, it will have leanback as feature described, but we don't want it recognized as such
@@ -111,6 +95,22 @@ getapkproperties(){
   esac
 
   #we do this on purpose after the priv-app detection to emulate the priv-app of the normal app
+  if [ -n "$watch" ]; then
+    case "$package" in
+      com.google.android.gms*)
+          package="$package.watch" ;;  # special watch versions need a different packagename
+      *)                           ;;  # Otherwise ignore the watch flag
+    esac
+  fi
+
+  if [ -n "$vrmode" ]; then
+    case "$package" in
+      com.google.android.apps.photos*)
+          package="$package.vrmode" ;;  # special vrmode versions need a different packagename
+      *)                            ;;  # Otherwise ignore the vrmode flag
+    esac
+  fi
+  
   if [ -n "$STUB" ]; then
     package="$package.$STUB"  # xxx.stub
   fi
