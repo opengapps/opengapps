@@ -35,9 +35,18 @@ getapkproperties(){
   altnative="$(echo "$apkproperties" | grep -a "alt-native-code:" | sed 's/alt-native-code://g' | sed "s/'//g") " # add a space at the end
   leanback="$(echo "$apkproperties" | grep -a "android.software.leanback" | awk -F [.\'] '{print $(NF-1)}')"  # 'leanback'
   vrmode="$(echo "$apkproperties" | grep -a "android.software.vr.mode" | awk -F [.\'] '{print $(NF-2)$(NF-1)}')"  # 'vrmode'
+  watch="$(echo "$apkproperties" | grep -a "android.hardware.type.watch" | awk -F [.\'] '{print $(NF-1)}')"  # 'watch'
   case "$versionname" in
     *leanback*) leanback="leanback";;
   esac
+
+  if [ -n "$watch" ]; then
+    case "$package" in
+      com.google.android.gms*)
+          package="$package.watch" ;;  # special watch versions need a different packagename
+      *)                           ;;  # Otherwise ignore the watch flag
+    esac
+  fi
 
   if [ -n "$vrmode" ]; then
     case "$package" in
@@ -45,7 +54,6 @@ getapkproperties(){
           package="$package.vrmode" ;;  # special vrmode versions need a different packagename
       *)                            ;;  # Otherwise ignore the vrmode flag
     esac
-
   fi
 
   if [ -n "$leanback" ]; then

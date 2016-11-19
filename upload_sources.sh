@@ -49,6 +49,14 @@ createcommit(){
     esac
   fi
 
+  if [ -n "$watch" ]; then
+    case "$package" in
+      com.google.android.gms*)
+            name="$name ($watch)" ;;  # special watch versions need a different packagename
+      *)                          ;;  # Otherwise ignore the watch flag
+    esac
+  fi
+
   if [ -n "$stub" ]; then
     name="$name ($stub)"  # stub versions should be named like that in their commit
   fi
