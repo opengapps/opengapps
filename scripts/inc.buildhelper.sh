@@ -326,16 +326,21 @@ buildapk() {
   fi
 
   install -D "$sourceapk" "$targetapk"
-  if [ "$API" -lt "23" ] && (unzip -qqql "$targetapk" | grep -q "lib/"); then #only if pre-Marshmallow and the lib folder exists
-    unzip -Z -1 "$targetapk" | grep "lib/" | grep -v "/crazy." | xargs zip -q -d "$targetapk" #delete all libs, except crazy-linked
-  elif [ "$API" -ge "23" ] && (unzip -qqql "$targetapk" | grep -q "lib/"); then #Marshmallow needs (if any exist) libs to be stored without compression within the APK
-    unzip -qqq -o "$targetapk" -d "$targetdir" "lib/*"
-    zip -q -d "$targetapk" "lib/*" #delete all libs
+  if [ "$API" -lt "23" ] && (unzip -qqql "$targetapk" | grep -q "lib/"); then  # only if pre-6.0 and the lib folder exists (we can be sure asset APKs are only if libs are there too)
+    unzip -Z -1 "$targetapk" | grep "lib/" | grep -v "/crazy." | xargs zip -q -d "$targetapk"  # delete all libs, except crazy-linked
+  elif [ "$API" -ge "23" ] && (unzip -qqql "$targetapk" | grep -q "lib/"); then  # 6.0+ needs (if any exist) libs to be stored without compression within the APK
+    if unzip -qqql "$targetapk" | grep -q "assets/.*.apk"; then
+      unzip -qqq -o "$targetapk" -d "$targetdir" "lib/*" "assets/*.apk"
+    else
+      unzip -qqq -o "$targetapk" -d "$targetdir" "lib/*"
+    fi
+    zip -q -d "$targetapk" "lib/*" "assets/*.apk"  # make a target apk with the lib and asset apks removed
     CURRENTPWD="$(realpath .)" #if we ever switch to bash, make this a pushd-popd trick
     cd "$targetdir"
-    zip -q -r -D -Z store -b "$targetdir" "$targetapk" "lib/" #no parameter for output and mode, we are in 'add and update existing' mode which is default. Lib files have to be stored without compression.
+    zip -q -r -D -Z store -b "$targetdir" "$targetapk" "lib/" "assets/" # no parameter for output and mode, we are in 'add and update existing' mode which is default. Lib and asset APKs files have to be stored without compression.
     cd "$CURRENTPWD"
     rm -rf "$targetdir/lib/"
+    rm -rf "$targetdir/assets/"
   fi
 }
 

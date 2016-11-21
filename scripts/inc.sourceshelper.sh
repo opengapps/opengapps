@@ -110,7 +110,7 @@ getapkproperties(){
       *)                            ;;  # Otherwise ignore the vrmode flag
     esac
   fi
-  
+
   if [ -n "$STUB" ]; then
     package="$package.$STUB"  # xxx.stub
   fi
