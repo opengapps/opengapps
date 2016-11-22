@@ -149,9 +149,8 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/$libfolder/$keybd_lib_google\" \"/system/$libfolder/$keybd_lib_aosp\"" $bkup_tail
   else
-    ui_print "- Restoring non-swypelibs"
+    ui_print "- Removing swypelibs"
     rm -f "/system/$libfolder/$keybd_lib_google" # remove swypelibs
-    ln -sfn "/system/$libfolder/$keybd_lib_aosp" "/system/$libfolder/$arch/$keybd_lib_aosp" # restore non-swypelibs symlink
   fi
 fi';;
       *) REQDLIST=""
