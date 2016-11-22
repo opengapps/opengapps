@@ -48,11 +48,12 @@ keyboardgooglenotremovehack(){
 }
 
 keyboardlibhack(){
-  if [ "$API" -ge "24" ]; then # on Nougat we don't have swypelibs
-    REQDLIST=""
-    KEYBDLIBS=""
-    KEYBDINSTALLCODE=""
-  elif [ "$API" -ge "23" ]; then # on Marshmallow it is like Lollipop but with extra libjni_keyboarddecoder.so; on Marshmallow we support all platforms
+  #if [ "$API" -ge "24" ]; then # on Nougat there are officially no swypelibs, but we can use the Marshmallow ones for now, they are still AOSP compatible
+  #  REQDLIST=""
+  #  KEYBDLIBS=""
+  #  KEYBDINSTALLCODE=""
+  #el
+  if [ "$API" -ge "23" ]; then # on Marshmallow it is like Lollipop but with extra libjni_keyboarddecoder.so; on Marshmallow we support all platforms
     gappscore_optional="swypelibs $gappscore_optional"
     REQDLIST='/system/lib/libjni_latinimegoogle.so
 /system/lib64/libjni_latinimegoogle.so
