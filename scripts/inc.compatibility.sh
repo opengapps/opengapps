@@ -502,6 +502,11 @@ webviewstub"
     gappspico="$gappspico
 packageinstallergoogle"
   fi
+
+  if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
+    gappsmini_optional="$gappsmini_optional
+photosvrmode"
+  fi
 }
 
 api25hack(){

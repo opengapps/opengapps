@@ -631,7 +631,7 @@ fornexus_open_gapps_msg="NOTE: The installer detected that you already have Stoc
 recovery_compression_msg="INSTALLATION FAILURE: Your ROM uses transparent compression, but your recovery\ndoes not support this feature, resulting in corrupt files.\nPlease update your recovery before flashing ANY package to prevent corruption.\n";
 rom_android_version_msg="INSTALLATION FAILURE: This GApps package can only be installed on a $req_android_version.x ROM.\n";
 simulation_msg="TEST INSTALL: This was only a simulated install. NO CHANGES WERE MADE TO YOUR\nDEVICE. To complete the installation remove 'Test' from your gapps-config.\n";
-stubwebview_msg="NOTE: Stub WebView was installed instead of Google WebView because your device\nhas already Chrome installed as WebViewProvier. If you still want Google WebView,\nyou can add 'Override' to your gapps-config to override this redundancy protection.\n";
+stubwebview_msg="NOTE: Stub WebView was installed instead of Google WebView because your device\nhas already Chrome installed as WebViewProvider. If you still want Google WebView,\nyou can add 'Override' to your gapps-config to override this redundancy protection.\n";
 system_space_msg="INSTALLATION FAILURE: Your device does not have sufficient space available in\nthe system partition to install this GApps package as currently configured.\nYou will need to switch to a smaller GApps package or use gapps-config to\nreduce the installed size.\n";
 user_multiplefound_msg="NOTE: All User Application Removals included in gapps-config were unable to be\nprocessed as requested because multiple versions of the app were found on your\ndevice. See the log portion below for the name(s) of the application(s).\n";
 user_notfound_msg="NOTE: All User Application Removals included in gapps-config were unable to be\nremoved as requested because the files were not found on your device. See the\nlog portion below for the name(s) of the application(s).\n";
@@ -1405,32 +1405,38 @@ done
 
 # Is this a 'Clean' or 'Dirty' install
 if ( clean_inst ); then
-  install_type="Clean[Data Wiped]";
-  cameragoogle_inst=Clean;
+  install_type="Clean[Data Wiped]"
+  cameragoogle_inst=Clean
 else
-  install_type="Dirty[Data NOT Wiped]";
+  install_type="Dirty[Data NOT Wiped]"
 
   # Was Google Camera previously installed (in /system)
   if ( sys_app GoogleCamera ); then
-    cameragoogle_inst=true;
+    cameragoogle_inst=true
   else
-    cameragoogle_inst=false;
-  fi;
-
-fi;
+    cameragoogle_inst=false
+  fi
+fi
 
 # Is device FaceUnlock compatible
 if ( ! grep -qE "Victory|herring|sun4i" /proc/cpuinfo ); then
   for xml in /system/etc/permissions/android.hardware.camera.front.xml /system/etc/permissions/android.hardware.camera.xml; do
     if ( grep -q "feature name=\"android.hardware.camera.front" $xml ); then
-      faceunlock_compat=true;
-      break;
-    fi;
-    faceunlock_compat=false;
-  done;
+      faceunlock_compat=true
+      break
+    fi
+    faceunlock_compat=false
+  done
 else
-  faceunlock_compat=false;
-fi;
+  faceunlock_compat=false
+fi
+
+# Is device VRMode compatible
+if ( grep -qr 'name="android.software.vr.mode"' /system/etc/ ); then
+  vrmode_compat=true
+else
+  vrmode_compat=false
+fi
 
 # Check device name for devices that are incompatible with Google Camera
 case $device_name in
@@ -1457,6 +1463,7 @@ log "Install Type" "$install_type"
 log "Smart ART Pre-ODEX" "$preodex"
 log "Google Camera already installed" "$cameragoogle_inst"
 log "FaceUnlock Compatible" "$faceunlock_compat"
+log "VRMode Compatible" "$vrmode_compat"
 log "Google Camera Compatible" "$cameragoogle_compat"
 log "New Camera API Compatible" "$newcamera_compat"
 
@@ -2050,6 +2057,10 @@ post_install_size_kb=$((post_install_size_kb - core_size)) # Add Core GApps
 log_sub "Install" "Core" $core_size $post_install_size_kb
 
 for gapp_name in $gapps_list; do
+  case $gapp_name in
+    photos)  if [ "$vrmode_compat" = "true" ] && [ "$arch" = "arm64" ] && [ "$rom_build_sdk" -ge "24" ]; then gapp_name="photosvrmode"; fi;;  # for now only available on Nougat arm64
+    *)  ;;
+  esac
   get_apparchives "GApps/$gapp_name"
   total_appsize=0
   for archive in $apparchives; do
@@ -2173,6 +2184,10 @@ prog_bar=3000; # Set Progress Bar start point (0.3000) for below
 
 # Install the rest of GApps still in $gapps_list
 for gapp_name in $gapps_list; do
+  case $gapp_name in
+    photos)  if [ "$vrmode_compat" = "true" ] && [ "$arch" = "arm64" ] && [ "$rom_build_sdk" -ge "24" ]; then gapp_name="photosvrmode"; fi;;  # for now only available on Nougat arm64
+    *)  ;;
+  esac
   ui_print "- Installing $gapp_name"
   get_apparchives "GApps/$gapp_name"
   for archive in $apparchives; do
