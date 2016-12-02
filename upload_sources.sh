@@ -97,7 +97,7 @@ setprecommithook(){
   tee "$(git rev-parse --git-dir)/hooks/pre-commit" > /dev/null <<'EOFILE'
 #!/bin/sh
 #
-for f in $(git diff --cached --name-only --diff-filter=ACM | grep '.apk$'); do
+for f in $(git diff --cached --name-only --diff-filter=ACMR | grep '.apk$'); do
   size="$(wc -c "$f" | awk '{print $1}')"  # slow, but available with same syntax on both linux and mac
   if [ "$size" -gt "95000000" ]; then # Limit set at 95MB
     echo "Compressing $f with lzip for GitHub"
@@ -147,8 +147,8 @@ for arch in $modules; do
     createcommit "$apk" "$arch"
   done
   changes="$(git shortlog origin/master..HEAD)"
-  addnewapks="$(git diff --name-only --diff-filter=ACM origin/master..HEAD | grep '.apk$' | cut -f 2 | sed "s#^#$SOURCES/$arch/#")"
-  addnewlzapks="$(git diff --name-only --diff-filter=ACM origin/master..HEAD | grep '.apk.lz$' | cut -f 2 | sed "s#^#$SOURCES/$arch/#" | sed 's#.lz$##')"  # cut off the .lz, we want to upload the actual APK to APKMirror
+  addnewapks="$(git diff --name-only --diff-filter=ACMR origin/master..HEAD | grep '.apk$' | cut -f 2 | sed "s#^#$SOURCES/$arch/#")"
+  addnewlzapks="$(git diff --name-only --diff-filter=ACMR origin/master..HEAD | grep '.apk.lz$' | cut -f 2 | sed "s#^#$SOURCES/$arch/#" | sed 's#.lz$##')"  # cut off the .lz, we want to upload the actual APK to APKMirror
   if [ -n "$addnewapks" ]; then
     newapks="$newapks
 $addnewapks"
