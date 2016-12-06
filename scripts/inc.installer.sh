@@ -1316,8 +1316,8 @@ done;
 density="$(get_prop "ro.sf.lcd_density")"
 
 # Check for DPI Override in gapps-config
-if ( grep -qiE '^forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi)$' "$g_conf" ); then # user wants to override the DPI selection
-  density=$( grep -iEo '^forcedpi(120|160|213|240|280|320|400|480|560|640|nodpi)$' "$g_conf" | tr '[:upper:]'  '[:lower:]' )
+if ( grep -qiE '^forcedpi(120|160|213|240|260|280|300|320|340|360|400|420|480|560|640|nodpi)$' "$g_conf" ); then # user wants to override the DPI selection
+  density=$( grep -iEo '^forcedpi(120|160|213|240|260|280|300|320|340|360|400|420|480|560|640|nodpi)$' "$g_conf" | tr '[:upper:]'  '[:lower:]' )
   density=${density#forcedpi}
 fi
 
