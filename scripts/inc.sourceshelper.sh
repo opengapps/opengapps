@@ -68,7 +68,6 @@ getapkproperties(){
     "com.google.android.ext.services" |\
     "com.google.android.feedback" |\
     "com.google.android.gms" |\
-    "com.google.android.gms.policy_auth" |\
     "com.google.android.gms.leanback" |\
     "com.google.android.gms.setup" |\
     "com.google.android.googlequicksearchbox" |\
@@ -110,7 +109,7 @@ getapkproperties(){
       *)                            ;;  # Otherwise ignore the vrmode flag
     esac
   fi
-  
+
   if [ -n "$STUB" ]; then
     package="$package.$STUB"  # xxx.stub
   fi

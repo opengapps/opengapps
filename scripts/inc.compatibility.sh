@@ -507,7 +507,6 @@ packageinstallergoogle"
 api25hack(){
   if [ "$API" -ge "25" ]; then
     gappscore="$gappscore
-androidplatform
 gmssetup"
     gappsstock="$gappsstock
 pixelicons"
