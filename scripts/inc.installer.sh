@@ -678,6 +678,10 @@ abort() {
   exxit "$1";
 }
 
+ch_con() {
+  chcon -h u:object_r:system_file:s0 "$1";
+}
+
 checkmanifest() {
   if [ -f "$1" ] && ("$TMP/unzip-$BINARCH" -ql "$1" | grep -q "META-INF/MANIFEST.MF"); then  # strict, only files
     "$TMP/unzip-$BINARCH" -p "$1" "META-INF/MANIFEST.MF" | grep -q "$2"
@@ -866,7 +870,11 @@ get_prop() {
 }
 
 install_extracted() {
+  file_list="$(find "$TMP/$1/" -type f | cut -d/ -f5-)"
   cp -rf "$TMP/$1/." "/system/"
+  for file in $file_list; do
+      ch_con /system/${file}
+  done
   case $preodex in
     true*)
       installedapkpaths="$(find "$TMP/$1/" -name "*.apk" -type f | cut -d/ -f5-)"
@@ -879,7 +887,7 @@ install_extracted() {
       done
     ;;
   esac
-  bkup_list=$'\n'"$(find "$TMP/$1/" -type f | cut -d/ -f5-)${bkup_list}"
+  bkup_list=$'\n'"${file_list}${bkup_list}"
   rm -rf "$TMP/$1"
 }
 
