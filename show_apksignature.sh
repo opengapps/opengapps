@@ -25,7 +25,8 @@ checktools base64 coreutils unzip
 for argument in "$@"; do
   file="$(readlink -f "$argument")"
   if [ -f "$file" ]; then
-    echo "base64 signature of $file:"
-    unzip -p "$file" "META-INF/CERT.RSA" | base64 -
+    echo "signature of $file:"
+    unzip -p "$file" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs | tail -n +4 | head -n -2 | tr -d '\n'
+    echo ""
   fi
 done
