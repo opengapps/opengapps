@@ -284,6 +284,7 @@ signzip() {
   if java -Xmx3200m -jar "$SCRIPTS/inc.signapk.jar" -w "$CERTIFICATEFILE" "$KEYFILE" "$unsignedzip" "$signedzip"; then #if signing did succeed
     rm "$unsignedzip"
   else
+    rm "$signedzip"
     echo "ERROR: Creating Flashable ZIP-file failed, unsigned file can be found at $unsignedzip"
     exit 1
   fi
