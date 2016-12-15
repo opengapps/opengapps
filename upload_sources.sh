@@ -43,7 +43,8 @@ createcommit(){
 
   if [ -n "$vrmode" ]; then
     case "$package" in
-      com.google.android.apps.photos*)
+      com.google.android.apps.photos* |\
+      com.google.android.videos*)
           name="$name ($vrmode)" ;;  # if package is whitelisted, we can add vrmode to the commit
       *)                         ;;  # Otherwise ignore the vrmode flag
     esac

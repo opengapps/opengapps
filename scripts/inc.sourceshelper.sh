@@ -104,7 +104,8 @@ getapkproperties(){
 
   if [ -n "$vrmode" ]; then
     case "$package" in
-      com.google.android.apps.photos*)
+      com.google.android.apps.photos* |\
+      com.google.android.videos*)
           package="$package.vrmode" ;;  # special vrmode versions need a different packagename
       *)                            ;;  # Otherwise ignore the vrmode flag
     esac
