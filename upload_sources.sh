@@ -186,7 +186,7 @@ if [ -n "$newapks" ]; then
   case "$REPLY" in
       y*|Y*)
             for apk in $newapks; do
-              upload=$(curl -s -S "http://www.apkmirror.com/wp-json/apkm/v1/apk_uploadable/$(md5sum "$apk"|cut -f1 -d' ')" | grep uploadable)
+              upload=$(curl -s -S "http://www.apkmirror.com/wp-json/apkm/v1/apk_uploadable/$(md5sum "$apk" | cut -f 1 -d ' ')" | grep -q uploadable)
               if [ -z "$upload" ]; then
                 echo "Skipping $apk, already exists on APKmirror.com..."
               else
