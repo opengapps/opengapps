@@ -53,7 +53,7 @@ $gapps_remove"
 $gapps_remove"
     done
   done
-  printf "%s" "$gapps_remove" | sort > "$build/$1"
+  printf "%s" "$gapps_remove" | sort -u > "$build/$1"  # make unique for the VRmode entries
   EXTRACTFILES="$EXTRACTFILES $1"
 }
 
