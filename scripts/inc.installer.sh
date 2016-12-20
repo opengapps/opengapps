@@ -2278,10 +2278,9 @@ set_progress 0.83;
 ui_print " ";
 ui_print "- Fixing permissions & contexts";
 ui_print " ";
-set_perm_recursive 0 0 755 644 "/system/app" "/system/framework" "/system/lib" "/system/lib64" "/system/priv-app" "/system/usr/srec" "/system/vendor/pittpatt" "/system/etc/permissions" "/system/etc/preferred-apps";
 
 set_progress 0.85;
-set_perm_recursive 0 0 755 755 "/system/addon.d";
+set_perm 0 0 755 "/system/addon.d/70-gapps.sh";
 
 set_progress 0.87;
 find /system/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; # Change pittpatt folders to root:shell per Google Factory Settings
