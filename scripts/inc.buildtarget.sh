@@ -65,13 +65,15 @@ sheets
 slides
 talkback"
 
-gappsmini_optional=""
+gappsfull_optional=""
 
 gappsmini="clockgoogle
 hangouts
 maps
 photos
 youtube"
+
+gappsmini_optional=""
 
 #googletts for micro is defined in inc.compatibility.sh api23hack
 gappsmicro="calendargoogle
@@ -310,6 +312,7 @@ get_package_info(){
     maps)                     packagetype="GApps"; packagename="com.google.android.apps.maps"; packagetarget="app/Maps";;
     messenger)                packagetype="GApps"; packagename="com.google.android.apps.messaging"; packagetarget="app/PrebuiltBugle";;
     movies)                   packagetype="GApps"; packagename="com.google.android.videos"; packagetarget="app/Videos";;
+    moviesvrmode)             packagetype="GApps"; packagename="com.google.android.videos.vrmode"; packagetarget="app/Videos";;
     music)                    packagetype="GApps"; packagename="com.google.android.music"; packagetarget="app/Music2";;
     newsstand)                packagetype="GApps"; packagename="com.google.android.apps.magazines"; packagetarget="app/Newsstand";;
     newswidget)               packagetype="GApps"; packagename="com.google.android.apps.genie.geniewidget"; packagetarget="app/PrebuiltNewsWeather";;

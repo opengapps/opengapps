@@ -498,14 +498,19 @@ tvrecommendations"
     # On Nougat and higher we might want to install the WebViewStub instead of WebViewGoogle in some situations
     gappsstock_optional="$gappsstock_optional
 webviewstub"
-  elif [ "$API" -ge "23" ]; then  # TODO temporary hack because of issues on Nougat
-    gappspico="$gappspico
-packageinstallergoogle"
-  fi
 
+  if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then  # for now only available on arm & arm64
+    gappsfull_optional="$gappsfull_optional
+moviesvrmode"
+  fi
   if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
     gappsmini_optional="$gappsmini_optional
 photosvrmode"
+  fi
+
+  elif [ "$API" -ge "23" ]; then  # TODO temporary hack because of issues on Nougat
+    gappspico="$gappspico
+packageinstallergoogle"
   fi
 }
 

@@ -2059,6 +2059,7 @@ log_sub "Install" "Core" $core_size $post_install_size_kb
 for gapp_name in $gapps_list; do
   case $gapp_name in
     photos)  if [ "$vrmode_compat" = "true" ] && [ "$arch" = "arm64" ] && [ "$rom_build_sdk" -ge "24" ]; then gapp_name="photosvrmode"; fi;;  # for now only available on Nougat arm64
+    movies)  if [ "$vrmode_compat" = "true" ] && ( [ "$arch" = "arm" ] || [ "$arch" = "arm64" ] ) && [ "$rom_build_sdk" -ge "24" ]; then gapp_name="moviesvrmode"; fi;;  # for now only available on Nougat arm & arm64
     *)  ;;
   esac
   get_apparchives "GApps/$gapp_name"
@@ -2186,6 +2187,7 @@ prog_bar=3000; # Set Progress Bar start point (0.3000) for below
 for gapp_name in $gapps_list; do
   case $gapp_name in
     photos)  if [ "$vrmode_compat" = "true" ] && [ "$arch" = "arm64" ] && [ "$rom_build_sdk" -ge "24" ]; then gapp_name="photosvrmode"; fi;;  # for now only available on Nougat arm64
+    movies)  if [ "$vrmode_compat" = "true" ] && ( [ "$arch" = "arm" ] || [ "$arch" = "arm64" ] ) && [ "$rom_build_sdk" -ge "24" ]; then gapp_name="moviesvrmode"; fi;;  # for now only available on Nougat arm & arm64
     *)  ;;
   esac
   ui_print "- Installing $gapp_name"
