@@ -873,7 +873,7 @@ install_extracted() {
   file_list="$(find "$TMP/$1/" -type f | cut -d/ -f5-)"
   cp -rf "$TMP/$1/." "/system/"
   for file in $file_list; do
-      ch_con /system/${file}
+      ch_con "/system/${file}"
   done
   case $preodex in
     true*)
@@ -2279,11 +2279,13 @@ set_perm_recursive 0 0 755 644 "/system/app" "/system/framework" "/system/lib" "
 
 set_progress 0.85;
 set_perm_recursive 0 0 755 755 "/system/addon.d";
+ch_con "/system/addon.d/70-gapps.sh"
 
 set_progress 0.87;
 find /system/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; # Change pittpatt folders to root:shell per Google Factory Settings
 
 set_perm 0 0 644 "$g_prop"
+ch_con "$g_prop"
 
 set_progress 0.92
 quit
