@@ -870,10 +870,16 @@ get_prop() {
 }
 
 install_extracted() {
-  file_list="$(find "$TMP/$1/" -type f | cut -d/ -f5-)"
+  file_list="$(find "$TMP/$1/" -mindepth 1 -type f | cut -d/ -f5-)"
+  dir_list="$(find "$TMP/$1/" -mindepth 1 -type d | cut -d/ -f5-)"
   cp -rf "$TMP/$1/." "/system/"
   for file in $file_list; do
       ch_con "/system/${file}"
+      set_perm 0 0 644 "/system/${file}";
+  done
+  for dir in $dir_list; do
+    ch_con "/system/${dir}"
+    set_perm 0 0 755 "/system/${dir}";
   done
   case $preodex in
     true*)
@@ -1007,15 +1013,6 @@ quit() {
 set_perm() {
   chown "$1:$2" "$4";
   chmod "$3" "$4";
-}
-
-set_perm_recursive() {
-  dirs=$(echo "$@" | awk '{ print substr($0, index($0,$5)) }');
-  for i in $dirs; do
-    chown -R "$1:$2" "$i";
-    find "$i" -type d -exec chmod "$3" {} +;
-    find "$i" -type f -exec chmod "$4" {} +;
-  done;
 }
 
 set_progress() { echo "set_progress $1" > "$OUTFD"; }
@@ -2196,6 +2193,10 @@ for gapp_name in $gapps_list; do
   set_progress 0.$prog_bar
 done;
 
+ui_print " ";
+ui_print "- Miscellaneous tasks";
+ui_print " ";
+
 # Create FaceLock lib symlink if installed
 if ( contains "$gapps_list" "faceunlock" ); then
   install -d "/system/app/FaceLock/lib/$arch"
@@ -2271,18 +2272,12 @@ echo -e "$bkup_list" >> /system/addon.d/70-gapps.sh;
 cat $bkup_tail >> /system/addon.d/70-gapps.sh;
 # _____________________________________________________________________________________________________________________
 #                                                  Fix Permissions
-set_progress 0.83;
-ui_print " ";
-ui_print "- Fixing permissions";
-ui_print " ";
-set_perm_recursive 0 0 755 644 "/system/app" "/system/framework" "/system/lib" "/system/lib64" "/system/priv-app" "/system/usr/srec" "/system/vendor/pittpatt" "/system/etc/permissions" "/system/etc/preferred-apps";
 
-set_progress 0.85;
-set_perm_recursive 0 0 755 755 "/system/addon.d";
-ch_con "/system/addon.d/70-gapps.sh"
-
-set_progress 0.87;
+set_progress 0.85
 find /system/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; # Change pittpatt folders to root:shell per Google Factory Settings
+
+set_perm 0 0 755 "/system/addon.d/70-gapps.sh"
+ch_con "/system/addon.d/70-gapps.sh"
 
 set_perm 0 0 644 "$g_prop"
 ch_con "$g_prop"
