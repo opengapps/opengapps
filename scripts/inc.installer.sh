@@ -2198,6 +2198,9 @@ ui_print " ";
 ui_print "- Miscellaneous tasks";
 ui_print " ";
 
+# Use Gms (Google Play services) for feedback/bug reporting (instead of org.cyanogenmod.bugreport or others)
+sed -i "s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.google.android.gms/g" /system/build.prop
+
 # Create FaceLock lib symlink if installed
 if ( contains "$gapps_list" "faceunlock" ); then
   install -d "/system/app/FaceLock/lib/$arch"
