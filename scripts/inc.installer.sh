@@ -1344,6 +1344,7 @@ fi
 cmcompatibilityhacks="false"
 case "$(get_prop "ro.build.flavor")" in
   cm_*) cmcompatibilityhacks="true";;  # they do weird AOSP-breaking changes to their code breaking some GApps
+  lineage_*) cmcompatibilityhacks="true";;
 esac
 
 # Check for Clean Override in gapps-config
