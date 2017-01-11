@@ -2202,6 +2202,11 @@ ui_print " ";
 # Use Gms (Google Play services) for feedback/bug reporting (instead of org.cyanogenmod.bugreport or others)
 sed -i "s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.google.android.gms/g" /system/build.prop
 
+# Enable Google Assistant
+if ! grep -xq "ro.opa.eligible_device=" /system/build.prop; then
+  echo "ro.opa.eligible_device=true" >> /system/build.prop
+fi
+
 # Create FaceLock lib symlink if installed
 if ( contains "$gapps_list" "faceunlock" ); then
   install -d "/system/app/FaceLock/lib/$arch"
