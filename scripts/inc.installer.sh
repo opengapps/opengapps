@@ -2236,9 +2236,10 @@ sed -i "s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.goo
 sed -i "\:# Apply build.prop changes (from GApps Installer):a \    sed -i \"s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.google.android.gms/g\" /system/build.prop" $bkup_tail
 
 # Enable Google Assistant
-if ! grep -xq "ro.opa.eligible_device=" /system/build.prop; then
+if ! grep -q "ro.opa.eligible_device=" /system/build.prop; then
   echo "ro.opa.eligible_device=true" >> /system/build.prop
 fi
+sed -i "\:# Apply build.prop changes (from GApps Installer):a \    if ! grep -q \"ro.opa.eligible_device=\" /system/build.prop; then echo \"ro.opa.eligible_device=true\" >> /system/build.prop; fi" $bkup_tail
 
 # Create FaceLock lib symlink if installed
 if ( contains "$gapps_list" "faceunlock" ); then
