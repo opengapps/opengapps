@@ -53,6 +53,8 @@ case "$1" in
   post-restore)
     # Recreate required symlinks (from GApps Installer)
 
+    # Apply build.prop changes (from GApps Installer)
+
     # Re-pre-ODEX APKs (from GApps Installer)
 
     # Remove any empty folders we may have created during the removal process

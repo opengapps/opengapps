@@ -2201,6 +2201,7 @@ ui_print " ";
 
 # Use Gms (Google Play services) for feedback/bug reporting (instead of org.cyanogenmod.bugreport or others)
 sed -i "s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.google.android.gms/g" /system/build.prop
+sed -i "\:# Apply build.prop changes (from GApps Installer):a \    sed -i \"s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.google.android.gms/g\" /system/build.prop" $bkup_tail
 
 # Create FaceLock lib symlink if installed
 if ( contains "$gapps_list" "faceunlock" ); then
