@@ -1307,6 +1307,9 @@ for rec_log in $rec_tmp_log $rec_cache_log; do
   esac;
 done;
 
+# Get device model
+device_model="$(get_prop "ro.product.model")"
+
 # Get display density
 density="$(get_prop "ro.sf.lcd_density")"
 
@@ -1449,7 +1452,7 @@ log "ROM SDK version" "$rom_build_sdk"
 log "ROM/Recovery modversion" "$(get_prop "ro.modversion")"
 log "Device Recovery" "$recovery"
 log "Device Name" "$device_name"
-log "Device Model" "$(get_prop "ro.product.model")"
+log "Device Model" "$device_model"
 log "Device Type" "$device_type"
 log "Device CPU" "$device_architecture"
 log "Installer Platform" "$BINARCH"
