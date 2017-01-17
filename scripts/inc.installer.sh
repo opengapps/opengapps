@@ -216,6 +216,7 @@ calendarstock
 clockstock
 cmaudiofx
 cmaccount
+cmbugreport
 cmfilemanager
 cmmusic
 cmscreencast
@@ -317,6 +318,9 @@ priv-app/CMAccount'"$REMOVALSUFFIX"'"
 
 cmaudiofx_list="
 priv-app/AudioFX'"$REMOVALSUFFIX"'"
+
+cmbugreport_list="
+priv-app/CMBugReport'"$REMOVALSUFFIX"'"
 
 cmfilemanager_list="
 app/CMFileManager'"$REMOVALSUFFIX"'"
