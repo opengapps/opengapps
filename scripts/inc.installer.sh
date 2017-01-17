@@ -247,6 +247,7 @@ phototable
 printservicestock
 provision
 simtoolkit
+soundrecorder
 studio
 sykopath
 tagstock
@@ -502,6 +503,9 @@ priv-app/Provision'"$REMOVALSUFFIX"'"
 
 simtoolkit_list="
 app/Stk'"$REMOVALSUFFIX"'"
+
+soundrecorder_list="
+app/SoundRecorder'"$REMOVALSUFFIX"'"
 
 storagemanagerstock_list="
 priv-app/StorageManager'"$REMOVALSUFFIX"'"
