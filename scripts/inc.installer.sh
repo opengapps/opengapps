@@ -1206,6 +1206,11 @@ if [ "$g_conf" ]; then
   fi
   sed -i -r -e 's/\<(in|ex)clude\>//gI' "$g_conf" # drop in/exclude from the config
 
+  if ( grep -qiE '^([^#]*[[:blank:]]+)?phablet($|#|[[:blank:]])' "$g_conf" ); then
+    override_phone=true
+    sed -i -r -e 's/\<phablet\>//gI' "$g_conf" # drop phablet from the config
+  fi
+
   user_remove_list=$(awk -F "[()]" '{ for (i=2; i<NF; i+=2) print $i }' "$g_conf"); # Get users list of apk's to remove from gapps-config
   sed -i -e s/'([^)]*)'/''/g -e '/^$/d' "$g_conf"; # Remove all instances of user app removals (stuff between parentheses) and empty lines we might have created
 else
@@ -1644,12 +1649,12 @@ if ( ! contains "$gapps_list" "photos" ) && ( ! grep -qiE '^gallery$' "$g_conf" 
 fi;
 
 # If $device_type is not a 'phone' make certain we're not installing messenger
-if ( contains "$gapps_list" "messenger" ) && [ $device_type != "phone" ]; then
+if [ "$override_phone" != true ] && ( contains "$gapps_list" "messenger" ) && [ $device_type != "phone" ]; then
   gapps_list=${gapps_list/messenger}; # we'll prevent messenger from being installed since this isn't a phone
 fi;
 
 # If $device_type is not a 'phone' make certain we're not installing dialerframework (implies no dialergoogle)
-if ( contains "$gapps_list" "dialerframework" ) && [ $device_type != "phone" ]; then
+if [ "$override_phone" != true ] && ( contains "$gapps_list" "dialerframework" ) && [ $device_type != "phone" ]; then
   gapps_list=${gapps_list/dialerframework}; # we'll prevent dialerframework from being installed since this isn't a phone
 fi;
 
