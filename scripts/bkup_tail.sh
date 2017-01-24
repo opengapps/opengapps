@@ -4,13 +4,13 @@ EOF
 # Backup/Restore using /sdcard if the installed GApps size plus a buffer for other addon.d backups (204800=200MB) is larger than /tmp
 installed_gapps_size_kb=$(grep "^installed_gapps_size_kb" /tmp/gapps.prop | cut -d= -f2)
 if [ ! "$installed_gapps_size_kb" ]; then
-  installed_gapps_size_kb=$(cd /system; du -ak $(list_files) | awk '{ i+=$1 } END { print i }')
+  installed_gapps_size_kb=$(cd /system; size=0; for n in $(du -ak $(list_files) | cut -f0); do ((size+=n)); done; echo $size)
   echo "installed_gapps_size_kb=$installed_gapps_size_kb" >> /tmp/gapps.prop
 fi
 
 free_tmp_size_kb=$(grep "^free_tmp_size_kb" /tmp/gapps.prop | cut -d= -f2)
 if [ ! "$free_tmp_size_kb" ]; then
-  free_tmp_size_kb=$(df -k /tmp | tail -n 1 | awk '{ print $4 }')
+  free_tmp_size_kb=$(echo $(df -k /tmp | tail -n 1) | cut -d' ' -f4)
   echo "free_tmp_size_kb=$free_tmp_size_kb" >> /tmp/gapps.prop
 fi
 
@@ -59,7 +59,9 @@ case "$1" in
 
     # Remove any empty folders we may have created during the removal process
     for i in /system/app /system/priv-app /system/vendor/pittpatt /system/usr/srec; do
-        find $i -type d | xargs -r rmdir -p --ignore-fail-on-non-empty;
+      if [ -d $i ]; then
+        find $i -type d -exec rmdir -p '{}' \+ 2>/dev/null;
+      fi
     done;
     # Fix ownership/permissions and clean up after backup and restore from /sdcard
     find /system/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; # Change pittpatt folders to root:shell per Google Factory Settings
