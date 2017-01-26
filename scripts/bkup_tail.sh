@@ -2,15 +2,15 @@ EOF
 }
 
 # Backup/Restore using /sdcard if the installed GApps size plus a buffer for other addon.d backups (204800=200MB) is larger than /tmp
-installed_gapps_size_kb=$(grep "^installed_gapps_size_kb" /tmp/gapps.prop | cut -d= -f2)
+installed_gapps_size_kb=$(grep "^installed_gapps_size_kb" /tmp/gapps.prop | cut -d '=' -f 2)
 if [ ! "$installed_gapps_size_kb" ]; then
-  installed_gapps_size_kb=$(cd /system; size=0; for n in $(du -ak $(list_files) | cut -f0); do ((size+=n)); done; echo $size)
+  installed_gapps_size_kb="$(cd /system; size=0; for n in $(du -ak $(list_files) | cut -f 1); do ((size+=n)); done; echo "$size")"
   echo "installed_gapps_size_kb=$installed_gapps_size_kb" >> /tmp/gapps.prop
 fi
 
-free_tmp_size_kb=$(grep "^free_tmp_size_kb" /tmp/gapps.prop | cut -d= -f2)
+free_tmp_size_kb=$(grep "^free_tmp_size_kb" /tmp/gapps.prop | cut -d '=' -f 2)
 if [ ! "$free_tmp_size_kb" ]; then
-  free_tmp_size_kb=$(echo $(df -k /tmp | tail -n 1) | cut -d' ' -f4)
+  free_tmp_size_kb="$(df -k /tmp | tail -n 1 | tr -s ' ' | cut -d ' ' -f 4)"
   echo "free_tmp_size_kb=$free_tmp_size_kb" >> /tmp/gapps.prop
 fi
 
@@ -21,12 +21,12 @@ fi
 
 case "$1" in
   backup)
-    list_files | while read FILE DUMMY; do
+    list_files | while read -r FILE DUMMY; do
       backup_file "$S"/"$FILE"
     done
   ;;
   restore)
-    list_files | while read FILE REPLACEMENT; do
+    list_files | while read -r FILE REPLACEMENT; do
       R=""
       [ -n "$REPLACEMENT" ] && R="$S/$REPLACEMENT"
       [ -f "$C/$S/$FILE" ] && restore_file "$S"/"$FILE" "$R"
@@ -68,7 +68,7 @@ case "$1" in
     for i in $(list_files); do
       chown root:root "/system/$i"
       chmod 644 "/system/$i"
-      chmod 755 $(dirname "/system/$i")
+      chmod 755 "$(dirname "/system/$i")"
     done
     rm -rf /sdcard/tmp-gapps
   ;;
