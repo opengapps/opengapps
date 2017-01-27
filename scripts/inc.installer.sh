@@ -644,6 +644,7 @@ stubwebview_msg="NOTE: Stub WebView was installed instead of Google WebView beca
 system_space_msg="INSTALLATION FAILURE: Your device does not have sufficient space available in\nthe system partition to install this GApps package as currently configured.\nYou will need to switch to a smaller GApps package or use gapps-config to\nreduce the installed size.\n";
 user_multiplefound_msg="NOTE: All User Application Removals included in gapps-config were unable to be\nprocessed as requested because multiple versions of the app were found on your\ndevice. See the log portion below for the name(s) of the application(s).\n";
 user_notfound_msg="NOTE: All User Application Removals included in gapps-config were unable to be\nremoved as requested because the files were not found on your device. See the\nlog portion below for the name(s) of the application(s).\n";
+vrservice_compat_msg="WARNING: Google VR Services has/will not be installed as requested.\nGoogle VR Services is NOT compatible with your device.\n";
 del_conflict_msg="!!! WARNING !!! - Duplicate files were found between your ROM and this GApps\npackage. This is likely due to your ROM's dev including Google proprietary\nfiles in the ROM. The duplicate files are shown in the log portion below.\n";
 
 nogooglecontacts_removal_msg="NOTE: The Stock/AOSP Contacts is not available on your\nROM (anymore), the Google equivalent will not be removed."
@@ -1762,6 +1763,12 @@ if ( ! contains "$gapps_list" "cameragoogle" ) && ( ! grep -qiE '^camerastock$' 
   aosp_remove_list=${aosp_remove_list/camerastock};
   remove_camerastock="false[NO_CameraGoogle]";
 fi;
+
+# Verify device is VRMode compatible, BEFORE we allow vrservice in $gapps_list
+if ( contains "$gapps_list" "vrservice" ) && [ "$vrmode_compat" = "true" ]; then
+  gapps_list=${gapps_list/vrservice}; # we must DISALLOW vrservice from being installed
+  install_note="${install_note}vrservice_compat_msg"$'\n'; # make note that VRService will NOT be installed as user requested
+fi
 
 # If we're installing clockgoogle we must ADD clockstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "clockgoogle" ) && ( ! contains "$aosp_remove_list" "clockstock" ); then
