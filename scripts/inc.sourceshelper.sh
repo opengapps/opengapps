@@ -96,7 +96,9 @@ getapkproperties(){
   #we do this on purpose after the priv-app detection to emulate the priv-app of the normal app
   if [ -n "$watch" ]; then
     case "$package" in
-      com.google.android.gms*)
+      com.google.android.gms* |\
+      com.google.android.googlequicksearchbox* |\
+      com.google.android.apps.maps*)
           package="$package.watch" ;;  # special watch versions need a different packagename
       *)                           ;;  # Otherwise ignore the watch flag
     esac

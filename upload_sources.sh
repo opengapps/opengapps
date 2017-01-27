@@ -52,7 +52,9 @@ createcommit(){
 
   if [ -n "$watch" ]; then
     case "$package" in
-      com.google.android.gms*)
+      com.google.android.gms* |\
+      com.google.android.googlequicksearchbox* |\
+      com.google.android.apps.maps*)
             name="$name ($watch)" ;;  # special watch versions need a different packagename
       *)                          ;;  # Otherwise ignore the watch flag
     esac
