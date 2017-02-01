@@ -1357,7 +1357,7 @@ fi
 cmcompatibilityhacks="false"
 case "$(get_prop "ro.build.flavor")" in
   cm_*) cmcompatibilityhacks="true";;  # they do weird AOSP-breaking changes to their code breaking some GApps
-  lineage_*) cmcompatibilityhacks="true"; aosp_remove_list="${aosp_remove_list}cmsetupwizard"$'\n';;  # cmsetupwizard is broken in Lineage
+  lineage_*) cmcompatibilityhacks="true"; if [ "$rom_build_sdk" -ge "24" ]; then aosp_remove_list="${aosp_remove_list}cmsetupwizard"$'\n';fi;;  # cmsetupwizard is broken in Lineage
 esac
 
 # Check for Clean Override in gapps-config
@@ -2086,7 +2086,7 @@ EOFILE
 echo "$DATASIZESCODE" >> "$build/$1"
 tee -a "$build/$1" > /dev/null <<'EOFILE'
   post_install_size_kb=$((post_install_size_kb - total_appsize))
-  log_sub "Install" "$gapp_name" "$total_appsize" $post_install_size_kb
+  log_sub "Install" "$gapp_name" "$total_appsize" "$post_install_size_kb"
 done;
 
 # Perform calculations of required Buffer Size
