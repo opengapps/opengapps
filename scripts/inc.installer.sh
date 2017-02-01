@@ -1429,7 +1429,7 @@ fi
 # Is device FaceUnlock compatible
 if ( ! grep -qE "Victory|herring|sun4i" /proc/cpuinfo ); then
   for xml in /system/etc/permissions/android.hardware.camera.front.xml /system/etc/permissions/android.hardware.camera.xml; do
-    if ( grep -q "feature name=\"android.hardware.camera.front" $xml ); then
+    if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -q "feature name=\"android.hardware.camera.front" ); then
       faceunlock_compat=true
       break
     fi
@@ -1440,11 +1440,13 @@ else
 fi
 
 # Is device VRMode compatible
-if ( grep -qr 'name="android.software.vr.mode"' /system/etc/ ); then
-  vrmode_compat=true
-else
+for xml in grep -rl 'name="android.software.vr.mode"' /system/etc/; do
+  if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -q 'name="android.software.vr.mode"' /system/etc/ ); then
+    vrmode_compat=true
+    break
+  fi
   vrmode_compat=false
-fi
+done
 
 # Check device name for devices that are incompatible with Google Camera
 case $device_name in
