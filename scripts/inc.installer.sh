@@ -243,6 +243,7 @@ holospiral
 keyboardstock
 livewallpapers
 lockclock
+lrecorder
 mms
 mzfilemanager
 mzpay
@@ -454,6 +455,9 @@ app/LiveWallpapers'"$REMOVALSUFFIX"'"
 
 lockclock_list="
 app/LockClock'"$REMOVALSUFFIX"'"
+
+lrecorder_list="
+priv-app/Recorder'"$REMOVALSUFFIX"'"
 
 mms_list="
 app/messaging'"$REMOVALSUFFIX"'
