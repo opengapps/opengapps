@@ -1363,10 +1363,9 @@ else
   fi
 fi
 
-cmcompatibilityhacks="false"
+cmcompatibilityhacks="false"  # test for CM/Lineage since they do weird AOSP-breaking changes to their code, breaking some GApps
 case "$(get_prop "ro.build.flavor")" in
-  cm_*) cmcompatibilityhacks="true";;  # they do weird AOSP-breaking changes to their code breaking some GApps
-  lineage_*) cmcompatibilityhacks="true"; if [ "$rom_build_sdk" -ge "24" ]; then aosp_remove_list="${aosp_remove_list}cmsetupwizard"$'\n';fi;;  # cmsetupwizard is broken in Lineage
+  cm_*|lineage_*) cmcompatibilityhacks="true"; if [ "$rom_build_sdk" -ge "24" ]; then aosp_remove_list="${aosp_remove_list}cmsetupwizard"$'\n';fi;;  # CMSetupWizard is broken in LineageOS 14+ and can be safely removed on CM14+ as well
 esac
 
 # Check for Clean Override in gapps-config
