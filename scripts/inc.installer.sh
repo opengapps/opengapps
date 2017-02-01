@@ -201,6 +201,14 @@ pico_gapps_list="
 '"$gappspico"'
 ";
 
+tvcore_gapps_list="
+'"$gappstvcore"'
+";
+
+tvstock_gapps_list="
+'"$gappstvstock"'
+";
+
 # _____________________________________________________________________________________________________________________
 #                                             Default Stock/AOSP Removal List (Stock GApps Only)
 default_stock_remove_list="
@@ -1242,6 +1250,7 @@ if echo "$(get_prop "ro.build.characteristics")" | grep -qi "tablet"; then
   device_type=tablet
 elif echo "$(get_prop "ro.build.characteristics")" | grep -qi "tv"; then
   device_type=tv
+  core_gapps_list="$tvcore_gapps_list"  # use the TV core apps instead of the regular core apps
 else
   device_type=phone
 fi
