@@ -1976,6 +1976,9 @@ done;
 # Read in gapps removal list from file and append old Chrome libs
 full_removal_list="$(cat $gapps_removal_list)"$'\n'"${obsolete_libs_list}";
 
+# Read in old user removal list from addon.d to allow for persistence
+addond_remove_folder_list=$(sed -e "1,/# Remove 'user requested' apps (from gapps-config)/d" -e '/;;/,$d' -e 's/    rm -rf //' /system/addon.d/70-gapps.sh)
+
 # Clean up and sort our lists for space calculations and installation
 set_progress 0.04;
 gapps_list=$(echo "${gapps_list}" | sort | sed '/^$/d'); # sort GApps list & remove empty lines
@@ -2171,6 +2174,9 @@ for aosp_name in $aosp_remove_list; do
     sed -i "\:# Remove Stock/AOSP apps (from GApps Installer):a \    rm -rf /system/$file_name" $bkup_tail;
   done;
 done;
+
+# Add saved addon.d User App Removals to make them persistent through repeat dirty GApps installs though the app may have already been removed
+user_remove_folder_list=$(echo -e "${user_remove_folder_list}\n${addond_remove_folder_list}" | sort -u | sed '/^$/d')  # remove duplicates and empty lines
 
 # Perform User App Removals and add Removals to addon.d script
 user_remove_folder_list=$(echo "${user_remove_folder_list}" | sort -r); # reverse sort list for more readable output
