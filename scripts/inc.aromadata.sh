@@ -228,6 +228,7 @@ form(
       "ClockStock",     "<b>Stock/AOSP Clock</b>",       "(automatically removed when Google Clock is installed)",                      "check",
       "CMAccount",     "<b>CyanogenMod Account</b>",       "",                      "check",
       "CMAudioFX",     "<b>CyanogenMod AudioFX</b>",       "",                      "check",
+      "CMBugReport",     "<b>CyanogenMod Bug Report</b>",       "",                      "check",
       "CMFileManager",     "<b>CyanogenMod File Manager</b>",       "",                      "check",
       "CMMusic",     "<b>CyanogenMod Music</b>",       "",                      "check",
       "CMSetupWizard",     "<b>CyanogenMod Setup Wizard</b>",       "",                      "check",
@@ -244,6 +245,7 @@ form(
       "Launcher",     "<b>Stock/AOSP Launcher(s)</b>",       "(automatically removed when Google Launcher is installed)",                      "check",
       "LiveWallpapers",     "<b>Live Wallpapers</b>",       "",                      "check",
       "LockClock",     "<b>Lock Clock</b>",       "(a widget found in certain ROMs)",                      "check",
+      "LRecorder",     "<b>LineageOS Recorder</b>",       "",                      "check",
       "MMS",     "<b>Stock/AOSP MMS</b>",       "(automatically removed when Google Hangouts or Messenger are installed)",                      "check",
       "NoiseField",     "<b>NoiseField Live Wallpaper</b>",       "",                      "check",
       "Phasebeam",     "<b>Phasebeam Live Wallpaper</b>",       "",                      "check",
@@ -251,6 +253,7 @@ form(
       "PhotoTable",     "<b>PhotoTable Live Wallpaper</b>",       "",                      "check",
       "PicoTTS",     "<b>Stock/AOSP Text-to-Speech</b>",       "(automatically removed when Google TTS is installed)",                      "check",
       "SimToolKit",     "<b>Stock/AOSP Sim ToolKit</b>",       "",                      "check",
+      "SoundRecorder",     "<b>Stock/AOSP Sound Recorder</b>",       "",                      "check",
       "StorageManagerStock",     "<b>Stock/AOSP StorageManager</b>",       "",                      "check",
       "Studio",     "<b>Stock/AOSP Movie Studio</b>",       "",                      "check",
       "SykoPath",     "<b>SykoPath Layers Manager</b>",       "(found in certain ROM's)",                      "check",
@@ -271,6 +274,7 @@ form(
       "exsubstitute","<b>SubstituteSwypelibs</b>", "To overwrite the AOSP Keyboard libraries with the Google Swype libraries instead of adding",                      "check",
       "exnopreodex",   "<b>NoPreODEX</b>",           "To disable the smart Pre-ODEX-ing on Marshmallow+ ROMs",                      "check",
       "exclean",     "<b>ForceClean</b>",       "To ignore the detection of dirty installations and force the installer to behave as if it concerns a clean install <u>DO NOT REPORT ANY BUGS IF USED</u>",                      "check",
+      "GoogleAssistant",     "<b>GoogleAssistant</b>",       "To enable Google Assistant support in the build.prop .",                      "check",
       "WebViewStub",     "<b>WebViewStub</b>",       "Placeholder for Google WebView, on 7.0+ automatically used instead of WebViewGoogle if Chrome is installed",                      "check"
 );
 
@@ -309,6 +313,11 @@ if
   prop("extra.prop", "exclean")=="1"
 then
   appendvar("gapps", "forceclean\n");
+endif;
+if
+  prop("extra.prop", "GoogleAssistant")=="1"
+then
+  appendvar("gapps", "GoogleAssistant\n");
 endif;
 if
   prop("extra.prop", "WebViewStub")=="1"
@@ -734,6 +743,12 @@ then
 endif;
 
 if
+  prop("rem.prop", "CMBugReport")=="1"
+then
+  appendvar("gapps", "CMBugReport\n");
+endif;
+
+if
   prop("rem.prop", "CMMusic")=="1"
 then
   appendvar("gapps", "CMMusic\n");
@@ -830,6 +845,12 @@ then
 endif;
 
 if
+  prop("rem.prop", "LRecorder")=="1"
+then
+  appendvar("gapps", "LRecorder\n");
+endif;
+
+if
   prop("rem.prop", "MMS")=="1"
 then
   appendvar("gapps", "MMS\n");
@@ -869,6 +890,12 @@ if
   prop("rem.prop", "SimToolKit")=="1"
 then
   appendvar("gapps", "SimToolKit\n");
+endif;
+
+if
+  prop("rem.prop", "SoundRecorder")=="1"
+then
+  appendvar("gapps", "SoundRecorder\n");
 endif;
 
 if
