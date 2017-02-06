@@ -270,11 +270,17 @@ minapihack(){
   useminapi=""
   case "$package" in
     com.google.android.gms)
-    if [ "$API" -ge "23" ]; then
-      useminapi="23"
-    elif [ "$API" -ge "21" ]; then
-      useminapi="21"
-    fi;; #for all other situations, not having a minimal API specified is OK
+      if [ "$API" -ge "23" ]; then
+        useminapi="23"
+      elif [ "$API" -ge "21" ]; then
+        useminapi="21"
+      fi;;
+    com.android.chrome)
+      if [ "$API" -ge "24" ]; then
+        useminapi="24"
+      elif [ "$API" -ge "21" ]; then
+        useminapi="21"
+      fi;;
   esac
 }
 
