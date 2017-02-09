@@ -10,7 +10,7 @@ fi
 
 free_tmp_size_kb=$(grep "^free_tmp_size_kb" /tmp/gapps.prop | cut -d '=' -f 2)
 if [ ! "$free_tmp_size_kb" ]; then
-  free_tmp_size_kb="$(df -k /tmp | tail -n 1 | sed -e 's/  */ /g' | cut -d ' ' -f 4)"
+  free_tmp_size_kb="$(echo $(df -k /tmp | tail -n 1) | cut -d ' ' -f 4)"
   echo "free_tmp_size_kb=$free_tmp_size_kb" >> /tmp/gapps.prop
 fi
 
