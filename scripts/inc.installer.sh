@@ -316,6 +316,8 @@ priv-app/MtkCamera'"$REMOVALSUFFIX"'
 priv-app/MTKCamera'"$REMOVALSUFFIX"'
 app/Snap'"$REMOVALSUFFIX"'
 priv-app/Snap'"$REMOVALSUFFIX"'
+app/SnapdragonCamera'"$REMOVALSUFFIX"'
+priv-app/SnapdragonCamera'"$REMOVALSUFFIX"'
 app/FineOSCamera'"$REMOVALSUFFIX"'"
 
 clockstock_list="
