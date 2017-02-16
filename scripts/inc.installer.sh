@@ -244,6 +244,7 @@ keyboardstock
 livewallpapers
 lockclock
 lrecorder
+lsetupwizard
 mms
 mzfilemanager
 mzpay
@@ -347,9 +348,7 @@ priv-app/Screencast'"$REMOVALSUFFIX"'"
 
 cmsetupwizard_list="
 app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
-priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
-app/LineageSetupWizard'"$REMOVALSUFFIX"'
-priv-app/LineageSetupWizard'"$REMOVALSUFFIX"'"
+priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'"
 
 cmupdater_list="
 priv-app/CMUpdater'"$REMOVALSUFFIX"'"
@@ -462,6 +461,10 @@ app/LockClock'"$REMOVALSUFFIX"'"
 
 lrecorder_list="
 priv-app/Recorder'"$REMOVALSUFFIX"'"
+
+lsetupwizard_list="
+app/LineageSetupWizard'"$REMOVALSUFFIX"'
+priv-app/LineageSetupWizard'"$REMOVALSUFFIX"'"
 
 mms_list="
 app/messaging'"$REMOVALSUFFIX"'
