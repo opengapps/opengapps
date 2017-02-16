@@ -347,7 +347,9 @@ priv-app/Screencast'"$REMOVALSUFFIX"'"
 
 cmsetupwizard_list="
 app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
-priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'"
+priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
+app/LineageSetupWizard'"$REMOVALSUFFIX"'
+priv-app/LineageSetupWizard'"$REMOVALSUFFIX"'"
 
 cmupdater_list="
 priv-app/CMUpdater'"$REMOVALSUFFIX"'"
