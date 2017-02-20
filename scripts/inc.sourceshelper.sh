@@ -96,6 +96,7 @@ getapkproperties(){
   #we do this on purpose after the priv-app detection to emulate the priv-app of the normal app
   if [ -n "$watch" ]; then
     case "$package" in
+      com.android.vending* |\
       com.google.android.gms* |\
       com.google.android.googlequicksearchbox* |\
       com.google.android.apps.maps*)
