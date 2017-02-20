@@ -52,6 +52,7 @@ createcommit(){
 
   if [ -n "$watch" ]; then
     case "$package" in
+      com.android.vending* |\
       com.google.android.gms* |\
       com.google.android.googlequicksearchbox* |\
       com.google.android.apps.maps*)
