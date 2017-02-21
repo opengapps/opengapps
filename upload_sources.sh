@@ -55,7 +55,8 @@ createcommit(){
       com.android.vending* |\
       com.google.android.gms* |\
       com.google.android.googlequicksearchbox* |\
-      com.google.android.apps.maps*)
+      com.google.android.apps.maps* |\
+      com.google.android.apps.messaging*)
             name="$name ($watch)" ;;  # special watch versions need a different packagename
       *)                          ;;  # Otherwise ignore the watch flag
     esac
