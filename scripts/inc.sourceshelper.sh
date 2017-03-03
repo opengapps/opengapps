@@ -97,10 +97,15 @@ getapkproperties(){
   if [ -n "$watch" ]; then
     case "$package" in
       com.android.vending* |\
+      com.google.android.apps.fitness* |\
+      com.google.android.apps.maps* |\
+      com.google.android.apps.messaging* |\
+      com.google.android.deskclock* |\
       com.google.android.gms* |\
       com.google.android.googlequicksearchbox* |\
-      com.google.android.apps.maps* |\
-      com.google.android.apps.messaging*)
+      com.google.android.inputmethod.latin* |\
+      com.google.android.music* |\
+      com.google.android.talk*)
           package="$package.watch" ;;  # special watch versions need a different packagename
       *)                           ;;  # Otherwise ignore the watch flag
     esac
