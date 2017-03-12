@@ -901,8 +901,8 @@ get_prop() {
 install_extracted() {
   file_list="$(find "$TMP/$1/" -mindepth 1 -type f | cut -d/ -f5-)"
   dir_list="$(find "$TMP/$1/" -mindepth 1 -type d | cut -d/ -f5-)"
-  cp -rf "$TMP/$1/." "/system/"
   for file in $file_list; do
+      install -D "$TMP/$1/${file}" "/system/${file}"
       ch_con "/system/${file}"
       set_perm 0 0 644 "/system/${file}";
   done
