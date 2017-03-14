@@ -877,7 +877,7 @@ get_fallback_arch(){
 }
 
 get_file_prop() {
-  grep "^$2=" "$1" | cut -d= -f2
+  grep -m1 "^$2=" "$1" | cut -d= -f2
 }
 
 get_prop() {
