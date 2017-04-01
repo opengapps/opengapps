@@ -252,6 +252,7 @@ mzsetupwizard
 mzupdater
 mzweather
 noisefield
+omniswitch
 phasebeam
 photophase
 phototable
