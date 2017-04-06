@@ -241,6 +241,7 @@ galaxy
 hexo
 holospiral
 keyboardstock
+lbr0zip
 livewallpapers
 lockclock
 lrecorder
@@ -453,6 +454,9 @@ priv-app/Paclauncher'"$REMOVALSUFFIX"'
 priv-app/SlimLauncher'"$REMOVALSUFFIX"'
 priv-app/Trebuchet'"$REMOVALSUFFIX"'
 priv-app/Nox'"$REMOVALSUFFIX"'"
+
+lbr0zip_list="
+app/Br0Zip'"$REMOVALSUFFIX"'"
 
 livewallpapers_list="
 app/LiveWallpapers'"$REMOVALSUFFIX"'"
