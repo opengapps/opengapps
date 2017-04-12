@@ -1210,7 +1210,10 @@ for i in "$TMP/aroma/.gapps-config"\
  "/persist/.gapps-config"\
  "/persist/gapps-config.txt"\
  "/persist/.gapps-config-$device_name.txt"\
- "/persist/.gapps-config.txt"; do
+ "/persist/.gapps-config.txt"\
+ "/tmp/install/gapps-config.txt"\
+ "/tmp/install/.gapps-config-$device_name.txt"\
+ "/tmp/install/.gapps-config.txt"; do
   if [ -r "$i" ]; then
     g_conf="$i";
     break;
