@@ -281,7 +281,7 @@ signzip() {
     echo "INFO: using $KEYFILE as cryptographic key file"
   fi
 
-  if java -XX:+UseCompressedOops -Xms6g -Xmx6g -jar "$SCRIPTS/inc.signapk.jar" -w "$CERTIFICATEFILE" "$KEYFILE" "$unsignedzip" "$signedzip"; then #if signing did succeed
+  if java -XX:+UseCompressedOops -Xms2g -Xmx2g -Djava.library.path="$SCRIPTS/signapk-resources-$(uname)/" -jar "$SCRIPTS/signapk.jar" -w "$CERTIFICATEFILE" "$KEYFILE" "$unsignedzip" "$signedzip"; then #if signing did succeed
     rm "$unsignedzip"
   else
     rm "$signedzip"
