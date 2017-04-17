@@ -1483,6 +1483,12 @@ tee -a "$build/$1" > /dev/null <<'EOFILE'
   *) cameragoogle_compat=true;;
 esac;
 
+# Check if Google Pixel
+case $device_name in
+  marlin|sailfish) googlepixel_compat="true";;
+  *)               googlepixel_compat="false";;
+esac
+
 log "ROM Android version" "$(get_prop "ro.build.version.release")"
 log "ROM Build ID" "$(get_prop "ro.build.display.id")"
 log "ROM Version increment" "$(get_prop "ro.build.version.incremental")"
@@ -1503,6 +1509,7 @@ log "FaceUnlock Compatible" "$faceunlock_compat"
 log "VRMode Compatible" "$vrmode_compat"
 log "Google Camera Compatible" "$cameragoogle_compat"
 log "New Camera API Compatible" "$newcamera_compat"
+log "Google Pixel Features" "$googlepixel_compat"
 
 # Determine if a GApps package is installed and
 # the version, type, and whether it's an Open GApps package
@@ -1661,6 +1668,14 @@ fi;
 if ( contains "$gapps_list" "faceunlock" ) && [ $faceunlock_compat = "false" ]; then
   gapps_list=${gapps_list/faceunlock};
   install_note="${install_note}faceunlock_msg"$'\n'; # make note that FaceUnlock will NOT be installed as user requested
+fi;
+
+# Add Google Pixel config if this is a Pixel device (and remove if it is not)
+if ( ! contains "$gapps_list" "googlepixelconfig" ) && [ $googlepixel_compat = "true" ]; then
+  gapps_list="${gapps_list}googlepixelconfig"$'\n'
+fi;
+if ( contains "$gapps_list" "googlepixelconfig" ) && [ $googlepixel_compat = "false" ]; then
+  gapps_list=${gapps_list/googlepixelconfig};
 fi;
 
 # If we're NOT installing chrome make certain 'browser' is NOT in $aosp_remove_list UNLESS 'browser' is in $g_conf
