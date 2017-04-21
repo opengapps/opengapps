@@ -372,7 +372,8 @@ app/DashClock'"$REMOVALSUFFIX"'"
 # Must be used when Google Dialer is installed
 dialerstock_list="
 priv-app/Dialer'"$REMOVALSUFFIX"'
-priv-app/FineOSDialer'"$REMOVALSUFFIX"'"
+priv-app/FineOSDialer'"$REMOVALSUFFIX"'
+priv-app/OPInCallUI'"$REMOVALSUFFIX"'"
 
 email_list="
 app/Email'"$REMOVALSUFFIX"'
