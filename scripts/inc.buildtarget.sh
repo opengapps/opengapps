@@ -159,12 +159,12 @@ get_supported_variants(){
                     fi
                     gappsremove_variant="super";;
     super)          supported_variants="pico nano micro mini full stock super"; gappsremove_variant="super";;
-    stock)          supported_variants="pico nano micro mini full stock"; gappsremove_variant="super";;
-    full)           supported_variants="pico nano micro mini full"; gappsremove_variant="super";;
-    mini)           supported_variants="pico nano micro mini"; gappsremove_variant="super";;
-    micro)          supported_variants="pico nano micro"; gappsremove_variant="super";;
-    nano)           supported_variants="pico nano"; gappsremove_variant="super";;
-    pico)           supported_variants="pico"; gappsremove_variant="super";;
+    stock)          supported_variants="pico nano micro mini full stock"; gappsremove_variant="stock";;
+    full)           supported_variants="pico nano micro mini full"; gappsremove_variant="full";;
+    mini)           supported_variants="pico nano micro mini"; gappsremove_variant="mini";;
+    micro)          supported_variants="pico nano micro"; gappsremove_variant="micro";;
+    nano)           supported_variants="pico nano"; gappsremove_variant="nano";;
+    pico)           supported_variants="pico"; gappsremove_variant="pico";;
 
     tvstock)        supported_variants="tvstock"; gappsremove_variant="tvstock";;
 
