@@ -524,6 +524,8 @@ api25hack(){
   if [ "$API" -ge "25" ]; then
     gappscore="$gappscore
 gmssetup"
+    gappsnano="$gappsnano
+batteryusage"
     gappsstock="$gappsstock
 pixelicons"
   fi
