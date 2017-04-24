@@ -131,6 +131,7 @@ form(
 
     "gapps",     "Choose GApps which you want to add on install/exclude list",        "",                                         "group",
       "AndroidPay",     "<b>Android Pay</b>",       "",                      "check",
+      "BatteryUsage",     "<b>Device Health Services</b>",       "requires Android 7.1 (API Level 25) or higher",                      "check",
       "Books",     "<b>Google Play Books</b>",       "",                      "check",
       "CalculatorGoogle",     "<b>Google Calculator</b>",       "",                      "check",
       "CalendarGoogle",     "<b>Google Calendar</b>",       "",                      "check",
@@ -341,6 +342,12 @@ if
   prop("gapps.prop", "AndroidPay")=="1"
 then
   appendvar("gapps", "AndroidPay\n");
+endif;
+
+if
+  prop("gapps.prop", "BatteryUsage")=="1"
+then
+  appendvar("gapps", "BatteryUsage\n");
 endif;
 
 if
