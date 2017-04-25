@@ -1620,7 +1620,7 @@ else
 fi;
 
 # Prepare list of AOSP/ROM files that will be deleted using gapps-config
-# We will look for +Browser, +CameraStock, +Email, +Gallery, +Launcher, +MMS, +PicoTTS and more to prevent their removal
+# We will look for applications from the $default_stock_remove_list prefixed with '+' in your gapps-config to prevent their removal
 set_progress 0.03;
 if [ "$g_conf" ]; then
   for default_name in $default_stock_remove_list; do
