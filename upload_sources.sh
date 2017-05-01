@@ -61,6 +61,7 @@ createcommit(){
       com.google.android.gms* |\
       com.google.android.googlequicksearchbox* |\
       com.google.android.inputmethod.latin* |\
+      com.google.android.marvin.talkback* |\
       com.google.android.music* |\
       com.google.android.talk*)
             name="$name ($watch)" ;;  # special watch versions need a different packagename
