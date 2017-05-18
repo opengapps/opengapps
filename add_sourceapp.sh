@@ -28,7 +28,6 @@ BETA=""
 STUB=""
 
 # Check tools
-PATH="$SCRIPTS/androidsdk-resources-$(uname):$PATH"  # temporary hack to prefer our own older (x86_64) aapt that gives the application label correctly
 checktools aapt file coreutils java jarsigner keytool openssl unzip
 
 installapk() {
