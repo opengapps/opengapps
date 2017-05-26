@@ -681,10 +681,21 @@ nogoogletag_removal_msg="NOTE: The Stock/AOSP NFC Tag is not available on your\n
 nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on your\nROM (anymore), not all Google WebViewProviders will be removed."
 
 # _____________________________________________________________________________________________________________________
+#                      Detect A/B partition layout https://source.android.com/devices/tech/ota/ab_updates
+if [ -n "$(cat /proc/cmdline | grep slot_suffix)" ];
+then
+  device_abpartition=true
+  SYSTEM=/system/system
+else
+  device_abpartition=false
+  SYSTEM=/system
+fi
+
+# _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
 zip_folder="$(dirname "$OPENGAZIP")";
-g_prop=/system/etc/g.prop
-PROPFILES="$g_prop /system/default.prop /system/build.prop /data/local.prop /default.prop /build.prop"
+g_prop=$SYSTEM/etc/g.prop
+PROPFILES="$g_prop $SYSTEM/default.prop $SYSTEM/build.prop /data/local.prop /default.prop /build.prop"
 bkup_tail=$TMP/bkup_tail.sh;
 gapps_removal_list=$TMP/gapps-remove.txt;
 g_log=$TMP/g.log;
@@ -767,20 +778,20 @@ extract_app() {
 exxit() {
   set_progress 0.98
   if [ "$skipvendorlibs" = "true" ]; then
-    umount /system/vendor  # unmount tmpfs
+    umount $SYSTEM/vendor  # unmount tmpfs
   fi
   if ( ! grep -qiE '^ *nodebug *($|#)+' "$g_conf" ); then
     if [ "$g_conf" ]; then # copy gapps-config files to debug logs folder
       cp -f "$g_conf_orig" "$TMP/logs/gapps-config_original.txt"
       cp -f "$g_conf" "$TMP/logs/gapps-config_processed.txt"
     fi
-    ls -alZR /system > "$TMP/logs/System_Files_After.txt"
+    ls -alZR $SYSTEM > "$TMP/logs/System_Files_After.txt"
     df -k > "$TMP/logs/Device_Space_After.txt"
     cp -f "$log_folder/open_gapps_log.txt" "$TMP/logs"
     for f in $PROPFILES; do
       cp -f "$f" "$TMP/logs"
     done
-    cp -f "/system/addon.d/70-gapps.sh" "$TMP/logs"
+    cp -f "$SYSTEM/addon.d/70-gapps.sh" "$TMP/logs"
     cp -f "$gapps_removal_list" "$TMP/logs/gapps-remove_revised.txt"
     cp -f "$rec_cache_log" "$TMP/logs/Recovery_cache.log"
     cp -f "$rec_tmp_log" "$TMP/logs/Recovery_tmp.log"
@@ -794,7 +805,15 @@ exxit() {
   ui_print "- Unmounting $mounts"
   ui_print " "
   for m in $mounts; do
-    umount "$m"
+    case $m in
+      /system)
+        if [ "$device_abpartition" = "true" ]; then
+          mount -o ro /system
+        else
+          umount /system
+        fi;;
+      *) umount "$m";;
+    esac
   done
   exit "$1"
 }
@@ -909,22 +928,22 @@ install_extracted() {
   file_list="$(find "$TMP/$1/" -mindepth 1 -type f | cut -d/ -f5-)"
   dir_list="$(find "$TMP/$1/" -mindepth 1 -type d | cut -d/ -f5-)"
   for file in $file_list; do
-      install -D "$TMP/$1/${file}" "/system/${file}"
-      ch_con "/system/${file}"
-      set_perm 0 0 644 "/system/${file}";
+      install -D "$TMP/$1/${file}" "$SYSTEM/${file}"
+      ch_con "$SYSTEM/${file}"
+      set_perm 0 0 644 "$SYSTEM/${file}";
   done
   for dir in $dir_list; do
-    ch_con "/system/${dir}"
-    set_perm 0 0 755 "/system/${dir}";
+    ch_con "$SYSTEM/${dir}"
+    set_perm 0 0 755 "$SYSTEM/${dir}";
   done
   case $preodex in
     true*)
       installedapkpaths="$(find "$TMP/$1/" -name "*.apk" -type f | cut -d/ -f5-)"
       for installedapkpath in $installedapkpaths; do  # TODO fix spaces-handling
-        if ! checkmanifest "/system/$installedapkpath" "classes.dex"; then
+        if ! checkmanifest "$SYSTEM/$installedapkpath" "classes.dex"; then
           ui_print "- pre-ODEX-ing $gapp_name";
           log "pre-ODEX-ing" "$gapp_name";
-          odexapk "/system/$installedapkpath"
+          odexapk "$SYSTEM/$installedapkpath"
         fi
       done
     ;;
@@ -962,10 +981,10 @@ odexapk() {
     rm -rf "$TMP/classesdex/"
     dexfiles="$(find "$apkdir" -name "classes*.dex")"
     if [ -n "$dexfiles" ]; then
-      dex="LD_LIBRARY_PATH='/system/lib:/system/lib64' /system/bin/dex2oat"
+      dex="LD_LIBRARY_PATH='$SYSTEM/lib:$SYSTEM/lib64' $SYSTEM/bin/dex2oat"
       for d in $dexfiles; do
         dex="$dex --dex-file=\"$d\""
-        bkup_list=$'\n'"${d#\/system\/}${bkup_list}"  # Backup the dex for re-generating oat in the future
+        bkup_list=$'\n'"${d#\$SYSTEM\/}${bkup_list}"  # Backup the dex for re-generating oat in the future
       done
       dex="install -d \"$apkdir/oat/$req_android_arch\" && $dex --instruction-set=\"$req_android_arch\" --oat-file=\"$apkdir/oat/$req_android_arch/$apkname.odex\""
       eval "$dex"
@@ -1054,7 +1073,7 @@ set_perm() {
 set_progress() { echo "set_progress $1" > "$OUTFD"; }
 
 sys_app() {
-  if ( grep -q "codePath=\"/system/app/$1" /data/system/packages.xml ); then
+  if ( grep -q "codePath=\"$SYSTEM/app/$1" /data/system/packages.xml ); then
     return 0;
   fi;
   return 1;
@@ -1167,7 +1186,7 @@ if [ -z "$(get_prop "ro.build.id")" ]; then
   abort "$E_NOBUILDPROP"
 fi
 
-testcomprfile="$(find /system -maxdepth 1 -type f  | head -n 1)" #often this should return the build.prop, but it can be any file for this test
+testcomprfile="$(find $SYSTEM -maxdepth 1 -type f  | head -n 1)" #often this should return the build.prop, but it can be any file for this test
 # Check if $testcomprfile if it is exists is not compressed and thus unprocessable
 if [ -e "$testcomprfile" ] && [ "$(head -c 4 "$testcomprfile")" = "zzzz" ]; then
   ui_print "*** Recovery does not support transparent compression ***"
@@ -1255,7 +1274,7 @@ fi;
 # Unless this is a NoDebug install - create folder and take 'Before' snapshots
 if ( ! grep -qiE '^nodebug$' "$g_conf" ); then
   install -d $TMP/logs;
-  ls -alZR /system > $TMP/logs/System_Files_Before.txt;
+  ls -alZR $SYSTEM > $TMP/logs/System_Files_Before.txt;
   df -k > $TMP/logs/Device_Space_Before.txt;
 fi;
 
@@ -1430,7 +1449,7 @@ fi
 # Check for skipvendorlibs in gapps-config
 if ( grep -qiE '^skipvendorlibs$' $g_conf ); then
   skipvendorlibs="true"
-  mount -t tmpfs tmpfs /system/vendor  # by mounting a tmpfs on this location, we hide the existing files from any operations
+  mount -t tmpfs tmpfs $SYSTEM/vendor  # by mounting a tmpfs on this location, we hide the existing files from any operations
 else
   skipvendorlibs="false"
 fi
@@ -1457,7 +1476,7 @@ fi
 
 # Is device FaceUnlock compatible
 if ( ! grep -qE "Victory|herring|sun4i" /proc/cpuinfo ); then
-  for xml in /system/etc/permissions/android.hardware.camera.front.xml /system/etc/permissions/android.hardware.camera.xml; do
+  for xml in $SYSTEM/etc/permissions/android.hardware.camera.front.xml $SYSTEM/etc/permissions/android.hardware.camera.xml; do
     if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -q "feature name=\"android.hardware.camera.front" ); then
       faceunlock_compat=true
       break
@@ -1469,12 +1488,12 @@ else
 fi
 
 # Is device VRMode compatible
-for xml in $(grep -rl 'name="android.software.vr.mode"' /system/etc/); do
-  if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -q 'name="android.software.vr.mode"' /system/etc/ ); then
+vrmode_compat=false
+for xml in $(grep -rl 'name="android.software.vr.mode"' $SYSTEM/etc/); do
+  if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -q 'name="android.software.vr.mode"' $SYSTEM/etc/ ); then
     vrmode_compat=true
     break
   fi
-  vrmode_compat=false
 done
 
 # Check device name for devices that are incompatible with Google Camera
@@ -1501,6 +1520,7 @@ log "Device Name" "$device_name"
 log "Device Model" "$device_model"
 log "Device Type" "$device_type"
 log "Device CPU" "$device_architecture"
+log "Device A/B-partitions" "$device_abpartition"
 log "Installer Platform" "$BINARCH"
 log "ROM Platform" "$arch"
 log "Display Density Used" "$density"
@@ -1515,7 +1535,7 @@ log "Google Pixel Features" "$googlepixel_compat"
 
 # Determine if a GApps package is installed and
 # the version, type, and whether it's an Open GApps package
-if [ -e "/system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ] || [ -e "/system/priv-app/GoogleServicesFramework.apk" ]; then
+if [ -e "$SYSTEM/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ] || [ -e "$SYSTEM/priv-app/GoogleServicesFramework.apk" ]; then
   openversion="$(get_prop "ro.addon.open_version")"
   if [ -n "$openversion" ]; then
     log "Current GApps Version" "$openversion"
@@ -1524,7 +1544,7 @@ if [ -e "/system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ]
       opentype="unknown"
     fi
     log "Current Open GApps Package" "$opentype"
-  elif [ -e "/system/etc/g.prop" ]; then
+  elif [ -e "$SYSTEM/etc/g.prop" ]; then
     log "Current GApps Version" "NON Open GApps Package Currently Installed (FAILURE)"
     ui_print "* Incompatible GApps Currently Installed *"
     ui_print " "
@@ -1570,7 +1590,7 @@ else
 
   # Use the opportunity of No GApps installed to check for potential ROM conflicts when deleting existing GApps files
   while read gapps_file; do
-    if [ -e "$gapps_file" ] && [ "$gapps_file" != "/system/lib/$WebView_lib_filename" ] && [ "$gapps_file" != "/system/lib64/$WebView_lib_filename" ]; then
+    if [ -e "$gapps_file" ] && [ "$gapps_file" != "$SYSTEM/lib/$WebView_lib_filename" ] && [ "$gapps_file" != "$SYSTEM/lib64/$WebView_lib_filename" ]; then
       echo "$gapps_file" >> $conflicts_log
     fi
   done < $gapps_removal_list
@@ -1873,14 +1893,14 @@ fi;
 # NOTICE: Only for Google Keyboard we need to take KitKat support into account, others are only Lollipop+
 ignoregooglecontacts="true"
 for f in $contactsstock_list; do
-  if [ -e "/system/$f" ]; then
+  if [ -e "$SYSTEM/$f" ]; then
     ignoregooglecontacts="false"
     break; #at least 1 aosp stock file is present
   fi
 done;
 if [ "$ignoregooglecontacts" = "true" ]; then
   if ( ! contains "$gapps_list" "contactsgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
-    sed -i "\:/system/priv-app/GoogleContacts:d" $gapps_removal_list;
+    sed -i "\:$SYSTEM/priv-app/GoogleContacts:d" $gapps_removal_list;
     ignoregooglecontacts="true[NoRemove]"
     install_note="${install_note}nogooglecontacts_removal"$'\n'; # make note that Google Contacts will not be removed
   else
@@ -1890,14 +1910,14 @@ fi
 
 ignoregoogledialer="true"
 for f in $dialerstock_list; do
-  if [ -e "/system/$f" ]; then
+  if [ -e "$SYSTEM/$f" ]; then
     ignoregoogledialer="false"
     break; #at least 1 aosp stock file is present
   fi
 done;
 if [ "$ignoregoogledialer" = "true" ]; then
   if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
-    sed -i "\:/system/priv-app/GoogleDialer:d" $gapps_removal_list;
+    sed -i "\:$SYSTEM/priv-app/GoogleDialer:d" $gapps_removal_list;
     ignoregoogledialer="true[NoRemove]"
     install_note="${install_note}nogoogledialer_removal"$'\n'; # make note that Google Dialer will not be removed
   else
@@ -1907,7 +1927,7 @@ fi
 
 ignoregooglekeyboard="true"
 for f in $keyboardstock_list; do
-  if [ -e "/system/$f" ]; then
+  if [ -e "$SYSTEM/$f" ]; then
     ignoregooglekeyboard="false"
     break; #at least 1 aosp stock file is present
   fi
@@ -1926,14 +1946,14 @@ fi
 
 ignoregooglepackageinstaller="true"
 for f in $packageinstallerstock_list; do
-  if [ -e "/system/$f" ]; then
+  if [ -e "$SYSTEM/$f" ]; then
     ignoregooglepackageinstaller="false"
     break; #at least 1 aosp stock file is present
   fi
 done;
 if [ "$ignoregooglepackageinstaller" = "true" ]; then
   if ( ! contains "$gapps_list" "packageinstallergoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
-    sed -i "\:/system/priv-app/GooglePackageInstaller:d" $gapps_removal_list;
+    sed -i "\:$SYSTEM/priv-app/GooglePackageInstaller:d" $gapps_removal_list;
     ignoregooglepackageinstaller="true[NoRemove]"
     install_note="${install_note}nogooglepackageinstaller_removal"$'\n'; # make note that Google Package Installer will not be removed
   else
@@ -1943,14 +1963,14 @@ fi
 
 ignoregoogletag="true"
 for f in $tagstock_list; do
-  if [ -e "/system/$f" ]; then
+  if [ -e "$SYSTEM/$f" ]; then
     ignoregoogletag="false"
     break; #at least 1 aosp stock file is present
   fi
 done;
 if [ "$ignoregoogletag" = "true" ]; then
   if ( ! contains "$gapps_list" "taggoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
-    sed -i "\:/system/priv-app/TagGoogle:d" $gapps_removal_list;
+    sed -i "\:$SYSTEM/priv-app/TagGoogle:d" $gapps_removal_list;
     ignoregoogletag="true[NoRemove]"
     install_note="${install_note}nogoogletag_removal"$'\n'; # make note that Google Tag will not be removed
   else
@@ -1960,7 +1980,7 @@ fi
 
 ignoregooglewebview="true"
 for f in $webviewstock_list; do
-  if [ -e "/system/$f" ]; then
+  if [ -e "$SYSTEM/$f" ]; then
     ignoregooglewebview="false"
     break; #at least 1 aosp stock file is present
   fi
@@ -1980,7 +2000,7 @@ if [ -n "$user_remove_list" ]; then
       * )       testapk="${testapk}.apk" ;;
     esac;
     # Create user_remove_folder_list if this is a system/ROM application
-    for folder in /system/app /system/priv-app; do # Check all subfolders in /system/app /system/priv-app for the apk
+    for folder in $SYSTEM/app $SYSTEM/priv-app; do # Check all subfolders in /system/app /system/priv-app for the apk
       file_count=0; # Reset Counter
       file_count=$(find $folder -iname "$testapk" | wc -l);
       case $file_count in
@@ -2001,7 +2021,7 @@ fi;
 
 # Removing old Chrome libraries
 obsolete_libs_list="";
-for f in $(find /system/lib /system/lib64 -name 'libchrome.*.so' 2>/dev/null); do
+for f in $(find $SYSTEM/lib $SYSTEM/lib64 -name 'libchrome.*.so' 2>/dev/null); do
   obsolete_libs_list="${obsolete_libs_list}$f"$'\n';
 done;
 
@@ -2009,7 +2029,7 @@ done;
 full_removal_list="$(cat $gapps_removal_list)"$'\n'"${obsolete_libs_list}";
 
 # Read in old user removal list from addon.d to allow for persistence
-addond_remove_folder_list=$(sed -e "1,/# Remove 'user requested' apps (from gapps-config)/d" -e '/;;/,$d' -e 's/    rm -rf //' /system/addon.d/70-gapps.sh)
+addond_remove_folder_list=$(sed -e "1,/# Remove 'user requested' apps (from gapps-config)/d" -e '/;;/,$d' -e 's/    rm -rf //' $SYSTEM/addon.d/70-gapps.sh)
 
 # Clean up and sort our lists for space calculations and installation
 set_progress 0.04;
@@ -2063,7 +2083,7 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false"
 fi
 
 # Read and save system partition size details
-df=$(df -k /system | tail -n 1);
+df=$(df -k $SYSTEM | tail -n 1);
 case $df in
   /dev/block/*) df=$(echo "$df" | awk '{ print substr($0, index($0,$2)) }');;
 esac;
@@ -2096,8 +2116,8 @@ for aosp_name in $aosp_remove_list; do
   eval "list_name=\$${aosp_name}_list";
   aosp_size_kb=0; # Reset counter
   for file_name in $list_name; do
-    if [ -e "/system/$file_name" ]; then
-      file_size_kb=$(du -ck "/system/$file_name" | tail -n 1 | awk '{ print $1 }');
+    if [ -e "$SYSTEM/$file_name" ]; then
+      file_size_kb=$(du -ck "$SYSTEM/$file_name" | tail -n 1 | awk '{ print $1 }');
       aosp_size_kb=$((file_size_kb + aosp_size_kb));
       post_install_size_kb=$((post_install_size_kb + file_size_kb));
     fi;
@@ -2202,8 +2222,8 @@ for aosp_name in $aosp_remove_list; do
   eval "list_name=\$${aosp_name}_list";
   list_name=$(echo "${list_name}" | sort -r); # reverse sort list for more readable output
   for file_name in $list_name; do
-    rm -rf "/system/$file_name";
-    sed -i "\:# Remove Stock/AOSP apps (from GApps Installer):a \    rm -rf /system/$file_name" $bkup_tail;
+    rm -rf "$SYSTEM/$file_name";
+    sed -i "\:# Remove Stock/AOSP apps (from GApps Installer):a \    rm -rf $SYSTEM/$file_name" $bkup_tail;
   done;
 done;
 
@@ -2218,7 +2238,7 @@ for user_app in $user_remove_folder_list; do
 done;
 
 # Remove any empty folders we may have created during the removal process
-for i in /system/app /system/priv-app /system/vendor/pittpatt /system/usr/srec /system/etc/preferred-apps; do
+for i in $SYSTEM/app $SYSTEM/priv-app $SYSTEM/vendor/pittpatt $SYSTEM/usr/srec $SYSTEM/etc/preferred-apps; do
   find "$i" -type d | xargs -r rmdir -p --ignore-fail-on-non-empty;
 done;
 # _____________________________________________________________________________________________________________________
@@ -2270,35 +2290,35 @@ ui_print "- Miscellaneous tasks";
 ui_print " ";
 
 # Use Gms (Google Play services) for feedback/bug reporting (instead of org.cyanogenmod.bugreport or others)
-sed -i "s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.google.android.gms/g" /system/build.prop
-sed -i "\:# Apply build.prop changes (from GApps Installer):a \    sed -i \"s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.google.android.gms/g\" /system/build.prop" $bkup_tail
+sed -i "s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.google.android.gms/g" $SYSTEM/build.prop
+sed -i "\:# Apply build.prop changes (from GApps Installer):a \    sed -i \"s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.google.android.gms/g\" $SYSTEM/build.prop" $bkup_tail
 
 # Enable Google Assistant
 if ( grep -qiE '^googleassistant$' "$g_conf" ); then  #TODO this is not enabled by default atm; because Assistant still has various regressions compared to Google Now
-  if ! grep -q "ro.opa.eligible_device=" /system/build.prop; then
-    echo "ro.opa.eligible_device=true" >> /system/build.prop
+  if ! grep -q "ro.opa.eligible_device=" $SYSTEM/build.prop; then
+    echo "ro.opa.eligible_device=true" >> $SYSTEM/build.prop
   fi
-  sed -i "\:# Apply build.prop changes (from GApps Installer):a \    if ! grep -q \"ro.opa.eligible_device=\" /system/build.prop; then echo \"ro.opa.eligible_device=true\" >> /system/build.prop; fi" $bkup_tail
+  sed -i "\:# Apply build.prop changes (from GApps Installer):a \    if ! grep -q \"ro.opa.eligible_device=\" $SYSTEM/build.prop; then echo \"ro.opa.eligible_device=true\" >> $SYSTEM/build.prop; fi" $bkup_tail
 fi
 
 # Create FaceLock lib symlink if installed
 if ( contains "$gapps_list" "faceunlock" ); then
-  install -d "/system/app/FaceLock/lib/$arch"
-  ln -sfn "/system/$libfolder/$faceLock_lib_filename" "/system/app/FaceLock/lib/$arch/$faceLock_lib_filename"
+  install -d "$SYSTEM/app/FaceLock/lib/$arch"
+  ln -sfn "$SYSTEM/$libfolder/$faceLock_lib_filename" "$SYSTEM/app/FaceLock/lib/$arch/$faceLock_lib_filename"
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/$libfolder/$faceLock_lib_filename\" \"/system/app/FaceLock/lib/$arch/$faceLock_lib_filename\"" $bkup_tail
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/FaceLock/lib/$arch\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$faceLock_lib_filename\" \"$SYSTEM/app/FaceLock/lib/$arch/$faceLock_lib_filename\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/FaceLock/lib/$arch\"" $bkup_tail
 fi
 
 EOFILE
 if [ "$API" -lt "24" ]; then  # Only 5.1 and 6.0
   echo '# Create TVRemote lib symlink if installed
 if ( contains "$gapps_list" "tvremote" ); then
-  install -d "/system/app/AtvRemoteService/lib/$arch"
-  ln -sfn "/system/$libfolder/$atvremote_lib_filename" "/system/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename"
+  install -d "$SYSTEM/app/AtvRemoteService/lib/$arch"
+  ln -sfn "$SYSTEM/$libfolder/$atvremote_lib_filename" "$SYSTEM/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename"
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/$libfolder/$atvremote_lib_filename\" \"/system/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename\"" $bkup_tail
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/AtvRemoteService/lib/$arch\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$atvremote_lib_filename\" \"$SYSTEM/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/AtvRemoteService/lib/$arch\"" $bkup_tail
 fi
 ' >> "$build/$1"
 fi
@@ -2306,17 +2326,17 @@ fi
 if [ "$API" -lt "23" ]; then
   echo '# Create WebView lib symlink if WebView was installed
 if ( contains "$gapps_list" "webviewgoogle" ); then
-  install -d "/system/app/WebViewGoogle/lib/$arch"
-  ln -sfn "/system/$libfolder/$WebView_lib_filename" "/system/app/WebViewGoogle/lib/$arch/$WebView_lib_filename"
+  install -d "$SYSTEM/app/WebViewGoogle/lib/$arch"
+  ln -sfn "$SYSTEM/$libfolder/$WebView_lib_filename" "$SYSTEM/app/WebViewGoogle/lib/$arch/$WebView_lib_filename"
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/$libfolder/$WebView_lib_filename\" \"/system/app/WebViewGoogle/lib/$arch/$WebView_lib_filename\"" $bkup_tail
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/WebViewGoogle/lib/$arch\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$WebView_lib_filename\" \"$SYSTEM/app/WebViewGoogle/lib/$arch/$WebView_lib_filename\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/WebViewGoogle/lib/$arch\"" $bkup_tail
   if [ -n "$fbarch" ]; then  # on 64bit we also need to add 32 bit libs
-    install -d "/system/app/WebViewGoogle/lib/$fbarch"
-    ln -sfn "/system/lib/$WebView_lib_filename" "/system/app/WebViewGoogle/lib/$fbarch/$WebView_lib_filename"
+    install -d "$SYSTEM/app/WebViewGoogle/lib/$fbarch"
+    ln -sfn "$SYSTEM/lib/$WebView_lib_filename" "$SYSTEM/app/WebViewGoogle/lib/$fbarch/$WebView_lib_filename"
     # Add same code to backup script to insure symlinks are recreated on addon.d restore
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/lib/$WebView_lib_filename\" \"/system/app/WebViewGoogle/lib/$fbarch/$WebView_lib_filename\"" $bkup_tail
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/WebViewGoogle/lib/$fbarch\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/lib/$WebView_lib_filename\" \"$SYSTEM/app/WebViewGoogle/lib/$fbarch/$WebView_lib_filename\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/WebViewGoogle/lib/$fbarch\"" $bkup_tail
   fi
 fi
 ' >> "$build/$1"
@@ -2347,21 +2367,21 @@ for reqdapp_name in $reqd_list; do
 done;
 
 # Create final addon.d script in system
-bkup_header="#!/sbin/sh\n# \n# /system/addon.d/70-gapps.sh\n#\n. /tmp/backuptool.functions\n\nlist_files() {\ncat <<EOF"
+bkup_header="#!/sbin/sh\n# \n# $SYSTEM/addon.d/70-gapps.sh\n#\n. /tmp/backuptool.functions\n\nlist_files() {\ncat <<EOF"
 bkup_list="$bkup_list"$'\n'"etc/g.prop"; # add g.prop to backup list
 bkup_list=$(echo "${bkup_list}" | sort -u| sed '/^$/d'); # sort list & remove duplicates and empty lines
-install -d /system/addon.d;
-echo -e "$bkup_header" > /system/addon.d/70-gapps.sh;
-echo -e "$bkup_list" >> /system/addon.d/70-gapps.sh;
-cat $bkup_tail >> /system/addon.d/70-gapps.sh;
+install -d $SYSTEM/addon.d;
+echo -e "$bkup_header" > $SYSTEM/addon.d/70-gapps.sh;
+echo -e "$bkup_list" >> $SYSTEM/addon.d/70-gapps.sh;
+cat $bkup_tail >> $SYSTEM/addon.d/70-gapps.sh;
 # _____________________________________________________________________________________________________________________
 #                                                  Fix Permissions
 
 set_progress 0.85
-find /system/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; # Change pittpatt folders to root:shell per Google Factory Settings
+find $SYSTEM/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; # Change pittpatt folders to root:shell per Google Factory Settings
 
-set_perm 0 0 755 "/system/addon.d/70-gapps.sh"
-ch_con "/system/addon.d/70-gapps.sh"
+set_perm 0 0 755 "$SYSTEM/addon.d/70-gapps.sh"
+ch_con "$SYSTEM/addon.d/70-gapps.sh"
 
 set_perm 0 0 644 "$g_prop"
 ch_con "$g_prop"
