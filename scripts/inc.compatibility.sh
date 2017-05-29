@@ -27,18 +27,6 @@ esac' >> "$1"
   fi
 }
 
-hotwordadditionhack(){
-  if [ "$API" -ge "21" ]; then
-    tee -a "$1" > /dev/null <<'EOFILE'
-# If we're installing search we must install hotword too (if it's not already there)
-if ( contains "$gapps_list" "search" ) && ( ! contains "$gapps_list" "hotword" ); then
-  gapps_list="${gapps_list}hotword"$'\n';
-fi;
-
-EOFILE
-  fi
-}
-
 keyboardgooglenotremovehack(){
   if [ "$API" -le "19" ]; then
     echo '  sed -i "\:/system/app/LatinImeGoogle.apk:d" $gapps_removal_list;'>> "$1"
@@ -426,8 +414,6 @@ setupwizardtablet"
 
 api21hack(){
   if [ "$API" -ge "21" ]; then
-    gappsnano="$gappsnano
-hotword"
     gappsmini="$gappsmini
 calculatorgoogle
 taggoogle"
