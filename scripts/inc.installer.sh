@@ -1677,7 +1677,6 @@ aosp_remove_list="${aosp_remove_list}provision"$'\n';
 aosp_remove_list="${aosp_remove_list}extsharedstock"$'\n'"extservicesstock"$'\n';
 
 EOFILE
-hotwordadditionhack "$build/$1"  # HotwordEnrollment to support OK Google device-wide (requires compatible hardware)
 webviewcheckhack "$build/$1"  # WebViewProvider rules differ Pre-Nougat and Nougat+
 tee -a "$build/$1" > /dev/null <<'EOFILE'
 # Cyanogenmod breaks Google's PackageInstaller don't install it on CM
