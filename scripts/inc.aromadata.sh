@@ -157,7 +157,6 @@ form(
       "GooglePlus",     "<b>Google+</b>",       "",                      "check",
       "GoogleTTS",     "<b>Google Text-to-Speech</b>",       "",                      "check",
       "Hangouts",     "<b>Google Hangouts</b>",       "",                      "check",
-      "Hotword",     "<b>OK Google Hotword Enrollment</b>",       "(automatically selected if Search will be installed)",                      "check",
       "Indic",     "<b>Google Indic Keyboard</b>",       "",                      "check",
       "Japanese",     "<b>Google Japanese Input</b>",       "",                      "check",
       "Keep",     "<b>Google Keep</b>",       "",                      "check",
@@ -179,7 +178,7 @@ form(
       "ProjectFi",     "<b>Project Fi by Google</b>",       "",                      "check",
       "Sheets",     "<b>Google Sheets</b>",       "",                      "check",
       "Slides",     "<b>Google Slides</b>",       "",                      "check",
-      "Search",     "<b>Google Search</b>",       "To Exclude Google Search AND Google Now Launcher AND Pixel Launcher <#f00>OR</#> To Include Google Search AND OK Google Hotword Enrollment",                      "check",
+      "Search",     "<b>Google Search</b>",       "To Exclude Google Search AND Google Now Launcher AND Pixel Launcher <#f00>OR</#> To Include Google Search",                      "check",
       "Speech",     "<b>Offline Speech Files</b>",       "(Required for offline voice dicatation support)",                      "check",
       "StorageManagerGoogle",     "<b>Google Storage Manager</b>",       "",                      "check",
       "Street",     "<b>Google Street View</b>",       "",                      "check",
@@ -498,12 +497,6 @@ if
   prop("gapps.prop", "Hangouts")=="1"
 then
   appendvar("gapps", "Hangouts\n");
-endif;
-
-if
-  prop("gapps.prop", "Hotword")=="1"
-then
-  appendvar("gapps", "Hotword\n");
 endif;
 
 if
