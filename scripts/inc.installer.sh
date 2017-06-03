@@ -2300,6 +2300,12 @@ if ( grep -qiE '^googleassistant$' "$g_conf" ); then  #TODO this is not enabled 
   sed -i "\:# Apply build.prop changes (from GApps Installer):a \    if ! grep -q \"ro.opa.eligible_device=\" $SYSTEM/build.prop; then echo \"ro.opa.eligible_device=true\" >> $SYSTEM/build.prop; fi" $bkup_tail
 fi
 
+# Enable Google Assistant
+if ! grep -q "ro.opa.eligible_device=" /system/build.prop; then
+  echo "ro.opa.eligible_device=true" >> /system/build.prop
+fi
+sed -i "\:# Apply build.prop changes (from GApps Installer):a \    if ! grep -q \"ro.opa.eligible_device=\" /system/build.prop; then echo \"ro.opa.eligible_device=true\" >> /system/build.prop; fi" $bkup_tail
+
 # Create FaceLock lib symlink if installed
 if ( contains "$gapps_list" "faceunlock" ); then
   install -d "$SYSTEM/app/FaceLock/lib/$arch"
