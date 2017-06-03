@@ -284,6 +284,7 @@ app/Fluxion'"$REMOVALSUFFIX"'
 app/Gello'"$REMOVALSUFFIX"'
 app/Jelly'"$REMOVALSUFFIX"'
 app/PA_Browser'"$REMOVALSUFFIX"'
+app/PABrowser'"$REMOVALSUFFIX"'
 app/YuBrowser'"$REMOVALSUFFIX"'
 priv-app/BLUOpera'"$REMOVALSUFFIX"'
 priv-app/BLUOperaPreinstall'"$REMOVALSUFFIX"'
@@ -344,7 +345,8 @@ app/CMFileManager'"$REMOVALSUFFIX"'"
 cmmusic_list="
 app/Apollo'"$REMOVALSUFFIX"'
 app/Eleven'"$REMOVALSUFFIX"'
-app/Music'"$REMOVALSUFFIX"'"
+app/Music'"$REMOVALSUFFIX"'
+app/SnapdragonMusic'"$REMOVALSUFFIX"'"
 
 cmscreencast_list="
 priv-app/Screencast'"$REMOVALSUFFIX"'"
@@ -411,7 +413,8 @@ priv-app/MotGallery'"$REMOVALSUFFIX"'
 app/MediaShortcuts'"$REMOVALSUFFIX"'
 priv-app/MediaShortcuts'"$REMOVALSUFFIX"'
 priv-app/MiuiGallery'"$REMOVALSUFFIX"'
-priv-app/FineOSGallery'"$REMOVALSUFFIX"'"
+priv-app/FineOSGallery'"$REMOVALSUFFIX"'
+priv-app/SnapdragonGallery'"$REMOVALSUFFIX"'"
 
 hexo_list="
 app/HexoLibre'"$REMOVALSUFFIX"'"
