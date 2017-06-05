@@ -146,6 +146,7 @@ form(
       "DMAgent",     "<b>Google Apps Device Policy</b>",       "",                      "check",
       "Docs",     "<b>Google Docs</b>",       "",                      "check",
       "Drive",     "<b>Google Drive</b>",       "",                      "check",
+      "Duo",     "<b>Google Duo</b>",       "",                      "check",
       "Earth",     "<b>Google Earth</b>",       "",                      "check",
       "ExchangeGoogle",     "<b>Google Exchange Services</b>",       "",                      "check",
       "FaceDetect",     "<b>Face Detection for Media</b>",       "",                      "check",
@@ -431,6 +432,12 @@ if
   prop("gapps.prop", "Drive")=="1"
 then
   appendvar("gapps", "Drive\n");
+endif;
+
+if
+  prop("gapps.prop", "Duo")=="1"
+then
+  appendvar("gapps", "Duo\n");
 endif;
 
 if
