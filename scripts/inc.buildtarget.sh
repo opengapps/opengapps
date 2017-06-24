@@ -111,7 +111,6 @@ tvvending"
 
 gappstvstock="backdrop
 castreceiver
-gamepadpairing
 globalkey
 livechannels
 overscan
@@ -125,7 +124,6 @@ tvkeyboardgoogle
 tvmovies
 tvmusic
 tvpackageinstallergoogle
-tvpairing
 tvplaygames
 tvremote
 tvsearch
@@ -362,7 +360,6 @@ get_package_info(){
 
     backdrop)                 packagetype="GApps"; packagename="com.google.android.backdrop.leanback"; packagetarget="app/Backdrop";;
     castreceiver)             packagetype="GApps"; packagename="com.google.android.apps.mediashell.leanback" packagetarget="priv-app/AndroidMediaShell";;
-    gamepadpairing)           packagetype="GApps"; packagename="com.google.android.tv.remotepairing" packagetarget="priv-app/GamepadPairingService";;
     globalkey)                packagetype="GApps"; packagename="com.google.android.athome.globalkeyinterceptor" packagetarget="priv-app/GlobalKeyInterceptor";;
     livechannels)             packagetype="GApps"; packagename="com.google.android.tv.leanback" packagetarget="priv-app/TV";;
     overscan)                 packagetype="GApps"; packagename="com.google.android.tungsten.overscan" packagetarget="priv-app/Overscan";;
@@ -375,7 +372,6 @@ get_package_info(){
     tvmovies)                 packagetype="GApps"; packagename="com.google.android.videos.leanback"; packagetarget="app/VideosPano";;
     tvmusic)                  packagetype="GApps"; packagename="com.google.android.music"; packagetarget="app/Music2Pano";;  # Only change is the foldername
     tvpackageinstallergoogle) packagetype="GApps"; packagename="com.google.android.pano.packageinstaller"; packagetarget="priv-app/CanvasPackageInstaller";;  # on 5.1 and 6.0 this was in 'app'
-    tvpairing)                packagetype="GApps"; packagename="com.google.android.fugu.pairing"; packagetarget="app/FuguPairingTutorial";;
     tvplaygames)              packagetype="GApps"; packagename="com.google.android.play.games.leanback"; packagetarget="app/PlayGames";;  # Only change is leanback in the packagename
     tvrecommendations)        packagetype="GApps"; packagename="com.google.android.leanbacklauncher.recommendations.leanback"; packagetarget="priv-app/RecommendationsService";;
     tvremote)                 packagetype="GApps";  packagetarget="priv-app/AtvRemoteService";
