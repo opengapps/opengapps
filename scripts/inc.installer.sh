@@ -1736,14 +1736,14 @@ if ( ! contains "$gapps_list" "dialerframework" ) && ( contains "$gapps_list" "d
   install_note="${install_note}dialergoogle_msg"$'\n'; # make note that Google Dialer will NOT be installed as user requested
 fi;
 
-# If we're NOT installing hangouts or messenger make certain 'mms' is NOT in $aosp_remove_list UNLESS 'mms' is in $g_conf
-if ( ! contains "$gapps_list" "hangouts" )  && ( ! contains "$gapps_list" "messenger" ) && ( ! grep -qiE '^mms$' "$g_conf" ); then
+# If we're NOT installing  messenger make certain 'mms' is NOT in $aosp_remove_list UNLESS 'mms' is in $g_conf
+if ( ! contains "$gapps_list" "messenger" ) && ( ! grep -qiE '^mms$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/mms};
-  remove_mms="false[NO_Hangouts]";
+  remove_mms="false[NO_Messenger]";
 fi;
 
-# If we're NOT installing hangouts or messenger and mms is in $aosp_remove_list then user must override removal protection
-if ( ! contains "$gapps_list" "hangouts" ) && ( ! contains "$gapps_list" "messenger" ) && ( contains "$aosp_remove_list" "mms" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+# If we're NOT installing messenger and mms is in $aosp_remove_list then user must override removal protection
+if ( ! contains "$gapps_list" "messenger" ) && ( contains "$aosp_remove_list" "mms" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/mms}; # we'll prevent mms from being removed so user isn't left with no way to receive text messages
   remove_mms="false[NO_Override]";
   install_note="${install_note}nomms_msg"$'\n'; # make note that MMS can't be removed unless user Overrides

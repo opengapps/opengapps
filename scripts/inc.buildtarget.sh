@@ -42,8 +42,8 @@ zhuyin"
 
 gappsstock="cameragoogle
 duo
+hangouts
 keyboardgoogle
-messenger
 vrservice
 wallpapers"
 
@@ -69,8 +69,8 @@ talkback"
 gappsfull_optional=""
 
 gappsmini="clockgoogle
-hangouts
 maps
+messenger
 photos
 youtube"
 
