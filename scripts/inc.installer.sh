@@ -222,16 +222,16 @@ basicdreams
 calculatorstock
 calendarstock
 clockstock
-cmaudiofx
+laudiofx
 cmaccount
-cmbugreport
-cmfilemanager
-cmmusic
-cmscreencast
+lbugreport
+lfilemanager
+lmusic
+lscreencast
 cmsetupwizard
-cmupdater
-cmwallpapers
-cmweatherprovider
+lupdater
+lwallpapers
+lweatherprovider
 dashclock
 exchangestock
 extservicesstock
@@ -333,35 +333,35 @@ app/FineOSDeskClock'"$REMOVALSUFFIX"'"
 cmaccount_list="
 priv-app/CMAccount'"$REMOVALSUFFIX"'"
 
-cmaudiofx_list="
+laudiofx_list="
 priv-app/AudioFX'"$REMOVALSUFFIX"'"
 
-cmbugreport_list="
+lbugreport_list="
 priv-app/CMBugReport'"$REMOVALSUFFIX"'"
 
-cmfilemanager_list="
+lfilemanager_list="
 app/CMFileManager'"$REMOVALSUFFIX"'"
 
-cmmusic_list="
+lmusic_list="
 app/Apollo'"$REMOVALSUFFIX"'
 app/Eleven'"$REMOVALSUFFIX"'
 app/Music'"$REMOVALSUFFIX"'
 app/SnapdragonMusic'"$REMOVALSUFFIX"'"
 
-cmscreencast_list="
+lscreencast_list="
 priv-app/Screencast'"$REMOVALSUFFIX"'"
 
 cmsetupwizard_list="
 app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
 priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'"
 
-cmupdater_list="
+lupdater_list="
 priv-app/CMUpdater'"$REMOVALSUFFIX"'"
 
-cmwallpapers_list="
+lwallpapers_list="
 app/CMWallpapers'"$REMOVALSUFFIX"'"
 
-cmweatherprovider_list="
+lweatherprovider_list="
 priv-app/WeatherProvider'"$REMOVALSUFFIX"'"
 
 # Must be used when Google Contacts is installed
