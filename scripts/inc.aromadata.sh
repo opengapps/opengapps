@@ -744,45 +744,45 @@ then
 endif;
 
 if
-  prop("rem.prop", "CMAudioFX")=="1"
+  prop("rem.prop", "LAudioFX")=="1"
 then
-  appendvar("gapps", "CMAudioFX\n");
+  appendvar("gapps", "LAudioFX\n");
 endif;
 
 if
-  prop("rem.prop", "CMBugReport")=="1"
+  prop("rem.prop", "LBugReport")=="1"
 then
-  appendvar("gapps", "CMBugReport\n");
+  appendvar("gapps", "LBugReport\n");
 endif;
 
 if
-  prop("rem.prop", "CMMusic")=="1"
+  prop("rem.prop", "LMusic")=="1"
 then
-  appendvar("gapps", "CMMusic\n");
+  appendvar("gapps", "LMusic\n");
 endif;
 
 if
-  prop("rem.prop", "CMFileManager")=="1"
+  prop("rem.prop", "LFileManager")=="1"
 then
-  appendvar("gapps", "CMFileManager\n");
+  appendvar("gapps", "LFileManager\n");
 endif;
 
 if
-  prop("rem.prop", "CMSetupWizard")=="1"
+  prop("rem.prop", "LSetupWizard")=="1"
 then
-  appendvar("gapps", "CMSetupWizard\n");
+  appendvar("gapps", "LSetupWizard\n");
 endif;
 
 if
-  prop("rem.prop", "CMUpdater")=="1"
+  prop("rem.prop", "LUpdater")=="1"
 then
-  appendvar("gapps", "CMUpdater\n");
+  appendvar("gapps", "LUpdater\n");
 endif;
 
 if
-  prop("rem.prop", "CMWallpapers")=="1"
+  prop("rem.prop", "LWallpapers")=="1"
 then
-  appendvar("gapps", "CMWallpapers\n");
+  appendvar("gapps", "LWallpapers\n");
 endif;
 
 if
