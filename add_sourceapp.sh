@@ -17,7 +17,7 @@ TOP="$(realpath .)"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 CERTIFICATES="$SCRIPTS/certificates"
-APKTOOL="$SCRIPTS/apktool-resources/apktool_2.2.3.jar"
+APKTOOL="$SCRIPTS/apktool-resources/apktool_2.2.4.jar"
 # shellcheck source=scripts/inc.compatibility.sh
 . "$SCRIPTS/inc.compatibility.sh"
 # shellcheck source=scripts/inc.sourceshelper.sh
