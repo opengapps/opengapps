@@ -222,16 +222,23 @@ basicdreams
 calculatorstock
 calendarstock
 clockstock
-laudiofx
+cmaudiofx
+
 cmaccount
-lbugreport
-lfilemanager
-lmusic
+cmbugreport
+
+cmfilemanager
+
+cmmusic
+
 cmscreencast
 cmsetupwizard
-lupdater
-lwallpapers
-lweatherprovider
+cmupdater
+
+cmwallpapers
+
+cmweatherprovider
+
 dashclock
 exchangestock
 extservicesstock
@@ -244,8 +251,15 @@ keyboardstock
 lbr0zip
 livewallpapers
 lockclock
+laudiofx
+lbugreport
+lfilemanager
+lmusic
 lrecorder
 lsetupwizard
+lupdater
+lwallpapers
+lweatherprovider
 mms
 mzfilemanager
 mzpay
@@ -336,17 +350,25 @@ priv-app/CMAccount'"$REMOVALSUFFIX"'"
 laudiofx_list="
 priv-app/AudioFX'"$REMOVALSUFFIX"'"
 
+cmaudiofx_list=$laudiofx_list
+
 lbugreport_list="
 priv-app/CMBugReport'"$REMOVALSUFFIX"'"
 
+cmbugreport_list=$lbugreport_list
+
 lfilemanager_list="
 app/CMFileManager'"$REMOVALSUFFIX"'"
+
+cmfilemanager_list=$lfilemanager_list
 
 lmusic_list="
 app/Apollo'"$REMOVALSUFFIX"'
 app/Eleven'"$REMOVALSUFFIX"'
 app/Music'"$REMOVALSUFFIX"'
 app/SnapdragonMusic'"$REMOVALSUFFIX"'"
+
+cmmusic_list=$lmusic_list
 
 cmscreencast_list="
 priv-app/Screencast'"$REMOVALSUFFIX"'"
@@ -358,11 +380,17 @@ priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'"
 lupdater_list="
 priv-app/CMUpdater'"$REMOVALSUFFIX"'"
 
+cmupdater_list=$lupdater_list
+
 lwallpapers_list="
 app/CMWallpapers'"$REMOVALSUFFIX"'"
 
+cmwallpapers_list=$lwallpapers_list
+
 lweatherprovider_list="
 priv-app/WeatherProvider'"$REMOVALSUFFIX"'"
+
+cmweatherprovider_list=$lweatherprovider_list
 
 # Must be used when Google Contacts is installed
 contactsstock_list="
