@@ -227,7 +227,7 @@ cmaccount
 lbugreport
 lfilemanager
 lmusic
-lscreencast
+cmscreencast
 cmsetupwizard
 lupdater
 lwallpapers
@@ -348,7 +348,7 @@ app/Eleven'"$REMOVALSUFFIX"'
 app/Music'"$REMOVALSUFFIX"'
 app/SnapdragonMusic'"$REMOVALSUFFIX"'"
 
-lscreencast_list="
+cmscreencast_list="
 priv-app/Screencast'"$REMOVALSUFFIX"'"
 
 cmsetupwizard_list="
