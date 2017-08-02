@@ -345,6 +345,7 @@ app/CMFileManager'"$REMOVALSUFFIX"'"
 cmmusic_list="
 app/Apollo'"$REMOVALSUFFIX"'
 app/Eleven'"$REMOVALSUFFIX"'
+priv-app/Eleven'"$REMOVALSUFFIX"'
 app/Music'"$REMOVALSUFFIX"'
 app/SnapdragonMusic'"$REMOVALSUFFIX"'"
 
