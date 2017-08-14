@@ -197,10 +197,10 @@ if [ -n "$newapks" ]; then
   case "$REPLY" in
       y*|Y*)
             for apk in $newapks; do
-              if $(curl -s -S -A "OpenGAppsUploader" "http://www.apkmirror.com/wp-json/apkm/v1/apk_uploadable/$(md5sum "$apk" | cut -f 1 -d ' ')" | grep -q "uploadable"); then
+              if $(curl -s -S -A "OpenGAppsUploader" "https://www.apkmirror.com/wp-json/apkm/v1/apk_uploadable/$(md5sum "$apk" | cut -f 1 -d ' ')" | grep -q "uploadable"); then
                 echo "Uploading $apk to APKmirror.com..."
                 filename="$(basename "$apk")"
-                curl -s -S -A "OpenGAppsUploader" -X POST -F "fullname=$name (OpenGApps.org)" -F "email=$email" -F "changes=" -F "file=@$apk;filename=$filename" "http://www.apkmirror.com/wp-content/plugins/UploadManager/inc/upload.php" > /dev/null
+                curl -s -S -A "OpenGAppsUploader" -X POST -F "fullname=$name (OpenGApps.org)" -F "email=$email" -F "changes=" -F "file=@$apk;filename=$filename" "https://www.apkmirror.com/wp-content/plugins/UploadManager/inc/upload.php" > /dev/null
               else
                 echo "Skipping $apk, already exists on APKmirror.com..."
               fi
