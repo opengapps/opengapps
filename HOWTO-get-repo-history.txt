@@ -1,0 +1,97 @@
+Update each repo per: https://git-scm.com/blog/2010/03/17/replace.html
+
+opengapps/all --> NicholasBuse/all-history
+  1. branched: e3b05ccc1975ce5fd83a3f18c0e10a5ce4af7b41 as "history"
+     $ git branch history e3b05ccc1975ce5fd83a3f18c0e10a5ce4af7b41
+  2. pushed "history" to NicholasBuse/all-history master
+     Cloned opengapps/all to NicholasBuse/all and renamed to all-history
+     $ git remote add history git@github.com:NicholasBuse/all-history.git
+     $ git push -f history history:master
+  3. Created place holder commit
+     $ echo 'get history from NicholasBuse/all-history' | git commit-tree d7628581fa59916aee80d49964b34de8b733ee1b^{tree}
+       d63c8145cac88ec3f92999817915752fae06006c
+  4. $ git rebase --onto d63c8145cac88ec3f92999817915752fae06006c d7628581fa59916aee80d49964b34de8b733ee1b
+  5. $ git push -f origin HEAD:master
+
+  TO RESTORE
+
+  1. $ git remote add history git://github.com/NicholasBuse/all-history.git
+  2. $ git fetch history
+  3. $ git replace 4f12367695cc9a38b342b2d07bfaf82a5ae76e90 e3b05ccc1975ce5fd83a3f18c0e10a5ce4af7b41
+
+opengapps/arm --> NicholasBuse/arm-history
+  1. branched: 3a9ef5dd1438d6d1a4b21bd544d76a45b08ab59f as "history"
+     $ git branch history 3a9ef5dd1438d6d1a4b21bd544d76a45b08ab59f
+  2. pushed "history" to NicholasBuse/arm-history master
+     Cloned opengapps/arm to NicholasBuse/arm and renamed to arm-history
+     $ git remote add history git@github.com:NicholasBuse/arm-history.git
+     $ git push -f history history:master
+  3. Created place holder commit
+     $ echo 'get history from NicholasBuse/arm-history' | git commit-tree 09c70388507249f3ed1b0d12b0fb0930d96146b0^{tree}
+       4f0e21ccec17bd88a3d448ee696e6e99770f308f
+  4. $ git rebase --onto 4f0e21ccec17bd88a3d448ee696e6e99770f308f 09c70388507249f3ed1b0d12b0fb0930d96146b0
+  5. $ git push -f origin HEAD:master
+
+  TO RESTORE
+
+  1. $ git remote add history git://github.com/NicholasBuse/arm-history.git
+  2. $ git fetch history
+  3. $ git replace 8d010fb6f7b4c5a69ba72adf8342cea11765e088 3a9ef5dd1438d6d1a4b21bd544d76a45b08ab59f
+
+opengapps/arm64 --> NicholasBuse/arm64-history
+  1. branched: 2008377dc70b2faf8ffe7be8a658fd31e77daa21 as "history"
+     $ git branch history 2008377dc70b2faf8ffe7be8a658fd31e77daa21
+  2. pushed "history" to NicholasBuse/arm64-history master
+     Cloned opengapps/arm64 to NicholasBuse/arm64 and renamed to arm64-history
+     $ git remote add history git@github.com:NicholasBuse/arm64-history.git
+     $ git push -f history history:master
+  3. Created place holder commit
+     $ echo 'get history from NicholasBuse/arm64-history' | git commit-tree 3fcb384db229a419331dd1a988b91e0a116b34cf^{tree}
+       dfb0b16f581bed6cd2c0816924762ba4030223d6
+  4. $ git rebase --onto dfb0b16f581bed6cd2c0816924762ba4030223d6 3fcb384db229a419331dd1a988b91e0a116b34cf
+  5. $ git push -f origin HEAD:master
+
+  TO RESTORE
+
+  1. $ git remote add history git://github.com/NicholasBuse/arm64-history.git
+  2. $ git fetch history
+  3. $ git replace 3146d65143c6c5233968edbed078faa6a24d15e0 2008377dc70b2faf8ffe7be8a658fd31e77daa21
+
+opengapps/x86 --> NicholasBuse/x86-history
+  1. branched: 6488ad2bf7220a60a7ef2642ff9c3876f9bd87b9 as "history"
+     $ git branch history 6488ad2bf7220a60a7ef2642ff9c3876f9bd87b9
+  2. pushed "history" to NicholasBuse/x86-history master
+     Cloned opengapps/x86 to NicholasBuse/x86 and renamed to x86-history
+     $ git remote add history git@github.com:NicholasBuse/x86-history.git
+     $ git push -f history history:master
+  3. Created place holder commit
+     $ echo 'get history from NicholasBuse/x86-history' | git commit-tree c6651ee00b3c68681a96fb786294f6cb23fba0ff^{tree}
+       f1f6c2a7f10db2187808d526d8759a4b088a3f95
+  4. $ git rebase --onto f1f6c2a7f10db2187808d526d8759a4b088a3f95 c6651ee00b3c68681a96fb786294f6cb23fba0ff
+  5. $ git push -f origin HEAD:master
+
+  TO RESTORE
+
+  1. $ git remote add history git://github.com/NicholasBuse/x86-history.git
+  2. $ git fetch history
+  3. $ git replace bdc5013a3e1073f5f67301f23abe728aeb6edd33 6488ad2bf7220a60a7ef2642ff9c3876f9bd87b9
+
+opengapps/x86_64 --> NicholasBuse/x86_64-history
+  1. branched: b1defac3a0bf9c628009302e09165f4a8b5bf0de as "history"
+     $ git branch history b1defac3a0bf9c628009302e09165f4a8b5bf0de
+  2. pushed "history" to NicholasBuse/x86_64-history master
+     Cloned opengapps/x64_64 to NicholasBuse/x86_64 and renamed to x86_64-history
+     $ git remote add history git@github.com:NicholasBuse/x86_64-history.git
+     $ git push -f history history:master
+  3. Created place holder commit
+     $ echo 'get history NicholasBuse/x86_64-history' | git commit-tree ef9d11d5f0964784621b81f128f89e665f1123e5^{tree}
+       3bc36b8a586f9acc1d93bbe8e2cbb410e2a55eaa
+  4. $ git rebase --onto 3bc36b8a586f9acc1d93bbe8e2cbb410e2a55eaa ef9d11d5f0964784621b81f128f89e665f1123e5
+  5. $ git push -f origin HEAD:master
+
+  TO RESTORE
+
+  1. $ git remote add history git://github.com/NicholasBuse/all-history.git
+  2. $ git fetch history
+  3. $ git replace aff0466f67f47603bfda80ff18aedb3c32afea7b b1defac3a0bf9c628009302e09165f4a8b5bf0de
+
