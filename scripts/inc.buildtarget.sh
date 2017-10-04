@@ -232,8 +232,8 @@ get_package_info(){
     webviewstub)              packagetype="GApps"; packagename="com.google.android.webview.stub"; packagetarget="app/WebViewStub";;
 
     # Regular GApps
-    defaultetc)               packagetype="Core"; packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/preferred-apps/google.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/whitelist_com.android.omadm.service.xml";;
-    defaultframework)         packagetype="Core"; packagefiles="etc/permissions/com.google.android.maps.xml etc/permissions/com.google.android.media.effects.xml etc/permissions/com.google.widevine.software.drm.xml"; packageframework="com.google.android.maps.jar com.google.android.media.effects.jar com.google.widevine.software.drm.jar";;
+    defaultetc)               packagetype="Core"; packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/sysconfig/framework-sysconfig.xml etc/preferred-apps/google.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/whitelist_com.android.omadm.service.xml";;  # default-permissions is gone in Oreo
+    defaultframework)         packagetype="Core"; packagefiles="etc/permissions/com.google.android.maps.xml etc/permissions/com.google.android.media.effects.xml etc/permissions/com.google.widevine.software.drm.xml"; packageframework="com.google.android.maps.jar com.google.android.media.effects.jar com.google.widevine.software.drm.jar";;  # widevine is gone in Oreo
     gmscore)                  packagetype="Core"; packagename="com.google.android.gms"; packagetarget="priv-app/PrebuiltGmsCore";;  # Alternative path on Android One 7.0 is priv-app/GmsCore
     gmssetup)                 packagetype="Core"; packagename="com.google.android.gms.setup"; packagetarget="priv-app/GmsCoreSetupPrebuilt";;
     googlefeedback)           packagetype="Core"; packagename="com.google.android.feedback"; packagetarget="priv-app/GoogleFeedback";;
@@ -264,7 +264,7 @@ get_package_info(){
     clockgoogle)              packagetype="GApps"; packagename="com.google.android.deskclock"; packagetarget="app/PrebuiltDeskClockGoogle";;
     cloudprint)               packagetype="GApps"; packagename="com.google.android.apps.cloudprint"; packagetarget="app/CloudPrint2";;
     contactsgoogle)           packagetype="GApps"; packagename="com.google.android.contacts"; packagetarget="priv-app/GoogleContacts";;
-    dialerframework)          packagetype="GApps"; packagefiles="etc/permissions/com.google.android.dialer.support.xml"; packageframework="com.google.android.dialer.support.jar";;
+    dialerframework)          packagetype="GApps"; packagefiles="etc/permissions/com.google.android.dialer.support.xml etc/sysconfig/dialer_experience.xml"; packageframework="com.google.android.dialer.support.jar";;
     dialergoogle)             packagetype="GApps"; packagename="com.google.android.dialer"; packagetarget="priv-app/GoogleDialer";;
     dmagent)                  packagetype="GApps"; packagename="com.google.android.apps.enterprise.dmagent"; packagetarget="app/DMAgent";;
     docs)                     packagetype="GApps"; packagename="com.google.android.apps.docs.editors.docs"; packagetarget="app/EditorsDocs";;
