@@ -517,6 +517,16 @@ pixelicons"
   fi
 }
 
+api26hack(){
+  if [ "$API" -ge "25" ]; then
+    gappscore="$gappscore
+androidplatformservices"
+  else
+    gappscore="$gappscore
+gsflogin"
+  fi
+}
+
 sdkversionhacks(){
   case "$package" in
     com.android.facelock|com.google.android.feedback|com.google.android.gsf.login|com.google.android.partnersetup|com.google.android.setupwizard|com.google.android.syncadapters.contacts)
@@ -524,6 +534,7 @@ sdkversionhacks(){
         *23) sdkversion="23";;
         *24) sdkversion="24";;
         *25) sdkversion="25";;
+        *26) sdkversion="26";;
         *) ;;
       esac;;
   esac
