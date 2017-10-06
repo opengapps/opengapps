@@ -518,7 +518,7 @@ pixelicons"
 }
 
 api26hack(){
-  if [ "$API" -ge "25" ]; then
+  if [ "$API" -ge "26" ]; then
     gappscore="$gappscore
 androidplatformservices"
   else
