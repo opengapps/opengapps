@@ -529,7 +529,7 @@ gsflogin"
 
 sdkversionhacks(){
   case "$package" in
-    com.android.facelock|com.google.android.feedback|com.google.android.gsf.login|com.google.android.partnersetup|com.google.android.setupwizard|com.google.android.syncadapters.contacts)
+    com.android.facelock|com.google.android.configupdater|com.google.android.feedback|com.google.android.gsf.login|com.google.android.partnersetup|com.google.android.setupwizard|com.google.android.syncadapters.contacts)
       case "$versioncode" in
         *23) sdkversion="23";;
         *24) sdkversion="24";;
