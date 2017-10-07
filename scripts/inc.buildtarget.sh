@@ -117,7 +117,6 @@ remotecontrol
 secondscreensetup
 secondscreenauthbridge
 talkback
-tvcustomization
 tvlauncher
 tvkeyboardgoogle
 tvmovies
@@ -366,7 +365,6 @@ get_package_info(){
     remotecontrol)            packagetype="GApps"; packagename="com.google.android.athome.remotecontrol" packagetarget="priv-app/RemoteControlService";;
     secondscreensetup)        packagetype="GApps"; packagename="com.google.android.sss"; packagetarget="app/SecondScreenSetup";;
     secondscreenauthbridge)   packagetype="GApps"; packagename="com.google.android.sss.authbridge"; packagetarget="app/SecondScreenSetupAuthBridge";;
-    tvcustomization)          packagetype="GApps"; packagename="com.google.android.atv.customization" packagetarget="priv-app/AtvCustomization";;
     tvlauncher)               packagetype="GApps"; packagename="com.google.android.leanbacklauncher.leanback" packagetarget="priv-app/LeanbackLauncher";;
     tvkeyboardgoogle)         packagetype="GApps"; packagename="com.google.android.leanback.ime"; packagetarget="app/LeanbackIme";;
     tvmovies)                 packagetype="GApps"; packagename="com.google.android.videos.leanback"; packagetarget="app/VideosPano";;
