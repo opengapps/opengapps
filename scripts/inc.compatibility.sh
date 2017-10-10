@@ -519,8 +519,10 @@ pixelicons"
 
 api26hack(){
   if [ "$API" -ge "26" ]; then
-    gappscore="$gappscore
+    if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
+      gappscore="$gappscore
 androidplatformservices"
+    fi
   else
     gappscore="$gappscore
 gsflogin"
