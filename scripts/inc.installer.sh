@@ -246,6 +246,7 @@ livewallpapers
 lockclock
 lrecorder
 lsetupwizard
+lupdater
 mms
 mzfilemanager
 mzpay
@@ -476,6 +477,9 @@ priv-app/Recorder'"$REMOVALSUFFIX"'"
 lsetupwizard_list="
 app/LineageSetupWizard'"$REMOVALSUFFIX"'
 priv-app/LineageSetupWizard'"$REMOVALSUFFIX"'"
+
+lupdater_list="
+priv-app/Updater'"$REMOVALSUFFIX"'"
 
 mms_list="
 app/messaging'"$REMOVALSUFFIX"'
