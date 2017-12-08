@@ -102,7 +102,6 @@ googlebackuptransport
 googlecontactssync
 gsfcore
 notouch
-setupwraith
 tvetc
 tvframework
 tvgmscore
@@ -346,7 +345,6 @@ get_package_info(){
                                 packagename="com.google.tungsten.bugreportsender"
                               fi;;
     notouch)                  packagetype="Core"; packagename="com.google.android.gsf.notouch"; packagetarget="app/NoTouchAuthDelegate";;
-    setupwraith)              packagetype="Core"; packagename="com.google.android.tungsten.setupwraith"; packagetarget="priv-app/SetupWraith";;
     tvetc)                    packagetype="Core"; packagefiles="etc/sysconfig/google.xml etc/sysconfig/google_build.xml";;
     tvframework)              packagetype="Core"; packagefiles="etc/permissions/com.google.android.pano.v1.xml etc/permissions/com.google.android.tv.installed.xml etc/permissions/com.google.widevine.software.drm.xml"; packageframework="com.google.android.pano.v1.jar com.google.widevine.software.drm.jar";;
     tvgmscore)                packagetype="Core"; packagename="com.google.android.gms.leanback"; packagetarget="priv-app/PrebuiltGmsCorePano";;
