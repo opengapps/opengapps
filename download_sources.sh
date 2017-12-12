@@ -11,7 +11,11 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-SCRIPT="$(readlink -f "$0")"
+if [ "$(uname -s)" = 'Linux' ]; then
+  SCRIPT="$(readlink -f "$0")"
+else
+  SCRIPT="$(readlink "$0")"
+fi
 TOP="$(dirname "$SCRIPT")"
 SCRIPTS="$TOP/scripts"
 
