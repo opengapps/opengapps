@@ -537,6 +537,7 @@ sdkversionhacks(){
         *24) sdkversion="24";;
         *25) sdkversion="25";;
         *26) sdkversion="26";;
+        *27) sdkversion="27";;
         *) ;;
       esac;;
   esac

@@ -67,6 +67,7 @@ case "$API" in
   24) PLATFORM="7.0";;
   25) PLATFORM="7.1";;
   26) PLATFORM="8.0";;
+  27) PLATFORM="8.1";;
   *)  echo "ERROR: Unknown API version! Aborting..."; exit 1;;
 esac
 
