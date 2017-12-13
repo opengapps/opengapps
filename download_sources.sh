@@ -11,11 +11,12 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-if [ "$(uname -s)" = 'Linux' ]; then
-  SCRIPT="$(readlink -f "$0")"
-else
-  SCRIPT="$(readlink "$0")"
-fi
+
+case $(uname -s) in
+  Darwin|Macintosh) readlink() { perl -MCwd -e 'print Cwd::abs_path shift' "$2"; };;
+esac;
+
+SCRIPT="$(readlink -f "$0")"
 TOP="$(dirname "$SCRIPT")"
 SCRIPTS="$TOP/scripts"
 
