@@ -1500,8 +1500,8 @@ fi
 
 # Is device VRMode compatible
 vrmode_compat=false
-for xml in $(grep -rl 'name="android.software.vr.mode"' $SYSTEM/etc/); do
-  if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -q 'name="android.software.vr.mode"' $SYSTEM/etc/ ); then
+for xml in $(grep -rl '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/vendor/etc/); do
+  if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -qr '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/vendor/etc/ ); then
     vrmode_compat=true
     break
   fi
