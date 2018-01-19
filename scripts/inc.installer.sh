@@ -1841,7 +1841,7 @@ if ( ! contains "$gapps_list" "cameragoogle" ) && ( ! grep -qiE '^camerastock$' 
 fi;
 
 # Verify device is VRMode compatible, BEFORE we allow vrservice in $gapps_list
-if ( contains "$gapps_list" "vrservice" ) && [ "$vrmode_compat" = "true" ]; then
+if ( contains "$gapps_list" "vrservice" ) && [ "$vrmode_compat" = "false" ]; then
   gapps_list=${gapps_list/vrservice}; # we must DISALLOW vrservice from being installed
   install_note="${install_note}vrservice_compat_msg"$'\n'; # make note that VRService will NOT be installed as user requested
 fi
