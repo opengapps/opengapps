@@ -1487,8 +1487,8 @@ fi
 
 # Is device FaceUnlock compatible
 if ( ! grep -qE "Victory|herring|sun4i" /proc/cpuinfo ); then
-  for xml in $SYSTEM/etc/permissions/android.hardware.camera.front.xml $SYSTEM/etc/permissions/android.hardware.camera.xml; do
-    if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -q "feature name=\"android.hardware.camera.front" ); then
+  for xml in $SYSTEM/etc/permissions/android.hardware.camera.front.xml $SYSTEM/etc/permissions/android.hardware.camera.xml $SYSTEM/vendor/etc/permissions/android.hardware.camera.front.xml $SYSTEM/vendor/etc/permissions/android.hardware.camera.xml; do
+    if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -qr "feature name=\"android.hardware.camera.front" ); then
       faceunlock_compat=true
       break
     fi
