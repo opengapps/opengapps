@@ -472,6 +472,9 @@ app/LiveWallpapers'"$REMOVALSUFFIX"'"
 lockclock_list="
 app/LockClock'"$REMOVALSUFFIX"'"
 
+logcat_list="
+priv-app/MatLog'"$REMOVALSUFFIX"'"
+
 lrecorder_list="
 priv-app/Recorder'"$REMOVALSUFFIX"'"
 
