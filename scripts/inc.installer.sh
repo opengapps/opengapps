@@ -348,6 +348,7 @@ app/Apollo'"$REMOVALSUFFIX"'
 app/Eleven'"$REMOVALSUFFIX"'
 priv-app/Eleven'"$REMOVALSUFFIX"'
 app/Music'"$REMOVALSUFFIX"'
+app/Phonograph'"$REMOVALSUFFIX"'
 app/SnapdragonMusic'"$REMOVALSUFFIX"'"
 
 cmscreencast_list="
