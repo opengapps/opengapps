@@ -537,6 +537,7 @@ lib/libttspico.so
 tts"
 
 printservicestock_list="
+app/BuiltInPrintService'"$REMOVALSUFFIX"'
 app/PrintRecommendationService'"$REMOVALSUFFIX"'"
 
 provision_list="
