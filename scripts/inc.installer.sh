@@ -329,7 +329,8 @@ app/FineOSCamera'"$REMOVALSUFFIX"'"
 clockstock_list="
 app/DeskClock'"$REMOVALSUFFIX"'
 app/DeskClock2'"$REMOVALSUFFIX"'
-app/FineOSDeskClock'"$REMOVALSUFFIX"'"
+app/FineOSDeskClock'"$REMOVALSUFFIX"'
+app/OmniClockOSS'"$REMOVALSUFFIX"'"
 
 cmaccount_list="
 priv-app/CMAccount'"$REMOVALSUFFIX"'"
