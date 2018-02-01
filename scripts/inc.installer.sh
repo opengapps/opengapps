@@ -304,6 +304,7 @@ app/FineOSCalculator'"$REMOVALSUFFIX"'"
 # Must be used when GoogleCalendar is installed
 calendarstock_list="
 app/Calendar'"$REMOVALSUFFIX"'
+app/MonthCalendarWidget'"$REMOVALSUFFIX"'
 priv-app/Calendar'"$REMOVALSUFFIX"'
 app/FineOSCalendar'"$REMOVALSUFFIX"'"
 
