@@ -235,7 +235,7 @@ cmweatherprovider
 dashclock
 exchangestock
 extservicesstock
-extssharedstock
+extsharedstock
 fmradio
 galaxy
 hexo
@@ -395,7 +395,7 @@ priv-app/Exchange2'"$REMOVALSUFFIX"'"
 extservicesstock_list="
 priv-app/ExtServices'"$REMOVALSUFFIX"'"
 
-extssharedstock_list="
+extsharedstock_list="
 app/ExtShared'"$REMOVALSUFFIX"'"
 
 fmradio_list="
