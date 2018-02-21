@@ -131,7 +131,6 @@ form(
 
     "gapps",     "Choose GApps which you want to add on install/exclude list",        "",                                         "group",
       "Messenger",     "<b>Android Messages</b>",       "(not installed on tablet devices)",                      "check",
-      "AndroidPay",     "<b>Android Pay</b>",       "",                      "check",
       "BatteryUsage",     "<b>Device Health Services</b>",       "requires Android 7.1 (API Level 25) or higher",                      "check",
       "Books",     "<b>Google Play Books</b>",       "",                      "check",
       "CalculatorGoogle",     "<b>Google Calculator</b>",       "",                      "check",
@@ -156,6 +155,7 @@ form(
       "GCS",     "<b>Google Connectivity Services</b>",       "To Exclude BOTH Google Connectivity Services AND Project Fi by Google <#f00>OR</#> To Include Google Connectivity Services",                      "check",
       "Gmail",     "<b>Gmail</b>",       "",                      "check",
       "GoogleNow",     "<b>Google Now Launcher</b>",       "(Google Search Required)",                      "check",
+      "GooglePay",     "<b>Google Pay</b>",       "",                      "check",
       "GooglePlus",     "<b>Google+</b>",       "",                      "check",
       "GoogleTTS",     "<b>Google Text-to-Speech</b>",       "",                      "check",
       "Hangouts",     "<b>Google Hangouts</b>",       "",                      "check",
@@ -339,12 +339,6 @@ endif;
 appendvar("gapps", "\n\n");
 
 if
-  prop("gapps.prop", "AndroidPay")=="1"
-then
-  appendvar("gapps", "AndroidPay\n");
-endif;
-
-if
   prop("gapps.prop", "BatteryUsage")=="1"
 then
   appendvar("gapps", "BatteryUsage\n");
@@ -486,6 +480,12 @@ if
   prop("gapps.prop", "GoogleNow")=="1"
 then
   appendvar("gapps", "GoogleNow\n");
+endif;
+
+if
+  prop("gapps.prop", "GooglePay")=="1"
+then
+  appendvar("gapps", "GooglePay\n");
 endif;
 
 if
