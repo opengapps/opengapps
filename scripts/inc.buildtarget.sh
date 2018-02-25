@@ -286,7 +286,7 @@ get_package_info(){
                                         FACELOCKLIB="libfacelock_jni.so"
                                       fi
                                       if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib of libfrsdk.so
-                                        packagelibs="$FACELOCKLIB $FACELOCKLIB2+fallback libfrsdk.so+fallback";
+                                        packagelibs="$FACELOCKLIB libfrsdk.so+fallback";
                                       else
                                         packagelibs="$FACELOCKLIB $FACELOCKLIB2 libfrsdk.so";
                                       fi;;
