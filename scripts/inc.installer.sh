@@ -235,7 +235,7 @@ cmweatherprovider
 dashclock
 exchangestock
 extservicesstock
-extssharedstock
+extsharedstock
 fmradio
 galaxy
 hexo
@@ -304,6 +304,7 @@ app/FineOSCalculator'"$REMOVALSUFFIX"'"
 # Must be used when GoogleCalendar is installed
 calendarstock_list="
 app/Calendar'"$REMOVALSUFFIX"'
+app/MonthCalendarWidget'"$REMOVALSUFFIX"'
 priv-app/Calendar'"$REMOVALSUFFIX"'
 app/FineOSCalendar'"$REMOVALSUFFIX"'"
 
@@ -329,7 +330,8 @@ app/FineOSCamera'"$REMOVALSUFFIX"'"
 clockstock_list="
 app/DeskClock'"$REMOVALSUFFIX"'
 app/DeskClock2'"$REMOVALSUFFIX"'
-app/FineOSDeskClock'"$REMOVALSUFFIX"'"
+app/FineOSDeskClock'"$REMOVALSUFFIX"'
+app/OmniClockOSS'"$REMOVALSUFFIX"'"
 
 cmaccount_list="
 priv-app/CMAccount'"$REMOVALSUFFIX"'"
@@ -348,6 +350,7 @@ app/Apollo'"$REMOVALSUFFIX"'
 app/Eleven'"$REMOVALSUFFIX"'
 priv-app/Eleven'"$REMOVALSUFFIX"'
 app/Music'"$REMOVALSUFFIX"'
+app/Phonograph'"$REMOVALSUFFIX"'
 app/SnapdragonMusic'"$REMOVALSUFFIX"'"
 
 cmscreencast_list="
@@ -392,7 +395,7 @@ priv-app/Exchange2'"$REMOVALSUFFIX"'"
 extservicesstock_list="
 priv-app/ExtServices'"$REMOVALSUFFIX"'"
 
-extssharedstock_list="
+extsharedstock_list="
 app/ExtShared'"$REMOVALSUFFIX"'"
 
 fmradio_list="
@@ -471,6 +474,9 @@ app/LiveWallpapers'"$REMOVALSUFFIX"'"
 lockclock_list="
 app/LockClock'"$REMOVALSUFFIX"'"
 
+logcat_list="
+priv-app/MatLog'"$REMOVALSUFFIX"'"
+
 lrecorder_list="
 priv-app/Recorder'"$REMOVALSUFFIX"'"
 
@@ -533,6 +539,7 @@ lib/libttspico.so
 tts"
 
 printservicestock_list="
+app/BuiltInPrintService'"$REMOVALSUFFIX"'
 app/PrintRecommendationService'"$REMOVALSUFFIX"'"
 
 provision_list="
@@ -580,6 +587,7 @@ app/WhisperPush'"$REMOVALSUFFIX"'"
 # Pieces that may be left over from AIO ROMs that can/will interfere with these GApps
 other_list="
 /system/app/BooksStub'"$REMOVALSUFFIX"'
+/system/app/BookmarkProvider'"$REMOVALSUFFIX"'
 /system/app/CalendarGoogle'"$REMOVALSUFFIX"'
 /system/app/CloudPrint'"$REMOVALSUFFIX"'
 /system/app/DeskClockGoogle'"$REMOVALSUFFIX"'
@@ -1487,8 +1495,8 @@ fi
 
 # Is device FaceUnlock compatible
 if ( ! grep -qE "Victory|herring|sun4i" /proc/cpuinfo ); then
-  for xml in $SYSTEM/etc/permissions/android.hardware.camera.front.xml $SYSTEM/etc/permissions/android.hardware.camera.xml; do
-    if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -q "feature name=\"android.hardware.camera.front" ); then
+  for xml in $SYSTEM/etc/permissions/android.hardware.camera.front.xml $SYSTEM/etc/permissions/android.hardware.camera.xml $SYSTEM/vendor/etc/permissions/android.hardware.camera.front.xml $SYSTEM/vendor/etc/permissions/android.hardware.camera.xml; do
+    if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -qr "feature name=\"android.hardware.camera.front" ); then
       faceunlock_compat=true
       break
     fi
@@ -1500,8 +1508,8 @@ fi
 
 # Is device VRMode compatible
 vrmode_compat=false
-for xml in $(grep -rl 'name="android.software.vr.mode"' $SYSTEM/etc/); do
-  if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -q 'name="android.software.vr.mode"' $SYSTEM/etc/ ); then
+for xml in $(grep -rl '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/vendor/etc/); do
+  if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -qr '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/vendor/etc/ ); then
     vrmode_compat=true
     break
   fi
@@ -1841,7 +1849,7 @@ if ( ! contains "$gapps_list" "cameragoogle" ) && ( ! grep -qiE '^camerastock$' 
 fi;
 
 # Verify device is VRMode compatible, BEFORE we allow vrservice in $gapps_list
-if ( contains "$gapps_list" "vrservice" ) && [ "$vrmode_compat" = "true" ]; then
+if ( contains "$gapps_list" "vrservice" ) && [ "$vrmode_compat" = "false" ]; then
   gapps_list=${gapps_list/vrservice}; # we must DISALLOW vrservice from being installed
   install_note="${install_note}vrservice_compat_msg"$'\n'; # make note that VRService will NOT be installed as user requested
 fi

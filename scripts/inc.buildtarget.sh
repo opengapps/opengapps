@@ -26,10 +26,10 @@ vending"
 
 gappscore_optional=""
 
-gappssuper="androidpay
-dmagent
+gappssuper="dmagent
 earth
 gcs
+googlepay
 indic
 japanese
 korean
@@ -243,7 +243,6 @@ get_package_info(){
     setupwizardtablet )       packagetype="Core"; packagename="com.google.android.setupwizard.tablet"; packagetarget="priv-app/SetupWizard";;
     vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
 
-    androidpay)               packagetype="GApps"; packagename="com.google.android.apps.walletnfcrel"; packagetarget="app/Wallet";;
     batteryusage)             packagetype="GApps"; packagename="com.google.android.apps.turbo"; packagetarget="priv-app/Turbo";;
     books)                    packagetype="GApps"; packagename="com.google.android.apps.books"; packagetarget="app/Books";;
     calculatorgoogle)         packagetype="GApps"; packagename="com.google.android.calculator"; packagetarget="app/CalculatorGooglePrebuilt";;
@@ -280,6 +279,8 @@ get_package_info(){
                                 arm*) packagetype="GApps"; packagename="com.android.facelock"; packagetarget="app/FaceLock";
                                       if [ "$API" -ge "24" ]; then  # On 7.0+ the facelock library is libfacenet.so
                                         FACELOCKLIB="libfacenet.so"
+					# On 8.0+ we also need libprotobuf-cpp-shit.so as there is no libfacenet.so for 8.0+ 32bit devices.
+                                        FACELOCKLIB2="libprotobuf-cpp-shit.so"
                                       else  # Before Nougat there is a pittpatt folder and libfacelock_jni
                                         packagefiles="vendor/pittpatt/";
                                         FACELOCKLIB="libfacelock_jni.so"
@@ -287,13 +288,14 @@ get_package_info(){
                                       if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib of libfrsdk.so
                                         packagelibs="$FACELOCKLIB libfrsdk.so+fallback";
                                       else
-                                        packagelibs="$FACELOCKLIB libfrsdk.so";
+                                        packagelibs="$FACELOCKLIB $FACELOCKLIB2 libfrsdk.so";
                                       fi;;
                               esac;;
     fitness)                  packagetype="GApps"; packagename="com.google.android.apps.fitness"; packagetarget="app/FitnessPrebuilt";;
     gcs)                      packagetype="GApps"; packagename="com.google.android.apps.gcs"; packagetarget="priv-app/GCS";;
     gmail)                    packagetype="GApps"; packagename="com.google.android.gm"; packagetarget="app/PrebuiltGmail";;
     googlenow)                packagetype="GApps"; packagename="com.google.android.launcher"; packagetarget="app/GoogleHome";;
+    googlepay)                packagetype="GApps"; packagename="com.google.android.apps.walletnfcrel"; packagetarget="app/Wallet";;
     googlepixelconfig)        packagetype="GApps"; packagefiles="etc/sysconfig/nexus.xml";;
     googleplus)               packagetype="GApps"; packagename="com.google.android.apps.plus"; packagetarget="app/PlusOne";;
     googletts)                packagetype="GApps"; packagename="com.google.android.tts"; packagetarget="app/GoogleTTS";;
