@@ -431,6 +431,7 @@ app/HoloSpiralWallpaper'"$REMOVALSUFFIX"'"
 keyboardstock_list="
 app/LatinIME'"$REMOVALSUFFIX"'
 app/MzInput'"$REMOVALSUFFIX"'
+app/OpenWnn'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPal'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalPortuguesebrPack'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalSpanishLatinPack'"$REMOVALSUFFIX"'
