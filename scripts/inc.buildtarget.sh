@@ -249,7 +249,9 @@ get_package_info(){
     calendargoogle)           packagetype="GApps"; packagename="com.google.android.calendar"; packagetarget="app/CalendarGooglePrebuilt";;
     calsync)                  packagetype="GApps"; packagename="com.google.android.syncadapters.calendar"; packagetarget="app/GoogleCalendarSyncAdapter";;
     cameragoogle)             packagetype="GApps"; packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera";
-                              if [ "$API" -ge "25" ]; then  # On Nougat 7.1 we bundle Camera 2016
+                              if [ "$API" -ge "26" ]; then  # On Oreo 8.0+ we bundle Camera 2017
+                                packagefiles="etc/permissions/com.google.android.camera.experimental2017.xml"; packageframework="com.google.android.camera.experimental2017.jar"
+                              elif [ "$API" -ge "25" ]; then  # On Nougat 7.1 we bundle Camera 2016
                                 packagefiles="etc/permissions/com.google.android.camera.experimental2016.xml"; packageframework="com.google.android.camera.experimental2016.jar"
                               elif [ "$API" -ge "23" ]; then  # On Marshmallow+ we bundle Camera 2015 for non-legacy camera
                                 packagefiles="etc/permissions/com.google.android.camera.experimental2015.xml"; packageframework="com.google.android.camera.experimental2015.jar"
@@ -279,7 +281,7 @@ get_package_info(){
                                 arm*) packagetype="GApps"; packagename="com.android.facelock"; packagetarget="app/FaceLock";
                                       if [ "$API" -ge "24" ]; then  # On 7.0+ the facelock library is libfacenet.so
                                         FACELOCKLIB="libfacenet.so"
-					# On 8.0+ we also need libprotobuf-cpp-shit.so as there is no libfacenet.so for 8.0+ 32bit devices.
+                                        # On 8.0+ we also need libprotobuf-cpp-shit.so as there is no libfacenet.so for 8.0+ 32bit devices.
                                         FACELOCKLIB2="libprotobuf-cpp-shit.so"
                                       else  # Before Nougat there is a pittpatt folder and libfacelock_jni
                                         packagefiles="vendor/pittpatt/";
@@ -334,8 +336,14 @@ get_package_info(){
     street)                   packagetype="GApps"; packagename="com.google.android.street"; packagetarget="app/Street";;
     taggoogle)                packagetype="GApps"; packagename="com.google.android.tag"; packagetarget="priv-app/TagGoogle";;
     translate)                packagetype="GApps"; packagename="com.google.android.apps.translate"; packagetarget="app/TranslatePrebuilt";;
-    vrservice)                packagetype="GApps"; packagefiles="etc/sysconfig/google_vr_build.xml"; packagename="com.google.vr.vrcore"; packagetarget="app/GoogleVrCore";;
-    wallpapers)               packagetype="GApps"; packagename="com.google.android.apps.wallpaper"; packagetarget="app/WallpaperPickerGooglePrebuilt";;
+    vrservice)                packagetype="GApps"; packagefiles="etc/sysconfig/google_vr_build.xml"; packagename="com.google.vr.vrcore"; packagetarget="app/GoogleVrCore"
+                              if [ "$API" -ge "26" ]; then  # On Oreo 8.0+ we bundle 2017 VR Platform
+                                packagefiles="etc/permissions/com.google.vr.platform.xml etc/sysconfig/google_vr_build.xml"; packageframework="com.google.vr.platform.jar"
+                              fi;;
+    wallpapers)               packagetype="GApps"; packagename="com.google.android.apps.wallpaper"; packagetarget="app/WallpaperPickerGooglePrebuilt"
+                              if [ "$API" -ge "26" ]; then  # On Oreo 8.0+ include the XML that unlocks the Pixel 2 exclusive wallpaper categories: "Come Alive" and "Come and Play"
+                                packagefiles="etc/sysconfig/pixel_2017.xml"
+                              fi;;
     youtube)                  packagetype="GApps"; packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
     zhuyin)                   packagetype="GApps"; packagename="com.google.android.apps.inputmethod.zhuyin"; packagetarget="app/GoogleZhuyinIME";;  # also ZhuyinIME exists on some ROMs
 
