@@ -1526,8 +1526,8 @@ esac;
 
 # Check if Google Pixel
 case $device_name in
-  marlin|sailfish) googlepixel_compat="true";;
-  *)               googlepixel_compat="false";;
+  marlin|sailfish|walleye|taimen) googlepixel_compat="true";;
+  *)                              googlepixel_compat="false";;
 esac
 
 log "ROM Android version" "$(get_prop "ro.build.version.release")"
