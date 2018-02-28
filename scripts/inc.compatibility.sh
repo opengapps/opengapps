@@ -529,6 +529,17 @@ gsflogin"
   fi
 }
 
+# Does nothing now, here for completeness
+api27hack(){
+  if [ "$API" -ge "27" ]; then
+    if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
+      gappscore="$gappscore"
+    fi
+  else
+    gappscore="$gappscore"
+  fi
+}
+
 sdkversionhacks(){
   case "$package" in
     com.android.facelock|com.google.android.configupdater|com.google.android.feedback|com.google.android.gsf.login|com.google.android.partnersetup|com.google.android.setupwizard|com.google.android.syncadapters.contacts)
