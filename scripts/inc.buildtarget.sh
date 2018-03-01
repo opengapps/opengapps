@@ -285,8 +285,9 @@ get_package_info(){
                                 arm*) packagetype="GApps"; packagename="com.android.facelock"; packagetarget="app/FaceLock";
                                       if [ "$API" -ge "24" ]; then  # On 7.0+ the facelock library is libfacenet.so
                                         FACELOCKLIB="libfacenet.so"
-                                        # On 8.0+ we also need libprotobuf-cpp-shit.so as there is no libfacenet.so for 8.0+ 32bit devices.
-                                        FACELOCKLIB2="libprotobuf-cpp-shit.so"
+                                        if [ "$API" -ge "26" ]; then # On 8.0+ we also need libprotobuf-cpp-shit.so as there is no libfacenet.so for 8.0+ 32bit devices.
+                                          FACELOCKLIB2="libprotobuf-cpp-shit.so"
+                                        fi
                                       else  # Before Nougat there is a pittpatt folder and libfacelock_jni
                                         packagefiles="vendor/pittpatt/";
                                         FACELOCKLIB="libfacelock_jni.so"
