@@ -244,6 +244,7 @@ keyboardstock
 lbr0zip
 livewallpapers
 lockclock
+logcat
 lrecorder
 lsetupwizard
 lupdater
