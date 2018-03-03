@@ -244,6 +244,7 @@ keyboardstock
 lbr0zip
 livewallpapers
 lockclock
+logcat
 lrecorder
 lsetupwizard
 lupdater
@@ -1425,7 +1426,13 @@ fi
 
 cmcompatibilityhacks="false"  # test for CM/Lineage since they do weird AOSP-breaking changes to their code, breaking some GApps
 case "$(get_prop "ro.build.flavor")" in
-  cm_*|lineage_*) cmcompatibilityhacks="true"; if [ "$rom_build_sdk" -ge "24" ]; then aosp_remove_list="${aosp_remove_list}cmsetupwizard"$'\n';fi;;  # CMSetupWizard is broken in LineageOS 14+ and can be safely removed on CM14+ as well
+  cm_*|lineage_*)
+  if [ "$rom_build_sdk" -lt "27" ]; then
+  	cmcompatibilityhacks="true";
+  fi
+  if [ "$rom_build_sdk" -ge "24" ]; then # CMSetupWizard is broken in LineageOS 14+ and can be safely removed on CM14+ as well
+  	aosp_remove_list="${aosp_remove_list}cmsetupwizard"$'\n';
+  fi;;
 esac
 
 # Check for Clean Override in gapps-config

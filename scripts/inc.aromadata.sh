@@ -130,14 +130,13 @@ form(
       "0",     "Exclude",   "Choose the apps you DON'T WANT installed from the list below.",       "select",
 
     "gapps",     "Choose GApps which you want to add on install/exclude list",        "",                                         "group",
-      "Messenger",     "<b>Android Messages</b>",       "(not installed on tablet devices)",                      "check",
       "BatteryUsage",     "<b>Device Health Services</b>",       "requires Android 7.1 (API Level 25) or higher",                      "check",
       "Books",     "<b>Google Play Books</b>",       "",                      "check",
       "CalculatorGoogle",     "<b>Google Calculator</b>",       "",                      "check",
-      "CarrierServices",     "<b>Carrier Services</b>",       "",                      "check",
       "CalendarGoogle",     "<b>Google Calendar</b>",       "",                      "check",
       "CalSync",     "<b>Google Calendar Sync</b>",       "(installed by default when Google Calendar is NOT being installed)",                      "check",
       "CameraGoogle",     "<b>Google Camera</b>",       "",                      "check",
+      "CarrierServices",     "<b>Carrier Services</b>",       "",                      "check",
       "Chrome",     "<b>Google Chrome</b>",       "",                      "check",
       "ClockGoogle",     "<b>Google Clock</b>",       "",                      "check",
       "CloudPrint",     "<b>Google Cloud Print</b>",       "",                      "check",
@@ -166,6 +165,7 @@ form(
       "KeyboardGoogle",     "<b>Google Keyboard</b>",       "",                      "check",
       "Korean",     "<b>Google Korean Input</b>",       "",                      "check",
       "Maps",     "<b>Google Maps</b>",       "",                      "check",
+      "Messenger",     "<b>Android Messages</b>",       "(not installed on tablet devices)",                      "check",
       "Movies",     "<b>Google Play Movies & TV</b>",       "",                      "check",
       "Music",     "<b>Google Play Music</b>",       "",                      "check",
       "NewsStand",     "<b>Google Play Newsstand</b>",       "",                      "check",
@@ -208,13 +208,13 @@ form(
     "@default",
     bypass.prop,
     "bypassrem",     "Bypass the automatic removal of Stock/AOSP apps.\nPlease only select if you are sure you want them installed alongside the Google replacement.",        "",     "group",
-      "+Browser",     "<b>+Browser</b>",      "",    "check",
-      "+CameraStock", "<b>+CameraStock</b>",  "",    "check",
-      "+Email",     "<b>+Email</b>",      "",        "check",
-      "+Gallery",     "<b>+Gallery</b>",      "",    "check",
-      "+Launcher",     "<b>+Launcher</b>",      "",  "check",
-      "+MMS",     "<b>+MMS</b>",      "",            "check",
-      "+PicoTTS",     "<b>+PicoTTS</b>",      "",    "check"
+      "+Browser",     "<b>+Browser</b>",      "(don't remove Stock Browser, even if Google Chrome is being installed)",    "check",
+      "+CameraStock", "<b>+CameraStock</b>",  "(don't remove Stock Camera, even if Google Camera is being installed)",    "check",
+      "+Email",     "<b>+Email</b>",      "(don't remove Stock Email, even if Gmail is being installed)",        "check",
+      "+Gallery",     "<b>+Gallery</b>",      "(don't remove Stock Gallery, even if Google Photos is being installed)",    "check",
+      "+Launcher",     "<b>+Launcher</b>",      "(don't remove Stock Launchers, even if Google Now Launcher is being installed)",  "check",
+      "+MMS",     "<b>+MMS</b>",      "(don't remove Stock SMS app, even if Android Messages is being installed)",            "check",
+      "+PicoTTS",     "<b>+PicoTTS</b>",      "(on't remove PicoTTS, even if GoogleTTS is being installed)",    "check"
 );
 
 form(
@@ -223,42 +223,57 @@ form(
     "@default",
     rem.prop,
     "remove",     "Choose apps which you want to remove",        "",                                         "group",
-      "BasicDreams",     "<b>Basic Dreams Live Wallpaper</b>",       "",                      "check",
-      "Browser",     "<b>Stock/AOSP Browser</b>",       "(automatically removed when Google Chrome is installed)",                      "check",
-      "CalendarStock",     "<b>Stock/AOSP Calendar</b>",       "(automatically removed when Google Calendar is installed)",                      "check",
-      "CameraStock",     "<b>Stock/AOSP/Moto Camera</b>",       "(automatically removed when Google Camera is installed)",                      "check",
-      "ClockStock",     "<b>Stock/AOSP Clock</b>",       "(automatically removed when Google Clock is installed)",                      "check",
       "CMAccount",     "<b>CyanogenMod Account</b>",       "",                      "check",
       "CMAudioFX",     "<b>CyanogenMod AudioFX</b>",       "",                      "check",
       "CMBugReport",     "<b>CyanogenMod Bug Report</b>",       "",                      "check",
       "CMFileManager",     "<b>CyanogenMod File Manager</b>",       "",                      "check",
       "CMMusic",     "<b>CyanogenMod Music</b>",       "",                      "check",
-      "CMSetupWizard",     "<b>CyanogenMod Setup Wizard</b>",       "",                      "check",
+      "CMScreenCast",     "<b>CyanogenMod ScreenCast</b>",       "",                      "check",
+      "CMSetupWizard",     "<b>CyanogenMod Setup Wizard</b>",       "(see notes for CMSetupWizard on the wiki)",                      "check",
       "CMUpdater",     "<b>CyanogenMod Updater</b>",       "",                      "check",
       "CMWallpapers",     "<b>CyanogenMod Wallpapers</b>",       "",                      "check",
+      "CMWeatherProvider",     "<b>CyanogenMod Weather Underground</b>",       "",                      "check",
       "DashClock",     "<b>DashClock Widget</b>",       "(a widget found in certain ROMs)",                      "check",
-      "Email",     "<b>Stock/AOSP Email</b>",       "",                      "check",
-      "ExchangeStock",     "<b>Stock/AOSP Exchange Services</b>",       "(automatically removed when Google Exchange Services is installed)",                      "check",
-      "FMRadio",     "<b>Stock/AOSP FM Radio</b>",       "(not found on all devices or ROM's)",                      "check",
-      "Galaxy",     "<b>Galaxy Live Wallpaper</b>",       "",                      "check",
-      "Gallery",     "<b>Stock/AOSP Gallery</b>",       "(automatically removed when Google Photos is installed)",                      "check",
-      "HoloSpiral",     "<b>Holo Spiral Live Wallpaper</b>",       "",                      "check",
-      "KeyboardStock",     "<b>Stock/AOSP Keyboard</b>",       "(automatically removed when Google Keyboard is installed)",                      "check",
-      "Launcher",     "<b>Stock/AOSP Launcher(s)</b>",       "(automatically removed when Google Launcher is installed)",                      "check",
-      "LiveWallpapers",     "<b>Live Wallpapers</b>",       "",                      "check",
-      "LockClock",     "<b>Lock Clock</b>",       "(a widget found in certain ROMs)",                      "check",
+      "Hexo",     "<b>Hexo Libre CM Theme</b>",       "",                      "check",
       "LRecorder",     "<b>LineageOS Recorder</b>",       "",                      "check",
-      "MMS",     "<b>Stock/AOSP MMS</b>",       "(automatically removed when Android Messages is installed)",                      "check",
+      "LSetupWizard",     "<b>LineageOS Setup Wizard</b>",       "",                      "check",
+      "LUpdater",     "<b>LineageOS Updater</b>",       "",                      "check",
+      "Logcat",     "<b>OmniSwitch MatLog</b>",       "",                      "check",
+      "OmniSwitch",     "<b>OmniSwitch App Switcher</b>",       "",                      "check",
+      "BasicDreams",     "<b>Basic Dreams Live Wallpaper</b>",       "",                      "check",
+      "Galaxy",     "<b>Galaxy Live Wallpaper</b>",       "",                      "check",
+      "HoloSpiral",     "<b>Holo Spiral Live Wallpaper</b>",       "",                      "check",
       "NoiseField",     "<b>NoiseField Live Wallpaper</b>",       "",                      "check",
       "Phasebeam",     "<b>Phasebeam Live Wallpaper</b>",       "",                      "check",
       "PhotoPhase",     "<b>PhotoPhase Live Wallpaper</b>",       "",                      "check",
       "PhotoTable",     "<b>PhotoTable Live Wallpaper</b>",       "",                      "check",
+      "Browser",     "<b>Stock/AOSP Browser</b>",       "(automatically removed when Google Chrome is installed)",                      "check",
+      "CalculatorStock",     "<b>Stock/AOSP Calculator</b>",       "(automatically removed when Google Calculator is installed)",                      "check",
+      "CalendarStock",     "<b>Stock/AOSP Calendar</b>",       "(automatically removed when Google Calendar is installed)",                      "check",
+      "CameraStock",     "<b>Stock/AOSP/Moto Camera</b>",       "(automatically removed when Google Camera is installed)",                      "check",
+      "ClockStock",     "<b>Stock/AOSP Clock</b>",       "(automatically removed when Google Clock is installed)",                      "check",
+      "Email",     "<b>Stock/AOSP Email</b>",       "(automatically removed when Gmail is installed)",                      "check",
+      "ExchangeStock",     "<b>Stock/AOSP Exchange Services</b>",       "(automatically removed when Google Exchange Services is installed)",                      "check",
+      "FMRadio",     "<b>Stock/AOSP FM Radio</b>",       "(not found on all devices or ROMs)",                      "check",
+      "Gallery",     "<b>Stock/AOSP Gallery</b>",       "(automatically removed when Google Photos is installed)",                      "check",
+      "KeyboardStock",     "<b>Stock/AOSP Keyboard</b>",       "(automatically removed when Google Keyboard is installed)",                      "check",
+      "Launcher",     "<b>Stock/AOSP Launcher(s)</b>",       "(automatically removed when Google Launcher is installed)",                      "check",
+      "LiveWallpapers",     "<b>Live Wallpapers</b>",       "",                      "check",
+      "LockClock",     "<b>Lock Clock</b>",       "(a widget found in certain ROMs)",                      "check",
+      "MMS",     "<b>Stock/AOSP MMS</b>",       "(automatically removed when Android Messages is installed)",                      "check",
+      "MzFileManager",     "<b>Stock FlymeOS File Manager</b>",       "",                      "check",
+      "MzPay",     "<b>Stock FlymeOS Pay System</b>",       "(this service is only available in China)",                      "check",
+      "MzSetupWizard",     "<b>Stock FlymeOS SetupWizard</b>",       "",                      "check",
+      "MzUpdater",     "<b>Stock FlymeOS Updater</b>",       "",                      "check",
+      "MzWeather",     "<b>Stock FlymeOS Weather</b>",       "(this service is only available in China)",                      "check",
       "PicoTTS",     "<b>Stock/AOSP Text-to-Speech</b>",       "(automatically removed when Google TTS is installed)",                      "check",
+      "PrintServiceStock",     "<b>Stock Print Service Recommendation Service</b>",       "(automatically removed when Google Print Service Recommendation Service is installed)",                      "check",
       "SimToolKit",     "<b>Stock/AOSP Sim ToolKit</b>",       "",                      "check",
       "SoundRecorder",     "<b>Stock/AOSP Sound Recorder</b>",       "",                      "check",
-      "StorageManagerStock",     "<b>Stock/AOSP StorageManager</b>",       "",                      "check",
+      "StorageManagerStock",     "<b>Stock/AOSP StorageManager</b>",       "(automatically removed when Google Storage Manager is installed)",                      "check",
       "Studio",     "<b>Stock/AOSP Movie Studio</b>",       "",                      "check",
-      "SykoPath",     "<b>SykoPath Layers Manager</b>",       "(found in certain ROM's)",                      "check",
+      "SykoPath",     "<b>SykoPath Layers Manager</b>",       "(found in certain ROMs)",                      "check",
+      "TagStock",     "<b>Stock NFC Tags</b>",       "(automatically removed when Google NFC Tags is installed)",                      "check",
       "Terminal",     "<b>Terminal</b>",       "",                      "check",
       "Themes",     "<b>CyanogenMod Theme Engine</b>",       "(Will break the link in Settings to Themes!)",                      "check",
       "VisualizationWallpapers",     "<b>Visualization Live Wallpaper</b>",       "",                      "check",
@@ -373,6 +388,12 @@ if
   prop("gapps.prop", "CameraGoogle")=="1"
 then
   appendvar("gapps", "CameraGoogle\n");
+endif;
+
+if
+  prop("gapps.prop", "CarrierServices")=="1"
+then
+  appendvar("gapps", "CarrierServices\n");
 endif;
 
 if
@@ -598,12 +619,6 @@ then
 endif;
 
 if
-  prop("gapps.prop", "Wallpapers")=="1"
-then
-  appendvar("gapps", "Wallpapers\n");
-endif;
-
-if
   prop("gapps.prop", "Photos")=="1"
 then
   appendvar("gapps", "Photos\n");
@@ -688,6 +703,12 @@ then
 endif;
 
 if
+  prop("gapps.prop", "Wallpapers")=="1"
+then
+  appendvar("gapps", "Wallpapers\n");
+endif;
+
+if
   prop("gapps.prop", "WebViewGoogle")=="1"
 then
   appendvar("gapps", "WebViewGoogle\n");
@@ -708,36 +729,10 @@ endif;
 appendvar("gapps", "\n");
 
 # REMOVALS
-if
-  prop("rem.prop", "BasicDreams")=="1"
-then
-  appendvar("gapps", "BasicDreams\n");
-endif;
 
-if
-  prop("rem.prop", "Browser")=="1"
-then
-  appendvar("gapps", "Browser\n");
-endif;
-
-if
-  prop("rem.prop", "CalendarStock")=="1"
-then
-  appendvar("gapps", "CalendarStock\n");
-endif;
-
-if
-  prop("rem.prop", "ClockStock")=="1"
-then
-  appendvar("gapps", "ClockStock\n");
-endif;
-
-if
-  prop("rem.prop", "CameraStock")=="1"
-then
-  appendvar("gapps", "CameraStock\n");
-endif;
-
+###################################
+# Group 1 of removals on the Wiki
+###################################
 if
   prop("rem.prop", "CMAccount")=="1"
 then
@@ -757,15 +752,21 @@ then
 endif;
 
 if
+  prop("rem.prop", "CMFileManager")=="1"
+then
+  appendvar("gapps", "CMFileManager\n");
+endif;
+
+if
   prop("rem.prop", "CMMusic")=="1"
 then
   appendvar("gapps", "CMMusic\n");
 endif;
 
 if
-  prop("rem.prop", "CMFileManager")=="1"
+  prop("rem.prop", "CMScreenCast")=="1"
 then
-  appendvar("gapps", "CMFileManager\n");
+  appendvar("gapps", "CMScreenCast\n");
 endif;
 
 if
@@ -787,9 +788,126 @@ then
 endif;
 
 if
+  prop("rem.prop", "CMWeatherProvider")=="1"
+then
+  appendvar("gapps", "CMWeatherProvider\n");
+endif;
+
+###################################
+# Group 2 of removals on the Wiki
+###################################
+if
   prop("rem.prop", "DashClock")=="1"
 then
   appendvar("gapps", "DashClock\n");
+endif;
+
+if
+  prop("rem.prop", "Hexo")=="1"
+then
+  appendvar("gapps", "Hexo\n");
+endif;
+
+if
+  prop("rem.prop", "LSetupWizard")=="1"
+then
+  appendvar("gapps", "LSetupWizard\n");
+endif;
+
+if
+  prop("rem.prop", "LUpdater")=="1"
+then
+  appendvar("gapps", "LUpdater\n");
+endif;
+
+if
+  prop("rem.prop", "Logcat")=="1"
+then
+  appendvar("gapps", "Logcat\n");
+endif;
+
+if
+  prop("rem.prop", "OmniSwitch")=="1"
+then
+  appendvar("gapps", "OmniSwitch\n");
+endif;
+
+###################################
+# Group 3 of removals on the Wiki
+###################################
+if
+  prop("rem.prop", "BasicDreams")=="1"
+then
+  appendvar("gapps", "BasicDreams\n");
+endif;
+
+if
+  prop("rem.prop", "Galaxy")=="1"
+then
+  appendvar("gapps", "Galaxy\n");
+endif;
+
+if
+  prop("rem.prop", "HoloSpiral")=="1"
+then
+  appendvar("gapps", "HoloSpiral\n");
+endif;
+
+if
+  prop("rem.prop", "NoiseField")=="1"
+then
+  appendvar("gapps", "NoiseField\n");
+endif;
+
+if
+  prop("rem.prop", "Phasebeam")=="1"
+then
+  appendvar("gapps", "Phasebeam\n");
+endif;
+
+if
+  prop("rem.prop", "PhotoPhase")=="1"
+then
+  appendvar("gapps", "PhotoPhase\n");
+endif;
+
+if
+  prop("rem.prop", "PhotoTable")=="1"
+then
+  appendvar("gapps", "PhotoTable\n");
+endif;
+
+###################################
+# Group 4 of removals on the Wiki
+###################################
+if
+  prop("rem.prop", "Browser")=="1"
+then
+  appendvar("gapps", "Browser\n");
+endif;
+
+if
+  prop("rem.prop", "CalculatorStock")=="1"
+then
+  appendvar("gapps", "CalculatorStock\n");
+endif;
+
+if
+  prop("rem.prop", "CalendarStock")=="1"
+then
+  appendvar("gapps", "CalendarStock\n");
+endif;
+
+if
+  prop("rem.prop", "CameraStock")=="1"
+then
+  appendvar("gapps", "CameraStock\n");
+endif;
+
+if
+  prop("rem.prop", "ClockStock")=="1"
+then
+  appendvar("gapps", "ClockStock\n");
 endif;
 
 if
@@ -811,21 +929,9 @@ then
 endif;
 
 if
-  prop("rem.prop", "Galaxy")=="1"
-then
-  appendvar("gapps", "Galaxy\n");
-endif;
-
-if
   prop("rem.prop", "Gallery")=="1"
 then
   appendvar("gapps", "Gallery\n");
-endif;
-
-if
-  prop("rem.prop", "HoloSpiral")=="1"
-then
-  appendvar("gapps", "HoloSpiral\n");
 endif;
 
 if
@@ -853,45 +959,51 @@ then
 endif;
 
 if
-  prop("rem.prop", "LRecorder")=="1"
-then
-  appendvar("gapps", "LRecorder\n");
-endif;
-
-if
   prop("rem.prop", "MMS")=="1"
 then
   appendvar("gapps", "MMS\n");
 endif;
 
 if
-  prop("rem.prop", "NoiseField")=="1"
+  prop("rem.prop", "MzFileManager")=="1"
 then
-  appendvar("gapps", "NoiseField\n");
+  appendvar("gapps", "MzFileManager\n");
 endif;
 
 if
-  prop("rem.prop", "Phasebeam")=="1"
+  prop("rem.prop", "MzPay")=="1"
 then
-  appendvar("gapps", "Phasebeam\n");
+  appendvar("gapps", "MzPay\n");
 endif;
 
 if
-  prop("rem.prop", "PhotoPhase")=="1"
+  prop("rem.prop", "MzSetupWizard")=="1"
 then
-  appendvar("gapps", "PhotoPhase\n");
+  appendvar("gapps", "MzSetupWizard\n");
 endif;
 
 if
-  prop("rem.prop", "PhotoTable")=="1"
+  prop("rem.prop", "MzUpdater")=="1"
 then
-  appendvar("gapps", "PhotoTable\n");
+  appendvar("gapps", "MzUpdater\n");
+endif;
+
+if
+  prop("rem.prop", "MzWeather")=="1"
+then
+  appendvar("gapps", "MzWeather\n");
 endif;
 
 if
   prop("rem.prop", "PicoTTS")=="1"
 then
   appendvar("gapps", "PicoTTS\n");
+endif;
+
+if
+  prop("rem.prop", "PrintServiceStock")=="1"
+then
+  appendvar("gapps", "PrintServiceStock\n");
 endif;
 
 if
@@ -922,6 +1034,12 @@ if
   prop("rem.prop", "SykoPath")=="1"
 then
   appendvar("gapps", "SykoPath\n");
+endif;
+
+if
+  prop("rem.prop", "TagStock")=="1"
+then
+  appendvar("gapps", "TagStock\n");
 endif;
 
 if
