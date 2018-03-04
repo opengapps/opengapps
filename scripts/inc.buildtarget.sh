@@ -252,9 +252,9 @@ get_package_info(){
     calendargoogle)           packagetype="GApps"; packagename="com.google.android.calendar"; packagetarget="app/CalendarGooglePrebuilt";;
     calsync)                  packagetype="GApps"; packagename="com.google.android.syncadapters.calendar"; packagetarget="app/GoogleCalendarSyncAdapter";;
     cameragoogle)             packagetype="GApps"; packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera";
-                              if [ "$API" -ge "27" ]; then  # On Oreo 8.1 we bundle Camera 2017
-                                packagefiles="etc/permissions/com.google.android.camera.experimental2017.xml"; packageframework="com.google.android.camera.experimental2017.jar"
-                              elif [ "$API" -ge "25" ]; then  # On Nougat 7.1 we bundle Camera 2016
+                              # if [ "$API" -ge "27" ]; then  # On Oreo 8.1 we bundle Camera 2017
+                              #  packagefiles="etc/permissions/com.google.android.camera.experimental2017.xml"; packageframework="com.google.android.camera.experimental2017.jar"
+                              if [ "$API" -ge "25" ]; then  # On Nougat 7.1 we bundle Camera 2016
                                 packagefiles="etc/permissions/com.google.android.camera.experimental2016.xml"; packageframework="com.google.android.camera.experimental2016.jar"
                               elif [ "$API" -ge "23" ]; then  # On Marshmallow+ we bundle Camera 2015 for non-legacy camera
                                 packagefiles="etc/permissions/com.google.android.camera.experimental2015.xml"; packageframework="com.google.android.camera.experimental2015.jar"
@@ -345,10 +345,7 @@ get_package_info(){
                               if [ "$API" -ge "27" ]; then  # On Oreo 8.1 we bundle 2017 VR Platform
                                 packagefiles="etc/permissions/com.google.vr.platform.xml etc/sysconfig/google_vr_build.xml"; packageframework="com.google.vr.platform.jar"
                               fi;;
-    wallpapers)               packagetype="GApps"; packagename="com.google.android.apps.wallpaper"; packagetarget="app/WallpaperPickerGooglePrebuilt"
-                              if [ "$API" -ge "26" ]; then  # On Oreo 8.0+ include the XML that unlocks the Pixel 2 exclusive wallpaper categories: "Come Alive" and "Come and Play"
-                                packagefiles="etc/sysconfig/pixel_2017.xml"
-                              fi;;
+    wallpapers)               packagetype="GApps"; packagename="com.google.android.apps.wallpaper"; packagetarget="app/WallpaperPickerGooglePrebuilt";;
     youtube)                  packagetype="GApps"; packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
     zhuyin)                   packagetype="GApps"; packagename="com.google.android.apps.inputmethod.zhuyin"; packagetarget="app/GoogleZhuyinIME";;  # also ZhuyinIME exists on some ROMs
 
