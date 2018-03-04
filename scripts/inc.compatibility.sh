@@ -440,16 +440,17 @@ webviewstock"
 }
 
 api23hack(){
-  if [ "$API" -eq "23" ] || [ "$API" -ge "26" ] ; then
-    gappspico="$gappspico
+  if [ "$API" -ge "23" ]; then
+    if [ "$API" -eq "23" ] || [ "$API" -ge "26" ] ; then
+      gappspico="$gappspico
 dialerframework
 googletts
 packageinstallergoogle"  
-  if [ "$API" -eq "24" ] || [ "$API" -eq "25" ] ; then
-    gappspico="$gappspico
+    else
+      gappspico="$gappspico
 dialerframework
 googletts"  # TODO packageinstallergoogle temporary disabled because of issues on Nougat ROMs
-  fi
+    fi
     gappsstock="$gappsstock
 dialergoogle
 pixellauncher"
