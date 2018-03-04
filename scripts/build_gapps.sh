@@ -19,7 +19,12 @@ if { [ "$1" != "arm" ] && [ "$1" != "arm64" ] && [ "$1" != "x86" ] && [ "$1" != 
 fi
 
 command -v realpath >/dev/null 2>&1 || { echo "realpath is required but it's not installed, aborting." >&2; exit 1; }
-DATE=$(date +"%Y%m%d")
+#OPENGAPPSDATE=""  # this can be set to override the date
+if [ -n "$OPENGAPPSDATE" ]; then
+  DATE="$OPENGAPPSDATE"
+else
+  DATE=$(date +"%Y%m%d")
+fi
 TOP="$(realpath .)"
 ARCH="$1"
 API="$2"
