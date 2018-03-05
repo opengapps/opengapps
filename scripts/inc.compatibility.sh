@@ -523,7 +523,9 @@ api26hack(){
 androidplatformservices"
     fi
     # On Oreo and higher a different launcher exists
+    # Also, the suw works without needing platform signed
     gappstvstock="$gappstvstock
+setupwraith
 tvlauncher
 tvrecommendations"
   else
