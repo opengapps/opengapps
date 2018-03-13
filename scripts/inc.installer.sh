@@ -277,6 +277,7 @@ boxer_list="
 vendor/bundled-app/Boxer'"$REMOVALSUFFIX"'"
 
 browser_list="
+app/Bolt'"$REMOVALSUFFIX"'
 app/Browser'"$REMOVALSUFFIX"'
 app/Browser2'"$REMOVALSUFFIX"'
 app/BrowserIntl'"$REMOVALSUFFIX"'
@@ -315,6 +316,7 @@ app/Camera'"$REMOVALSUFFIX"'
 app/Camera2'"$REMOVALSUFFIX"'
 priv-app/Camera'"$REMOVALSUFFIX"'
 priv-app/Camera2'"$REMOVALSUFFIX"'
+priv-app/CameraX'"$REMOVALSUFFIX"'
 app/MotCamera'"$REMOVALSUFFIX"'
 app/MtkCamera'"$REMOVALSUFFIX"'
 app/MTKCamera'"$REMOVALSUFFIX"'
@@ -351,6 +353,7 @@ app/Apollo'"$REMOVALSUFFIX"'
 app/Eleven'"$REMOVALSUFFIX"'
 priv-app/Eleven'"$REMOVALSUFFIX"'
 app/Music'"$REMOVALSUFFIX"'
+app/MusicX'"$REMOVALSUFFIX"'
 app/Phonograph'"$REMOVALSUFFIX"'
 app/SnapdragonMusic'"$REMOVALSUFFIX"'"
 
@@ -412,6 +415,7 @@ app/Galaxy4'"$REMOVALSUFFIX"'"
 gallery_list="
 app/Gallery'"$REMOVALSUFFIX"'
 priv-app/Gallery'"$REMOVALSUFFIX"'
+priv-app/GalleryX'"$REMOVALSUFFIX"'
 app/Gallery2'"$REMOVALSUFFIX"'
 priv-app/Gallery2'"$REMOVALSUFFIX"'
 app/MotGallery'"$REMOVALSUFFIX"'
