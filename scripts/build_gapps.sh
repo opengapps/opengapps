@@ -114,7 +114,7 @@ if [ "$ARCH" != "arm" ] && [ "$ARCH" != "arm64" ]; then #For all non-arm(64) pla
 fi
 if [ "$API" -lt "22" ]; then
   case "$VARIANT" in
-  super | tvstock)
+  super | tvstock | tvmini)
     echo "ERROR! Variant $VARIANT cannot be built on API level $API"
     exit 1
     ;;

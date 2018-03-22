@@ -197,6 +197,7 @@ fi
       gappsstock \
       gappssuper \
       gappstvcore \
+      gappstvmini \
       gappstvstock \
       keyboardgooglenotremovehack \
       stockremove \

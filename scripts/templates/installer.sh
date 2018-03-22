@@ -89,6 +89,10 @@ tvcore_gapps_list="
 @gappstvcore@
 "
 
+tvmini_gapps_list="
+@gappstvmini@
+"
+
 tvstock_gapps_list="
 @gappstvstock@
 "
