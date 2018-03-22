@@ -97,8 +97,7 @@ launcher
 mms
 picotts"
 
-gappstvcore="bugreport
-configupdater
+gappstvcore="configupdater
 googlebackuptransport
 googlecontactssync
 gsfcore
@@ -110,11 +109,9 @@ tvvending"
 
 gappstvstock="backdrop
 castreceiver
-globalkey
 leanbacklauncher
 livechannels
 overscan
-remotecontrol
 secondscreensetup
 secondscreenauthbridge
 talkback
@@ -350,12 +347,6 @@ get_package_info(){
     zhuyin)                   packagetype="GApps"; packagename="com.google.android.apps.inputmethod.zhuyin"; packagetarget="app/GoogleZhuyinIME";;  # also ZhuyinIME exists on some ROMs
 
     # TV GApps
-    bugreport)                packagetype="Core"; packagetarget="app/BugReportSender";
-                              if [ "$API" -ge "24" ]; then
-                                packagename="com.google.android.tv.bugreportsender"
-                              else
-                                packagename="com.google.tungsten.bugreportsender"
-                              fi;;
     notouch)                  packagetype="Core"; packagename="com.google.android.gsf.notouch"; packagetarget="app/NoTouchAuthDelegate";;
     tvetc)                    packagetype="Core"; packagefiles="etc/sysconfig/google.xml etc/sysconfig/google_build.xml";;
     tvframework)              packagetype="Core"; packagefiles="etc/permissions/com.google.android.pano.v1.xml etc/permissions/com.google.android.tv.installed.xml etc/permissions/com.google.widevine.software.drm.xml"; packageframework="com.google.android.pano.v1.jar com.google.widevine.software.drm.jar";;
@@ -369,12 +360,10 @@ get_package_info(){
 
     backdrop)                 packagetype="GApps"; packagename="com.google.android.backdrop.leanback"; packagetarget="app/Backdrop";;
     castreceiver)             packagetype="GApps"; packagename="com.google.android.apps.mediashell.leanback" packagetarget="priv-app/AndroidMediaShell";;
-    globalkey)                packagetype="GApps"; packagename="com.google.android.athome.globalkeyinterceptor" packagetarget="priv-app/GlobalKeyInterceptor";;
     leanbacklauncher)         packagetype="GApps"; packagename="com.google.android.leanbacklauncher.leanback" packagetarget="priv-app/LeanbackLauncher";;
     leanbackrecommendations)  packagetype="GApps"; packagename="com.google.android.leanbacklauncher.recommendations.leanback"; packagetarget="priv-app/RecommendationsService";;
     livechannels)             packagetype="GApps"; packagename="com.google.android.tv.leanback" packagetarget="priv-app/TV";;
     overscan)                 packagetype="GApps"; packagename="com.google.android.tungsten.overscan" packagetarget="priv-app/Overscan";;
-    remotecontrol)            packagetype="GApps"; packagename="com.google.android.athome.remotecontrol" packagetarget="priv-app/RemoteControlService";;
     setupwraith)              packagetype="GApps"; packagename="com.google.android.tungsten.setupwraith" packagetarget="priv-app/SetupWraith";;
     secondscreensetup)        packagetype="GApps"; packagename="com.google.android.sss"; packagetarget="app/SecondScreenSetup";;
     secondscreenauthbridge)   packagetype="GApps"; packagename="com.google.android.sss.authbridge"; packagetarget="app/SecondScreenSetupAuthBridge";;
