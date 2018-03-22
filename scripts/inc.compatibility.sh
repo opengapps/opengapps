@@ -611,7 +611,7 @@ carriersetup
 gmssetup"
     gappspico="$gappspico
 packageinstallergoogle"
-    gappstvstock="$gappstvstock
+    gappstvmini="$gappstvmini
 setupwraith
 tvlauncher
 tvrecommendations"  # On Android 8.0+ a different launcher exists. SuW also works without needing platform signed
