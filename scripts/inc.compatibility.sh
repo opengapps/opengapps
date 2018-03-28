@@ -489,7 +489,7 @@ extservicesgoogle
 extsharedgoogle"
     # On Nougat and higher the TV Recommendations exist
     gappstvstock="$gappstvstock
-tvrecommendations"
+leanbackrecommendations"
     # On Nougat and higher we might want to install the WebViewStub instead of WebViewGoogle in some situations
     gappsstock_optional="$gappsstock_optional
 webviewstub"
@@ -522,6 +522,12 @@ api26hack(){
       gappscore="$gappscore
 androidplatformservices"
     fi
+    # On Oreo and higher a different launcher exists
+    # Also, the suw works without needing platform signed
+    gappstvstock="$gappstvstock
+setupwraith
+tvlauncher
+tvrecommendations"
   else
     gappscore="$gappscore
 gsflogin"

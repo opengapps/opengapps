@@ -97,8 +97,7 @@ launcher
 mms
 picotts"
 
-gappstvcore="bugreport
-configupdater
+gappstvcore="configupdater
 googlebackuptransport
 googlecontactssync
 gsfcore
@@ -110,14 +109,12 @@ tvvending"
 
 gappstvstock="backdrop
 castreceiver
-globalkey
+leanbacklauncher
 livechannels
 overscan
-remotecontrol
 secondscreensetup
 secondscreenauthbridge
 talkback
-tvlauncher
 tvkeyboardgoogle
 tvmovies
 tvmusic
@@ -350,12 +347,6 @@ get_package_info(){
     zhuyin)                   packagetype="GApps"; packagename="com.google.android.apps.inputmethod.zhuyin"; packagetarget="app/GoogleZhuyinIME";;  # also ZhuyinIME exists on some ROMs
 
     # TV GApps
-    bugreport)                packagetype="Core"; packagetarget="app/BugReportSender";
-                              if [ "$API" -ge "24" ]; then
-                                packagename="com.google.android.tv.bugreportsender"
-                              else
-                                packagename="com.google.tungsten.bugreportsender"
-                              fi;;
     notouch)                  packagetype="Core"; packagename="com.google.android.gsf.notouch"; packagetarget="app/NoTouchAuthDelegate";;
     tvetc)                    packagetype="Core"; packagefiles="etc/sysconfig/google.xml etc/sysconfig/google_build.xml";;
     tvframework)              packagetype="Core"; packagefiles="etc/permissions/com.google.android.pano.v1.xml etc/permissions/com.google.android.tv.installed.xml etc/permissions/com.google.widevine.software.drm.xml"; packageframework="com.google.android.pano.v1.jar com.google.widevine.software.drm.jar";;
@@ -369,19 +360,20 @@ get_package_info(){
 
     backdrop)                 packagetype="GApps"; packagename="com.google.android.backdrop.leanback"; packagetarget="app/Backdrop";;
     castreceiver)             packagetype="GApps"; packagename="com.google.android.apps.mediashell.leanback" packagetarget="priv-app/AndroidMediaShell";;
-    globalkey)                packagetype="GApps"; packagename="com.google.android.athome.globalkeyinterceptor" packagetarget="priv-app/GlobalKeyInterceptor";;
+    leanbacklauncher)         packagetype="GApps"; packagename="com.google.android.leanbacklauncher.leanback" packagetarget="priv-app/LeanbackLauncher";;
+    leanbackrecommendations)  packagetype="GApps"; packagename="com.google.android.leanbacklauncher.recommendations.leanback"; packagetarget="priv-app/RecommendationsService";;
     livechannels)             packagetype="GApps"; packagename="com.google.android.tv.leanback" packagetarget="priv-app/TV";;
     overscan)                 packagetype="GApps"; packagename="com.google.android.tungsten.overscan" packagetarget="priv-app/Overscan";;
-    remotecontrol)            packagetype="GApps"; packagename="com.google.android.athome.remotecontrol" packagetarget="priv-app/RemoteControlService";;
+    setupwraith)              packagetype="GApps"; packagename="com.google.android.tungsten.setupwraith" packagetarget="priv-app/SetupWraith";;
     secondscreensetup)        packagetype="GApps"; packagename="com.google.android.sss"; packagetarget="app/SecondScreenSetup";;
     secondscreenauthbridge)   packagetype="GApps"; packagename="com.google.android.sss.authbridge"; packagetarget="app/SecondScreenSetupAuthBridge";;
-    tvlauncher)               packagetype="GApps"; packagename="com.google.android.leanbacklauncher.leanback" packagetarget="priv-app/LeanbackLauncher";;
+    tvlauncher)               packagetype="GApps"; packagename="com.google.android.tvlauncher.leanback" packagetarget="priv-app/TVLauncher";;
     tvkeyboardgoogle)         packagetype="GApps"; packagename="com.google.android.leanback.ime"; packagetarget="app/LeanbackIme";;
     tvmovies)                 packagetype="GApps"; packagename="com.google.android.videos.leanback"; packagetarget="app/VideosPano";;
-    tvmusic)                  packagetype="GApps"; packagename="com.google.android.music"; packagetarget="app/Music2Pano";;  # Only change is the foldername
+    tvmusic)                  packagetype="GApps"; packagename="com.google.android.music.leanback"; packagetarget="app/Music2Pano";;
     tvpackageinstallergoogle) packagetype="GApps"; packagename="com.google.android.pano.packageinstaller"; packagetarget="priv-app/CanvasPackageInstaller";;  # on 5.1 and 6.0 this was in 'app'
     tvplaygames)              packagetype="GApps"; packagename="com.google.android.play.games.leanback"; packagetarget="app/PlayGames";;  # Only change is leanback in the packagename
-    tvrecommendations)        packagetype="GApps"; packagename="com.google.android.leanbacklauncher.recommendations.leanback"; packagetarget="priv-app/RecommendationsService";;
+    tvrecommendations)        packagetype="GApps"; packagename="com.google.android.tvrecommendations.leanback" packagetarget="priv-app/TVRecommendations";;
     tvremote)                 packagetype="GApps";  packagetarget="priv-app/AtvRemoteService";
                               if [ "$API" -ge "24" ]; then
                                 packagename="com.google.android.tv.remote.service.leanback"

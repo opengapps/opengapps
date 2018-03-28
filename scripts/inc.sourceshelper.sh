@@ -57,9 +57,6 @@ getapkproperties(){
     "com.google.android.apps.mediashell.leanback" |\
     "com.google.android.apps.gcs" |\
     "com.google.android.apps.nexuslauncher" |\
-    "com.google.android.athome.remotecontrol" |\
-    "com.google.android.athome.globalkeyinterceptor" |\
-    "com.google.android.atv.customization" |\
     "com.google.android.backuptransport" |\
     "com.google.android.configupdater" |\
     "com.google.android.contacts" |\
