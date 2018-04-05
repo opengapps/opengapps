@@ -39,6 +39,8 @@ case "$1" in
     # Stub
   ;;
   pre-restore)
+    # Restore SELinux label for files that lose it after an OS Update
+
     # Remove Stock/AOSP apps (from GApps Installer)
 
     # Remove 'other' apps (per installer.data)

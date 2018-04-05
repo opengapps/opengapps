@@ -2338,6 +2338,8 @@ if ( contains "$gapps_list" "faceunlock" ); then
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$faceLock_lib_filename\" \"$SYSTEM/app/FaceLock/lib/$arch/$faceLock_lib_filename\"" $bkup_tail
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/FaceLock/lib/$arch\"" $bkup_tail
+  # For TrustedFace to work after an OS update, restore system_file label for libprotobuf-cpp-shit.so
+  sed -i "\:# Restore SELinux label for files that lose it after an OS Update:a \    chcon -t system_file \"$SYSTEM/vendor/lib/libprotobuf-cpp-shit.so\"" $bkup_tail
 fi
 
 EOFILE
