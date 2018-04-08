@@ -1243,27 +1243,36 @@ done
 
 # Locate gapps-config (if used)
 for i in "$TMP/aroma/.gapps-config"\
- "$zip_folder/.gapps-config-$device_name"\
- "$zip_folder/gapps-config-$device_name.txt"\
- "/sdcard/Open-GApps/.gapps-config-$device_name"\
- "/sdcard/Open-GApps/gapps-config-$device_name.txt"\
  "$zip_folder/.gapps-config"\
- "$zip_folder/gapps-config.txt"\
- "/sdcard/Open-GApps/.gapps-config"\
- "/sdcard/Open-GApps/gapps-config.txt"\
+ "$zip_folder/.gapps-config-$device_name"\
  "$zip_folder/.gapps-config-$device_name.txt"\
- "/sdcard/Open-GApps/.gapps-config-$device_name.txt"\
  "$zip_folder/.gapps-config.txt"\
- "/sdcard/Open-GApps/.gapps-config.txt"\
- "/persist/.gapps-config-$device_name"\
- "/persist/gapps-config-$device_name.txt"\
+ "$zip_folder/gapps-config-$device_name.txt"\
+ "$zip_folder/gapps-config.txt"\
+ "/data/.gapps-config"\
+ "/data/.gapps-config-$device_name"\
+ "/data/.gapps-config-$device_name.txt"\
+ "/data/.gapps-config.txt"\
+ "/data/gapps-config-$device_name.txt"\
+ "/data/gapps-config.txt"\
  "/persist/.gapps-config"\
- "/persist/gapps-config.txt"\
+ "/persist/.gapps-config-$device_name"\
  "/persist/.gapps-config-$device_name.txt"\
  "/persist/.gapps-config.txt"\
- "/tmp/install/gapps-config.txt"\
+ "/persist/gapps-config-$device_name.txt"\
+ "/persist/gapps-config.txt"\
+ "/sdcard/Open-GApps/.gapps-config"\
+ "/sdcard/Open-GApps/.gapps-config-$device_name"\
+ "/sdcard/Open-GApps/.gapps-config-$device_name.txt"\
+ "/sdcard/Open-GApps/.gapps-config.txt"\
+ "/sdcard/Open-GApps/gapps-config-$device_name.txt"\
+ "/sdcard/Open-GApps/gapps-config.txt"\
+ "/tmp/install/.gapps-config"\
+ "/tmp/install/.gapps-config-$device_name"\
  "/tmp/install/.gapps-config-$device_name.txt"\
- "/tmp/install/.gapps-config.txt"; do
+ "/tmp/install/.gapps-config.txt"\
+ "/tmp/install/gapps-config-$device_name.txt"\
+ "/tmp/install/gapps-config.txt"; do
   if [ -r "$i" ]; then
     g_conf="$i";
     break;
