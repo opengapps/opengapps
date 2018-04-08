@@ -1805,12 +1805,6 @@ if ( ! contains "$gapps_list" "search" ) && ( contains "$gapps_list" "googlenow"
   install_note="${install_note}googlenow_msg"$'\n'; # make note that Google Now Launcher will NOT be installed as user requested
 fi;
 
-# If we're NOT installing search then we MUST REMOVE pixellauncher from  $gapps_list (if it's currently there)
-if ( ! contains "$gapps_list" "search" ) && ( contains "$gapps_list" "pixellauncher" ); then
-  gapps_list=${gapps_list/pixellauncher};
-  install_note="${install_note}pixellauncher_msg"$'\n'; # make note that Pixel Launcher will NOT be installed as user requested
-fi;
-
 # If we're NOT installing googlenow or pixellauncher make certain 'launcher' is NOT in $aosp_remove_list UNLESS 'launcher' is in $g_conf
 if ( ! contains "$gapps_list" "googlenow" ) && ( ! contains "$gapps_list" "pixellauncher" ) && ( ! grep -qiE '^launcher$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/launcher};
