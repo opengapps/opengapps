@@ -269,6 +269,7 @@ tagstock
 terminal
 themes
 visualizationwallpapers
+wallpapersstock
 whisperpush
 ";
 # _____________________________________________________________________________________________________________________
@@ -580,6 +581,9 @@ priv-app/ThemesProvider'"$REMOVALSUFFIX"'"
 
 visualizationwallpapers_list="
 app/VisualizationWallpapers'"$REMOVALSUFFIX"'"
+
+wallpapersstock_list="
+app/WallpaperPicker'"$REMOVALSUFFIX"'"
 
 webviewstock_list="
 app/webview'"$REMOVALSUFFIX"'
@@ -1915,6 +1919,11 @@ fi;
 if ( ! contains "$gapps_list" "gcs" ) && ( contains "$gapps_list" "projectfi" ); then
   gapps_list=${gapps_list/projectfi};
   install_note="${install_note}projectfi_msg"$'\n'; # make note that Project Fi will NOT be installed as user requested
+fi;
+
+# If we're installing wallpapers we must ADD wallpapersstock to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "wallpapers" ) && ( ! contains "$aosp_remove_list" "wallpapersstock" ); then
+  aosp_remove_list="${aosp_remove_list}wallpapersstock"$'\n';
 fi;
 
 # Some ROMs bundle Google Apps or the user might have installed a Google replacement app during an earlier install
