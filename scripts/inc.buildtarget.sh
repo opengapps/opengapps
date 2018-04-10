@@ -39,7 +39,8 @@ street
 translate
 zhuyin"
 
-gappsstock="cameragoogle
+gappsstock="allo
+cameragoogle
 duo
 hangouts
 keyboardgoogle
@@ -242,6 +243,7 @@ get_package_info(){
     setupwizardtablet)        packagetype="Core"; packagename="com.google.android.setupwizard.tablet"; packagetarget="priv-app/SetupWizard";;
     vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
 
+    allo)                     packagetype="GApps"; packagename="com.google.android.apps.fireball"; packagetarget="app/Allo";;
     batteryusage)             packagetype="GApps"; packagename="com.google.android.apps.turbo"; packagetarget="priv-app/Turbo";;
     books)                    packagetype="GApps"; packagename="com.google.android.apps.books"; packagetarget="app/Books";;
     calculatorgoogle)         packagetype="GApps"; packagename="com.google.android.calculator"; packagetarget="app/CalculatorGooglePrebuilt";;
