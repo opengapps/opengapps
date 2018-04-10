@@ -513,9 +513,8 @@ googlenow"
 api25hack(){
   if [ "$API" -ge "25" ]; then
     gappscore="$gappscore
+batteryusage
 gmssetup"
-    gappsnano="$gappsnano
-batteryusage"
     gappsmicro="$gappsmicro
 pixellauncher" # Only install Pixel Launcher and icons on Android 7.1 and newer
   fi
