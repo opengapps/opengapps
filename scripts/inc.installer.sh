@@ -1762,6 +1762,11 @@ if ( ! contains "$gapps_list" "photos" ) && ( ! grep -qiE '^gallery$' "$g_conf" 
   remove_gallery="false[NO_Photos]";
 fi;
 
+# If $device_type is not a 'phone' make certain we're not installing googlepay
+if ( contains "$gapps_list" "googlepay" ) && [ $device_type != "phone" ]; then
+  gapps_list=${gapps_list/googlepay}; # we'll prevent googlepay from being installed since this isn't a phone
+fi;
+
 # If $device_type is not a 'phone' make certain we're not installing messenger
 if ( contains "$gapps_list" "messenger" ) && [ $device_type != "phone" ]; then
   gapps_list=${gapps_list/messenger}; # we'll prevent messenger from being installed since this isn't a phone

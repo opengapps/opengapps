@@ -29,7 +29,6 @@ gappscore_optional=""
 gappssuper="dmagent
 earth
 gcs
-googlepay
 indic
 japanese
 korean
@@ -42,6 +41,7 @@ zhuyin"
 gappsstock="allo
 cameragoogle
 duo
+googlepay
 hangouts
 keyboardgoogle
 vrservice
