@@ -27,13 +27,18 @@ vending"
 gappscore_optional=""
 
 gappssuper="dmagent
+docs
 earth
+fitness
 gcs
 indic
 japanese
 korean
+newswidget
 pinyin
 projectfi
+sheets
+slides
 street
 translate
 zhuyin"
@@ -52,18 +57,13 @@ gappsstock_optional=""
 gappsfull="books
 chrome
 cloudprint
-docs
 drive
-fitness
 googleplus
 keep
 movies
 music
 newsstand
-newswidget
 playgames
-sheets
-slides
 talkback"
 
 gappsfull_optional=""
