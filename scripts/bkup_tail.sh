@@ -69,6 +69,9 @@ case "$1" in
       chown root:root "/system/$i"
       chmod 644 "/system/$i"
       chmod 755 "$(dirname "/system/$i")"
+        if [ "$API" -eq "26" ] || [ "$API" -eq "27" ]; then
+          chmod 600 /system/build.prop
+        fi # Android Oreo uses 0600 for its permissions on build.prop
     done
     rm -rf /sdcard/tmp-gapps
   ;;
