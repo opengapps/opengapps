@@ -79,8 +79,7 @@ gappsmini_optional=""
 #googletts for micro is defined in inc.compatibility.sh api23hack
 gappsmicro="calendargoogle
 exchangegoogle
-gmail
-googlenow"
+gmail"
 
 gappsnano="facedetect
 faceunlock
