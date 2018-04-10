@@ -448,14 +448,13 @@ googletts"
       gappspico="$gappspico
 packageinstallergoogle"  
     fi # TODO packageinstallergoogle temporary disabled because of issues on Nougat ROMs
+    gappsmini="$gappsmini
+carrierservices"
     gappsstock="$gappsstock
 dialergoogle
 pixellauncher"
     gappsstock_optional="$gappsstock_optional
 cameragooglelegacy"
-
-    gappssuper="$gappssuper
-carrierservices"
 
     webviewstocklibs='lib/$WebView_lib_filename
 lib64/$WebView_lib_filename

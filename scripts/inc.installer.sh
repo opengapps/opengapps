@@ -680,6 +680,7 @@ cmcompatibility_msg="WARNING: PackageInstallerGoogle is not installed. Cyanogenm
 dialergoogle_msg="WARNING: Google Dialer has/will not be installed as requested. Dialer Framework\nmust be added to the GApps installation if you want to install the\nGoogle Dialer.\n";
 faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";
 googlenow_msg="WARNING: Google Now Launcher has/will not be installed as requested. Google Search\nmust be added to the GApps installation if you want to install the\nGoogle Now Launcher.\n";
+messenger_msg="WARNING: Android Messages has/will not be installed as requested. Carrier Services\nmust be added to the GApps installation on Android 6.0+ if you want to install\nAndroid Messages.\n";
 pixellauncher_msg="WARNING: Pixel Launcher has/will not be installed as requested. Wallpapers and\nGoogle Search must be added to the GApps installation if you want to install\nthe Pixel Launcher.\n";
 projectfi_msg="WARNING: Project Fi has/will not be installed as requested. GCS must be\nadded to the GApps installation if you want to install the Project Fi app.\n";
 nobuildprop="INSTALLATION FAILURE: The installed ROM has no build.prop or equivalent\n";
@@ -1766,6 +1767,11 @@ if ( contains "$gapps_list" "messenger" ) && [ $device_type != "phone" ]; then
   gapps_list=${gapps_list/messenger}; # we'll prevent messenger from being installed since this isn't a phone
 fi;
 
+# If $device_type is not a 'phone' make certain we're not installing carrierservices (this is essential for messenger)
+if ( contains "$gapps_list" "carrierservices" ) && [ $device_type != "phone" ]; then
+  gapps_list=${gapps_list/carrierservices}; # we'll prevent carrierservices from being installed since this isn't a phone
+fi;
+
 # If $device_type is not a 'phone' make certain we're not installing dialerframework (implies no dialergoogle)
 if ( contains "$gapps_list" "dialerframework" ) && [ $device_type != "phone" ]; then
   gapps_list=${gapps_list/dialerframework}; # we'll prevent dialerframework from being installed since this isn't a phone
@@ -1777,7 +1783,13 @@ if ( ! contains "$gapps_list" "dialerframework" ) && ( contains "$gapps_list" "d
   install_note="${install_note}dialergoogle_msg"$'\n'; # make note that Google Dialer will NOT be installed as user requested
 fi;
 
-# If we're NOT installing  messenger make certain 'mms' is NOT in $aosp_remove_list UNLESS 'mms' is in $g_conf
+# If we're NOT installing carrier services then we MUST REMOVE messenger from $gapps_list (if it's currently there)
+if [ "$API" -ge "23" ] && ( ! contains "$gapps_list" "carrierservices" ) && ( contains "$gapps_list" "messenger" ); then
+  gapps_list=${gapps_list/messenger};
+  install_note="${install_note}messenger_msg"$'\n'; # make note that Android Messages will NOT be installed as user requested
+fi;
+
+# If we're NOT installing messenger make certain 'mms' is NOT in $aosp_remove_list UNLESS 'mms' is in $g_conf
 if ( ! contains "$gapps_list" "messenger" ) && ( ! grep -qiE '^mms$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/mms};
   remove_mms="false[NO_Messenger]";
