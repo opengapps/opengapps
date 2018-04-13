@@ -454,6 +454,9 @@ pixellauncher"
     gappsstock_optional="$gappsstock_optional
 cameragooglelegacy"
 
+    gappssuper="$gappssuper
+carrierservices"
+
     webviewstocklibs='lib/$WebView_lib_filename
 lib64/$WebView_lib_filename
 ' #on Marshmallow the AOSP WebViewlibs must be removed, since they are embedded in the Google WebView APK; this assumes also any pre-bundled Google WebView with the ROM uses embedded libs; use single quote to not replace variable names

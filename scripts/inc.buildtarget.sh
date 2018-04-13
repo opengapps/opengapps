@@ -26,8 +26,7 @@ vending"
 
 gappscore_optional=""
 
-gappssuper="carrierservices
-dmagent
+gappssuper="dmagent
 earth
 gcs
 googlepay
