@@ -51,6 +51,8 @@ case "$1" in
 
   ;;
   post-restore)
+    # Restore SELinux label for files that lose it after an OS Update
+  
     # Recreate required symlinks (from GApps Installer)
 
     # Apply build.prop changes (from GApps Installer)
