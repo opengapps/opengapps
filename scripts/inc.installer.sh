@@ -1507,7 +1507,7 @@ fi
 
 # Is device FaceUnlock compatible
 if ( ! grep -qE "Victory|herring|sun4i" /proc/cpuinfo ); then
-  for xml in $SYSTEM/etc/permissions/android.hardware.camera.front.xml $SYSTEM/etc/permissions/android.hardware.camera.xml $SYSTEM/vendor/etc/permissions/android.hardware.camera.front.xml $SYSTEM/vendor/etc/permissions/android.hardware.camera.xml; do
+  for xml in $SYSTEM/etc/permissions/android.hardware.camera.front.xml $SYSTEM/etc/permissions/android.hardware.camera.xml $SYSTEM/vendor/etc/permissions/android.hardware.camera.front.xml $SYSTEM/vendor/etc/permissions/android.hardware.camera.xml /vendor/etc/permissions/android.hardware.camera.front.xml /vendor/etc/permissions/android.hardware.camera.xml; do
     if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -qr "feature name=\"android.hardware.camera.front" ); then
       faceunlock_compat=true
       break
@@ -1520,8 +1520,8 @@ fi
 
 # Is device VRMode compatible
 vrmode_compat=false
-for xml in $(grep -rl '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/vendor/etc/); do
-  if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -qr '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/vendor/etc/ ); then
+for xml in $(grep -rl '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/vendor/etc/ /vendor/etc/); do
+  if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -qr '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/vendor/etc/ /vendor/etc/ ); then
     vrmode_compat=true
     break
   fi
