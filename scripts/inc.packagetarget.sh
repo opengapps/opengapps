@@ -271,17 +271,17 @@ signzip() {
   fi
 
   if [ -z "$CERTIFICATEFILE" ] || [ ! -e "$CERTIFICATEFILE" ]; then
-    CERTIFICATEFILE="$CERTIFICATES/testkey.x509.pem"
+    unset CERTIFICATEFILE
   else
     echo "INFO: using $CERTIFICATEFILE as certificate file"
   fi
   if [ -z "$KEYFILE" ] || [ ! -e "$KEYFILE" ]; then
-    KEYFILE="$CERTIFICATES/testkey.pk8"
+    unset KEYFILE
   else
     echo "INFO: using $KEYFILE as cryptographic key file"
   fi
 
-  if java -XX:+UseCompressedOops -Xms2g -Xmx2g -Djava.library.path="$SCRIPTS/signapk-resources-$(uname)/" -jar "$SCRIPTS/signapk.jar" -w "$CERTIFICATEFILE" "$KEYFILE" "$unsignedzip" "$signedzip"; then #if signing did succeed
+  if java -jar "$SCRIPTS/zipsigner-resources/zipsigner-"*.jar $CERTIFICATEFILE $KEYFILE "$unsignedzip" "$signedzip"; then #if signing did succeed
     rm "$unsignedzip"
   else
     rm "$signedzip"
