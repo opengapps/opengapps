@@ -46,7 +46,7 @@ argument() {
         rm -rf .git/modules/sources/$module
       done
       echo "NOTICE: All local sources removed! Find more donations for a larger hard disk..."
-      exit 1
+      exit 0
     ;;
   esac
 }
