@@ -38,7 +38,7 @@ argument() {
       modules="all arm x86 $1"
     ;;
     --shallow)
-      depth="--depth=1"
+      depth="--depth=1 --checkout"  # checkout instead of rebasing, to avoid that it tries to rebase a huge number of commits in one go, resulting in failures (experimental!)
     ;;
     --i-would-really-like-my-diskspace-back)
       for module in $modules; do
