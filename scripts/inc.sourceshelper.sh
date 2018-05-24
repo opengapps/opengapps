@@ -23,6 +23,8 @@ INVALIDCERT=2
 UNSIGNEDFILES=3
 APKTOOLFAILED=11
 
+checktools bc
+
 getapkproperties(){
   apkproperties="$(aapt dump badging "$1" 2>/dev/null)"
   name="$(echo "$apkproperties" | grep -a "application-label:" | sed 's/application-label://g' | sed "s/'//g")"

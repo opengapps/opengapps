@@ -20,12 +20,12 @@ SCRIPT="$(readlink -f "$0")"
 TOP="$(dirname "$SCRIPT")"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
+# shellcheck source=scripts/inc.tools.sh
+. "$SCRIPTS/inc.tools.sh"
 # shellcheck source=scripts/inc.compatibility.sh
 . "$SCRIPTS/inc.compatibility.sh"
 # shellcheck source=scripts/inc.sourceshelper.sh
 . "$SCRIPTS/inc.sourceshelper.sh"
-# shellcheck source=scripts/inc.tools.sh
-. "$SCRIPTS/inc.tools.sh"
 
 # Check tools
 checktools aapt coreutils git lzip
