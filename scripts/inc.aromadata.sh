@@ -210,6 +210,7 @@ form(
     "bypassrem",     "Bypass the automatic removal of Stock/AOSP apps.\nPlease only select if you are sure you want them installed alongside the Google replacement.",        "",     "group",
       "+Browser",     "<b>+Browser</b>",      "(don't remove Stock Browser, even if Google Chrome is being installed)",    "check",
       "+CameraStock", "<b>+CameraStock</b>",  "(don't remove Stock Camera, even if Google Camera is being installed)",    "check",
+      "+DialerStock", "<b>+DialerStock</b>",  "(don't remove Stock Dialer, even if Google Dialer is being installed)",    "check",
       "+Email",     "<b>+Email</b>",      "(don't remove Stock Email, even if Gmail is being installed)",        "check",
       "+Gallery",     "<b>+Gallery</b>",      "(don't remove Stock Gallery, even if Google Photos is being installed)",    "check",
       "+Launcher",     "<b>+Launcher</b>",      "(don't remove Stock Launchers, even if Google Now Launcher is being installed)",  "check",
@@ -252,6 +253,7 @@ form(
       "CalendarStock",     "<b>Stock/AOSP Calendar</b>",       "(automatically removed when Google Calendar is installed)",                      "check",
       "CameraStock",     "<b>Stock/AOSP/Moto Camera</b>",       "(automatically removed when Google Camera is installed)",                      "check",
       "ClockStock",     "<b>Stock/AOSP Clock</b>",       "(automatically removed when Google Clock is installed)",                      "check",
+      "DialerStock",     "<b>Stock/AOSP Dialer</b>",       "(automatically removed when Google Dialer is installed)",                      "check",
       "Email",     "<b>Stock/AOSP Email</b>",       "(automatically removed when Gmail is installed)",                      "check",
       "ExchangeStock",     "<b>Stock/AOSP Exchange Services</b>",       "(automatically removed when Google Exchange Services is installed)",                      "check",
       "FMRadio",     "<b>Stock/AOSP FM Radio</b>",       "(not found on all devices or ROMs)",                      "check",
@@ -911,6 +913,12 @@ then
 endif;
 
 if
+  prop("rem.prop", "DialerStock")=="1"
+then
+  appendvar("gapps", "DialerStock\n");
+endif;
+
+if
   prop("rem.prop", "Email")=="1"
 then
   appendvar("gapps", "Email\n");
@@ -1079,6 +1087,11 @@ if
   prop("bypass.prop", "+CameraStock")=="1"
 then
   appendvar("gapps", "+CameraStock\n");
+endif;
+if
+  prop("bypass.prop", "+DialerStock")=="1"
+then
+  appendvar("gapps", "+DialerStock\n");
 endif;
 if
   prop("bypass.prop", "+Email")=="1"

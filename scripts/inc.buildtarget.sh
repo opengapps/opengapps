@@ -90,6 +90,7 @@ gappspico="calsync"
 
 stockremove="browser
 camerastock
+dialerstock
 email
 gallery
 launcher

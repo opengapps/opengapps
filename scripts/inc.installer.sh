@@ -1672,7 +1672,7 @@ else
 fi;
 
 # Prepare list of AOSP/ROM files that will be deleted using gapps-config
-# We will look for +Browser, +CameraStock, +Email, +Gallery, +Launcher, +MMS, +PicoTTS and more to prevent their removal
+# We will look for +Browser, +CameraStock, +DialerStock, +Email, +Gallery, +Launcher, +MMS, +PicoTTS and more to prevent their removal
 set_progress 0.03;
 if [ "$g_conf" ]; then
   for default_name in $default_stock_remove_list; do
@@ -1762,6 +1762,12 @@ fi;
 if ( ! contains "$gapps_list" "dialerframework" ) && ( contains "$gapps_list" "dialergoogle" ); then
   gapps_list=${gapps_list/dialergoogle};
   install_note="${install_note}dialergoogle_msg"$'\n'; # make note that Google Dialer will NOT be installed as user requested
+fi;
+
+# If we're NOT installing dialergoogle make certain 'dialerstock' is NOT in $aosp_remove_list UNLESS 'dialerstock' is in $g_conf
+if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qiE '^dialerstock$' "$g_conf" ); then
+  aosp_remove_list=${aosp_remove_list/dialerstock};
+  remove_dialerstock="false[NO_DialerGoogle]";
 fi;
 
 # If we're NOT installing  messenger make certain 'mms' is NOT in $aosp_remove_list UNLESS 'mms' is in $g_conf
@@ -1899,11 +1905,6 @@ fi;
 # If we're installing contactsgoogle we MUST ADD contactsstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "contactsgoogle" ) && ( ! contains "$aosp_remove_list" "contactsstock" ); then
   aosp_remove_list="${aosp_remove_list}contactsstock"$'\n';
-fi;
-
-# If we're installing dialergoogle we MUST ADD dialerstock to $aosp_remove_list (if it's not already there)
-if ( contains "$gapps_list" "dialergoogle" ) && ( ! contains "$aosp_remove_list" "dialerstock" ); then
-  aosp_remove_list="${aosp_remove_list}dialerstock"$'\n';
 fi;
 
 # If we're installing packageinstallergoogle we MUST ADD packageinstallerstock to $aosp_remove_list (if it's not already there)
@@ -2076,6 +2077,7 @@ log "Config Type" "$config_type";
 log "Using gapps-config" "$config_file";
 log "Remove Stock/AOSP Browser" "$remove_browser";
 log "Remove Stock/AOSP Camera" "$remove_camerastock";
+log "Remove Stock/AOSP Dialer" "$remove_dialerstock";
 log "Remove Stock/AOSP Email" "$remove_email";
 log "Remove Stock/AOSP Gallery" "$remove_gallery";
 log "Remove Stock/AOSP Launcher" "$remove_launcher";
