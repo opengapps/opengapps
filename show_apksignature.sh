@@ -26,7 +26,12 @@ for argument in "$@"; do
   file="$(readlink -f "$argument")"
   if [ -f "$file" ]; then
     echo "signature of $file:"
-    unzip -p "$file" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs | tail -n +4 | head -n -2 | tr -d '\n'
+    RSAFILE="META-INF/CERT"
+    unzip -l "$file" | grep -q "$RSAFILE.RSA"
+    if [ "$?" != "0" ]; then
+      RSAFILE="META-INF/GOOGPLAY"
+    fi
+    unzip -p "$file" "$RSAFILE.RSA" | openssl pkcs7 -inform DER -print_certs | tail -n +4 | head -n -2 | tr -d '\n'
     echo ""
   fi
 done

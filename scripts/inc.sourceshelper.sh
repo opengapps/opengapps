@@ -194,18 +194,28 @@ verifyapk() {
 
   manifestlist="$(unzip -p "$1" "META-INF/MANIFEST.MF" | sed ':a;N;$!ba;s/\r\n //g' | tr -d '\r' | awk -F' ' '/Name:/ {print $NF}')"
   ziplist="$(unzip -Z -1 "$1")"
-  notinzip="$(printf "%s\n%s\n" "$manifestlist" "$ziplist" | grep -vxF -e "META-INF/CERT.RSA" -e "META-INF/CERT.SF" -e "META-INF/MANIFEST.MF" | sort | uniq -u)"
+  RSAFILE="META-INF/CERT"
+  unzip -l "$1" | grep -q "$RSAFILE.RSA"
+  if [ "$?" != "0" ];  then
+    RSAFILE="META-INF/GOOGPLAY"
+  fi
+  notinzip="$(printf "%s\n%s\n" "$manifestlist" "$ziplist" | grep -vxF -e "$RSAFILE.RSA" -e "$RSAFILE.SF" -e "META-INF/MANIFEST.MF" | sort | uniq -u)"
   if [ -n "$notinzip" ]; then
     return $INCOMPLETEFILES #files were mentioned in the signed manifest but are not present in the APK
   fi
 }
 
 importcert() {
-  unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | grep -q -E "$GOOGLECERT" || return 1 #Certificate is not issued by Google.
-  alias="$(unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | awk -F' ' '/Serial Number:/ {if(NF==2){getline nextline;gsub(/[ \t:]/,"",nextline);print "ibase=16;",toupper(nextline)}else{print "ibase=10;",$(NF-1)}}' | bc)"
+  RSAFILE="META-INF/CERT"
+  unzip -l "$1" | grep -q "$RSAFILE.RSA"
+  if [ "$?" != "0" ];  then
+    RSAFILE="META-INF/GOOGPLAY"
+  fi
+  unzip -p "$1" "$RSAFILE.RSA" | openssl pkcs7 -inform DER -print_certs -text | grep -q -E "$GOOGLECERT" || return 1 #Certificate is not issued by Google.
+  alias="$(unzip -p "$1" "$RSAFILE.RSA" | openssl pkcs7 -inform DER -print_certs -text | awk -F' ' '/Serial Number:/ {if(NF==2){getline nextline;gsub(/[ \t:]/,"",nextline);print "ibase=16;",toupper(nextline)}else{print "ibase=10;",$(NF-1)}}' | bc)"
   if ! timeout 1m keytool -list -keystore "$CERTIFICATES/opengapps.keystore" -storepass "opengapps" -noprompt -alias "$alias" 1>/dev/null 2>&1; then
     if [ -n "$IMPORTCERTS" ]; then #set this variable in your environment if you want to permit the script to update the keystore
-      unzip -p "$1" "META-INF/CERT.RSA" | openssl pkcs7 -inform DER -print_certs -text | keytool -importcert -keystore "$CERTIFICATES/opengapps.keystore" -storepass "opengapps" -noprompt -alias "$alias" 1>/dev/null 2>&1
+      unzip -p "$1" "$RSAFILE.RSA" | openssl pkcs7 -inform DER -print_certs -text | keytool -importcert -keystore "$CERTIFICATES/opengapps.keystore" -storepass "opengapps" -noprompt -alias "$alias" 1>/dev/null 2>&1
       if [ -n "$2" ]; then #silent mode if value is set
         echo "Certificate with alias $alias is signed by Google and added to the keystore"
       fi
