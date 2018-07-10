@@ -446,16 +446,14 @@ dialerframework
 googletts"
     if [ "$API" -eq "23" ] || [ "$API" -ge "26" ] ; then
       gappspico="$gappspico
-packageinstallergoogle"  
+packageinstallergoogle"
     fi # TODO packageinstallergoogle temporary disabled because of issues on Nougat ROMs
+    gappsmini="$gappsmini
+carrierservices"
     gappsstock="$gappsstock
-dialergoogle
-pixellauncher"
+dialergoogle"
     gappsstock_optional="$gappsstock_optional
 cameragooglelegacy"
-
-    gappssuper="$gappssuper
-carrierservices"
 
     webviewstocklibs='lib/$WebView_lib_filename
 lib64/$WebView_lib_filename
@@ -506,21 +504,30 @@ moviesvrmode"
 photosvrmode"
   fi
   fi
+  if [ "$API" -le "24" ]; then
+    gappsmicro="$gappsmicro
+googlenow"
+  fi # Only install Google Now Launcher on Android 7.0 and older
 }
 
 api25hack(){
   if [ "$API" -ge "25" ]; then
     gappscore="$gappscore
+batteryusage
 gmssetup"
-    gappsnano="$gappsnano
-batteryusage"
-    gappsstock="$gappsstock
+    gappsmicro="$gappsmicro
+pixellauncher" # Only install Pixel Launcher and icons on Android 7.1 and newer
+  fi
+  if [ "$API" -eq "25" ]; then
+    gappsmicro="$gappsmicro
 pixelicons"
   fi
 }
 
 api26hack(){
   if [ "$API" -ge "26" ]; then
+    gappscore="$gappscore
+soundpicker"
     if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
       gappscore="$gappscore
 androidplatformservices"

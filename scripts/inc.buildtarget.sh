@@ -27,20 +27,26 @@ vending"
 gappscore_optional=""
 
 gappssuper="dmagent
+docs
 earth
+fitness
 gcs
-googlepay
 indic
 japanese
 korean
+newswidget
 pinyin
 projectfi
+sheets
+slides
 street
 translate
 zhuyin"
 
-gappsstock="cameragoogle
+gappsstock="allo
+cameragoogle
 duo
+googlepay
 hangouts
 keyboardgoogle
 vrservice
@@ -51,18 +57,13 @@ gappsstock_optional=""
 gappsfull="books
 chrome
 cloudprint
-docs
 drive
-fitness
 googleplus
 keep
 movies
 music
 newsstand
-newswidget
 playgames
-sheets
-slides
 talkback"
 
 gappsfull_optional=""
@@ -78,8 +79,7 @@ gappsmini_optional=""
 #googletts for micro is defined in inc.compatibility.sh api23hack
 gappsmicro="calendargoogle
 exchangegoogle
-gmail
-googlenow"
+gmail"
 
 gappsnano="facedetect
 faceunlock
@@ -231,6 +231,7 @@ get_package_info(){
     androidplatformservices)  if [ "$API" -eq "26" ]; then # This app (com.google.android.gms.policy_sidecar_o) is only found in Android 8.0 for the Pixel 2
                                packagetype="Core"; packagename="com.google.android.gms.policy_sidecar_o"; packagetarget="priv-app/AndroidPlatformServices"
                               fi;;
+    batteryusage)             packagetype="Core"; packagename="com.google.android.apps.turbo"; packagetarget="priv-app/Turbo";;
     gmscore)                  packagetype="Core"; packagename="com.google.android.gms"; packagetarget="priv-app/PrebuiltGmsCore";;  # Alternative path on Android One 7.0 is priv-app/GmsCore
     gmssetup)                 packagetype="Core"; packagename="com.google.android.gms.setup"; packagetarget="priv-app/GmsCoreSetupPrebuilt";;
     googlefeedback)           packagetype="Core"; packagename="com.google.android.feedback"; packagetarget="priv-app/GoogleFeedback";;
@@ -239,10 +240,11 @@ get_package_info(){
     gsflogin)                 packagetype="Core"; packagename="com.google.android.gsf.login"; packagetarget="priv-app/GoogleLoginService";;  # Gone in Oreo
     setupwizard)              packagetype="Core"; packagename="com.google.android.setupwizard"; packagetarget="priv-app/SetupWizard";; #KitKat only
     setupwizarddefault)       packagetype="Core"; packagename="com.google.android.setupwizard.default"; packagetarget="priv-app/SetupWizard";;
-    setupwizardtablet )       packagetype="Core"; packagename="com.google.android.setupwizard.tablet"; packagetarget="priv-app/SetupWizard";;
+    setupwizardtablet)        packagetype="Core"; packagename="com.google.android.setupwizard.tablet"; packagetarget="priv-app/SetupWizard";;
+    soundpicker)              packagetype="Core"; packagename="com.google.android.soundpicker"; packagetarget="app/SoundPickerPrebuilt";;
     vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
 
-    batteryusage)             packagetype="GApps"; packagename="com.google.android.apps.turbo"; packagetarget="priv-app/Turbo";;
+    allo)                     packagetype="GApps"; packagename="com.google.android.apps.fireball"; packagetarget="app/Allo";;
     books)                    packagetype="GApps"; packagename="com.google.android.apps.books"; packagetarget="app/Books";;
     calculatorgoogle)         packagetype="GApps"; packagename="com.google.android.calculator"; packagetarget="app/CalculatorGooglePrebuilt";;
     calendargoogle)           packagetype="GApps"; packagename="com.google.android.calendar"; packagetarget="app/CalendarGooglePrebuilt";;

@@ -130,13 +130,14 @@ form(
       "0",     "Exclude",   "Choose the apps you DON'T WANT installed from the list below.",       "select",
 
     "gapps",     "Choose GApps which you want to add on install/exclude list",        "",                                         "group",
+      "Allo",     "<b>Google Allo</b>",       "",                      "check",
       "BatteryUsage",     "<b>Device Health Services</b>",       "requires Android 7.1 (API Level 25) or higher",                      "check",
       "Books",     "<b>Google Play Books</b>",       "",                      "check",
       "CalculatorGoogle",     "<b>Google Calculator</b>",       "",                      "check",
       "CalendarGoogle",     "<b>Google Calendar</b>",       "",                      "check",
       "CalSync",     "<b>Google Calendar Sync</b>",       "(installed by default when Google Calendar is NOT being installed)",                      "check",
       "CameraGoogle",     "<b>Google Camera</b>",       "",                      "check",
-      "CarrierServices",     "<b>Carrier Services</b>",       "",                      "check",
+      "CarrierServices",     "<b>Carrier Services</b>",       "(must be installed if installing Android Messages)",                      "check",
       "Chrome",     "<b>Google Chrome</b>",       "",                      "check",
       "ClockGoogle",     "<b>Google Clock</b>",       "",                      "check",
       "CloudPrint",     "<b>Google Cloud Print</b>",       "",                      "check",
@@ -165,7 +166,7 @@ form(
       "KeyboardGoogle",     "<b>Google Keyboard</b>",       "",                      "check",
       "Korean",     "<b>Google Korean Input</b>",       "",                      "check",
       "Maps",     "<b>Google Maps</b>",       "",                      "check",
-      "Messenger",     "<b>Android Messages</b>",       "(not installed on tablet devices)",                      "check",
+      "Messenger",     "<b>Android Messages</b>",       "(not installed on tablet devices, must install Carrier Services on Android 6.0+)",                      "check",
       "Movies",     "<b>Google Play Movies & TV</b>",       "",                      "check",
       "Music",     "<b>Google Play Music</b>",       "",                      "check",
       "NewsStand",     "<b>Google Play Newsstand</b>",       "",                      "check",
@@ -188,7 +189,7 @@ form(
       "Talkback",     "<b>Talkback</b>",       "",                      "check",
       "Translate",     "<b>Google Translate</b>",       "",                      "check",
       "VRService",     "<b>Google VR Service</b>",       "",                      "check",
-      "Wallpapers",     "<b>Wallpapers</b>",       "To Exclude BOTH Wallpapers AND Pixel Launcher <#f00>OR</#> To Include Wallpapers",                      "check",
+      "Wallpapers",     "<b>Google Wallpapers</b>",       "To Exclude BOTH Google Wallpapers AND Pixel Launcher <#f00>OR</#> To Include Google Wallpapers",                      "check",
       "WebViewGoogle",     "<b>Android System WebView</b>",       "",                      "check",
       "YouTube",     "<b>YouTube</b>",       "",                      "check",
       "Zhuyin",     "<b>Google Zhuyin Input</b>",       "",                      "check"
@@ -214,7 +215,7 @@ form(
       "+Gallery",     "<b>+Gallery</b>",      "(don't remove Stock Gallery, even if Google Photos is being installed)",    "check",
       "+Launcher",     "<b>+Launcher</b>",      "(don't remove Stock Launchers, even if Google Now Launcher is being installed)",  "check",
       "+MMS",     "<b>+MMS</b>",      "(don't remove Stock SMS app, even if Android Messages is being installed)",            "check",
-      "+PicoTTS",     "<b>+PicoTTS</b>",      "(on't remove PicoTTS, even if GoogleTTS is being installed)",    "check"
+      "+PicoTTS",     "<b>+PicoTTS</b>",      "(don't remove PicoTTS, even if GoogleTTS is being installed)",    "check"
 );
 
 form(
@@ -277,6 +278,7 @@ form(
       "Terminal",     "<b>Terminal</b>",       "",                      "check",
       "Themes",     "<b>CyanogenMod Theme Engine</b>",       "(Will break the link in Settings to Themes!)",                      "check",
       "VisualizationWallpapers",     "<b>Visualization Live Wallpaper</b>",       "",                      "check",
+      "WallpapersStock",     "<b>Stock Wallpaper Picker</b>",       "(automatically removed when Google Wallpapers is installed)",                      "check",
       "WhisperPush",     "<b>WhisperPush</b>",       "",                      "check"
 );
 form(
@@ -1058,6 +1060,12 @@ if
   prop("rem.prop", "VisualizationWallpapers")=="1"
 then
   appendvar("gapps", "VisualizationWallpapers\n");
+endif;
+
+if
+  prop("rem.prop", "WallpapersStock")=="1"
+then
+  appendvar("gapps", "WallpapersStock\n");
 endif;
 
 if

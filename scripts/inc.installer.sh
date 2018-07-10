@@ -269,6 +269,7 @@ tagstock
 terminal
 themes
 visualizationwallpapers
+wallpapersstock
 whisperpush
 ";
 # _____________________________________________________________________________________________________________________
@@ -581,6 +582,9 @@ priv-app/ThemesProvider'"$REMOVALSUFFIX"'"
 visualizationwallpapers_list="
 app/VisualizationWallpapers'"$REMOVALSUFFIX"'"
 
+wallpapersstock_list="
+app/WallpaperPicker'"$REMOVALSUFFIX"'"
+
 webviewstock_list="
 app/webview'"$REMOVALSUFFIX"'
 app/WebView'"$REMOVALSUFFIX"'
@@ -676,6 +680,7 @@ cmcompatibility_msg="WARNING: PackageInstallerGoogle is not installed. Cyanogenm
 dialergoogle_msg="WARNING: Google Dialer has/will not be installed as requested. Dialer Framework\nmust be added to the GApps installation if you want to install the\nGoogle Dialer.\n";
 faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";
 googlenow_msg="WARNING: Google Now Launcher has/will not be installed as requested. Google Search\nmust be added to the GApps installation if you want to install the\nGoogle Now Launcher.\n";
+messenger_msg="WARNING: Android Messages has/will not be installed as requested. Carrier Services\nmust be added to the GApps installation on Android 6.0+ if you want to install\nAndroid Messages.\n";
 pixellauncher_msg="WARNING: Pixel Launcher has/will not be installed as requested. Wallpapers and\nGoogle Search must be added to the GApps installation if you want to install\nthe Pixel Launcher.\n";
 projectfi_msg="WARNING: Project Fi has/will not be installed as requested. GCS must be\nadded to the GApps installation if you want to install the Project Fi app.\n";
 nobuildprop="INSTALLATION FAILURE: The installed ROM has no build.prop or equivalent\n";
@@ -1239,27 +1244,36 @@ done
 
 # Locate gapps-config (if used)
 for i in "$TMP/aroma/.gapps-config"\
- "$zip_folder/.gapps-config-$device_name"\
- "$zip_folder/gapps-config-$device_name.txt"\
- "/sdcard/Open-GApps/.gapps-config-$device_name"\
- "/sdcard/Open-GApps/gapps-config-$device_name.txt"\
  "$zip_folder/.gapps-config"\
- "$zip_folder/gapps-config.txt"\
- "/sdcard/Open-GApps/.gapps-config"\
- "/sdcard/Open-GApps/gapps-config.txt"\
+ "$zip_folder/.gapps-config-$device_name"\
  "$zip_folder/.gapps-config-$device_name.txt"\
- "/sdcard/Open-GApps/.gapps-config-$device_name.txt"\
  "$zip_folder/.gapps-config.txt"\
- "/sdcard/Open-GApps/.gapps-config.txt"\
- "/persist/.gapps-config-$device_name"\
- "/persist/gapps-config-$device_name.txt"\
+ "$zip_folder/gapps-config-$device_name.txt"\
+ "$zip_folder/gapps-config.txt"\
+ "/data/.gapps-config"\
+ "/data/.gapps-config-$device_name"\
+ "/data/.gapps-config-$device_name.txt"\
+ "/data/.gapps-config.txt"\
+ "/data/gapps-config-$device_name.txt"\
+ "/data/gapps-config.txt"\
  "/persist/.gapps-config"\
- "/persist/gapps-config.txt"\
+ "/persist/.gapps-config-$device_name"\
  "/persist/.gapps-config-$device_name.txt"\
  "/persist/.gapps-config.txt"\
- "/tmp/install/gapps-config.txt"\
+ "/persist/gapps-config-$device_name.txt"\
+ "/persist/gapps-config.txt"\
+ "/sdcard/Open-GApps/.gapps-config"\
+ "/sdcard/Open-GApps/.gapps-config-$device_name"\
+ "/sdcard/Open-GApps/.gapps-config-$device_name.txt"\
+ "/sdcard/Open-GApps/.gapps-config.txt"\
+ "/sdcard/Open-GApps/gapps-config-$device_name.txt"\
+ "/sdcard/Open-GApps/gapps-config.txt"\
+ "/tmp/install/.gapps-config"\
+ "/tmp/install/.gapps-config-$device_name"\
  "/tmp/install/.gapps-config-$device_name.txt"\
- "/tmp/install/.gapps-config.txt"; do
+ "/tmp/install/.gapps-config.txt"\
+ "/tmp/install/gapps-config-$device_name.txt"\
+ "/tmp/install/gapps-config.txt"; do
   if [ -r "$i" ]; then
     g_conf="$i";
     break;
@@ -1748,9 +1762,19 @@ if ( ! contains "$gapps_list" "photos" ) && ( ! grep -qiE '^gallery$' "$g_conf" 
   remove_gallery="false[NO_Photos]";
 fi;
 
+# If $device_type is not a 'phone' make certain we're not installing googlepay
+if ( contains "$gapps_list" "googlepay" ) && [ $device_type != "phone" ]; then
+  gapps_list=${gapps_list/googlepay}; # we'll prevent googlepay from being installed since this isn't a phone
+fi;
+
 # If $device_type is not a 'phone' make certain we're not installing messenger
 if ( contains "$gapps_list" "messenger" ) && [ $device_type != "phone" ]; then
   gapps_list=${gapps_list/messenger}; # we'll prevent messenger from being installed since this isn't a phone
+fi;
+
+# If $device_type is not a 'phone' make certain we're not installing carrierservices (this is essential for messenger)
+if ( contains "$gapps_list" "carrierservices" ) && [ $device_type != "phone" ]; then
+  gapps_list=${gapps_list/carrierservices}; # we'll prevent carrierservices from being installed since this isn't a phone
 fi;
 
 # If $device_type is not a 'phone' make certain we're not installing dialerframework (implies no dialergoogle)
@@ -1764,7 +1788,13 @@ if ( ! contains "$gapps_list" "dialerframework" ) && ( contains "$gapps_list" "d
   install_note="${install_note}dialergoogle_msg"$'\n'; # make note that Google Dialer will NOT be installed as user requested
 fi;
 
-# If we're NOT installing  messenger make certain 'mms' is NOT in $aosp_remove_list UNLESS 'mms' is in $g_conf
+# If we're NOT installing carrier services then we MUST REMOVE messenger from $gapps_list (if it's currently there)
+if [ "$API" -ge "23" ] && ( ! contains "$gapps_list" "carrierservices" ) && ( contains "$gapps_list" "messenger" ); then
+  gapps_list=${gapps_list/messenger};
+  install_note="${install_note}messenger_msg"$'\n'; # make note that Android Messages will NOT be installed as user requested
+fi;
+
+# If we're NOT installing messenger make certain 'mms' is NOT in $aosp_remove_list UNLESS 'mms' is in $g_conf
 if ( ! contains "$gapps_list" "messenger" ) && ( ! grep -qiE '^mms$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/mms};
   remove_mms="false[NO_Messenger]";
@@ -1799,12 +1829,6 @@ fi;
 if ( ! contains "$gapps_list" "search" ) && ( contains "$gapps_list" "googlenow" ); then
   gapps_list=${gapps_list/googlenow};
   install_note="${install_note}googlenow_msg"$'\n'; # make note that Google Now Launcher will NOT be installed as user requested
-fi;
-
-# If we're NOT installing search then we MUST REMOVE pixellauncher from  $gapps_list (if it's currently there)
-if ( ! contains "$gapps_list" "search" ) && ( contains "$gapps_list" "pixellauncher" ); then
-  gapps_list=${gapps_list/pixellauncher};
-  install_note="${install_note}pixellauncher_msg"$'\n'; # make note that Pixel Launcher will NOT be installed as user requested
 fi;
 
 # If we're NOT installing googlenow or pixellauncher make certain 'launcher' is NOT in $aosp_remove_list UNLESS 'launcher' is in $g_conf
@@ -1915,6 +1939,11 @@ fi;
 if ( ! contains "$gapps_list" "gcs" ) && ( contains "$gapps_list" "projectfi" ); then
   gapps_list=${gapps_list/projectfi};
   install_note="${install_note}projectfi_msg"$'\n'; # make note that Project Fi will NOT be installed as user requested
+fi;
+
+# If we're installing wallpapers we must ADD wallpapersstock to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "wallpapers" ) && ( ! contains "$aosp_remove_list" "wallpapersstock" ); then
+  aosp_remove_list="${aosp_remove_list}wallpapersstock"$'\n';
 fi;
 
 # Some ROMs bundle Google Apps or the user might have installed a Google replacement app during an earlier install
