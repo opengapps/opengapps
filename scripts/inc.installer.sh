@@ -2465,6 +2465,6 @@ if ( contains "$gapps_list" "dialergoogle" ); then
   chmod 600 "$setsec"
 fi
 
-exxit 0
+exit 0
 EOFILE
 }
