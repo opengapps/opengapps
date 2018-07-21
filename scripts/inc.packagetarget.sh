@@ -281,7 +281,14 @@ signzip() {
     echo "INFO: using $KEYFILE as cryptographic key file"
   fi
 
-  if java -jar "$SCRIPTS/zipsigner-resources/zipsigner-"*.jar $CERTIFICATEFILE $KEYFILE "$unsignedzip" "$signedzip"; then #if signing did succeed
+  if [ -z "$TMPSIGNDIR" ] || [ ! -d "$TMPSIGNDIR" ]; then
+    unset TMPSIGNCMD
+  else
+    TMPSIGNCMD="-Djava.io.tmpdir=$TMPSIGNDIR"
+    echo "INFO: using $TMPSIGNDIR as temporary directory to sign files"
+  fi
+
+  if java $TMPSIGNCMD -jar "$SCRIPTS/zipsigner-resources/zipsigner-"*.jar $CERTIFICATEFILE $KEYFILE "$unsignedzip" "$signedzip"; then #if signing did succeed
     rm "$unsignedzip"
   else
     rm "$signedzip"
