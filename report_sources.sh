@@ -25,7 +25,7 @@ CERTIFICATES="$SCRIPTS/certificates"
 . "$SCRIPTS/inc.sourceshelper.sh"
 
 # Check tools
-checktools aapt coreutils jarsigner
+checktools aapt bc coreutils jarsigner
 
 argument(){
   case $1 in
