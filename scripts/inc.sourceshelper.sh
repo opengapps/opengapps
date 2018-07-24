@@ -24,6 +24,16 @@ UNSIGNEDFILES=3
 APKTOOLFAILED=11
 
 checktools bc
+install -d "$CACHE"
+touch "$CACHE/signaturecache.txt"
+
+addsignaturetocache() {
+  if [ ! -s "$CACHE/signaturecache.txt" ]; then
+    echo -e " " >> "$CACHE/signaturecache.txt"  # our sed replacement does not work on empty file
+  fi
+  sha1sum="$(sha1sum "$1" | cut -d ' ' -f 1)"
+  sed -i "\#^[0-9a-f]\{40\}=$1#{h;s#[0-9a-f]\{40\}=#$sha1sum=#};\${x;/^\$/{s##$sha1sum=$1#;H};x}" "$CACHE/signaturecache.txt"
+}
 
 getapkproperties(){
   apkproperties="$(aapt dump badging "$1" 2>/dev/null)"
@@ -168,6 +178,11 @@ getarchitecturesfromlib() {
   fi
 }
 
+getsignaturefromcache() {
+  sha1sum="$(sha1sum "$1" | cut -d ' ' -f 1)"
+  return $(grep -oqE "^$sha1sum=$1\$" "$CACHE/signaturecache.txt")
+}
+
 getsetupwizardproduct() {
   # Setupwizard has various variations, depending on product type. We need to decompile the APK to find this value
   # this function is not part of the regular getapkproperties script because it is heavy and only necessary when adding an APK
@@ -183,6 +198,11 @@ getsetupwizardproduct() {
 }
 
 verifyapk() {
+  # Check if we have a verification "ok" in signaturecache
+  if getsignaturefromcache "$1"; then
+    return 0  # it is in cache
+  fi
+
   notinzip=""
   if importcert "$1" "$2"; then #always import, because sometimes new certificates are supplied but it would never be detected because the exitcode of jarsigner -verify would be 0, because the existing certificates would suffice
     if ! timeout 1m jarsigner -verify -keystore "$CERTIFICATES/opengapps.keystore" -strict "$1" 1>/dev/null 2>&1; then  # timeout added because sometimes jarsigner can get stuck for an unknown reason
@@ -203,6 +223,9 @@ verifyapk() {
   if [ -n "$notinzip" ]; then
     return $INCOMPLETEFILES #files were mentioned in the signed manifest but are not present in the APK
   fi
+
+  # add the "ok" to signaturecache
+  addsignaturetocache "$1"
 }
 
 importcert() {
