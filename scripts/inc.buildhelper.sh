@@ -21,7 +21,7 @@ preparebuildarea() {
   if [ -n "$VERSIONLOG" ]; then
     logfile="$(eval "echo \"$VERSIONLOG\"")"
     install -d "$(dirname "$logfile")"
-    printf "%-6s%3s| %-61s| %-35s| %s\n--------------------------------------------------------------------------------------------------------------------\n" "Arch." "API" "Application / File / Folder" "Version Name" "DPIs" > "$logfile"
+    printf "%-6s%3s| %-61s| %-50s| %s\n-----------------------------------------------------------------------------------------------------------------------------------\n" "Arch." "API" "Application / File / Folder" "Version Name" "DPIs" > "$logfile"
   fi
 }
 
@@ -187,9 +187,9 @@ buildapp() {
       if [ -z "$baseversionname" ]; then
         baseversionname=$versionname
         buildlib "$dpivariant" "$liblocation" "$usearch" #Use the libs from this baseversion
-        printf "%6s-%-2s %-61s %35s" "$usearch" "$api" "$1" "$baseversionname"  # use $1 instead of $package to show the foldername packagename instead of the getapkproperties-name to get the setupwizard name right
+        printf "%6s-%-2s %-61s %50s" "$usearch" "$api" "$1" "$baseversionname"  # use $1 instead of $package to show the foldername packagename instead of the getapkproperties-name to get the setupwizard name right
         if [ -n "$logfile" ]; then
-          printf "%6s-%-2s| %-61s| %-35s|" "$usearch" "$api" "$1" "$baseversionname" >> "$logfile"
+          printf "%6s-%-2s| %-61s| %-50s|" "$usearch" "$api" "$1" "$baseversionname" >> "$logfile"
         fi
       fi
       if [ "$versionname" = "$baseversionname" ]; then
