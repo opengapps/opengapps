@@ -18,6 +18,7 @@
 command -v realpath >/dev/null 2>&1 || { echo "realpath is required but it's not installed, aborting." >&2; exit 1; }
 SCRIPT="$(readlink -f "$0")"
 TOP="$(dirname "$SCRIPT")"
+CACHE="$TOP/cache"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 # shellcheck source=scripts/inc.tools.sh
