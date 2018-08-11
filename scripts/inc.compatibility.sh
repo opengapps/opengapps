@@ -548,6 +548,17 @@ api27hack(){
   fi
 }
 
+# Does nothing now, here for completeness
+api28hack(){
+  if [ "$API" -ge "28" ]; then
+    if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
+      gappscore="$gappscore"
+    fi
+  else
+    gappscore="$gappscore"
+  fi
+}
+
 sdkversionhacks(){
   case "$package" in
     com.android.facelock|com.google.android.configupdater|com.google.android.feedback|com.google.android.gsf.login|com.google.android.partnersetup|com.google.android.setupwizard|com.google.android.syncadapters.contacts)
@@ -557,6 +568,7 @@ sdkversionhacks(){
         *25) sdkversion="25";;
         *26) sdkversion="26";;
         *27) sdkversion="27";;
+        *28) sdkversion="28";;
         *) ;;
       esac;;
   esac

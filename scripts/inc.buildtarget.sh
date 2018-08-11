@@ -249,7 +249,7 @@ get_package_info(){
     calendargoogle)           packagetype="GApps"; packagename="com.google.android.calendar"; packagetarget="app/CalendarGooglePrebuilt";;
     calsync)                  packagetype="GApps"; packagename="com.google.android.syncadapters.calendar"; packagetarget="app/GoogleCalendarSyncAdapter";;
     cameragoogle)             packagetype="GApps"; packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera";
-                              # if [ "$API" -ge "27" ]; then  # On Oreo 8.1 we bundle Camera 2017
+                              # if [ "$API" -ge "27" ]; then  # On Android 8.1+ we bundle Camera 2017
                               #  packagefiles="etc/permissions/com.google.android.camera.experimental2017.xml"; packageframework="com.google.android.camera.experimental2017.jar"
                               if [ "$API" -ge "25" ]; then  # On Nougat 7.1 we bundle Camera 2016
                                 packagefiles="etc/permissions/com.google.android.camera.experimental2016.xml"; packageframework="com.google.android.camera.experimental2016.jar"
@@ -339,7 +339,7 @@ get_package_info(){
     taggoogle)                packagetype="GApps"; packagename="com.google.android.tag"; packagetarget="priv-app/TagGoogle";;
     translate)                packagetype="GApps"; packagename="com.google.android.apps.translate"; packagetarget="app/TranslatePrebuilt";;
     vrservice)                packagetype="GApps"; packagefiles="etc/sysconfig/google_vr_build.xml"; packagename="com.google.vr.vrcore"; packagetarget="app/GoogleVrCore"
-                              if [ "$API" -ge "27" ]; then  # On Oreo 8.1 we bundle 2017 VR Platform
+                              if [ "$API" -ge "27" ]; then  # On Android 8.1+ we bundle 2017 VR Platform
                                 packagefiles="etc/permissions/com.google.vr.platform.xml etc/sysconfig/google_vr_build.xml"; packageframework="com.google.vr.platform.jar"
                               fi;;
     wallpapers)               packagetype="GApps"; packagename="com.google.android.apps.wallpaper"; packagetarget="app/WallpaperPickerGooglePrebuilt";;
