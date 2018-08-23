@@ -553,7 +553,8 @@ api28hack(){
       gappscore="$gappscore"
     fi
     gappscore="$gappscore
-androidplatformservices"
+androidplatformservices
+datatransfertool"
   fi
 }
 
