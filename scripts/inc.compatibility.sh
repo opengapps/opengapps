@@ -518,7 +518,7 @@ pixelicons"
 }
 
 api26hack(){
-  if [ "$API" -ge "26" ]; then
+  if [ "$API" -eq "26" ]; then
     if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
       gappscore="$gappscore
 androidplatformservices"
@@ -537,7 +537,7 @@ gsflogin"
 
 # Does nothing now, here for completeness
 api27hack(){
-  if [ "$API" -ge "27" ]; then
+  if [ "$API" -eq "27" ]; then
     if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
       gappscore="$gappscore"
     fi
@@ -552,8 +552,8 @@ api28hack(){
     if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
       gappscore="$gappscore"
     fi
-  else
-    gappscore="$gappscore"
+    gappscore="$gappscore
+androidplatformservices"
   fi
 }
 
