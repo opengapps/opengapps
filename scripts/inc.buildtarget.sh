@@ -257,6 +257,7 @@ get_package_info(){
     setupwizardtablet)        packagetype="Core"; packagename="com.google.android.setupwizard.tablet"; packagetarget="priv-app/SetupWizard";;
     vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
 
+    actionsservices)          packagetype="GApps"; packagename="com.google.android.as"; packagetarget="priv-app/MatchmakerPrebuilt";;
     batteryusage)             packagetype="GApps"; packagename="com.google.android.apps.turbo"; packagetarget="priv-app/Turbo";;
     books)                    packagetype="GApps"; packagename="com.google.android.apps.books"; packagetarget="app/Books";;
     calculatorgoogle)         packagetype="GApps"; packagename="com.google.android.calculator"; packagetarget="app/CalculatorGooglePrebuilt";;

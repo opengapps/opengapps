@@ -130,6 +130,7 @@ form(
       "0",     "Exclude",   "Choose the apps you DON'T WANT installed from the list below.",       "select",
 
     "gapps",     "Choose GApps which you want to add on install/exclude list",        "",                                         "group",
+      "ActionsServices",     "<b>Actions Services</b>",       "requires Android 9.0 (API Level 28) or higher", 
       "BatteryUsage",     "<b>Device Health Services</b>",       "requires Android 7.1 (API Level 25) or higher",                      "check",
       "Books",     "<b>Google Play Books</b>",       "",                      "check",
       "CalculatorGoogle",     "<b>Google Calculator</b>",       "",                      "check",
@@ -355,6 +356,12 @@ endif;
 
 # APP CHOICES
 appendvar("gapps", "\n\n");
+
+if
+  prop("gapps.prop", "ActionsServices")=="1"
+then
+  appendvar("gapps", "ActionsServices\n");
+endif;
 
 if
   prop("gapps.prop", "BatteryUsage")=="1"
