@@ -132,6 +132,7 @@ form(
     "gapps",     "Choose GApps which you want to add on install/exclude list",        "",                                         "group",
       "ActionsServices",     "<b>Actions Services</b>",       "requires Android 9.0 (API Level 28) or higher", 
       "BatteryUsage",     "<b>Device Health Services</b>",       "requires Android 7.1 (API Level 25) or higher",                      "check",
+      "BetterTogether",     "<b>Better Together</b>",       "requires Android 9.0 (API Level 28) or higher",                      "check",
       "Books",     "<b>Google Play Books</b>",       "",                      "check",
       "CalculatorGoogle",     "<b>Google Calculator</b>",       "",                      "check",
       "CalendarGoogle",     "<b>Google Calendar</b>",       "",                      "check",
@@ -368,6 +369,12 @@ if
   prop("gapps.prop", "BatteryUsage")=="1"
 then
   appendvar("gapps", "BatteryUsage\n");
+endif;
+
+if
+  prop("gapps.prop", "BetterTogether")=="1"
+then
+  appendvar("gapps", "BetterTogether\n");
 endif;
 
 if

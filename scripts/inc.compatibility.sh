@@ -557,6 +557,7 @@ androidplatformservices
 datatransfertool"
     gappssuper="$gappssuper
 actionsservices
+bettertogether
 soundpicker"
   fi
 }
