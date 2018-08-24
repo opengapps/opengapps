@@ -556,7 +556,8 @@ api28hack(){
 androidplatformservices
 datatransfertool"
     gappssuper="$gappssuper
-actionsservices"
+actionsservices
+soundpicker"
   fi
 }
 

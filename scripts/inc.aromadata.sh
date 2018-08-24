@@ -182,6 +182,7 @@ form(
       "Sheets",     "<b>Google Sheets</b>",       "",                      "check",
       "Slides",     "<b>Google Slides</b>",       "",                      "check",
       "Search",     "<b>Google Search</b>",       "To Exclude Google Search AND Google Now Launcher AND Pixel Launcher <#f00>OR</#> To Include Google Search",                      "check",
+      "SoundPicker",     "<b>Google Sound Picker</b>",       "requires Android 9.0 (API Level 28) or higher",         
       "Speech",     "<b>Offline Speech Files</b>",       "(Required for offline voice dicatation support)",                      "check",
       "StorageManagerGoogle",     "<b>Google Storage Manager</b>",       "",                      "check",
       "Street",     "<b>Google Street View</b>",       "",                      "check",
@@ -667,6 +668,12 @@ if
   prop("gapps.prop", "Search")=="1"
 then
   appendvar("gapps", "Search\n");
+endif;
+
+if
+  prop("gapps.prop", "SoundPicker")=="1"
+then
+  appendvar("gapps", "SoundPicker\n");
 endif;
 
 if
