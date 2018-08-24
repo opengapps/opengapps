@@ -281,8 +281,8 @@ get_package_info(){
     dialerframework)          packagetype="GApps"; packageframework="com.google.android.dialer.support.jar";
                               if [ "$API" -ge "28" ]; then  # dialer_experience.xml is not needed in Android 9.0
                                 packagefiles="etc/permissions/com.google.android.dialer.support.xml";
-							  else
-							    packagefiles="etc/permissions/com.google.android.dialer.support.xml etc/sysconfig/dialer_experience.xml"; 
+                              else
+                                packagefiles="etc/permissions/com.google.android.dialer.support.xml etc/sysconfig/dialer_experience.xml"; 
                               fi;;
     dialergoogle)             packagetype="GApps"; packagename="com.google.android.dialer"; packagetarget="priv-app/GoogleDialer";;
     dmagent)                  packagetype="GApps"; packagename="com.google.android.apps.enterprise.dmagent"; packagetarget="app/DMAgent";;
