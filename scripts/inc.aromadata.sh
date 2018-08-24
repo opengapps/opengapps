@@ -130,7 +130,7 @@ form(
       "0",     "Exclude",   "Choose the apps you DON'T WANT installed from the list below.",       "select",
 
     "gapps",     "Choose GApps which you want to add on install/exclude list",        "",                                         "group",
-      "ActionsServices",     "<b>Actions Services</b>",       "requires Android 9.0 (API Level 28) or higher", 
+      "ActionsServices",     "<b>Actions Services</b>",       "requires Android 9.0 (API Level 28) or higher",                      "check",
       "BatteryUsage",     "<b>Device Health Services</b>",       "requires Android 7.1 (API Level 25) or higher",                      "check",
       "BetterTogether",     "<b>Better Together</b>",       "requires Android 9.0 (API Level 28) or higher",                      "check",
       "Books",     "<b>Google Play Books</b>",       "",                      "check",
@@ -184,7 +184,7 @@ form(
       "Sheets",     "<b>Google Sheets</b>",       "",                      "check",
       "Slides",     "<b>Google Slides</b>",       "",                      "check",
       "Search",     "<b>Google Search</b>",       "To Exclude Google Search AND Google Now Launcher AND Pixel Launcher <#f00>OR</#> To Include Google Search",                      "check",
-      "SoundPicker",     "<b>Google Sound Picker</b>",       "requires Android 9.0 (API Level 28) or higher",         
+      "SoundPicker",     "<b>Google Sound Picker</b>",       "requires Android 9.0 (API Level 28) or higher",                      "check",
       "Speech",     "<b>Offline Speech Files</b>",       "(Required for offline voice dicatation support)",                      "check",
       "StorageManagerGoogle",     "<b>Google Storage Manager</b>",       "",                      "check",
       "Street",     "<b>Google Street View</b>",       "",                      "check",
