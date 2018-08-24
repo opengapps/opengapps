@@ -45,7 +45,7 @@ getapkproperties(){
   compatiblescreens="$(echo "$apkproperties" | grep -a "compatible-screens:'")" #the ' is added to prevent detection of lines that only have compatiblescreens but without any values
   native="$(echo "$apkproperties" | grep -av "alt-native-code:" | grep -a "native-code:" | sed 's/native-code://g' | sed "s/'//g") " # add a space at the end
   altnative="$(echo "$apkproperties" | grep -a "alt-native-code:" | sed 's/alt-native-code://g' | sed "s/'//g") " # add a space at the end
-  leanback="$(echo "$apkproperties" | grep -a "android.software.leanback" | awk -F [.\'] '{print $(NF-1)}')"  # 'leanback'
+  leanback="$(echo "$apkproperties" | grep -a "android.software.leanback" | grep -v "\-not\-required" | awk -F [.\'] '{print $(NF-1)}')"  # 'leanback'
   vrmode="$(echo "$apkproperties" | grep -a "android.software.vr.mode" | grep -v "\-not\-required" | awk -F [.\'] '{print $(NF-2)$(NF-1)}')"  # 'vrmode'
   watch="$(echo "$apkproperties" | grep -a "android.hardware.type.watch" | awk -F [.\'] '{print $(NF-1)}')"  # 'watch'
   case "$versionname" in
