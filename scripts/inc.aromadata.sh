@@ -220,7 +220,7 @@ form(
       "+Gallery",     "<b>+Gallery</b>",      "(don't remove Stock Gallery, even if Google Photos is being installed)",    "check",
       "+Launcher",     "<b>+Launcher</b>",      "(don't remove Stock Launchers, even if Google Now Launcher is being installed)",  "check",
       "+MMS",     "<b>+MMS</b>",      "(don't remove Stock SMS app, even if Android Messages is being installed)",            "check",
-      "+PicoTTS",     "<b>+PicoTTS</b>",      "(on't remove PicoTTS, even if GoogleTTS is being installed)",    "check"
+      "+PicoTTS",     "<b>+PicoTTS</b>",      "(don't remove PicoTTS, even if GoogleTTS is being installed)",    "check"
 );
 
 form(
