@@ -151,6 +151,7 @@ req_android_version="'"$PLATFORM"'";
 faceLock_lib_filename="'"$FACELOCKLIB"'";
 atvremote_lib_filename="libatv_uinputbridge.so"
 WebView_lib_filename="libwebviewchromium.so"
+markup_lib_filename="libsketchology_native.so"
 setupwizard_lib_filename="libbarhopper.so";
 
 # Buffer of extra system space to require for GApps install (9216=9MB)
@@ -2352,6 +2353,18 @@ if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # Only 9.0 on ARM64. Libr
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/priv-app/SetupWizard/lib/$arch\"" $bkup_tail
 fi
 EOFILE
+if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # Only 9.0 on ARM64
+  echo '# Create Markup lib symlink if installed
+if ( contains "$gapps_list" "markup" ); then
+  install -d "$SYSTEM/app/MarkupGoogle/lib/$arch"
+  ln -sfn "$SYSTEM/$libfolder/$markup_lib_filename" "$SYSTEM/app/MarkupGoogle/lib/$arch/$markup_lib_filename"
+  # Add same code to backup script to insure symlinks are recreated on addon.d restore
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$markup_lib_filename\" \"$SYSTEM/app/MarkupGoogle/lib/$arch/$markup_lib_filename\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/MarkupGoogle/lib/$arch\"" $bkup_tail
+fi
+' >> "$build/$1"
+fi
+
 if [ "$API" -lt "24" ]; then  # Only 5.1 and 6.0
   echo '# Create TVRemote lib symlink if installed
 if ( contains "$gapps_list" "tvremote" ); then

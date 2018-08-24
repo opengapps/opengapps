@@ -333,6 +333,10 @@ get_package_info(){
                               else
                                 packagetarget="app/LatinImeGoogle"
                               fi;;
+    markup)                   packagetype="GApps"; packagename="com.google.android.markup"; packagetarget="app/MarkupGoogle";
+                              if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # There is a library included with Markup, in which the app will only work on ARM64
+                                packagelibs="libsketchology_native.so"
+                              fi;;
     maps)                     packagetype="GApps"; packagename="com.google.android.apps.maps"; packagetarget="app/Maps";;
     messenger)                packagetype="GApps"; packagename="com.google.android.apps.messaging"; packagetarget="app/PrebuiltBugle";;
     movies)                   packagetype="GApps"; packagename="com.google.android.videos"; packagetarget="app/Videos";;

@@ -166,6 +166,7 @@ form(
       "Keep",     "<b>Google Keep</b>",       "",                      "check",
       "KeyboardGoogle",     "<b>Google Keyboard</b>",       "",                      "check",
       "Korean",     "<b>Google Korean Input</b>",       "",                      "check",
+      "Markup",     "<b>Markup</b>",       "(ARM64 only) requires Android 9.0 (API Level 28) or higher",                      "check",
       "Maps",     "<b>Google Maps</b>",       "",                      "check",
       "Messenger",     "<b>Android Messages</b>",       "(not installed on tablet devices)",                      "check",
       "Movies",     "<b>Google Play Movies & TV</b>",       "",                      "check",
@@ -574,6 +575,12 @@ if
   prop("gapps.prop", "Korean")=="1"
 then
   appendvar("gapps", "Korean\n");
+endif;
+
+if
+  prop("gapps.prop", "Markup")=="1"
+then
+  appendvar("gapps", "Markup\n");
 endif;
 
 if
