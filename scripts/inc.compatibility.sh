@@ -558,7 +558,8 @@ datatransfertool"
     gappssuper="$gappssuper
 actionsservices
 bettertogether
-soundpicker"
+soundpicker
+wellbeing"
   fi
 }
 

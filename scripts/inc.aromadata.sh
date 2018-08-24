@@ -193,6 +193,7 @@ form(
       "VRService",     "<b>Google VR Service</b>",       "",                      "check",
       "Wallpapers",     "<b>Wallpapers</b>",       "To Exclude BOTH Wallpapers AND Pixel Launcher <#f00>OR</#> To Include Wallpapers",                      "check",
       "WebViewGoogle",     "<b>Android System WebView</b>",       "",                      "check",
+      "Wellbeing",     "<b>Digital Wellbeing</b>",       "requires Android 9.0 (API Level 28) or higher",                      "check",
       "YouTube",     "<b>YouTube</b>",       "",                      "check",
       "Zhuyin",     "<b>Google Zhuyin Input</b>",       "",                      "check"
 );
@@ -735,6 +736,12 @@ if
   prop("gapps.prop", "WebViewGoogle")=="1"
 then
   appendvar("gapps", "WebViewGoogle\n");
+endif;
+
+if
+  prop("gapps.prop", "Wellbeing")=="1"
+then
+  appendvar("gapps", "Wellbeing\n");
 endif;
 
 if
