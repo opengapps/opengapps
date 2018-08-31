@@ -2342,7 +2342,7 @@ fi
 if ( contains "$gapps_list" "faceunlock" ); then
   install -d "$SYSTEM/app/FaceLock/lib/$arch"
   ln -sfn "$SYSTEM/$libfolder/$faceLock_lib_filename" "$SYSTEM/app/FaceLock/lib/$arch/$faceLock_lib_filename"
-  # Add same code to backup script to insure symlinks are recreated on addon.d restore
+  # Add same code to backup script to ensure symlinks are recreated on addon.d restore
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$faceLock_lib_filename\" \"$SYSTEM/app/FaceLock/lib/$arch/$faceLock_lib_filename\"" $bkup_tail
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/FaceLock/lib/$arch\"" $bkup_tail
 fi
@@ -2351,7 +2351,7 @@ fi
 if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # Only 9.0 on ARM64. Library file not really needed, but here for completeness
   install -d "$SYSTEM/priv-app/SetupWizard/lib/$arch"
   ln -sfn "$SYSTEM/$libfolder/$setupwizard_lib_filename" "$SYSTEM/priv-app/SetupWizard/lib/$arch/$setupwizard_lib_filename"
-  # Add same code to backup script to insure symlinks are recreated on addon.d restore
+  # Add same code to backup script to ensure symlinks are recreated on addon.d restore
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$setupwizard_lib_filename\" \"$SYSTEM/priv-app/SetupWizard/lib/$arch/$setupwizard_lib_filename\"" $bkup_tail
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/priv-app/SetupWizard/lib/$arch\"" $bkup_tail
 fi
@@ -2360,7 +2360,7 @@ fi
 if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # Only 9.0 on ARM64
   install -d "$SYSTEM/app/MarkupGoogle/lib/$arch"
   ln -sfn "$SYSTEM/$libfolder/$markup_lib_filename" "$SYSTEM/app/MarkupGoogle/lib/$arch/$markup_lib_filename"
-  # Add same code to backup script to insure symlinks are recreated on addon.d restore
+  # Add same code to backup script to ensure symlinks are recreated on addon.d restore
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$markup_lib_filename\" \"$SYSTEM/app/MarkupGoogle/lib/$arch/$markup_lib_filename\"" $bkup_tail
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/MarkupGoogle/lib/$arch\"" $bkup_tail
 fi
@@ -2371,7 +2371,7 @@ if [ "$API" -lt "24" ]; then  # Only 5.1 and 6.0
 if ( contains "$gapps_list" "tvremote" ); then
   install -d "$SYSTEM/app/AtvRemoteService/lib/$arch"
   ln -sfn "$SYSTEM/$libfolder/$atvremote_lib_filename" "$SYSTEM/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename"
-  # Add same code to backup script to insure symlinks are recreated on addon.d restore
+  # Add same code to backup script to ensure symlinks are recreated on addon.d restore
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$atvremote_lib_filename\" \"$SYSTEM/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename\"" $bkup_tail
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/AtvRemoteService/lib/$arch\"" $bkup_tail
 fi
@@ -2383,13 +2383,13 @@ if [ "$API" -lt "23" ]; then
 if ( contains "$gapps_list" "webviewgoogle" ); then
   install -d "$SYSTEM/app/WebViewGoogle/lib/$arch"
   ln -sfn "$SYSTEM/$libfolder/$WebView_lib_filename" "$SYSTEM/app/WebViewGoogle/lib/$arch/$WebView_lib_filename"
-  # Add same code to backup script to insure symlinks are recreated on addon.d restore
+  # Add same code to backup script to ensure symlinks are recreated on addon.d restore
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$WebView_lib_filename\" \"$SYSTEM/app/WebViewGoogle/lib/$arch/$WebView_lib_filename\"" $bkup_tail
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/WebViewGoogle/lib/$arch\"" $bkup_tail
   if [ -n "$fbarch" ]; then  # on 64bit we also need to add 32 bit libs
     install -d "$SYSTEM/app/WebViewGoogle/lib/$fbarch"
     ln -sfn "$SYSTEM/lib/$WebView_lib_filename" "$SYSTEM/app/WebViewGoogle/lib/$fbarch/$WebView_lib_filename"
-    # Add same code to backup script to insure symlinks are recreated on addon.d restore
+    # Add same code to backup script to ensure symlinks are recreated on addon.d restore
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/lib/$WebView_lib_filename\" \"$SYSTEM/app/WebViewGoogle/lib/$fbarch/$WebView_lib_filename\"" $bkup_tail
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/WebViewGoogle/lib/$fbarch\"" $bkup_tail
   fi
