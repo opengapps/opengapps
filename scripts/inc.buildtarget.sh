@@ -249,6 +249,10 @@ get_package_info(){
     googleonetimeinitializer) packagetype="Core"; packagename="com.google.android.onetimeinitializer"; packagetarget="priv-app/GoogleOneTimeInitializer";;
     googlepartnersetup)       packagetype="Core"; packagename="com.google.android.partnersetup"; packagetarget="priv-app/GooglePartnerSetup";;
     gsflogin)                 packagetype="Core"; packagename="com.google.android.gsf.login"; packagetarget="priv-app/GoogleLoginService";;  # Gone in Oreo
+    markup)                   packagetype="Core"; packagename="com.google.android.markup"; packagetarget="app/MarkupGoogle";
+                              if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # There is a library included with Markup, in which the app will only work on ARM64
+                                packagelibs="libsketchology_native.so"
+                              fi;;
     setupwizard)              packagetype="Core"; packagename="com.google.android.setupwizard"; packagetarget="priv-app/SetupWizard";; #KitKat only
     setupwizarddefault)       packagetype="Core"; packagename="com.google.android.setupwizard.default"; packagetarget="priv-app/SetupWizard";
                               if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # On Android 9.0 there is now an ARM64 library included with SetupWizard. Not required, but here for completeness.
@@ -334,10 +338,6 @@ get_package_info(){
                                 packagetarget="app/LatinIMEGooglePrebuilt"
                               else
                                 packagetarget="app/LatinImeGoogle"
-                              fi;;
-    markup)                   packagetype="GApps"; packagename="com.google.android.markup"; packagetarget="app/MarkupGoogle";
-                              if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # There is a library included with Markup, in which the app will only work on ARM64
-                                packagelibs="libsketchology_native.so"
                               fi;;
     maps)                     packagetype="GApps"; packagename="com.google.android.apps.maps"; packagetarget="app/Maps";;
     messenger)                packagetype="GApps"; packagename="com.google.android.apps.messaging"; packagetarget="app/PrebuiltBugle";;

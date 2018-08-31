@@ -551,7 +551,7 @@ api27hack(){
 api28hack(){
   if [ "$API" -ge "28" ]; then
     if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
-      gappssuper="$gappssuper
+      gappscore="$gappscore
 markup"
     fi
     gappscore="$gappscore

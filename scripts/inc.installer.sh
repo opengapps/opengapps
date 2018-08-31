@@ -2355,19 +2355,17 @@ if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # Only 9.0 on ARM64. Libr
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$setupwizard_lib_filename\" \"$SYSTEM/priv-app/SetupWizard/lib/$arch/$setupwizard_lib_filename\"" $bkup_tail
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/priv-app/SetupWizard/lib/$arch\"" $bkup_tail
 fi
-EOFILE
+
+# Create Markup lib symlink
 if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # Only 9.0 on ARM64
-  echo '# Create Markup lib symlink if installed
-if ( contains "$gapps_list" "markup" ); then
   install -d "$SYSTEM/app/MarkupGoogle/lib/$arch"
   ln -sfn "$SYSTEM/$libfolder/$markup_lib_filename" "$SYSTEM/app/MarkupGoogle/lib/$arch/$markup_lib_filename"
   # Add same code to backup script to insure symlinks are recreated on addon.d restore
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$markup_lib_filename\" \"$SYSTEM/app/MarkupGoogle/lib/$arch/$markup_lib_filename\"" $bkup_tail
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/MarkupGoogle/lib/$arch\"" $bkup_tail
 fi
-' >> "$build/$1"
-fi
 
+EOFILE
 if [ "$API" -lt "24" ]; then  # Only 5.1 and 6.0
   echo '# Create TVRemote lib symlink if installed
 if ( contains "$gapps_list" "tvremote" ); then
