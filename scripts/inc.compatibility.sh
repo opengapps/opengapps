@@ -557,11 +557,11 @@ markup"
     gappscore="$gappscore
 androidplatformservices
 datatransfertool
-soundpicker"
+soundpicker
+wellbeing"
     gappssuper="$gappssuper
 actionsservices
-bettertogether
-wellbeing"
+bettertogether"
   fi
 }
 
