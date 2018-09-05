@@ -45,6 +45,8 @@ COMPRESSION="lz" # xz # none # this sets the default compression method, overrid
 #TMPSIGNDIR=""  $ if set to a value, at this location the zip signing temporary file is created
 #ZIPALIGNRECOMPRESS=""  # if set to a non-zero value, APKs will be recompressed with zopfli during zipalign
 ZIPCOMPRESSIONLEVEL="0"  # Store only the files in the zip without compressing them (-0 switch): further compression will be useless and will slow down the building process
+# shellcheck source=scripts/inc.tools.sh
+. "$SCRIPTS/inc.tools.sh"
 # shellcheck source=scripts/inc.aromadata.sh
 . "$SCRIPTS/inc.aromadata.sh"
 # shellcheck source=scripts/inc.buildhelper.sh
@@ -59,8 +61,6 @@ ZIPCOMPRESSIONLEVEL="0"  # Store only the files in the zip without compressing t
 . "$SCRIPTS/inc.packagetarget.sh"
 # shellcheck source=scripts/inc.sourceshelper.sh
 . "$SCRIPTS/inc.sourceshelper.sh"
-# shellcheck source=scripts/inc.tools.sh
-. "$SCRIPTS/inc.tools.sh"
 
 # Check tools
 checktools aapt coreutils java jarsigner unzip zip tar realpath zipalign
