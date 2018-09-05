@@ -74,6 +74,7 @@ case "$API" in
   25) PLATFORM="7.1";;
   26) PLATFORM="8.0";;
   27) PLATFORM="8.1";;
+  28) PLATFORM="9.0";;
   *)  echo "ERROR: Unknown API version! Aborting..."; exit 1;;
 esac
 
@@ -115,6 +116,7 @@ api24hack #only on 7.0+ we also include Google ExtServices, ExtShared, PrintServ
 api25hack #only on 7.1+ we also include AndroidPlatform, GMSSetup, Pixel Launcher, StorageManager
 api26hack #only on 8.0+ we also include AndroidPlatformServices
 api27hack #only on 8.1+ we also include ??? (maybe here for completeness)
+api28hack #only on 9.0+ we also include Actions Services, AndroidPlatformServices, Data Transfer Tool, Markup, Sounds
 buildtarget
 alignbuild
 commonscripts
