@@ -257,6 +257,10 @@ kitkatpathshack(){
 minapihack(){
   useminapi=""
   case "$package" in
+    com.google.android.dialer)
+      if [ "$API" -ge "24" ]; then
+        useminapi="24"
+      fi;;
     com.google.android.gms)
       if [ "$API" -ge "23" ]; then
         useminapi="23"
