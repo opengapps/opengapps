@@ -18,7 +18,7 @@ CACHE="$TOP/cache"
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 CERTIFICATES="$SCRIPTS/certificates"
-APKTOOL="$SCRIPTS/apktool-resources/apktool_2.3.3.jar"
+APKTOOL="$SCRIPTS/apktool-resources/apktool_2.3.4.jar"
 # shellcheck source=scripts/inc.tools.sh
 . "$SCRIPTS/inc.tools.sh"
 # shellcheck source=scripts/inc.compatibility.sh
