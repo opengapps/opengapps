@@ -262,7 +262,11 @@ minapihack(){
         useminapi="24"
       fi;;
     com.google.android.gms)
-      if [ "$API" -ge "23" ]; then
+      if [ "$API" -ge "28" ]; then
+        useminapi="28"
+      elif [ "$API" -ge "26" ]; then
+        useminapi="26"
+      elif [ "$API" -ge "23" ]; then
         useminapi="23"
       elif [ "$API" -ge "21" ]; then
         useminapi="21"
