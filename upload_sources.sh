@@ -56,6 +56,7 @@ createcommit(){
       com.google.android.apps.fitness* |\
       com.google.android.apps.maps* |\
       com.google.android.apps.messaging* |\
+      com.google.android.apps.walletnfcrel* |\
       com.google.android.calculator* |\
       com.google.android.deskclock* |\
       com.google.android.gms* |\

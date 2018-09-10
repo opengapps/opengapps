@@ -69,6 +69,9 @@ case "$1" in
       chown root:root "$SYS/$i"
       chmod 644 "$SYS/$i"
       chmod 755 "$(dirname "$SYS/$i")"
+        if [ "$API" -ge "26" ]; then # Android 8.0+ uses 0600 for its permission on build.prop
+          chmod 600 "$SYS/build.prop"
+        fi
     done
     rm -rf /sdcard/tmp-gapps
   ;;

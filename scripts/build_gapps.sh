@@ -45,6 +45,8 @@ COMPRESSION="lz" # xz # none # this sets the default compression method, overrid
 #TMPSIGNDIR=""  $ if set to a value, at this location the zip signing temporary file is created
 #ZIPALIGNRECOMPRESS=""  # if set to a non-zero value, APKs will be recompressed with zopfli during zipalign
 ZIPCOMPRESSIONLEVEL="0"  # Store only the files in the zip without compressing them (-0 switch): further compression will be useless and will slow down the building process
+# shellcheck source=scripts/inc.tools.sh
+. "$SCRIPTS/inc.tools.sh"
 # shellcheck source=scripts/inc.aromadata.sh
 . "$SCRIPTS/inc.aromadata.sh"
 # shellcheck source=scripts/inc.buildhelper.sh
@@ -59,8 +61,6 @@ ZIPCOMPRESSIONLEVEL="0"  # Store only the files in the zip without compressing t
 . "$SCRIPTS/inc.packagetarget.sh"
 # shellcheck source=scripts/inc.sourceshelper.sh
 . "$SCRIPTS/inc.sourceshelper.sh"
-# shellcheck source=scripts/inc.tools.sh
-. "$SCRIPTS/inc.tools.sh"
 
 # Check tools
 checktools aapt coreutils java jarsigner unzip zip tar realpath zipalign
@@ -74,6 +74,8 @@ case "$API" in
   25) PLATFORM="7.1";;
   26) PLATFORM="8.0";;
   27) PLATFORM="8.1";;
+  28) PLATFORM="9.0";;
+  29) PLATFORM="10.0";;
   *)  echo "ERROR: Unknown API version! Aborting..."; exit 1;;
 esac
 
@@ -115,6 +117,7 @@ api24hack #only on 7.0+ we also include Google ExtServices, ExtShared, PrintServ
 api25hack #only on 7.1+ we also include AndroidPlatform, GMSSetup, Pixel Launcher, StorageManager
 api26hack #only on 8.0+ we also include AndroidPlatformServices
 api27hack #only on 8.1+ we also include ??? (maybe here for completeness)
+api28hack #only on 9.0+ we also include Actions Services, AndroidPlatformServices, Data Transfer Tool, Markup, Sounds
 buildtarget
 alignbuild
 commonscripts

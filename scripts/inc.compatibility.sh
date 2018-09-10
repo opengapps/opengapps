@@ -70,7 +70,7 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_target" # create required symlink
     ln -sfn "/system/$libfolder/$keybd_dec_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_dec_google" # create required symlink
 
-    # Add same code to backup script to insure symlinks are recreated on addon.d restore
+    # Add same code to backup script to ensure symlinks are recreated on addon.d restore
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$keybd_dec_google\" \"\$SYS/app/LatinIME/$libfolder/$arch/$keybd_dec_google\"" $bkup_tail
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$keybd_lib_google\" \"\$SYS/app/LatinIME/$libfolder/$arch/$keybd_lib_target\"" $bkup_tail
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/LatinIME/$libfolder/$arch\"" $bkup_tail
@@ -106,7 +106,7 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     install -d "/system/app/LatinIME/$libfolder/$arch"
     ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_target" # create required symlink
 
-    # Add same code to backup script to insure symlinks are recreated on addon.d restore
+    # Add same code to backup script to ensure symlinks are recreated on addon.d restore
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$keybd_lib_google\" \"\$SYS/app/LatinIME/$libfolder/$arch/$keybd_lib_target\"" $bkup_tail
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/LatinIME/$libfolder/$arch\"" $bkup_tail
   else
@@ -135,7 +135,7 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     extract_app "Optional/swypelibs-lib-$arch"  # Keep it simple, swypelibs is only lib-$arch
     ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/$libfolder/$keybd_lib_aosp" # create required symlink
 
-    # Add same code to backup script to insure symlinks are recreated on addon.d restore
+    # Add same code to backup script to ensure symlinks are recreated on addon.d restore
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$keybd_lib_google\" \"\$SYS/$libfolder/$keybd_lib_aosp\"" $bkup_tail
   else
     ui_print "- Removing swypelibs"
@@ -257,8 +257,16 @@ kitkatpathshack(){
 minapihack(){
   useminapi=""
   case "$package" in
+    com.google.android.dialer)
+      if [ "$API" -ge "24" ]; then
+        useminapi="24"
+      fi;;
     com.google.android.gms)
-      if [ "$API" -ge "23" ]; then
+      if [ "$API" -ge "28" ]; then
+        useminapi="28"
+      elif [ "$API" -ge "26" ]; then
+        useminapi="26"
+      elif [ "$API" -ge "23" ]; then
         useminapi="23"
       elif [ "$API" -ge "21" ]; then
         useminapi="21"
@@ -509,9 +517,11 @@ photosvrmode"
 }
 
 api25hack(){
-  if [ "$API" -ge "25" ]; then
+  if [ "$API" -eq "25" ]; then
     gappscore="$gappscore
-gmssetup"
+gsflogin"
+  fi
+  if [ "$API" -ge "25" ]; then
     gappsnano="$gappsnano
 batteryusage"
     gappsstock="$gappsstock
@@ -520,9 +530,10 @@ pixelicons"
 }
 
 api26hack(){
-  if [ "$API" -ge "26" ]; then
+  if [ "$API" -eq "26" ]; then
     if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
       gappscore="$gappscore
+gmssetup
 androidplatformservices"
     fi
     # On Oreo and higher a different launcher exists
@@ -531,20 +542,36 @@ androidplatformservices"
 setupwraith
 tvlauncher
 tvrecommendations"
-  else
-    gappscore="$gappscore
-gsflogin"
   fi
 }
 
 # Does nothing now, here for completeness
 api27hack(){
-  if [ "$API" -ge "27" ]; then
+  if [ "$API" -eq "27" ]; then
     if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
-      gappscore="$gappscore"
+      gappscore="$gappscore
+gmssetup"
     fi
   else
     gappscore="$gappscore"
+  fi
+}
+
+# Does nothing now, here for completeness
+api28hack(){
+  if [ "$API" -ge "28" ]; then
+    if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
+      gappscore="$gappscore
+markup"
+    fi
+    gappscore="$gappscore
+androidplatformservices
+datatransfertool
+soundpicker
+wellbeing"
+    gappssuper="$gappssuper
+actionsservices
+bettertogether"
   fi
 }
 
@@ -557,6 +584,7 @@ sdkversionhacks(){
         *25) sdkversion="25";;
         *26) sdkversion="26";;
         *27) sdkversion="27";;
+        *28) sdkversion="28";;
         *) ;;
       esac;;
   esac
