@@ -594,56 +594,56 @@ app/WhisperPush'"$REMOVALSUFFIX"'"
 #                                             Permanently Removed Folders
 # Pieces that may be left over from AIO ROMs that can/will interfere with these GApps
 other_list="
-/system/app/BooksStub'"$REMOVALSUFFIX"'
-/system/app/BookmarkProvider'"$REMOVALSUFFIX"'
-/system/app/CalendarGoogle'"$REMOVALSUFFIX"'
-/system/app/CloudPrint'"$REMOVALSUFFIX"'
-/system/app/DeskClockGoogle'"$REMOVALSUFFIX"'
-/system/app/EditorsDocsStub'"$REMOVALSUFFIX"'
-/system/app/EditorsSheetsStub'"$REMOVALSUFFIX"'
-/system/app/EditorsSlidesStub'"$REMOVALSUFFIX"'
-/system/app/Gmail'"$REMOVALSUFFIX"'
-/system/app/Gmail2'"$REMOVALSUFFIX"'
-/system/app/GoogleCalendar'"$REMOVALSUFFIX"'
-/system/app/GoogleCloudPrint'"$REMOVALSUFFIX"'
-/system/app/GoogleHangouts'"$REMOVALSUFFIX"'
-/system/app/GoogleKeep'"$REMOVALSUFFIX"'
-/system/app/GoogleLatinIme'"$REMOVALSUFFIX"'
-/system/app/GooglePlus'"$REMOVALSUFFIX"'
-/system/app/Keep'"$REMOVALSUFFIX"'
-/system/app/NewsstandStub'"$REMOVALSUFFIX"'
-/system/app/NewsWeather'"$REMOVALSUFFIX"'
-/system/app/PartnerBookmarksProvider'"$REMOVALSUFFIX"'
-/system/app/PrebuiltBugleStub'"$REMOVALSUFFIX"'
-/system/app/PrebuiltKeepStub'"$REMOVALSUFFIX"'
-/system/app/QuickSearchBox'"$REMOVALSUFFIX"'
-/system/app/Vending'"$REMOVALSUFFIX"'
-/system/priv-app/GmsCore'"$REMOVALSUFFIX"'
-/system/priv-app/GoogleNow'"$REMOVALSUFFIX"'
-/system/priv-app/GoogleSearch'"$REMOVALSUFFIX"'
-/system/priv-app/GoogleHangouts'"$REMOVALSUFFIX"'
-/system/priv-app/OneTimeInitializer'"$REMOVALSUFFIX"'
-/system/priv-app/QuickSearchBox'"$REMOVALSUFFIX"'
-/system/priv-app/Vending'"$REMOVALSUFFIX"'
-/system/priv-app/Velvet_update'"$REMOVALSUFFIX"'
-/system/priv-app/GmsCore_update'"$REMOVALSUFFIX"'
+app/BooksStub'"$REMOVALSUFFIX"'
+app/BookmarkProvider'"$REMOVALSUFFIX"'
+app/CalendarGoogle'"$REMOVALSUFFIX"'
+app/CloudPrint'"$REMOVALSUFFIX"'
+app/DeskClockGoogle'"$REMOVALSUFFIX"'
+app/EditorsDocsStub'"$REMOVALSUFFIX"'
+app/EditorsSheetsStub'"$REMOVALSUFFIX"'
+app/EditorsSlidesStub'"$REMOVALSUFFIX"'
+app/Gmail'"$REMOVALSUFFIX"'
+app/Gmail2'"$REMOVALSUFFIX"'
+app/GoogleCalendar'"$REMOVALSUFFIX"'
+app/GoogleCloudPrint'"$REMOVALSUFFIX"'
+app/GoogleHangouts'"$REMOVALSUFFIX"'
+app/GoogleKeep'"$REMOVALSUFFIX"'
+app/GoogleLatinIme'"$REMOVALSUFFIX"'
+app/GooglePlus'"$REMOVALSUFFIX"'
+app/Keep'"$REMOVALSUFFIX"'
+app/NewsstandStub'"$REMOVALSUFFIX"'
+app/NewsWeather'"$REMOVALSUFFIX"'
+app/PartnerBookmarksProvider'"$REMOVALSUFFIX"'
+app/PrebuiltBugleStub'"$REMOVALSUFFIX"'
+app/PrebuiltKeepStub'"$REMOVALSUFFIX"'
+app/QuickSearchBox'"$REMOVALSUFFIX"'
+app/Vending'"$REMOVALSUFFIX"'
+priv-app/GmsCore'"$REMOVALSUFFIX"'
+priv-app/GoogleNow'"$REMOVALSUFFIX"'
+priv-app/GoogleSearch'"$REMOVALSUFFIX"'
+priv-app/GoogleHangouts'"$REMOVALSUFFIX"'
+priv-app/OneTimeInitializer'"$REMOVALSUFFIX"'
+priv-app/QuickSearchBox'"$REMOVALSUFFIX"'
+priv-app/Vending'"$REMOVALSUFFIX"'
+priv-app/Velvet_update'"$REMOVALSUFFIX"'
+priv-app/GmsCore_update'"$REMOVALSUFFIX"'
 ";
 
 # Apps from app that need to be installed in priv-app
 privapp_list="
-/system/app/CanvasPackageInstaller'"$REMOVALSUFFIX"'
-/system/app/ConfigUpdater'"$REMOVALSUFFIX"'
-/system/app/GoogleBackupTransport'"$REMOVALSUFFIX"'
-/system/app/GoogleFeedback'"$REMOVALSUFFIX"'
-/system/app/GoogleLoginService'"$REMOVALSUFFIX"'
-/system/app/GoogleOneTimeInitializer'"$REMOVALSUFFIX"'
-/system/app/GooglePartnerSetup'"$REMOVALSUFFIX"'
-/system/app/GoogleServicesFramework'"$REMOVALSUFFIX"'
-/system/app/OneTimeInitializer'"$REMOVALSUFFIX"'
-/system/app/Phonesky'"$REMOVALSUFFIX"'
-/system/app/PrebuiltGmsCore'"$REMOVALSUFFIX"'
-/system/app/SetupWizard'"$REMOVALSUFFIX"'
-/system/app/Velvet'"$REMOVALSUFFIX"'
+app/CanvasPackageInstaller'"$REMOVALSUFFIX"'
+app/ConfigUpdater'"$REMOVALSUFFIX"'
+app/GoogleBackupTransport'"$REMOVALSUFFIX"'
+app/GoogleFeedback'"$REMOVALSUFFIX"'
+app/GoogleLoginService'"$REMOVALSUFFIX"'
+app/GoogleOneTimeInitializer'"$REMOVALSUFFIX"'
+app/GooglePartnerSetup'"$REMOVALSUFFIX"'
+app/GoogleServicesFramework'"$REMOVALSUFFIX"'
+app/OneTimeInitializer'"$REMOVALSUFFIX"'
+app/Phonesky'"$REMOVALSUFFIX"'
+app/PrebuiltGmsCore'"$REMOVALSUFFIX"'
+app/SetupWizard'"$REMOVALSUFFIX"'
+app/Velvet'"$REMOVALSUFFIX"'
 ";
 
 # Stock/AOSP Keyboard lib (and symlink) that are always removed since they are always replaced
@@ -653,18 +653,18 @@ reqd_list="
 
 # Remove from priv-app since it was moved to app and vice-versa or other path changes
 obsolete_list="
-/system/app/CalculatorGoogle
-/system/priv-app/GoogleHome'"$REMOVALSUFFIX"'
-/system/priv-app/Hangouts'"$REMOVALSUFFIX"'
-/system/priv-app/PrebuiltExchange3Google'"$REMOVALSUFFIX"'
-/system/priv-app/talkback'"$REMOVALSUFFIX"'
-/system/priv-app/Wallet'"$REMOVALSUFFIX"'
+app/CalculatorGoogle
+priv-app/GoogleHome'"$REMOVALSUFFIX"'
+priv-app/Hangouts'"$REMOVALSUFFIX"'
+priv-app/PrebuiltExchange3Google'"$REMOVALSUFFIX"'
+priv-app/talkback'"$REMOVALSUFFIX"'
+priv-app/Wallet'"$REMOVALSUFFIX"'
 ";
 
 # Old addon.d backup scripts as we will be replacing with updated version during install
 oldscript_list="
-/system/etc/g.prop
-/system/addon.d/70-gapps.sh
+etc/g.prop
+addon.d/70-gapps.sh
 ";' >> "$build/$1"
 tee -a "$build/$1" > /dev/null <<'EOFILE'
 
@@ -2260,7 +2260,7 @@ for aosp_name in $aosp_remove_list; do
   list_name=$(echo "${list_name}" | sort -r); # reverse sort list for more readable output
   for file_name in $list_name; do
     rm -rf "$SYSTEM/$file_name";
-    sed -i "\:# Remove Stock/AOSP apps (from GApps Installer):a \    rm -rf $SYSTEM/$file_name" $bkup_tail;
+    sed -i "\:# Remove Stock/AOSP apps (from GApps Installer):a \    rm -rf \$SYS/$file_name" $bkup_tail;
   done;
 done;
 
@@ -2328,14 +2328,14 @@ ui_print " ";
 
 # Use Gms (Google Play services) for feedback/bug reporting (instead of org.cyanogenmod.bugreport or others)
 sed -i "s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.google.android.gms/g" $SYSTEM/build.prop
-sed -i "\:# Apply build.prop changes (from GApps Installer):a \    sed -i \"s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.google.android.gms/g\" $SYSTEM/build.prop" $bkup_tail
+sed -i "\:# Apply build.prop changes (from GApps Installer):a \    sed -i \"s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.google.android.gms/g\" \$SYS/build.prop" $bkup_tail
 
 # Enable Google Assistant
 if ( grep -qiE '^googleassistant$' "$g_conf" ); then  #TODO this is not enabled by default atm; because Assistant still has various regressions compared to Google Now
   if ! grep -q "ro.opa.eligible_device=" $SYSTEM/build.prop; then
     echo "ro.opa.eligible_device=true" >> $SYSTEM/build.prop
   fi
-  sed -i "\:# Apply build.prop changes (from GApps Installer):a \    if ! grep -q \"ro.opa.eligible_device=\" $SYSTEM/build.prop; then echo \"ro.opa.eligible_device=true\" >> $SYSTEM/build.prop; fi" $bkup_tail
+  sed -i "\:# Apply build.prop changes (from GApps Installer):a \    if ! grep -q \"ro.opa.eligible_device=\" $SYSTEM/build.prop; then echo \"ro.opa.eligible_device=true\" >> \$SYS/build.prop; fi" $bkup_tail
 fi
 
 # Create FaceLock lib symlink if installed
@@ -2343,8 +2343,8 @@ if ( contains "$gapps_list" "faceunlock" ); then
   install -d "$SYSTEM/app/FaceLock/lib/$arch"
   ln -sfn "$SYSTEM/$libfolder/$faceLock_lib_filename" "$SYSTEM/app/FaceLock/lib/$arch/$faceLock_lib_filename"
   # Add same code to backup script to ensure symlinks are recreated on addon.d restore
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$faceLock_lib_filename\" \"$SYSTEM/app/FaceLock/lib/$arch/$faceLock_lib_filename\"" $bkup_tail
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/FaceLock/lib/$arch\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$faceLock_lib_filename\" \"\$SYS/app/FaceLock/lib/$arch/$faceLock_lib_filename\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/FaceLock/lib/$arch\"" $bkup_tail
 fi
 
 # Create SetupWizard lib symlink
@@ -2372,8 +2372,8 @@ if ( contains "$gapps_list" "tvremote" ); then
   install -d "$SYSTEM/app/AtvRemoteService/lib/$arch"
   ln -sfn "$SYSTEM/$libfolder/$atvremote_lib_filename" "$SYSTEM/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename"
   # Add same code to backup script to ensure symlinks are recreated on addon.d restore
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$atvremote_lib_filename\" \"$SYSTEM/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename\"" $bkup_tail
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/AtvRemoteService/lib/$arch\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$atvremote_lib_filename\" \"\$SYS/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/AtvRemoteService/lib/$arch\"" $bkup_tail
 fi
 ' >> "$build/$1"
 fi
@@ -2390,8 +2390,8 @@ if ( contains "$gapps_list" "webviewgoogle" ); then
     install -d "$SYSTEM/app/WebViewGoogle/lib/$fbarch"
     ln -sfn "$SYSTEM/lib/$WebView_lib_filename" "$SYSTEM/app/WebViewGoogle/lib/$fbarch/$WebView_lib_filename"
     # Add same code to backup script to ensure symlinks are recreated on addon.d restore
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/lib/$WebView_lib_filename\" \"$SYSTEM/app/WebViewGoogle/lib/$fbarch/$WebView_lib_filename\"" $bkup_tail
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/app/WebViewGoogle/lib/$fbarch\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/lib/$WebView_lib_filename\" \"$SYSTEM/app/WebViewGoogle/lib/$fbarch/$WebView_lib_filename\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/WebViewGoogle/lib/$fbarch\"" $bkup_tail
   fi
 fi
 ' >> "$build/$1"
@@ -2406,23 +2406,24 @@ cp -f "$TMP/g.prop" "$g_prop"
 set_progress 0.80;
 other_list=$(echo "${other_list}" | sort -r); # reverse sort list for more readable output
 for other_name in $other_list; do
-  sed -i "\:# Remove 'other' apps (per installer.data):a \    rm -rf $other_name" $bkup_tail;
+  sed -i "\:# Remove 'other' apps (per installer.data):a \    rm -rf \$SYS/$other_name" $bkup_tail;
 done;
 
 # Add 'priv-app' Removals to addon.d script
 privapp_list=$(echo "${privapp_list}" | sort -r); # reverse sort list for more readable output
 for privapp_name in $privapp_list; do
-  sed -i "\:# Remove 'priv-app' apps from 'app' (per installer.data):a \    rm -rf $privapp_name" $bkup_tail;
+  sed -i "\:# Remove 'priv-app' apps from 'app' (per installer.data):a \    rm -rf \$SYS/$privapp_name" $bkup_tail;
 done;
 
 # Add 'required' Removals to addon.d script
 reqd_list=$(echo "${reqd_list}" | sort -r); # reverse sort list for more readable output
 for reqdapp_name in $reqd_list; do
+  reqdapp_name=$(echo ${reqdapp_name/\/system/\$SYS})
   sed -i "\:# Remove 'required' apps (per installer.data):a \    rm -rf $reqdapp_name" $bkup_tail;
 done;
 
 # Create final addon.d script in system
-bkup_header="#!/sbin/sh\n# \n# $SYSTEM/addon.d/70-gapps.sh\n#\n. /tmp/backuptool.functions\n\nlist_files() {\ncat <<EOF"
+bkup_header="#!/sbin/sh\n# \n# ADDOND_VERSION=2\n# \n# $SYSTEM/addon.d/70-gapps.sh\n#\n. /tmp/backuptool.functions\n\nif [ -z \$backuptool_ab ]; then\n  SYS="/system"\n  TMP="/temp"\nelse\n  SYS="/postinstall/system"\n  TMP="/postinstall/temp"\nfi\n\nlist_files() {\ncat <<EOF"
 bkup_list="$bkup_list"$'\n'"etc/g.prop"; # add g.prop to backup list
 bkup_list=$(echo "${bkup_list}" | sort -u| sed '/^$/d'); # sort list & remove duplicates and empty lines
 install -d $SYSTEM/addon.d;

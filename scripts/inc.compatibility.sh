@@ -71,9 +71,9 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     ln -sfn "/system/$libfolder/$keybd_dec_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_dec_google" # create required symlink
 
     # Add same code to backup script to ensure symlinks are recreated on addon.d restore
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/$libfolder/$keybd_dec_google\" \"/system/app/LatinIME/$libfolder/$arch/$keybd_dec_google\"" $bkup_tail
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/$libfolder/$keybd_lib_google\" \"/system/app/LatinIME/$libfolder/$arch/$keybd_lib_target\"" $bkup_tail
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/LatinIME/$libfolder/$arch\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$keybd_dec_google\" \"\$SYS/app/LatinIME/$libfolder/$arch/$keybd_dec_google\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$keybd_lib_google\" \"\$SYS/app/LatinIME/$libfolder/$arch/$keybd_lib_target\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/LatinIME/$libfolder/$arch\"" $bkup_tail
   else
     ui_print "- Removing swypelibs"
     rm -f "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_google" # remove swypelibs and symlink if any
@@ -107,8 +107,8 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_target" # create required symlink
 
     # Add same code to backup script to ensure symlinks are recreated on addon.d restore
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/$libfolder/$keybd_lib_google\" \"/system/app/LatinIME/$libfolder/$arch/$keybd_lib_target\"" $bkup_tail
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/LatinIME/$libfolder/$arch\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$keybd_lib_google\" \"\$SYS/app/LatinIME/$libfolder/$arch/$keybd_lib_target\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/LatinIME/$libfolder/$arch\"" $bkup_tail
   else
     ui_print "- Removing swypelibs"
     rm -f "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_google" # remove swypelibs and symlink if any
@@ -136,7 +136,7 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/$libfolder/$keybd_lib_aosp" # create required symlink
 
     # Add same code to backup script to ensure symlinks are recreated on addon.d restore
-    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/$libfolder/$keybd_lib_google\" \"/system/$libfolder/$keybd_lib_aosp\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$keybd_lib_google\" \"\$SYS/$libfolder/$keybd_lib_aosp\"" $bkup_tail
   else
     ui_print "- Removing swypelibs"
     rm -f "/system/$libfolder/$keybd_lib_google" # remove swypelibs
