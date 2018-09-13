@@ -69,6 +69,7 @@ getapkproperties(){
     "com.google.android.apps.mediashell.leanback" |\
     "com.google.android.apps.gcs" |\
     "com.google.android.apps.nexuslauncher" |\
+    "com.google.android.as" |\
     "com.google.android.backuptransport" |\
     "com.google.android.configupdater" |\
     "com.google.android.contacts" |\
