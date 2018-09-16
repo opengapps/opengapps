@@ -65,8 +65,8 @@ tidycache:
 	@echo "$(tput setaf 2)Cache cleaned, archives not used for 7 days removed!$(tput sgr 0)"
 
 clean:
-	@rm -fr "$(BUILDDIR)"
-	@rm -fr "$(LOGDIR)"
+	@-rm -fr "$(BUILDDIR)"
+	@-rm -fr "$(LOGDIR)"
 	@echo "$(tput setaf 2)Build & log directory removed!$(tput sgr 0)"
 
 distclean: clean
