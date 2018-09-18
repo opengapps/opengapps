@@ -265,6 +265,7 @@ printservicestock
 provision
 simtoolkit
 soundrecorder
+storagemanagerstock
 studio
 sykopath
 tagstock
