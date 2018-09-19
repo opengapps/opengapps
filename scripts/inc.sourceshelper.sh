@@ -70,6 +70,7 @@ getapkproperties(){
     "com.google.android.apps.mediashell.leanback" |\
     "com.google.android.apps.nexuslauncher" |\
     "com.google.android.apps.pixelmigrate" |\
+    "com.google.android.apps.wellbeing" |\
     "com.google.android.as" |\
     "com.google.android.backuptransport" |\
     "com.google.android.configupdater" |\
