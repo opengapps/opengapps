@@ -53,6 +53,7 @@ createcommit(){
   if [ -n "$watch" ]; then
     case "$package" in
       com.android.vending* |\
+      com.google.android.apps.enterprise.dmagent* |\
       com.google.android.apps.fitness* |\
       com.google.android.apps.maps* |\
       com.google.android.apps.messaging* |\
