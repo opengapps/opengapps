@@ -536,6 +536,8 @@ api26hack(){
 gmssetup
 androidplatformservices"
     fi
+  fi
+  if [ "$API" -ge "26" ]; then
     # On Oreo and higher a different launcher exists
     # Also, the suw works without needing platform signed
     gappstvstock="$gappstvstock
