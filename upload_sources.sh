@@ -63,6 +63,7 @@ createcommit(){
       com.google.android.gms* |\
       com.google.android.googlequicksearchbox* |\
       com.google.android.inputmethod.latin* |\
+      com.google.android.keep* |\
       com.google.android.marvin.talkback* |\
       com.google.android.music* |\
       com.google.android.talk*)
