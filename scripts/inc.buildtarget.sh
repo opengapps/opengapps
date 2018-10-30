@@ -252,10 +252,7 @@ get_package_info(){
                                 packagelibs="libsketchology_native.so"
                               fi;;
     setupwizard)              packagetype="Core"; packagename="com.google.android.setupwizard"; packagetarget="priv-app/SetupWizard";; #KitKat only
-    setupwizarddefault)       packagetype="Core"; packagename="com.google.android.setupwizard.default"; packagetarget="priv-app/SetupWizard";
-                              if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # On Android 9.0 there is now an ARM64 library included with SetupWizard. Not required, but here for completeness.
-                                packagelibs="libbarhopper.so"
-                              fi;;
+    setupwizarddefault)       packagetype="Core"; packagename="com.google.android.setupwizard.default"; packagetarget="priv-app/SetupWizard";;
     setupwizardtablet)        packagetype="Core"; packagename="com.google.android.setupwizard.tablet"; packagetarget="priv-app/SetupWizard";;
     soundpicker)              packagetype="Core"; packagename="com.google.android.soundpicker"; packagetarget="app/SoundPickerPrebuilt";;
     vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
