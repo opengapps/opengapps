@@ -234,7 +234,6 @@ get_package_info(){
                               fi;;
     defaultetc)               packagetype="Core"; packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/preferred-apps/google.xml etc/sysconfig/google.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml";;
     defaultframework)         packagetype="Core"; packagefiles="etc/permissions/com.google.android.maps.xml etc/permissions/com.google.android.media.effects.xml etc/permissions/com.google.widevine.software.drm.xml"; packageframework="com.google.android.maps.jar com.google.android.media.effects.jar com.google.widevine.software.drm.jar";;  # widevine is gone in Oreo
-    datatransfertool)         packagetype="Core"; packagename="com.google.android.apps.pixelmigrate"; packagetarget="priv-app/AndroidMigratePrebuilt";;
     gmscore)                  packagetype="Core"; packagename="com.google.android.gms";
                               if [ "$API" -ge "28" ]; then  # Path on Android 9.0 is priv-app/PrebuiltGmsCorePi
                                 packagetarget="priv-app/PrebuiltGmsCorePi"
@@ -253,10 +252,7 @@ get_package_info(){
                                 packagelibs="libsketchology_native.so"
                               fi;;
     setupwizard)              packagetype="Core"; packagename="com.google.android.setupwizard"; packagetarget="priv-app/SetupWizard";; #KitKat only
-    setupwizarddefault)       packagetype="Core"; packagename="com.google.android.setupwizard.default"; packagetarget="priv-app/SetupWizard";
-                              if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # On Android 9.0 there is now an ARM64 library included with SetupWizard. Not required, but here for completeness.
-                                packagelibs="libbarhopper.so"
-                              fi;;
+    setupwizarddefault)       packagetype="Core"; packagename="com.google.android.setupwizard.default"; packagetarget="priv-app/SetupWizard";;
     setupwizardtablet)        packagetype="Core"; packagename="com.google.android.setupwizard.tablet"; packagetarget="priv-app/SetupWizard";;
     soundpicker)              packagetype="Core"; packagename="com.google.android.soundpicker"; packagetarget="app/SoundPickerPrebuilt";;
     vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
@@ -283,6 +279,7 @@ get_package_info(){
     clockgoogle)              packagetype="GApps"; packagename="com.google.android.deskclock"; packagetarget="app/PrebuiltDeskClockGoogle";;
     cloudprint)               packagetype="GApps"; packagename="com.google.android.apps.cloudprint"; packagetarget="app/CloudPrint2";;
     contactsgoogle)           packagetype="GApps"; packagename="com.google.android.contacts"; packagetarget="priv-app/GoogleContacts";;
+    datatransfertool)         packagetype="GApps"; packagename="com.google.android.apps.pixelmigrate"; packagetarget="priv-app/AndroidMigratePrebuilt";;
     dialerframework)          packagetype="GApps"; packageframework="com.google.android.dialer.support.jar";
                               if [ "$API" -ge "28" ]; then  # dialer_experience.xml is not needed in Android 9.0
                                 packagefiles="etc/permissions/com.google.android.dialer.support.xml";

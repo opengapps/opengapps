@@ -152,7 +152,6 @@ faceLock_lib_filename="'"$FACELOCKLIB"'";
 atvremote_lib_filename="libatv_uinputbridge.so"
 WebView_lib_filename="libwebviewchromium.so"
 markup_lib_filename="libsketchology_native.so"
-setupwizard_lib_filename="libbarhopper.so";
 
 # Buffer of extra system space to require for GApps install (9216=9MB)
 # This will allow for some ROM size expansion when GApps are restored
@@ -2345,15 +2344,6 @@ if ( contains "$gapps_list" "faceunlock" ); then
   # Add same code to backup script to ensure symlinks are recreated on addon.d restore
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$faceLock_lib_filename\" \"\$SYS/app/FaceLock/lib/$arch/$faceLock_lib_filename\"" $bkup_tail
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/FaceLock/lib/$arch\"" $bkup_tail
-fi
-
-# Create SetupWizard lib symlink
-if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # Only 9.0 on ARM64. Library file not really needed, but here for completeness
-  install -d "$SYSTEM/priv-app/SetupWizard/lib/$arch"
-  ln -sfn "$SYSTEM/$libfolder/$setupwizard_lib_filename" "$SYSTEM/priv-app/SetupWizard/lib/$arch/$setupwizard_lib_filename"
-  # Add same code to backup script to ensure symlinks are recreated on addon.d restore
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"$SYSTEM/$libfolder/$setupwizard_lib_filename\" \"$SYSTEM/priv-app/SetupWizard/lib/$arch/$setupwizard_lib_filename\"" $bkup_tail
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"$SYSTEM/priv-app/SetupWizard/lib/$arch\"" $bkup_tail
 fi
 
 # Create Markup lib symlink

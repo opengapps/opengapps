@@ -568,7 +568,6 @@ markup"
     fi
     gappscore="$gappscore
 androidplatformservices
-datatransfertool
 soundpicker
 wellbeing"
     gappssuper="$gappssuper
