@@ -73,6 +73,7 @@ getapkproperties(){
     "com.google.android.apps.wellbeing" |\
     "com.google.android.as" |\
     "com.google.android.backuptransport" |\
+    "com.google.android.carriersetup" |\
     "com.google.android.configupdater" |\
     "com.google.android.contacts" |\
     "com.google.android.dialer" |\
