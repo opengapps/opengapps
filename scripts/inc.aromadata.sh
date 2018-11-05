@@ -130,67 +130,70 @@ form(
       "0",     "Exclude",   "Choose the apps you DON'T WANT installed from the list below.",       "select",
 
     "gapps",     "Choose GApps which you want to add on install/exclude list",        "",                                         "group",
-      "ActionsServices",     "<b>Actions Services</b>",       "requires Android 9.0 (API Level 28) or higher",                      "check",
-      "BatteryUsage",     "<b>Device Health Services</b>",       "requires Android 7.1 (API Level 25) or higher",                      "check",
-      "BetterTogether",     "<b>Better Together</b>",       "requires Android 9.0 (API Level 28) or higher",                      "check",
+      "ActionsServices",     "<b>Actions Services</b>",       "Requires Android 9.0 or later",                      "check",
+      "AndroidAuto",     "<b>Android Auto</b>",       "Requires Android 5.0 or later",                      "check",
+      "BatteryUsage",     "<b>Device Health Services</b>",       "Requires Android 7.1 or later",                      "check",
+      "BetterTogether",     "<b>Better Together</b>",       "Requires Android 9.0 or later",                      "check",
       "Books",     "<b>Google Play Books</b>",       "",                      "check",
-      "CalculatorGoogle",     "<b>Google Calculator</b>",       "",                      "check",
+      "CalculatorGoogle",     "<b>Google Calculator</b>",       "Requires Android 5.0 or later",                      "check",
       "CalendarGoogle",     "<b>Google Calendar</b>",       "",                      "check",
-      "CalSync",     "<b>Google Calendar Sync</b>",       "(installed by default when Google Calendar is NOT being installed)",                      "check",
-      "CameraGoogle",     "<b>Google Camera</b>",       "",                      "check",
-      "CarrierServices",     "<b>Carrier Services</b>",       "",                      "check",
+      "CalSync",     "<b>Google Calendar Sync</b>",       "Installed by default when Google Calendar is NOT being installed",                      "check",
+      "CameraGoogle",     "<b>Google Camera</b>",       "Requires Android 6.0 or later",                      "check",
+      "CarrierServices",     "<b>Carrier Services</b>",       "Requires Android 6.0 or later, also required for Google Messages",                      "check",
       "Chrome",     "<b>Google Chrome</b>",       "",                      "check",
       "ClockGoogle",     "<b>Google Clock</b>",       "",                      "check",
       "CloudPrint",     "<b>Google Cloud Print</b>",       "",                      "check",
-      "ContactsGoogle",     "<b>Google Contacts</b>",       "",                      "check",
-      "DialerFramework",     "<b>Dialer Framework</b>",       "Necessary for Google Dialer compatibility",                      "check",
-      "DialerGoogle",     "<b>Google Dialer</b>",       "",                      "check",
+      "ContactsGoogle",     "<b>Google Contacts</b>",       "Requires Android 5.1 or later",                      "check",
+      "DialerFramework",     "<b>Dialer Framework</b>",       "Necessary for Google Phone compatibility",                      "check",
+      "DialerGoogle",     "<b>Google Phone</b>",       "Requires Android 6.0+ or later",                      "check",
       "DMAgent",     "<b>Google Apps Device Policy</b>",       "",                      "check",
       "Docs",     "<b>Google Docs</b>",       "",                      "check",
       "Drive",     "<b>Google Drive</b>",       "",                      "check",
       "Duo",     "<b>Google Duo</b>",       "",                      "check",
       "Earth",     "<b>Google Earth</b>",       "",                      "check",
       "ExchangeGoogle",     "<b>Google Exchange Services</b>",       "",                      "check",
-      "FaceDetect",     "<b>Face Detection for Media</b>",       "",                      "check",
-      "FaceUnlock",     "<b>Face Unlock</b>",       "",                      "check",
+      "FaceDetect",     "<b>Face Detection Library</b>",       "",                      "check",
+      "FaceUnlock",     "<b>Trusted Face</b>",       "",                      "check",
       "Fitness",     "<b>Google Fit</b>",       "",                      "check",
-      "GCS",     "<b>Google Connectivity Services</b>",       "To Exclude BOTH Google Connectivity Services AND Project Fi by Google <#f00>OR</#> To Include Google Connectivity Services",                      "check",
+      "GCS",     "<b>Google Connectivity Services</b>",       "Requires Android 5.1 or later, To Exclude BOTH Google Connectivity Services AND Project Fi by Google <#f00>OR</#> To Include Google Connectivity Services",                      "check",
       "Gmail",     "<b>Gmail</b>",       "",                      "check",
-      "GoogleNow",     "<b>Google Now Launcher</b>",       "(Google Search Required)",                      "check",
+      "GoogleNow",     "<b>Google Now Launcher</b>",       "Requires Android 4.4 ONLY, also requires Google Search",                      "check",
       "GooglePay",     "<b>Google Pay</b>",       "",                      "check",
       "GooglePlus",     "<b>Google+</b>",       "",                      "check",
-      "GoogleTTS",     "<b>Google Text-to-Speech</b>",       "",                      "check",
+      "GoogleTTS",     "<b>Google Text-to-Speech Engine</b>",       "Requires Android 6.0 or later",                      "check",
       "Hangouts",     "<b>Google Hangouts</b>",       "",                      "check",
       "Indic",     "<b>Google Indic Keyboard</b>",       "",                      "check",
       "Japanese",     "<b>Google Japanese Input</b>",       "",                      "check",
       "Keep",     "<b>Google Keep</b>",       "",                      "check",
-      "KeyboardGoogle",     "<b>Google Keyboard</b>",       "",                      "check",
+      "KeyboardGoogle",     "<b>Gboard (Google Keyboard)</b>",       "",                      "check",
       "Korean",     "<b>Google Korean Input</b>",       "",                      "check",
       "Maps",     "<b>Google Maps</b>",       "",                      "check",
-      "Messenger",     "<b>Android Messages</b>",       "(not installed on tablet devices)",                      "check",
+      "Markup",     "<b>Google Markup</b>",       "Requires an ARM64 device with Android 9.0 or later",                      "check",
+      "Messenger",     "<b>Google Messages</b>",       "Requires Android 6.0 or later, also requires Carrier Services, NOT installed on tablets",                      "check",
       "Movies",     "<b>Google Play Movies & TV</b>",       "",                      "check",
       "Music",     "<b>Google Play Music</b>",       "",                      "check",
-      "NewsStand",     "<b>Google Play Newsstand</b>",       "",                      "check",
-      "PackageInstallerGoogle",     "<b>Google PackageInstaller</b>",       "",                      "check",
+      "NewsStand",     "<b>Google News</b>",       "",                      "check",
+      "PackageInstallerGoogle",     "<b>Google Package Installer</b>",       "Requires Android 6.0 or later, NOT installed on Android 7.0 and 7.1",                      "check",
       "Pinyin",     "<b>Google Pinyin Input</b>",       "",                      "check",
-      "PixelIcons",     "<b>Pixel Icons</b>",       "",                      "check",
-      "PixelLauncher",     "<b>Pixel Launcher</b>",       "(Wallpapers and Google Search Required)",                      "check",
+      "PixelIcons",     "<b>Pixel Launcher Icons</b>",       "Requires Android 7.1 ONLY and Pixel Launcher",                      "check",
+      "PixelLauncher",     "<b>Pixel Launcher</b>",       "Requires Android 5.0 or later, also requires Google Wallpapers and Google Search",                      "check",
       "Photos",     "<b>Google Photos</b>",       "",                      "check",
       "PlayGames",     "<b>Google Play Games</b>",       "",                      "check",
-      "PrintServiceGoogle",     "<b>Print Service Recommendation Service</b>",       "",                      "check",
-      "ProjectFi",     "<b>Project Fi by Google</b>",       "",                      "check",
+      "PrintServiceGoogle",     "<b>Print Service Recommendation Service</b>",       "Requires Android 7.0 or later",                      "check",
+      "ProjectFi",     "<b>Project Fi</b>",       "Requires Android 5.1 or later",                      "check",
       "Sheets",     "<b>Google Sheets</b>",       "",                      "check",
       "Slides",     "<b>Google Slides</b>",       "",                      "check",
-      "Search",     "<b>Google Search</b>",       "To Exclude Google Search AND Google Now Launcher AND Pixel Launcher <#f00>OR</#> To Include Google Search",                      "check",
-      "Speech",     "<b>Offline Speech Files</b>",       "(Required for offline voice dicatation support)",                      "check",
-      "StorageManagerGoogle",     "<b>Google Storage Manager</b>",       "",                      "check",
+      "Search",     "<b>Google Search</b>",       "To Exclude Google Search AND Google Now Launcher/Pixel Launcher <#f00>OR</#> To Include Google Search",                      "check",
+      "Speech",     "<b>Offline Speech Files</b>",       "Required for offline voice dicatation support",                      "check",
+      "StorageManagerGoogle",     "<b>Google Smart Storage</b>",       "Requires Android 7.0 or later",                      "check",
       "Street",     "<b>Google Street View</b>",       "",                      "check",
-      "TagGoogle",     "<b>Google NFC Tags</b>",       "",                      "check",
-      "Talkback",     "<b>Talkback</b>",       "",                      "check",
+      "TagGoogle",     "<b>Google Tags</b>",       "Requires Android 5.0 or later",                      "check",
+      "Talkback",     "<b>Android Accessibility Suite</b>",       "",                      "check",
       "Translate",     "<b>Google Translate</b>",       "",                      "check",
-      "VRService",     "<b>Google VR Service</b>",       "",                      "check",
-      "Wallpapers",     "<b>Wallpapers</b>",       "To Exclude BOTH Wallpapers AND Pixel Launcher <#f00>OR</#> To Include Wallpapers",                      "check",
-      "WebViewGoogle",     "<b>Android System WebView</b>",       "",                      "check",
+      "VRService",     "<b>Google VR Services</b>",       "Requires Android 7.0 or later",                      "check",
+      "Wallpapers",     "<b>Google Wallpapers</b>",       "Requires Android 5.0 or later, To Exclude BOTH Google Wallpapers AND Pixel Launcher <#f00>OR</#> To Include Google Wallpapers",                      "check",
+      "WebViewGoogle",     "<b>Android System WebView</b>",       "Requires Android 5.1 or later, WebViewStub is installed on Android 7.0+ instead when Google Chrome is selected",                      "check",
+      "Wellbeing",     "<b>Digital Wellbeing</b>",       "Requires Android 9.0 or later",                      "check",
       "YouTube",     "<b>YouTube</b>",       "",                      "check",
       "Zhuyin",     "<b>Google Zhuyin Input</b>",       "",                      "check"
 );
@@ -215,7 +218,7 @@ form(
       "+Email",     "<b>+Email</b>",      "(don't remove Stock Email, even if Gmail is being installed)",        "check",
       "+Gallery",     "<b>+Gallery</b>",      "(don't remove Stock Gallery, even if Google Photos is being installed)",    "check",
       "+Launcher",     "<b>+Launcher</b>",      "(don't remove Stock Launchers, even if Google Now Launcher is being installed)",  "check",
-      "+MMS",     "<b>+MMS</b>",      "(don't remove Stock SMS app, even if Android Messages is being installed)",            "check",
+      "+MMS",     "<b>+MMS</b>",      "(don't remove Stock SMS app, even if Google Messages is being installed)",            "check",
       "+PicoTTS",     "<b>+PicoTTS</b>",      "(don't remove PicoTTS, even if GoogleTTS is being installed)",    "check"
 );
 
@@ -263,7 +266,7 @@ form(
       "Launcher",     "<b>Stock/AOSP Launcher(s)</b>",       "(automatically removed when Google Launcher is installed)",                      "check",
       "LiveWallpapers",     "<b>Live Wallpapers</b>",       "",                      "check",
       "LockClock",     "<b>Lock Clock</b>",       "(a widget found in certain ROMs)",                      "check",
-      "MMS",     "<b>Stock/AOSP MMS</b>",       "(automatically removed when Android Messages is installed)",                      "check",
+      "MMS",     "<b>Stock/AOSP MMS</b>",       "(automatically removed when Google Messages is installed)",                      "check",
       "MzFileManager",     "<b>Stock FlymeOS File Manager</b>",       "",                      "check",
       "MzPay",     "<b>Stock FlymeOS Pay System</b>",       "(this service is only available in China)",                      "check",
       "MzSetupWizard",     "<b>Stock FlymeOS SetupWizard</b>",       "",                      "check",
@@ -280,6 +283,7 @@ form(
       "Terminal",     "<b>Terminal</b>",       "",                      "check",
       "Themes",     "<b>CyanogenMod Theme Engine</b>",       "(Will break the link in Settings to Themes!)",                      "check",
       "VisualizationWallpapers",     "<b>Visualization Live Wallpaper</b>",       "",                      "check",
+      "WallpapersStock",     "<b>Stock Wallpaper Picker</b>",       "(automatically removed when Google Wallpapers is installed)",                      "check",
       "WhisperPush",     "<b>WhisperPush</b>",       "",                      "check"
 );
 form(
@@ -361,6 +365,12 @@ if
   prop("gapps.prop", "ActionsServices")=="1"
 then
   appendvar("gapps", "ActionsServices\n");
+endif;
+
+if
+  prop("gapps.prop", "AndroidAuto")=="1"
+then
+  appendvar("gapps", "AndroidAuto\n");
 endif;
 
 if
@@ -580,6 +590,12 @@ then
 endif;
 
 if
+  prop("gapps.prop", "Markup")=="1"
+then
+  appendvar("gapps", "Markup\n");
+endif;
+
+if
   prop("gapps.prop", "Messenger")=="1"
 then
   appendvar("gapps", "Messenger\n");
@@ -721,6 +737,12 @@ if
   prop("gapps.prop", "WebViewGoogle")=="1"
 then
   appendvar("gapps", "WebViewGoogle\n");
+endif;
+
+if
+  prop("gapps.prop", "Wellbeing")=="1"
+then
+  appendvar("gapps", "Wellbeing\n");
 endif;
 
 if
@@ -1079,6 +1101,12 @@ if
   prop("rem.prop", "VisualizationWallpapers")=="1"
 then
   appendvar("gapps", "VisualizationWallpapers\n");
+endif;
+
+if
+  prop("rem.prop", "WallpapersStock")=="1"
+then
+  appendvar("gapps", "WallpapersStock\n");
 endif;
 
 if

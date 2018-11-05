@@ -27,41 +27,39 @@ vending"
 gappscore_optional=""
 
 gappssuper="dmagent
+docs
 earth
-gcs
-googlepay
+fitness
+googleplus
+hangouts
 indic
 japanese
 korean
 pinyin
 projectfi
+sheets
+slides
 street
-translate
 zhuyin"
 
 gappsstock="cameragoogle
 duo
-hangouts
+googlepay
 keyboardgoogle
-vrservice
-wallpapers"
+translate
+vrservice"
 
 gappsstock_optional=""
 
 gappsfull="books
 chrome
 cloudprint
-docs
 drive
-fitness
-googleplus
 keep
 movies
 music
 newsstand
 playgames
-sheets
-slides
 talkback"
 
 gappsfull_optional=""
@@ -74,11 +72,10 @@ youtube"
 
 gappsmini_optional=""
 
-#googletts for micro is defined in inc.compatibility.sh api23hack
+# googletts for micro is defined in inc.compatibility.sh api23hack
 gappsmicro="calendargoogle
 exchangegoogle
-gmail
-googlenow"
+gmail"
 
 gappsnano="facedetect
 faceunlock
@@ -137,9 +134,9 @@ get_fallback_arch(){
   case "$1" in
     arm)    fallback_arch="all";;
     arm64)  fallback_arch="arm";;
-    x86)    fallback_arch="arm";; #by using libhoudini
-    x86_64) fallback_arch="x86";; #e.g. chain: x86_64->x86->arm->all
-    *)      fallback_arch="$1";; #return original arch if no fallback available
+    x86)    fallback_arch="arm";;  # By using libhoudini
+    x86_64) fallback_arch="x86";;  # e.g. chain: x86_64->x86->arm->all
+    *)      fallback_arch="$1";;  # Return original arch if no fallback available
   esac
 }
 
@@ -200,7 +197,7 @@ for app in $gapps; do
   done
 done
 
-EXTRACTFILES="app_densities.txt app_sizes.txt" #is executed as first
+EXTRACTFILES="app_densities.txt app_sizes.txt"  # Is executed as first
 CHMODXFILES=""
 }
 
@@ -215,7 +212,7 @@ get_package_info(){
   packagegappsremove=""
   case "$1" in
     # Common GApps
-    configupdater)            packagetype="Core"; packagename="com.google.android.configupdater"; packagetarget="priv-app/ConfigUpdater";; #On Android TV 5.1 and 6.0 this is in 'app'
+    configupdater)            packagetype="Core"; packagename="com.google.android.configupdater"; packagetarget="priv-app/ConfigUpdater";;  # On Android TV 5.1 and 6.0 this is in /app
     extsharedgoogle)          packagetype="Core"; packagename="com.google.android.ext.shared"; packagetarget="app/GoogleExtShared";;
     extservicesgoogle)        packagetype="Core"; packagename="com.google.android.ext.services"; packagetarget="priv-app/GoogleExtServices";;
     googlebackuptransport)    packagetype="Core"; packagename="com.google.android.backuptransport"; packagetarget="priv-app/GoogleBackupTransport";;
@@ -226,39 +223,55 @@ get_package_info(){
     webviewstub)              packagetype="GApps"; packagename="com.google.android.webview.stub"; packagetarget="app/WebViewStub";;
 
     # Regular GApps
-    androidplatformservices)  packagetype="Core"; packagetarget="priv-app/AndroidPlatformServices";
-                              if [ "$API" -eq "26" ]; then # This is found only in Android 8.0 on the Pixel 2
-                               packagename="com.google.android.gms.policy_sidecar_o"; 
-                              elif [ "$API" -eq "28" ]; then # This is found in Android 9.0 on the Pixel and Pixel 2. Also needed on custom ROMs
-                               packagename="com.google.android.gms.policy_sidecar_aps";
+    carriersetup)             packagetype="Core"; packagename="com.google.android.carriersetup"; packagetarget="priv-app/CarrierSetup";;
+    defaultetc)               packagetype="Core";
+                              if [ "$API" -ge "28" ]; then # Specific permission files for Android 9.0
+                                packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/preferred-apps/google.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
+                              elif [ "$API" -ge "26" ]; then # Specific permission files for Android 8.0 to 8.1
+                                packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/preferred-apps/google.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
+                              elif [ "$API" -ge "25" ]; then # Specific permission files for Android 7.1
+                                packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/preferred-apps/google.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
+                              elif [ "$API" -ge "21" ]; then # Specific permission files for Android 5.0 to 7.0
+                                packagefiles="etc/preferred-apps/google.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml"
+                              elif [ "$API" -ge "19" ]; then # Specific permission files for Android 4.4
+                                packagefiles="etc/preferred-apps/google.xml"
+                              else # Add all sysconfig and permission files for undetected/newer Android version
+                                packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/preferred-apps/google.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
                               fi;;
-    defaultetc)               packagetype="Core"; packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/preferred-apps/google.xml etc/sysconfig/google.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml";;
-    defaultframework)         packagetype="Core"; packagefiles="etc/permissions/com.google.android.maps.xml etc/permissions/com.google.android.media.effects.xml etc/permissions/com.google.widevine.software.drm.xml"; packageframework="com.google.android.maps.jar com.google.android.media.effects.jar com.google.widevine.software.drm.jar";;  # widevine is gone in Oreo
+    defaultframework)         packagetype="Core";
+                              if [ "$API" -ge "25" ]; then # Specific permission files and frameworks for Android 7.1 to 9.0
+                                packagefiles="etc/permissions/com.google.android.maps.xml etc/permissions/com.google.android.media.effects.xml"
+                                packageframework="com.google.android.maps.jar com.google.android.media.effects.jar"
+                              elif [ "$API" -ge "19" ]; then # Specific permission files and frameworks for Android 4.4 to 7.0
+                                packagefiles="etc/permissions/com.google.android.maps.xml etc/permissions/com.google.android.media.effects.xml etc/permissions/com.google.widevine.software.drm.xml"
+                                packageframework="com.google.android.maps.jar com.google.android.media.effects.jar com.google.widevine.software.drm.jar"
+                              else # Add all permission files and frameworks for undetected/newer Android version
+                                packagefiles="etc/permissions/com.google.android.maps.xml etc/permissions/com.google.android.media.effects.xml etc/permissions/com.google.widevine.software.drm.xml"
+                                packageframework="com.google.android.maps.jar com.google.android.media.effects.jar com.google.widevine.software.drm.jar"
+                              fi;;
     gmscore)                  packagetype="Core"; packagename="com.google.android.gms";
                               if [ "$API" -ge "28" ]; then  # Path on Android 9.0 is priv-app/PrebuiltGmsCorePi
                                 packagetarget="priv-app/PrebuiltGmsCorePi"
-                              else  # Alternative path on Android One 7.0 is priv-app/GmsCore
+                              elif [ "$API" -ge "27" ]; then  # Path on Android 8.0 is priv-app/PrebuiltGmsCorePix
+                                packagetarget="priv-app/PrebuiltGmsCorePix"
+                              else  # Prior to Android 8.0 the path is PrebuiltGmsCore
                                 packagetarget="priv-app/PrebuiltGmsCore"
                               fi;;
-    gmssetup)                 if [ "$API" -eq "26" ] || [ "$API" -eq "27" ]; then  # Only to be installed on Android 8.0 and 8.1
-                                packagetype="Core"; packagename="com.google.android.gms.setup"; packagetarget="priv-app/GmsCoreSetupPrebuilt"
-                              fi;;
+    gmssetup)                 packagetype="Core"; packagename="com.google.android.gms.setup"; packagetarget="priv-app/GmsCoreSetupPrebuilt";;
     googlefeedback)           packagetype="Core"; packagename="com.google.android.feedback"; packagetarget="priv-app/GoogleFeedback";;
     googleonetimeinitializer) packagetype="Core"; packagename="com.google.android.onetimeinitializer"; packagetarget="priv-app/GoogleOneTimeInitializer";;
     googlepartnersetup)       packagetype="Core"; packagename="com.google.android.partnersetup"; packagetarget="priv-app/GooglePartnerSetup";;
-    gsflogin)                 packagetype="Core"; packagename="com.google.android.gsf.login"; packagetarget="priv-app/GoogleLoginService";;  # Gone in Oreo
-    markup)                   packagetype="Core"; packagename="com.google.android.markup"; packagetarget="app/MarkupGoogle";
-                              if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # There is a library included with Markup, in which the app will only work on ARM64
-                                packagelibs="libsketchology_native.so"
-                              fi;;
-    setupwizard)              packagetype="Core"; packagename="com.google.android.setupwizard"; packagetarget="priv-app/SetupWizard";; #KitKat only
+    gsflogin)                 packagetype="Core"; packagename="com.google.android.gsf.login"; packagetarget="priv-app/GoogleLoginService";;  # Permanently removed in Android 7.1+
+    platformservicesoreo)     packagetype="Core"; packagename="com.google.android.gms.policy_sidecar_o"; packagetarget="priv-app/AndroidPlatformServices";;
+    platformservicespie)      packagetype="Core"; packagename="com.google.android.gms.policy_sidecar_aps"; packagetarget="priv-app/AndroidPlatformServices";; 
+    setupwizard)              packagetype="Core"; packagename="com.google.android.setupwizard"; packagetarget="priv-app/SetupWizard";;  # Android 4.4 only (see api19hack in inc.buildtarget.sh)
     setupwizarddefault)       packagetype="Core"; packagename="com.google.android.setupwizard.default"; packagetarget="priv-app/SetupWizard";;
     setupwizardtablet)        packagetype="Core"; packagename="com.google.android.setupwizard.tablet"; packagetarget="priv-app/SetupWizard";;
     soundpicker)              packagetype="Core"; packagename="com.google.android.soundpicker"; packagetarget="app/SoundPickerPrebuilt";;
     vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
-    wellbeing)                packagetype="Core"; packagename="com.google.android.apps.wellbeing"; packagetarget="priv-app/WellbeingPrebuilt";;
 
     actionsservices)          packagetype="GApps"; packagename="com.google.android.as"; packagetarget="priv-app/MatchmakerPrebuilt";;
+    androidauto)              packagetype="GApps"; packagename="com.google.android.projection.gearhead"; packagetarget="app/AndroidAutoPrebuilt";;
     batteryusage)             packagetype="GApps"; packagename="com.google.android.apps.turbo"; packagetarget="priv-app/Turbo";;
     bettertogether)           packagetype="GApps"; packagename="com.google.android.apps.multidevice.client"; packagetarget="app/SMSConnectPrebuilt";;
     books)                    packagetype="GApps"; packagename="com.google.android.apps.books"; packagetarget="app/Books";;
@@ -266,9 +279,14 @@ get_package_info(){
     calendargoogle)           packagetype="GApps"; packagename="com.google.android.calendar"; packagetarget="app/CalendarGooglePrebuilt";;
     calsync)                  packagetype="GApps"; packagename="com.google.android.syncadapters.calendar"; packagetarget="app/GoogleCalendarSyncAdapter";;
     cameragoogle)             packagetype="GApps"; packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCamera";
-                              if [ "$API" -ge "25" ]; then  # On Nougat 7.1+ we bundle Camera 2016 for non-legacy camera
+                              # Camera 2018 bundle disabled until more verification of proper functionality is confirmed
+                              # if [ "$API" -ge "28" ]; then  # On Android 9.0 we bundle Camera 2018 for non-legacy camera
+                              #   packagefiles="etc/permissions/com.google.android.camera.experimental2018.xml"; packageframework="com.google.android.camera.experimental2018.jar"
+                              if [ "$API" -ge "26" ]; then  # On Android 8.0 to 8.1 we bundle Camera 2017 for non-legacy camera
+                                packagefiles="etc/permissions/com.google.android.camera.experimental2017.xml"; packageframework="com.google.android.camera.experimental2017.jar"
+                              elif [ "$API" -ge "25" ]; then  # On Android 7.1 we bundle Camera 2016 for non-legacy camera
                                 packagefiles="etc/permissions/com.google.android.camera.experimental2016.xml"; packageframework="com.google.android.camera.experimental2016.jar"
-                              elif [ "$API" -ge "23" ]; then  # On Marshmallow+ we bundle Camera 2015 for non-legacy camera
+                              elif [ "$API" -ge "23" ]; then  # On Android 6.0 to 7.0 we bundle Camera 2015 for non-legacy camera
                                 packagefiles="etc/permissions/com.google.android.camera.experimental2015.xml"; packageframework="com.google.android.camera.experimental2015.jar"
                               else
                                 packagefiles="etc/permissions/com.google.android.camera2.xml"; packageframework="com.google.android.camera2.jar"
@@ -280,12 +298,7 @@ get_package_info(){
     cloudprint)               packagetype="GApps"; packagename="com.google.android.apps.cloudprint"; packagetarget="app/CloudPrint2";;
     contactsgoogle)           packagetype="GApps"; packagename="com.google.android.contacts"; packagetarget="priv-app/GoogleContacts";;
     datatransfertool)         packagetype="GApps"; packagename="com.google.android.apps.pixelmigrate"; packagetarget="priv-app/AndroidMigratePrebuilt";;
-    dialerframework)          packagetype="GApps"; packageframework="com.google.android.dialer.support.jar";
-                              if [ "$API" -ge "28" ]; then  # dialer_experience.xml is not needed in Android 9.0
-                                packagefiles="etc/permissions/com.google.android.dialer.support.xml";
-                              else
-                                packagefiles="etc/permissions/com.google.android.dialer.support.xml etc/sysconfig/dialer_experience.xml"; 
-                              fi;;
+    dialerframework)          packagetype="GApps"; packagefiles="etc/permissions/com.google.android.dialer.support.xml etc/sysconfig/dialer_experience.xml"; packageframework="com.google.android.dialer.support.jar";;
     dialergoogle)             packagetype="GApps"; packagename="com.google.android.dialer"; packagetarget="priv-app/GoogleDialer";;
     dmagent)                  packagetype="GApps"; packagename="com.google.android.apps.enterprise.dmagent"; packagetarget="app/DMAgent";;
     docs)                     packagetype="GApps"; packagename="com.google.android.apps.docs.editors.docs"; packagetarget="app/EditorsDocs";;
@@ -294,23 +307,23 @@ get_package_info(){
     earth)                    packagetype="GApps"; packagename="com.google.earth"; packagetarget="app/GoogleEarth";;
     exchangegoogle)           packagetype="GApps"; packagename="com.google.android.gm.exchange"; packagetarget="app/PrebuiltExchange3Google";;
     facedetect)               packagetype="GApps";
-                              if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib of libfilterpack_facedetect.so
+                              if [ "$LIBFOLDER" = "lib64" ]; then  # On ARM64 we also need the ARM library of libfilterpack_facedetect.so
                                 packagelibs="libfilterpack_facedetect.so+fallback";
                               else
                                 packagelibs="libfilterpack_facedetect.so";
                               fi;;
-    faceunlock)               case "$ARCH" in #only arm based platforms
+    faceunlock)               case "$ARCH" in  # ARM based platforms only
                                 arm*) packagetype="GApps"; packagename="com.android.facelock"; packagetarget="app/FaceLock";
-                                      if [ "$API" -ge "24" ]; then  # On 7.0+ the facelock library is libfacenet.so
+                                      if [ "$API" -ge "24" ]; then  # On Android 7.0+ the facelock library is libfacenet.so
                                         FACELOCKLIB="libfacenet.so"
-                                        if [ "$API" -ge "26" ]; then # On 8.0+ we also need libprotobuf-cpp-shit.so as there is no libfacenet.so for 8.0+ 32bit devices.
+                                        if [ "$API" -ge "26" ]; then  # On Android 8.0+ libprotobuf-cpp-shit.so is needed as libfacenet.so is currently unavailable for 8.0+ ARM devices
                                           FACELOCKLIB2="libprotobuf-cpp-shit.so"
                                         fi
-                                      else  # Before Nougat there is a pittpatt folder and libfacelock_jni
+                                      else  # Before Android 7.0 there is a pittpatt folder and libfacelock_jni.so
                                         packagefiles="vendor/pittpatt/";
                                         FACELOCKLIB="libfacelock_jni.so"
                                       fi
-                                      if [ "$LIBFOLDER" = "lib64" ]; then #on 64 bit, we also need the 32 bit lib of libfrsdk.so
+                                      if [ "$LIBFOLDER" = "lib64" ]; then  # With ARM64 we also need the ARM library of libfrsdk.so
                                         packagelibs="$FACELOCKLIB libfrsdk.so+fallback";
                                       else
                                         packagelibs="$FACELOCKLIB $FACELOCKLIB2 libfrsdk.so";
@@ -321,12 +334,19 @@ get_package_info(){
     gmail)                    packagetype="GApps"; packagename="com.google.android.gm"; packagetarget="app/PrebuiltGmail";;
     googlenow)                packagetype="GApps"; packagename="com.google.android.launcher"; packagetarget="app/GoogleHome";;
     googlepay)                packagetype="GApps"; packagename="com.google.android.apps.walletnfcrel"; packagetarget="app/Wallet";;
-    googlepixelconfig)        packagetype="GApps"; packagefiles="etc/sysconfig/nexus.xml etc/sysconfig/pixel_2017_exclusive.xml etc/sysconfig/pixel_experience_2017.xml";;
+    googlepixelconfig)        packagetype="GApps";
+                              if [ "$API" -ge "28" ]; then  # Specific permission files for Android 9.0
+                                packagefiles="etc/sysconfig/nexus.xml etc/sysconfig/pixel_2018_exclusive.xml etc/sysconfig/pixel_experience_2017.xml etc/sysconfig/pixel_experience_2018.xml"
+                              elif [ "$API" -ge "26" ]; then  # Specific permission files for Android 8.0 to 8.1
+                                packagefiles="etc/sysconfig/nexus.xml etc/sysconfig/pixel_2017.xml etc/sysconfig/pixel_2017_exclusive.xml"
+                              elif [ "$API" -ge "25" ]; then  # Specific permission files for Android 7.1
+                                packagefiles="etc/sysconfig/nexus.xml"
+                              fi;;
     googleplus)               packagetype="GApps"; packagename="com.google.android.apps.plus"; packagetarget="app/PlusOne";;
     googletts)                packagetype="GApps"; packagename="com.google.android.tts"; packagetarget="app/GoogleTTS";;
     hangouts)                 packagetype="GApps"; packagename="com.google.android.talk"; packagetarget="app/Hangouts";;
     indic)                    packagetype="GApps"; packagename="com.google.android.apps.inputmethod.hindi"; packagetarget="app/GoogleHindiIME";;
-    japanese)                 packagetype="GApps"; packagename="com.google.android.inputmethod.japanese"; packagetarget="app/GoogleJapaneseInput";;  # also JapaneseIME exists on some ROMs
+    japanese)                 packagetype="GApps"; packagename="com.google.android.inputmethod.japanese"; packagetarget="app/GoogleJapaneseInput";;  # JapaneseIME exists in some ROMs
     korean)                   packagetype="GApps"; packagename="com.google.android.inputmethod.korean"; packagetarget="app/KoreanIME";;
     keep)                     packagetype="GApps"; packagename="com.google.android.keep"; packagetarget="app/PrebuiltKeep";;
     keyboardgoogle)           packagetype="GApps"; packagename="com.google.android.inputmethod.latin";
@@ -336,6 +356,7 @@ get_package_info(){
                                 packagetarget="app/LatinImeGoogle"
                               fi;;
     maps)                     packagetype="GApps"; packagename="com.google.android.apps.maps"; packagetarget="app/Maps";;
+    markup)                   packagetype="GApps"; packagename="com.google.android.markup"; packagetarget="app/MarkupGoogle"; packagelibs="libsketchology_native.so";;  # Markup is only available for ARM64 devices because of the required library
     messenger)                packagetype="GApps"; packagename="com.google.android.apps.messaging"; packagetarget="app/PrebuiltBugle";;
     movies)                   packagetype="GApps"; packagename="com.google.android.videos"; packagetarget="app/Videos";;
     moviesvrmode)             packagetype="GApps"; packagename="com.google.android.videos.vrmode"; packagetarget="app/Videos";;
@@ -358,13 +379,17 @@ get_package_info(){
     street)                   packagetype="GApps"; packagename="com.google.android.street"; packagetarget="app/Street";;
     taggoogle)                packagetype="GApps"; packagename="com.google.android.tag"; packagetarget="priv-app/TagGoogle";;
     translate)                packagetype="GApps"; packagename="com.google.android.apps.translate"; packagetarget="app/TranslatePrebuilt";;
-    vrservice)                packagetype="GApps"; packagefiles="etc/sysconfig/google_vr_build.xml"; packagename="com.google.vr.vrcore"; packagetarget="app/GoogleVrCore"
-                              if [ "$API" -ge "27" ]; then  # On Android 8.1+ we bundle 2017 VR Platform
-                                packagefiles="etc/permissions/com.google.vr.platform.xml etc/sysconfig/google_vr_build.xml"; packageframework="com.google.vr.platform.jar"
+    vrservice)                packagetype="GApps"; packagename="com.google.vr.vrcore"; packagetarget="app/GoogleVrCore"
+                              if [ "$API" -ge "26" ]; then  # Specific sysconfig and permission files for VR on Android 8.0 to 9.0
+                                packagefiles="etc/sysconfig/google_vr_build.xml etc/permissions/com.google.vr.platform.xml"
+                                packageframework="com.google.vr.platform.jar";
+                              elif [ "$API" -ge "24" ]; then  # Specific sysconfig file for VR on Android 7.0
+                                packagefiles="etc/sysconfig/google_vr_build.xml";
                               fi;;
     wallpapers)               packagetype="GApps"; packagename="com.google.android.apps.wallpaper"; packagetarget="app/WallpaperPickerGooglePrebuilt";;
+    wellbeing)                packagetype="GApps"; packagename="com.google.android.apps.wellbeing"; packagetarget="priv-app/WellbeingPrebuilt";;
     youtube)                  packagetype="GApps"; packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
-    zhuyin)                   packagetype="GApps"; packagename="com.google.android.apps.inputmethod.zhuyin"; packagetarget="app/GoogleZhuyinIME";;  # also ZhuyinIME exists on some ROMs
+    zhuyin)                   packagetype="GApps"; packagename="com.google.android.apps.inputmethod.zhuyin"; packagetarget="app/GoogleZhuyinIME";;  # ZhuyinIME exists in some ROMs
 
     # TV GApps
     notouch)                  packagetype="Core"; packagename="com.google.android.gsf.notouch"; packagetarget="app/NoTouchAuthDelegate";;
@@ -391,7 +416,7 @@ get_package_info(){
     tvkeyboardgoogle)         packagetype="GApps"; packagename="com.google.android.leanback.ime"; packagetarget="app/LeanbackIme";;
     tvmovies)                 packagetype="GApps"; packagename="com.google.android.videos.leanback"; packagetarget="app/VideosPano";;
     tvmusic)                  packagetype="GApps"; packagename="com.google.android.music.leanback"; packagetarget="app/Music2Pano";;
-    tvpackageinstallergoogle) packagetype="GApps"; packagename="com.google.android.pano.packageinstaller"; packagetarget="priv-app/CanvasPackageInstaller";;  # on 5.1 and 6.0 this was in 'app'
+    tvpackageinstallergoogle) packagetype="GApps"; packagename="com.google.android.pano.packageinstaller"; packagetarget="priv-app/CanvasPackageInstaller";;  # On Android 5.1 and 6.0 this was in /app
     tvplaygames)              packagetype="GApps"; packagename="com.google.android.play.games.leanback"; packagetarget="app/PlayGames";;  # Only change is leanback in the packagename
     tvrecommendations)        packagetype="GApps"; packagename="com.google.android.tvrecommendations.leanback" packagetarget="priv-app/TVRecommendations";;
     tvremote)                 packagetype="GApps";  packagetarget="priv-app/AtvRemoteService";
@@ -402,14 +427,14 @@ get_package_info(){
                                 packagelibs="libatv_uinputbridge.so"
                               fi;;
     tvsearch)                 packagetype="GApps"; packagename="com.google.android.katniss.leanback"; packagetarget="priv-app/Katniss";;
-    tvvoiceinput)             packagetype="GApps"; packagename="com.google.android.tv.voiceinput"; packagetarget="app/TvVoiceInput";;  # Only in 5.1
+    tvvoiceinput)             packagetype="GApps"; packagename="com.google.android.tv.voiceinput"; packagetarget="app/TvVoiceInput";;  # Available only on Android 5.1
     tvwallpaper)              packagetype="GApps"; packagename="com.google.android.landscape"; packagetarget="app/LandscapeWallpaper";;
     tvwidget)                 packagetype="GApps"; packagename="com.google.android.atv.widget"; packagetarget="app/AtvWidget";;
     tvyoutube)                packagetype="GApps"; packagename="com.google.android.youtube.tv.leanback"; packagetarget="app/YouTubeLeanback";;
 
     # Swypelibs
     swypelibs)                packagetype="Optional"; packagelibs="libjni_latinimegoogle.so";
-                              if [ "$API" -eq "23" ]; then  # On Marshmallow there is an extra lib
+                              if [ "$API" -eq "23" ]; then  # On Android 6.0 there is an extra library
                                 packagelibs="$packagelibs libjni_keyboarddecoder.so"
                               fi;;
 

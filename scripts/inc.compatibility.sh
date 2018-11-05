@@ -203,7 +203,7 @@ if ( contains "$gapps_list" "googleplus" ); then
   kitkatdata_folder_extract "googleplus-$arch" "$dpiapkpath" "com.google.android.apps.plus" "PlusOne.apk"
   gapps_list=${gapps_list/googleplus}
 fi
-# Handle broken lib configuration on KitKat by putting Messenger on /data/
+# Handle broken lib configuration on KitKat by putting Google Messages on /data/
 if ( contains "$gapps_list" "messenger" ); then
   "$TMP/unzip-$BINARCH" -o "$OPENGAZIP" "GApps/messenger-$arch.tar*" -d "$TMP"
   which_dpi "messenger-$arch"  # Keep it simple, only 32 bit arch on kitkat and no weird libs for these apps
@@ -409,12 +409,16 @@ EOFILE
 }
 
 api19hack(){
-  # On KitKat there is only 1 kind of setupwizard without a product type
   if [ "$API" -le "19" ]; then
-  gappscore="$gappscore
-setupwizard"
+    if [ "$API" -eq "19" ]; then
+      gappscore="$gappscore
+gsflogin
+setupwizard"  # On KitKat there is only 1 kind of setupwizard without a product type
+      gappsmicro="$gappsmicro
+googlenow"
+    fi
   else
-  gappscore="$gappscore
+    gappscore="$gappscore
 setupwizarddefault
 setupwizardtablet"
   fi
@@ -422,10 +426,19 @@ setupwizardtablet"
 
 api21hack(){
   if [ "$API" -ge "21" ]; then
+    if [ "$API" -eq "21" ]; then
+      gappscore="$gappscore
+gmssetup
+gsflogin"
+    fi
     gappsmini="$gappsmini
 calculatorgoogle
 taggoogle"
+    gappsmicro="$gappsmicro
+pixellauncher
+wallpapers"
     gappsstock="$gappsstock
+androidauto
 contactsgoogle"
     miniremove="$miniremove
 clockstock
@@ -435,13 +448,16 @@ tagstock"
 
 api22hack(){
   if [ "$API" -ge "22" ]; then
-    # Starting from API 22 configupdater is part of the core apps
+    if [ "$API" -eq "22" ]; then
+      gappscore="$gappscore
+gsflogin"
+      fi
     gappscore="$gappscore
-configupdater"
-
-    # On AOSP we only support Webview on 5.1+, stock Google ROMs support it on 5.0 too, but we're merging stock and fornexus
+configupdater"  # Starting from API 22 configupdater is part of the core apps
     gappsstock="$gappsstock
-webviewgoogle"
+webviewgoogle"  # On AOSP we only support Webview on 5.1+, stock Google ROMs support it on 5.0 too, but we're merging stock and fornexus
+    gappssuper="$gappssuper
+gcs"
     stockremove="$stockremove
 webviewstock"
   fi
@@ -449,62 +465,60 @@ webviewstock"
 
 api23hack(){
   if [ "$API" -ge "23" ]; then
+    if [ "$API" -eq "23" ]; then
+      gappscore="$gappscore
+gsflogin"
+    fi
     gappspico="$gappspico
 dialerframework
 googletts"
-    if [ "$API" -eq "23" ] || [ "$API" -ge "26" ] ; then
+    if [ "$API" -eq "23" ]; then
       gappspico="$gappspico
-packageinstallergoogle"  
-    fi # TODO packageinstallergoogle temporary disabled because of issues on Nougat ROMs
+packageinstallergoogle"  # TODO: packageinstallergoogle temporary disabled because of issues on Nougat ROMs
+    fi
+    gappsmini="$gappsmini
+carrierservices"
     gappsstock="$gappsstock
-dialergoogle
-pixellauncher"
+dialergoogle"
     gappsstock_optional="$gappsstock_optional
 cameragooglelegacy"
-
-    gappssuper="$gappssuper
-carrierservices"
-
     webviewstocklibs='lib/$WebView_lib_filename
 lib64/$WebView_lib_filename
-' #on Marshmallow the AOSP WebViewlibs must be removed, since they are embedded in the Google WebView APK; this assumes also any pre-bundled Google WebView with the ROM uses embedded libs; use single quote to not replace variable names
+'  # On Marshmallow the AOSP WebViewlibs must be removed, since they are embedded in the Google WebView APK; this assumes also any pre-bundled Google WebView with the ROM uses embedded libs; use single quote to not replace variable names
     webviewgappsremove=""
-
-  # On AndroidTV 6.0+ packageinstallergoogle is also installed (next to the tvpackageinstallergoogle)
   gappstvstock="$gappstvstock
-packageinstallergoogle"
+packageinstallergoogle"  # On AndroidTV 6.0+ packageinstallergoogle is also installed (next to the tvpackageinstallergoogle)
   else
     gappsmicro="$gappsmicro
 googletts"
-    webviewstocklibs="" # on non-Marshmallow the WebViewlibs should not be considered part of the Stock/AOSP WebView, since they are shared with the Google WebView
+    webviewstocklibs=""  # On non-Marshmallow the WebViewlibs should not be considered part of the Stock/AOSP WebView, since they are shared with the Google WebView
     webviewgappsremove="lib/libwebviewchromium.so
-lib64/libwebviewchromium.so" #on non-Marshmallow the WebViewlibs are to be explictly included as a Google WebView file in gapps-remove.txt
-
-  # On pre-Marshmallow TV Voiceinput exists
+lib64/libwebviewchromium.so"  # On non-Marshmallow the WebViewlibs are to be explictly included as a Google WebView file in gapps-remove.txt
   gappstvstock="$gappstvstock
-tvvoiceinput"
+tvvoiceinput"  # On pre-Marshmallow TV Voiceinput exists
   fi
 }
 
 api24hack(){
   if [ "$API" -ge "24" ]; then
+    if [ "$API" -eq "24" ]; then
+      gappscore="$gappscore
+gmssetup
+gsflogin"
+    fi
     gappscore="$gappscore
 extservicesgoogle
 extsharedgoogle"
     gappsstock="$gappsstock
 printservicegoogle
 storagemanagergoogle"
-
     gappstvcore="$gappstvcore
 extservicesgoogle
 extsharedgoogle"
-    # On Nougat and higher the TV Recommendations exist
     gappstvstock="$gappstvstock
-leanbackrecommendations"
-    # On Nougat and higher we might want to install the WebViewStub instead of WebViewGoogle in some situations
+leanbackrecommendations"  # On Android 7.0+ the TV Recommendations exist
     gappsstock_optional="$gappsstock_optional
-webviewstub"
-
+webviewstub"  # On Nougat and higher we might want to install the WebViewStub instead of WebViewGoogle in some situations
   if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then  # for now only available on arm & arm64
     gappsfull_optional="$gappsfull_optional
 moviesvrmode"
@@ -517,33 +531,33 @@ photosvrmode"
 }
 
 api25hack(){
-  if [ "$API" -eq "25" ]; then
-    gappscore="$gappscore
-gsflogin"
-  fi
   if [ "$API" -ge "25" ]; then
+    if [ "$API" -eq "25" ]; then
+      gappscore="$gappscore
+gsflogin"
+      gappsmicro="$gappsmicro
+pixelicons"
+    fi
     gappsnano="$gappsnano
 batteryusage"
-    gappsstock="$gappsstock
-pixelicons"
   fi
 }
 
 api26hack(){
-  if [ "$API" -eq "26" ]; then
-    if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
-      gappscore="$gappscore
-gmssetup
-androidplatformservices"
-    fi
-  fi
   if [ "$API" -ge "26" ]; then
-    # On Oreo and higher a different launcher exists
-    # Also, the suw works without needing platform signed
+    if [ "$ARCH" = "arm64" ] && [ "$API" -eq "26" ]; then
+      gappscore="$gappscore
+platformservicesoreo"  # Include Android 8.0 specific Platform Services with Android 8.0
+    fi
+    gappscore="$gappscore
+carriersetup
+gmssetup"
+    gappspico="$gappspico
+packageinstallergoogle"
     gappstvstock="$gappstvstock
 setupwraith
 tvlauncher
-tvrecommendations"
+tvrecommendations"  # On Android 8.0+ a different launcher exists. SuW also works without needing platform signed
   fi
 }
 
@@ -551,24 +565,22 @@ tvrecommendations"
 api27hack(){
   if [ "$API" -eq "27" ]; then
     if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
-      gappscore="$gappscore
-gmssetup"
+      gappscore="$gappscore"
     fi
-  else
     gappscore="$gappscore"
   fi
 }
 
-# Does nothing now, here for completeness
 api28hack(){
   if [ "$API" -ge "28" ]; then
-    if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
-      gappscore="$gappscore
-markup"
+    if [ "$ARCH" = "arm64" ] && [ "$API" -eq "28" ]; then
+      gappsnano="$gappsnano
+markup
+platformservicespie"  # Include Markup and Pie-specific Android Platform Services with Android 9.0
     fi
     gappscore="$gappscore
-androidplatformservices
-soundpicker
+soundpicker"
+    gappsnano="$gappsnano
 wellbeing"
     gappssuper="$gappssuper
 actionsservices
