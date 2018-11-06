@@ -714,16 +714,18 @@ if [ -n "$(cat /proc/cmdline | grep slot_suffix)" ];
 then
   device_abpartition=true
   SYSTEM=/system/system
+  VENDOR=/vendor/vendor
 else
   device_abpartition=false
   SYSTEM=/system
+  VENDOR=/vendor
 fi
 
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
 zip_folder="$(dirname "$OPENGAZIP")";
 g_prop=$SYSTEM/etc/g.prop
-PROPFILES="$g_prop $SYSTEM/default.prop $SYSTEM/build.prop /data/local.prop /default.prop /build.prop"
+PROPFILES="$g_prop $SYSTEM/default.prop $SYSTEM/build.prop $VENDOR/build.prop /data/local.prop /default.prop /build.prop"
 bkup_tail=$TMP/bkup_tail.sh;
 gapps_removal_list=$TMP/gapps-remove.txt;
 g_log=$TMP/g.log;
