@@ -579,6 +579,7 @@ markup
 platformservicespie"  # Include Markup and Pie-specific Android Platform Services with Android 9.0
     fi
     gappscore="$gappscore
+backuprestore
 soundpicker"
     gappsnano="$gappsnano
 wellbeing"
