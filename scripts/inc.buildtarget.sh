@@ -283,9 +283,9 @@ get_package_info(){
                               # Camera 2018 bundle disabled until more verification of proper functionality is confirmed
                               # if [ "$API" -ge "28" ]; then  # On Android 9.0 we bundle Camera 2018 for non-legacy camera
                               #   packagefiles="etc/permissions/com.google.android.camera.experimental2018.xml"; packageframework="com.google.android.camera.experimental2018.jar"
-                              if [ "$API" -ge "26" ]; then  # On Android 8.0 to 8.1 we bundle Camera 2017 for non-legacy camera
-                                packagefiles="etc/permissions/com.google.android.camera.experimental2017.xml"; packageframework="com.google.android.camera.experimental2017.jar"
-                              elif [ "$API" -ge "25" ]; then  # On Android 7.1 we bundle Camera 2016 for non-legacy camera
+                              # if [ "$API" -ge "26" ]; then  # On Android 8.0 to 8.1 we bundle Camera 2017 for non-legacy camera
+                              #   packagefiles="etc/permissions/com.google.android.camera.experimental2017.xml"; packageframework="com.google.android.camera.experimental2017.jar"
+                              if [ "$API" -ge "25" ]; then  # On Android 7.1 we bundle Camera 2016 for non-legacy camera
                                 packagefiles="etc/permissions/com.google.android.camera.experimental2016.xml"; packageframework="com.google.android.camera.experimental2016.jar"
                               elif [ "$API" -ge "23" ]; then  # On Android 6.0 to 7.0 we bundle Camera 2015 for non-legacy camera
                                 packagefiles="etc/permissions/com.google.android.camera.experimental2015.xml"; packageframework="com.google.android.camera.experimental2015.jar"
