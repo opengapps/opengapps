@@ -2436,7 +2436,7 @@ for reqdapp_name in $reqd_list; do
 done;
 
 # Create final addon.d script in system
-bkup_header="#!/sbin/sh\n# \n# ADDOND_VERSION=2\n# \n# $SYSTEM/addon.d/70-gapps.sh\n#\n. /tmp/backuptool.functions\n\nif [ -z \$backuptool_ab ]; then\n  SYS="/system"\n  TMP="/temp"\nelse\n  SYS="/postinstall/system"\n  TMP="/postinstall/temp"\nfi\n\nlist_files() {\ncat <<EOF"
+bkup_header="#!/sbin/sh\n# \n# ADDOND_VERSION=2\n# \n# $SYSTEM/addon.d/70-gapps.sh\n#\n. /tmp/backuptool.functions\n\nif [ -z \$backuptool_ab ]; then\n  SYS="/system"\n  TMP="/tmp"\nelse\n  SYS="/postinstall/system"\n  TMP="/postinstall/tmp"\nfi\n\nlist_files() {\ncat <<EOF"
 bkup_list="$bkup_list"$'\n'"etc/g.prop"; # add g.prop to backup list
 bkup_list=$(echo "${bkup_list}" | sort -u| sed '/^$/d'); # sort list & remove duplicates and empty lines
 install -d $SYSTEM/addon.d;
