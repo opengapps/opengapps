@@ -357,7 +357,12 @@ get_package_info(){
                                 packagetarget="app/LatinImeGoogle"
                               fi;;
     maps)                     packagetype="GApps"; packagename="com.google.android.apps.maps"; packagetarget="app/Maps";;
-    markup)                   packagetype="GApps"; packagename="com.google.android.markup"; packagetarget="app/MarkupGoogle"; packagelibs="libsketchology_native.so";;  # Markup is only available for ARM64 devices because of the required library
+    markup)                   packagetype="GApps"; packagename="com.google.android.markup"; packagetarget="app/MarkupGoogle";
+                              if [ "$LIBFOLDER" = "lib64" ]; then
+                                packagelibs="libsketchology_native.so+fallback";
+                              else
+                                packagelibs="libsketchology_native.so";
+                              fi;;
     messenger)                packagetype="GApps"; packagename="com.google.android.apps.messaging"; packagetarget="app/PrebuiltBugle";;
     movies)                   packagetype="GApps"; packagename="com.google.android.videos"; packagetarget="app/Videos";;
     moviesvrmode)             packagetype="GApps"; packagename="com.google.android.videos.vrmode"; packagetarget="app/Videos";;
