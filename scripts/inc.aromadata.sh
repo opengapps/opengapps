@@ -168,7 +168,7 @@ form(
       "KeyboardGoogle",     "<b>Gboard (Google Keyboard)</b>",       "",                      "check",
       "Korean",     "<b>Google Korean Input</b>",       "",                      "check",
       "Maps",     "<b>Google Maps</b>",       "",                      "check",
-      "Markup",     "<b>Google Markup</b>",       "Requires an ARM64 device with Android 9.0 or later",                      "check",
+      "Markup",     "<b>Google Markup</b>",       "Requires Android 9.0 or later",                      "check",
       "Messenger",     "<b>Google Messages</b>",       "Requires Android 6.0 or later, also requires Carrier Services, NOT installed on tablets",                      "check",
       "Movies",     "<b>Google Play Movies & TV</b>",       "",                      "check",
       "Music",     "<b>Google Play Music</b>",       "",                      "check",

@@ -2369,8 +2369,8 @@ if ( contains "$gapps_list" "faceunlock" ); then
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/FaceLock/lib/$arch\"" $bkup_tail
 fi
 
-# Create Markup lib symlink
-if [ "$API" -ge "28" ] && [ "$ARCH" = "arm64" ]; then  # Only 9.0 on ARM64
+# Create Markup lib symlink if installed
+if ( contains "$gapps_list" "markup" ); then
   install -d "$SYSTEM/app/MarkupGoogle/lib/$arch"
   ln -sfn "$SYSTEM/$libfolder/$markup_lib_filename" "$SYSTEM/app/MarkupGoogle/lib/$arch/$markup_lib_filename"
   # Add same code to backup script to ensure symlinks are recreated on addon.d restore
