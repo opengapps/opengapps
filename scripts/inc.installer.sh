@@ -1265,6 +1265,12 @@ for i in "$TMP/aroma/.gapps-config"\
  "/persist/.gapps-config.txt"\
  "/persist/gapps-config-$device_name.txt"\
  "/persist/gapps-config.txt"\
+ "/sdcard/.gapps-config"\
+ "/sdcard/.gapps-config-$device_name"\
+ "/sdcard/.gapps-config-$device_name.txt"\
+ "/sdcard/.gapps-config.txt"\
+ "/sdcard/gapps-config-$device_name.txt"\
+ "/sdcard/gapps-config.txt"\
  "/sdcard/Open-GApps/.gapps-config"\
  "/sdcard/Open-GApps/.gapps-config-$device_name"\
  "/sdcard/Open-GApps/.gapps-config-$device_name.txt"\
