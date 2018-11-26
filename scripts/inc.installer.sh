@@ -385,8 +385,8 @@ dashclock_list="
 app/DashClock'"$REMOVALSUFFIX"'"
 
 # Must be used when Google Dialer is installed
+# For now, prevent stock AOSP Dialer (priv-app/Dialer) from being removed, no matter the configuration, on all ROMs
 dialerstock_list="
-priv-app/Dialer'"$REMOVALSUFFIX"'
 priv-app/FineOSDialer'"$REMOVALSUFFIX"'
 priv-app/OPInCallUI'"$REMOVALSUFFIX"'"
 
