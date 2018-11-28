@@ -15,7 +15,7 @@ opengapps/all --> NicholasBuse/all-history
 
   TO RESTORE
 
-  1. $ git remote add history git://github.com/NicholasBuse/all-history.git
+  1. $ git remote add history git://gitlab.com/NicholasBuse/all-history.git
   2. $ git fetch history
   3. $ git replace 4f12367695cc9a38b342b2d07bfaf82a5ae76e90 e3b05ccc1975ce5fd83a3f18c0e10a5ce4af7b41
 
@@ -34,7 +34,7 @@ opengapps/arm --> NicholasBuse/arm-history
 
   TO RESTORE
 
-  1. $ git remote add history git://github.com/NicholasBuse/arm-history.git
+  1. $ git remote add history git://gitlab.com/NicholasBuse/arm-history.git
   2. $ git fetch history
   3. $ git replace 8d010fb6f7b4c5a69ba72adf8342cea11765e088 3a9ef5dd1438d6d1a4b21bd544d76a45b08ab59f
 
@@ -53,7 +53,7 @@ opengapps/arm64 --> NicholasBuse/arm64-history
 
   TO RESTORE
 
-  1. $ git remote add history git://github.com/NicholasBuse/arm64-history.git
+  1. $ git remote add history git://gitlab.com/NicholasBuse/arm64-history.git
   2. $ git fetch history
   3. $ git replace 3146d65143c6c5233968edbed078faa6a24d15e0 2008377dc70b2faf8ffe7be8a658fd31e77daa21
 
@@ -72,7 +72,7 @@ opengapps/x86 --> NicholasBuse/x86-history
 
   TO RESTORE
 
-  1. $ git remote add history git://github.com/NicholasBuse/x86-history.git
+  1. $ git remote add history git://gitlab.com/NicholasBuse/x86-history.git
   2. $ git fetch history
   3. $ git replace bdc5013a3e1073f5f67301f23abe728aeb6edd33 6488ad2bf7220a60a7ef2642ff9c3876f9bd87b9
 
@@ -91,7 +91,7 @@ opengapps/x86_64 --> NicholasBuse/x86_64-history
 
   TO RESTORE
 
-  1. $ git remote add history git://github.com/NicholasBuse/all-history.git
+  1. $ git remote add history git://gitlab.com/NicholasBuse/all-history.git
   2. $ git fetch history
   3. $ git replace aff0466f67f47603bfda80ff18aedb3c32afea7b b1defac3a0bf9c628009302e09165f4a8b5bf0de
 
