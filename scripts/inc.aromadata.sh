@@ -214,10 +214,10 @@ form(
     "bypassrem",     "Bypass the automatic removal of Stock/AOSP apps.\nPlease only select if you are sure you want them installed alongside the Google replacement.",        "",     "group",
       "+Browser",     "<b>+Browser</b>",      "Don't remove Stock Browser, even if Google Chrome is being installed",    "check",
       "+CameraStock", "<b>+CameraStock</b>",  "Don't remove Stock Camera, even if Google Camera is being installed",    "check",
-      "+DialerStock", "<b>+DialerStock</b>",  "Don't remove Stock Dialer, even if Google Phone is being installed",    "check",
       "+Email",     "<b>+Email</b>",      "Don't remove Stock Email, even if Gmail is being installed",        "check",
       "+Gallery",     "<b>+Gallery</b>",      "Don't remove Stock Gallery, even if Google Photos is being installed",    "check",
       "+Launcher",     "<b>+Launcher</b>",      "Don't remove Stock Launchers, even if Google Now Launcher or Pixel Launcher is being installed",  "check",
+      "+LegacyDialerStock", "<b>+LegacyDialerStock</b>",  "Don't remove Stock Dialer (Legacy), even if Google Phone is being installed",    "check",
       "+MMS",     "<b>+MMS</b>",      "Don't remove Stock SMS app, even if Google Messages is being installed",            "check",
       "+PicoTTS",     "<b>+PicoTTS</b>",      "Don't remove PicoTTS, even if GoogleTTS is being installed",    "check"
 );
@@ -252,18 +252,19 @@ form(
       "Phasebeam",     "<b>Phasebeam Live Wallpaper</b>",       "",                      "check",
       "PhotoPhase",     "<b>PhotoPhase Live Wallpaper</b>",       "",                      "check",
       "PhotoTable",     "<b>PhotoTable Live Wallpaper</b>",       "",                      "check",
+      "AOSPDialer",     "<b>AOSP Dialer</b>",       "<#f00>WARNING: May break Emergency Calls on some Android 8.0+ ROMs!</#>",                      "check",
       "Browser",     "<b>Stock/AOSP Browser</b>",       "Automatically removed when Google Chrome is installed",                      "check",
       "CalculatorStock",     "<b>Stock/AOSP Calculator</b>",       "Automatically removed when Google Calculator is installed",                      "check",
       "CalendarStock",     "<b>Stock/AOSP Calendar</b>",       "Automatically removed when Google Calendar is installed",                      "check",
       "CameraStock",     "<b>Stock/AOSP/Moto Camera</b>",       "Automatically removed when Google Camera is installed",                      "check",
       "ClockStock",     "<b>Stock/AOSP Clock</b>",       "Automatically removed when Google Clock is installed",                      "check",
-      "DialerStock",     "<b>Stock/AOSP Dialer</b>",       "Automatically removed when Google Phone is installed",                      "check",
       "Email",     "<b>Stock/AOSP Email</b>",       "Automatically removed when Gmail is installed",                      "check",
       "ExchangeStock",     "<b>Stock/AOSP Exchange Services</b>",       "Automatically removed when Google Exchange Services is installed",                      "check",
       "FMRadio",     "<b>Stock/AOSP FM Radio</b>",       "Not found on all devices or ROMs",                      "check",
       "Gallery",     "<b>Stock/AOSP Gallery</b>",       "Automatically removed when Google Photos is installed",                      "check",
       "KeyboardStock",     "<b>Stock/AOSP Keyboard</b>",       "Automatically removed when Google Keyboard is installed",                      "check",
       "Launcher",     "<b>Stock/AOSP Launcher(s)</b>",       "Automatically removed when Google Now Launcher or Pixel Launcher is installed",                      "check",
+      "LegacyDialerStock",     "<b>Stock/AOSP Dialer (Legacy)</b>",       "Automatically removed when Google Phone is installed",                      "check",
       "LiveWallpapers",     "<b>Live Wallpapers</b>",       "",                      "check",
       "LockClock",     "<b>Lock Clock</b>",       "A clock widget found in certain ROMs",                      "check",
       "MMS",     "<b>Stock/AOSP MMS</b>",       "Automatically removed when Google Messages is installed",                      "check",
@@ -873,6 +874,11 @@ endif;
 # Group 3 of removals on the Wiki
 ###################################
 if
+  prop("rem.prop", "AOSPDialer")=="1"
+then
+  appendvar("gapps", "AOSPDialer\n");
+endif;
+if
   prop("rem.prop", "BasicDreams")=="1"
 then
   appendvar("gapps", "BasicDreams\n");
@@ -948,12 +954,6 @@ then
 endif;
 
 if
-  prop("rem.prop", "DialerStock")=="1"
-then
-  appendvar("gapps", "DialerStock\n");
-endif;
-
-if
   prop("rem.prop", "Email")=="1"
 then
   appendvar("gapps", "Email\n");
@@ -987,6 +987,12 @@ if
   prop("rem.prop", "Launcher")=="1"
 then
   appendvar("gapps", "Launcher \n");
+endif;
+
+if
+  prop("rem.prop", "LegacyDialerStock")=="1"
+then
+  appendvar("gapps", "LegacyDialerStock\n");
 endif;
 
 if
@@ -1130,11 +1136,6 @@ then
   appendvar("gapps", "+CameraStock\n");
 endif;
 if
-  prop("bypass.prop", "+DialerStock")=="1"
-then
-  appendvar("gapps", "+DialerStock\n");
-endif;
-if
   prop("bypass.prop", "+Email")=="1"
 then
   appendvar("gapps", "+Email\n");
@@ -1148,6 +1149,11 @@ if
   prop("bypass.prop", "+Launcher")=="1"
 then
   appendvar("gapps", "+Launcher\n");
+endif;
+if
+  prop("bypass.prop", "+LegacyDialerStock")=="1"
+then
+  appendvar("gapps", "+LegacyDialerStock\n");
 endif;
 if
   prop("bypass.prop", "+MMS")=="1"

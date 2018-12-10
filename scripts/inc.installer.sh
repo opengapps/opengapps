@@ -218,6 +218,7 @@ default_stock_remove_list="
 # _____________________________________________________________________________________________________________________
 #                                             Optional Stock/AOSP/ROM Removal List
 optional_aosp_remove_list="
+aospdialer
 boxer
 basicdreams
 calculatorstock
@@ -276,6 +277,9 @@ whisperpush
 ";
 # _____________________________________________________________________________________________________________________
 #                                             Stock/AOSP/ROM File Removal Lists
+aospdialer_list="
+priv-app/Dialer'"$REMOVALSUFFIX"'"
+
 boxer_list="
 vendor/bundled-app/Boxer'"$REMOVALSUFFIX"'"
 
@@ -384,12 +388,6 @@ priv-app/FineOSContacts'"$REMOVALSUFFIX"'"
 dashclock_list="
 app/DashClock'"$REMOVALSUFFIX"'"
 
-# Must be used when Google Dialer is installed
-# For now, prevent stock AOSP Dialer (priv-app/Dialer) from being removed, no matter the configuration, on all ROMs
-dialerstock_list="
-priv-app/FineOSDialer'"$REMOVALSUFFIX"'
-priv-app/OPInCallUI'"$REMOVALSUFFIX"'"
-
 email_list="
 app/Email'"$REMOVALSUFFIX"'
 app/PrebuiltEmailGoogle'"$REMOVALSUFFIX"'
@@ -473,6 +471,11 @@ priv-app/Paclauncher'"$REMOVALSUFFIX"'
 priv-app/SlimLauncher'"$REMOVALSUFFIX"'
 priv-app/Trebuchet'"$REMOVALSUFFIX"'
 priv-app/Nox'"$REMOVALSUFFIX"'"
+
+# Must be used when Google Dialer is installed
+legacydialerstock_list="
+priv-app/FineOSDialer'"$REMOVALSUFFIX"'
+priv-app/OPInCallUI'"$REMOVALSUFFIX"'"
 
 lbr0zip_list="
 app/Br0Zip'"$REMOVALSUFFIX"'"
@@ -702,7 +705,7 @@ vrservice_compat_msg="WARNING: Google VR Services has/will not be installed as r
 del_conflict_msg="!!! WARNING !!! - Duplicate files were found between your ROM and this GApps\npackage. This is likely due to your ROM's dev including Google proprietary\nfiles in the ROM. The duplicate files are shown in the log portion below.\n";
 
 nogooglecontacts_removal_msg="NOTE: The Stock/AOSP Contacts is not available on your\nROM (anymore), the Google equivalent will not be removed."
-nogoogledialer_removal_msg="NOTE: The Stock/AOSP Dialer is not available on your\nROM (anymore), the Google equivalent will not be removed."
+nogoogledialer_removal_msg="NOTE: The Stock/AOSP Dialer (Other) is not available on your\nROM (anymore), the Google equivalent will not be removed."
 nogooglekeyboard_removal_msg="NOTE: The Stock/AOSP Keyboard is not available on your\nROM (anymore), the Google equivalent will not be removed."
 nogooglepackageinstaller_removal_msg="NOTE: The Stock/AOSP Package Installer is not\navailable on your ROM (anymore), the Google equivalent will not be removed."
 nogoogletag_removal_msg="NOTE: The Stock/AOSP NFC Tag is not available on your\nROM (anymore), the Google equivalent will not be removed."
@@ -1695,7 +1698,7 @@ else
 fi;
 
 # Prepare list of AOSP/ROM files that will be deleted using gapps-config
-# We will look for +Browser, +CameraStock, +DialerStock, +Email, +Gallery, +Launcher, +MMS, +PicoTTS and more to prevent their removal
+# We will look for +Browser, +CameraStock, +Email, +Gallery, +Launcher, +LegacyDialerStock, +MMS, +PicoTTS and more to prevent their removal
 set_progress 0.03;
 if [ "$g_conf" ]; then
   for default_name in $default_stock_remove_list; do
@@ -1792,10 +1795,10 @@ if ( ! contains "$gapps_list" "dialerframework" ) && ( contains "$gapps_list" "d
   install_note="${install_note}dialergoogle_msg"$'\n'; # make note that Google Dialer will NOT be installed as user requested
 fi;
 
-# If we're NOT installing dialergoogle make certain 'dialerstock' is NOT in $aosp_remove_list UNLESS 'dialerstock' is in $g_conf
-if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qiE '^dialerstock$' "$g_conf" ); then
-  aosp_remove_list=${aosp_remove_list/dialerstock};
-  remove_dialerstock="false[NO_DialerGoogle]";
+# If we're NOT installing dialergoogle make certain 'legacydialerstock' is NOT in $aosp_remove_list UNLESS 'legacydialerstock' is in $g_conf
+if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qiE '^legacydialerstock$' "$g_conf" ); then
+  aosp_remove_list=${aosp_remove_list/legacydialerstock};
+  remove_legacydialerstock="false[NO_DialerGoogle]";
 fi;
 
 # If we're NOT installing carrier services then we MUST REMOVE messenger from $gapps_list (if it's currently there)
@@ -1973,7 +1976,7 @@ if [ "$ignoregooglecontacts" = "true" ]; then
 fi
 
 ignoregoogledialer="true"
-for f in $dialerstock_list; do
+for f in $legacydialerstock_list; do
   if [ -e "$SYSTEM/$f" ]; then
     ignoregoogledialer="false"
     break; #at least 1 aosp stock file is present
@@ -2110,7 +2113,7 @@ log "Config Type" "$config_type";
 log "Using gapps-config" "$config_file";
 log "Remove Stock/AOSP Browser" "$remove_browser";
 log "Remove Stock/AOSP Camera" "$remove_camerastock";
-log "Remove Stock/AOSP Dialer" "$remove_dialerstock";
+log "Remove Stock/AOSP Dialer (Legacy)" "$remove_legacydialerstock";
 log "Remove Stock/AOSP Email" "$remove_email";
 log "Remove Stock/AOSP Gallery" "$remove_gallery";
 log "Remove Stock/AOSP Launcher" "$remove_launcher";
