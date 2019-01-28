@@ -710,16 +710,10 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 
 # _____________________________________________________________________________________________________________________
 #                      Detect A/B partition layout https://source.android.com/devices/tech/ota/ab_updates
-if [ -n "$(cat /proc/cmdline | grep slot_suffix)" ];
-then
+
   device_abpartition=true
   SYSTEM=/system/system
   VENDOR=/vendor/vendor
-else
-  device_abpartition=false
-  SYSTEM=/system
-  VENDOR=/vendor
-fi
 
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
