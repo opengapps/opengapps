@@ -1,30 +1,30 @@
 [submodule "sources/all"]
         path = sources/all
-        url = ../all.git
+        url = git@gitlab.nezorfla.me:opengapps/all.git
         branch = master
         update = rebase
         ignore = all
 [submodule "sources/arm"]
         path = sources/arm
-        url = ../arm.git
+        url = git@gitlab.nezorfla.me:opengapps/arm.git
         branch = master
         update = rebase
         ignore = all
 [submodule "sources/arm64"]
         path = sources/arm64
-        url = ../arm64.git
+        url = git@gitlab.nezorfla.me:opengapps/arm64.git
         branch = master
         update = rebase
         ignore = all
 [submodule "sources/x86"]
         path = sources/x86
-        url = ../x86.git
+        url = git@gitlab.nezorfla.me:opengapps/x86.git
         branch = master
         update = rebase
         ignore = all
 [submodule "sources/x86_64"]
         path = sources/x86_64
-        url = ../x86_64.git
+        url = git@gitlab.nezorfla.me:opengapps/x86_64.git
         branch = master
         update = rebase
         ignore = all
