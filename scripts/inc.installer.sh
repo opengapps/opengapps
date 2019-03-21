@@ -710,11 +710,17 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 
 # _____________________________________________________________________________________________________________________
 #                      Detect A/B partition layout https://source.android.com/devices/tech/ota/ab_updates
+#                      and system-as-root https://source.android.com/devices/bootloader/system-as-root
 if [ -n "$(cat /proc/cmdline | grep slot_suffix)" ];
 then
   device_abpartition=true
   SYSTEM=/system/system
   VENDOR=/vendor/vendor
+elif [ -n "$(cat /proc/mounts | grep /system_root)" ];
+then
+  device_abpartition=true
+  SYSTEM=/system_root/system
+  VENDOR=/vendor
 else
   device_abpartition=false
   SYSTEM=/system
