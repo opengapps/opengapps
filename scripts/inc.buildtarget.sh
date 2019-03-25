@@ -30,7 +30,6 @@ gappssuper="dmagent
 docs
 earth
 fitness
-googleplus
 hangouts
 indic
 japanese
@@ -343,7 +342,6 @@ get_package_info(){
                               elif [ "$API" -ge "25" ]; then  # Specific permission files for Android 7.1
                                 packagefiles="etc/sysconfig/nexus.xml"
                               fi;;
-    googleplus)               packagetype="GApps"; packagename="com.google.android.apps.plus"; packagetarget="app/PlusOne";;
     googletts)                packagetype="GApps"; packagename="com.google.android.tts"; packagetarget="app/GoogleTTS";;
     hangouts)                 packagetype="GApps"; packagename="com.google.android.talk"; packagetarget="app/Hangouts";;
     indic)                    packagetype="GApps"; packagename="com.google.android.apps.inputmethod.hindi"; packagetarget="app/GoogleHindiIME";;

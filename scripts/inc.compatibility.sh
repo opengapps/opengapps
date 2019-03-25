@@ -152,7 +152,7 @@ fi';;
 kitkatdatahack(){
   if [ "$API" -le "19" ]; then
     DATASIZESCODE='    # Broken lib configuration on KitKat, so some apps do not count for the /system space because they are on /data
-    if [ "$gapp_name" = "hangouts" ] || [ "$gapp_name" = "googleplus" ] || [ "$gapp_name" = "messenger" ] || [ "$gapp_name" = "photos" ] || [ "$gapp_name" = "street" ] || [ "$gapp_name" = "youtube" ]; then
+    if [ "$gapp_name" = "hangouts" ] || [ "$gapp_name" = "messenger" ] || [ "$gapp_name" = "photos" ] || [ "$gapp_name" = "street" ] || [ "$gapp_name" = "youtube" ]; then
         total_appsize=0;
     fi'
     DATAINSTALLCODE='
@@ -195,13 +195,6 @@ if ( contains "$gapps_list" "hangouts" ); then
   which_dpi "hangouts-$arch"  # Keep it simple, only 32 bit arch on kitkat and no weird libs for these apps
   kitkatdata_folder_extract "hangouts-$arch" "$dpiapkpath" "com.google.android.talk" "Hangouts.apk"
   gapps_list=${gapps_list/hangouts}
-fi
-# Handle broken lib configuration on KitKat by putting Google+ on /data/
-if ( contains "$gapps_list" "googleplus" ); then
-  "$TMP/unzip-$BINARCH" -o "$OPENGAZIP" "GApps/googleplus-$arch.tar*" -d "$TMP"
-  which_dpi "googleplus-$arch"  # Keep it simple, only 32 bit arch on kitkat and no weird libs for these apps
-  kitkatdata_folder_extract "googleplus-$arch" "$dpiapkpath" "com.google.android.apps.plus" "PlusOne.apk"
-  gapps_list=${gapps_list/googleplus}
 fi
 # Handle broken lib configuration on KitKat by putting Google Messages on /data/
 if ( contains "$gapps_list" "messenger" ); then
