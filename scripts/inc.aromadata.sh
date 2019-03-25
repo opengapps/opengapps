@@ -159,7 +159,6 @@ form(
       "Gmail",     "<b>Gmail</b>",       "",                      "check",
       "GoogleNow",     "<b>Google Now Launcher</b>",       "Requires Android 4.4 ONLY, also requires Google Search",                      "check",
       "GooglePay",     "<b>Google Pay</b>",       "",                      "check",
-      "GooglePlus",     "<b>Google+</b>",       "",                      "check",
       "GoogleTTS",     "<b>Google Text-to-Speech Engine</b>",       "Requires Android 6.0 or later",                      "check",
       "Hangouts",     "<b>Google Hangouts</b>",       "",                      "check",
       "Indic",     "<b>Google Indic Keyboard</b>",       "",                      "check",
@@ -533,12 +532,6 @@ if
   prop("gapps.prop", "GooglePay")=="1"
 then
   appendvar("gapps", "GooglePay\n");
-endif;
-
-if
-  prop("gapps.prop", "GooglePlus")=="1"
-then
-  appendvar("gapps", "GooglePlus\n");
 endif;
 
 if
