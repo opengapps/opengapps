@@ -715,7 +715,7 @@ then
   device_abpartition=true
   SYSTEM=/system/system
   VENDOR=/vendor/vendor
-elif [ -n "$(cat /proc/mounts | grep /system_root)" ];
+elif [ -n "$(cat /etc/fstab | grep /system_root)" ];
 then
   device_abpartition=true
   SYSTEM=/system_root/system
