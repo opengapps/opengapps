@@ -713,16 +713,19 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 if [ -n "$(cat /proc/cmdline | grep slot_suffix)" ];
 then
   device_abpartition=true
-  SYSTEM=/system/system
+  SYSTEM_MOUNT=/system
+  SYSTEM=$SYSTEM_MOUNT/system
   VENDOR=/vendor/vendor
 elif [ -n "$(cat /etc/fstab | grep /system_root)" ];
 then
-  device_abpartition=true
-  SYSTEM=/system_root/system
+  device_abpartition=false
+  SYSTEM_MOUNT=/system_root
+  SYSTEM=$SYSTEM_MOUNT/system
   VENDOR=/vendor
 else
   device_abpartition=false
-  SYSTEM=/system
+  SYSTEM_MOUNT=/system
+  SYSTEM=$SYSTEM_MOUNT
   VENDOR=/vendor
 fi
 
@@ -813,7 +816,7 @@ extract_app() {
 exxit() {
   set_progress 0.98
   if [ "$skipvendorlibs" = "true" ]; then
-    umount $SYSTEM/vendor  # unmount tmpfs
+    umount $SYSTEM_MOUNT/vendor  # unmount tmpfs
   fi
   if ( ! grep -qiE '^ *nodebug *($|#)+' "$g_conf" ); then
     if [ "$g_conf" ]; then # copy gapps-config files to debug logs folder
@@ -844,11 +847,11 @@ exxit() {
   ui_print " "
   for m in $mounts; do
     case $m in
-      /system)
+      $SYSTEM_MOUNT)
         if [ "$device_abpartition" = "true" ]; then
-          mount -o ro /system
+          mount -o ro $SYSTEM_MOUNT
         else
-          umount /system
+          umount $SYSTEM_MOUNT
         fi;;
       *) umount "$m";;
     esac
@@ -1198,7 +1201,7 @@ ui_print " ";
 ui_print "$installer_name$gapps_version";
 ui_print " ";
 mounts=""
-for p in "/cache" "/data" "/persist" "/system" "/vendor"; do
+for p in "/cache" "/data" "/persist" "$SYSTEM_MOUNT" "/vendor"; do
   if [ -d "$p" ] && grep -q "$p" "/etc/fstab" && ! mountpoint -q "$p"; then
     mounts="$mounts $p"
   fi
@@ -1209,7 +1212,7 @@ set_progress 0.01;
 for m in $mounts; do
   mount "$m"
 done
-grep -q "/system.*\sro[\s,]" /proc/mounts && mount -o remount,rw /system  # remount /system, sometimes necessary if mounted read-only
+grep -q "$SYSTEM_MOUNT.*\sro[\s,]" /proc/mounts && mount -o remount,rw $SYSTEM_MOUNT  # remount whatever $SYSTEM_MOUNT is, sometimes necessary if mounted read-only
 
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
