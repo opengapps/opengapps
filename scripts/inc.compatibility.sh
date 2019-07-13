@@ -265,7 +265,7 @@ minapihack(){
         useminapi="21"
       fi;;
     com.android.chrome)
-      if [ "$API" -ge "24" ]; then
+      if [ "$API" -ge "24" ] && { [ "$ARCH" = "arm64" ] || [ "$ARCH" = "x86_64" ]; }; then
         useminapi="24"
       elif [ "$API" -ge "21" ]; then
         useminapi="21"
