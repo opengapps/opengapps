@@ -45,40 +45,57 @@ You can also use this command to update the sources at a later moment to their m
 **To build Open GApps you'll need the Android build tools installed and set-up in your $PATH. If you use Ubuntu you can check out [@mfonville's Android build tools for Ubuntu](http://mfonville.github.io/android-build-tools/).**
 
 To build Open GApps for all platforms and all Android releases:
-```
+
+```shellscript
 make
 ```
+
 To build Open GApps for a specific Android release on a specific platform,
 define both the platform and the API level of that release, seperated by a dash and optionally add the variant with another dash.
+
 Two examples (for building for Android 6.0 on ARM):
-```
+
+```shellscript
 make arm-23
 ```
+
 or
-```
+
+```shellscript
 make arm-23-stock
 ```
+
 To add updated source APKs to the sources archive (you can add more than one at once):
-```
+
+```shellscript
 ./add_sourceapp.sh [/path/to/the/files/you/want/to/add.apk]* [beta] [/apps/that/should/be/marked/as/beta.apk...]*
 ```
+
 For contributors, updated sources can be uploaded. Either without an argument for every architecture, or with one or more arguments for a subset of architectures:
-```
+
+```shellscript
 ./upload_sources.sh [archs]*
 ```
+
 If you want an overview of the locally available sources:
-```
+
+```shellscript
 ./report_sources.sh
 ```
+
 You can add extra arguments to report_sources to do your more advanced bidding too:
-```
+
+```shellscript
 ./report_sources.sh ( ([sdk] [archs]*) || [arch-sdk] ) && [hash] || [max*mb] || [min*mb] || [nobeta] || [nohelp] || [noleanback] || [nosig]
 ```
 
-License
----------------
-The Open GApps Project itself is licensed under the GPLv3 with an addendum called the
-Open GApps installable zip exception. A short explanation of these license terms and the terms used by the pre-built OpenGApps.org packages:
+## License
+
+The Open GApps Project itself is licensed under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.txt) with an addendum called the
+**Open GApps installable zip exception**.
+
+A short explanation of these license terms and the terms used by the pre-built OpenGApps.org packages:
+
 * The license and its exception are very comparable to the GNU Compiler Collection.
 * The Open GApps Project itself is like a "compiler" that is licensed under the GPLv3.
 * The "Installable zips" produced by the Open GApps Project is a assorted product of which its components adhere to various different licenses. E.g. the Open GApps installer scripts are still GPLv3 licensed.
