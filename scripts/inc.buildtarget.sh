@@ -397,8 +397,13 @@ get_package_info(){
 
     # TV GApps
     notouch)                  packagetype="Core"; packagename="com.google.android.gsf.notouch"; packagetarget="app/NoTouchAuthDelegate";;
-    tvetc)                    packagetype="Core"; packagefiles="etc/permissions/privapp-permissions-atv.xml etc/sysconfig/google.xml etc/sysconfig/google_atv.xml etc/sysconfig/google_build.xml";;
-    tvframework)              packagetype="Core"; packagefiles="etc/permissions/com.google.android.pano.v1.xml etc/permissions/com.google.android.tv.installed.xml etc/permissions/com.google.widevine.software.drm.xml"; packageframework="com.google.android.pano.v1.jar com.google.widevine.software.drm.jar";;
+    tvetc)                    packagetype="Core";
+                              if [ "$API" -ge "28" ]; then # Specific permission files for Android 9.0
+                                packagefiles="etc/permissions/privapp-permissions-atv.xml etc/sysconfig/google.xml etc/sysconfig/google_atv.xml etc/sysconfig/google_build.xml etc/permissions/com.google.android.tv.installed.xml etc/permissions/privapp-permissions-google.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml";
+                              else
+                                packagefiles="etc/permissions/privapp-permissions-atv.xml etc/sysconfig/google.xml etc/sysconfig/google_atv.xml etc/sysconfig/google_build.xml etc/permissions/com.google.android.tv.installed.xml";
+                              fi;;
+    tvframework)              packagetype="Core"; packagefiles="etc/permissions/com.google.android.pano.v1.xml etc/permissions/com.google.widevine.software.drm.xml"; packageframework="com.google.android.pano.v1.jar com.google.widevine.software.drm.jar";;
     tvgmscore)                packagetype="Core"; packagename="com.google.android.gms.leanback"; packagetarget="priv-app/PrebuiltGmsCorePano";;
     tvvending)                packagetype="Core"; packagename="com.android.vending.leanback";
                               if [ "$API" -ge "24" ]; then
