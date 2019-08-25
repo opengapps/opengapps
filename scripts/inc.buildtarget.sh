@@ -96,9 +96,7 @@ gappstvcore="configupdater
 googlebackuptransport
 googlecontactssync
 gsfcore
-notouch
 tvetc
-tvframework
 tvgmscore
 tvvending"
 
@@ -107,13 +105,10 @@ castreceiver
 leanbacklauncher
 livechannels
 overscan
-secondscreensetup
-secondscreenauthbridge
 talkback
 tvkeyboardgoogle
 tvmovies
 tvmusic
-tvpackageinstallergoogle
 tvplaygames
 tvremote
 tvsearch
