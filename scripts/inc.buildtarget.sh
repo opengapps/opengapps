@@ -413,7 +413,13 @@ get_package_info(){
     leanbackrecommendations)  packagetype="GApps"; packagename="com.google.android.leanbacklauncher.recommendations.leanback"; packagetarget="priv-app/RecommendationsService";;
     livechannels)             packagetype="GApps"; packagename="com.google.android.tv.leanback" packagetarget="priv-app/TV";;
     overscan)                 packagetype="GApps"; packagename="com.google.android.tungsten.overscan" packagetarget="priv-app/Overscan";;
-    setupwraith)              packagetype="GApps"; packagename="com.google.android.tungsten.setupwraith" packagetarget="priv-app/SetupWraith";;
+    setupwraith)              packagetype="GApps"; packagename="com.google.android.tungsten.setupwraith";
+                              if [ "$API" -ge "26" ]; then
+                                packagetarget="priv-app/SetupWraithPrebuilt"
+                              else
+                                packagetarget="priv-app/SetupWraith"
+                              fi;;
+
     secondscreensetup)        packagetype="GApps"; packagename="com.google.android.sss"; packagetarget="app/SecondScreenSetup";;
     secondscreenauthbridge)   packagetype="GApps"; packagename="com.google.android.sss.authbridge"; packagetarget="app/SecondScreenSetupAuthBridge";;
     tvlauncher)               packagetype="GApps"; packagename="com.google.android.tvlauncher.leanback" packagetarget="priv-app/TVLauncher";;
