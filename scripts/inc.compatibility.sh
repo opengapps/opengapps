@@ -579,6 +579,19 @@ wellbeing"
     gappssuper="$gappssuper
 actionsservices
 bettertogether"
+    gappstvcore="$gappstvcore
+calsync
+googlepartnersetup
+googleonetimeinitializer"
+  fi
+
+  if [ "$API" -lt "28" ]; then
+    gappstvcore="$gappstvcore
+notouch
+tvframework
+secondscreensetup
+secondscreenauthbridge
+tvpackageinstallergoogle" # Several atv packages were removed in Android 9.0
   fi
 }
 
