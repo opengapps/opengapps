@@ -9,7 +9,7 @@ The latest version of pre-built Open GApps can be found at <https://opengapps.or
 |                                                      [Q&A Forum](http://forum.xda-developers.com/showthread.php?t=3124506) | [![XDA Q&A](https://img.shields.io/badge/Q%26A-on%20xda-de7300.svg?maxAge=86400)](http://forum.xda-developers.com/showthread.php?t=3124506)                           |
 |                                  [Development Forum](http://forum.xda-developers.com/android/software/Open-GApps-t3098071) | [![XDA Development](https://img.shields.io/badge/development-on%20xda-de7300.svg?maxAge=86400)](http://forum.xda-developers.com/android/software/Open-GApps-t3098071) |
 |                                                                        [Support Chat](https://gitter.im/opengapps/general) | [![Gitter](https://img.shields.io/gitter/room/opengapps/general.js.svg?maxAge=86400)](https://gitter.im/opengapps/general)                                            |
-| [![Download OpenGApps](https://sourceforge.net/sflogo.php?type=13&group_id=3112703)](https://sourceforge.net/p/opengapps/) | [![Download OpenGApps](https://img.shields.io/sourceforge/dd/opengapps.svg)](https://sourceforge.net/projects/opengapps/files/latest/download)                        |
+| [![Download OpenGApps](https://sourceforge.net/sflogo.php?type=13&group_id=3112703)](https://sourceforge.net/p/opengapps/) | [![Download OpenGApps](https://img.shields.io/sourceforge/dd/opengapps.svg)](https://sourceforge.net/projects/opengapps/files/)                                       |
 
 ## Support for the pre-built packages from OpenGApps.org
 
