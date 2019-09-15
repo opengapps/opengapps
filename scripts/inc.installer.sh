@@ -1359,8 +1359,8 @@ fi
 echo "# Begin Open GApps Install Log" > $g_log;
 echo ------------------------------------------------------------------ >> $g_log;
 
-echo "- Skipping the SDK check until more recoveries support SDK29" >> $g_log;
-echo ------------------------------------------------------------------ >> $g_log;
+ui_print "- Skipping the SDK check until more recoveries support SDK29"
+ui_print " "
 
 # # Check to make certain user has proper version ROM Installed
 # if [ ! "$rom_build_sdk" = "$req_android_sdk" ]; then
