@@ -779,14 +779,6 @@ checkmanifest() {
   fi
 }
 
-checksystemsystem() {
-  if [ -d "/system/system/app" ]; then
-    ui_print "- /system/system detected - using it as base folder";
-    ui_print " ";
-    SYSTEM=$SYSTEM_MOUNT/system
-  fi
-}
-
 complete_gapps_list() {
   cat <<EOF
 $full_removal_list
@@ -1228,7 +1220,11 @@ done
 grep -q "$SYSTEM_MOUNT.*\sro[\s,]" /proc/mounts && mount -o remount,rw $SYSTEM_MOUNT
 
 # Try to detect case with /system/system like LineageOS does
-checksystemsystem;
+if [ -d "/system/system/app" ]; then
+  ui_print "- /system/system detected - using it as base folder";
+  ui_print " ";
+  SYSTEM=$SYSTEM_MOUNT/system
+fi
 
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
