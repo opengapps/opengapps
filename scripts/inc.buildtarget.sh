@@ -225,7 +225,9 @@ get_package_info(){
     backuprestore)            packagetype="Core"; packagename="com.google.android.apps.restore"; packagetarget="priv-app/GoogleRestore";;
     carriersetup)             packagetype="Core"; packagename="com.google.android.carriersetup"; packagetarget="priv-app/CarrierSetup";;
     defaultetc)               packagetype="Core";
-                              if [ "$API" -ge "28" ]; then # Specific permission files for Android 9.0
+                              if [ "$API" -ge "29" ]; then # Specific permission files for Android 10.0
+                                packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google-p.xml etc/permissions/privapp-permissions-google-ps.xml etc/preferred-apps/google.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
+                              elif [ "$API" -ge "28" ]; then # Specific permission files for Android 9.0
                                 packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/preferred-apps/google.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
                               elif [ "$API" -ge "26" ]; then # Specific permission files for Android 8.0 to 8.1
                                 packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/preferred-apps/google.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
