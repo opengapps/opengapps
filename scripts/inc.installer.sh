@@ -1359,29 +1359,29 @@ fi
 echo "# Begin Open GApps Install Log" > $g_log;
 echo ------------------------------------------------------------------ >> $g_log;
 
-ui_print "- Skipping the SDK check until more recoveries support SDK29"
-ui_print " "
-
-# # Check to make certain user has proper version ROM Installed
-# if [ ! "$rom_build_sdk" = "$req_android_sdk" ]; then
-#   ui_print "*** Incompatible Android ROM detected ***";
-#   ui_print " ";
-#   ui_print "This GApps pkg is for Android $req_android_version.x ONLY";
-#   ui_print "Please download the correct version for"
-#   ui_print "your ROM: $(get_prop "ro.build.version.release") (SDK $rom_build_sdk)"
-#   ui_print " ";
-#   ui_print "******* GApps Installation failed *******";
-#   ui_print " ";
-#   install_note="${install_note}rom_android_version_msg"$'\n'; # make note that ROM Version is not compatible with these GApps
-#   abort "$E_ROMVER";
-# fi;
+# Check to make certain user has proper version ROM Installed
+if [ "$req_android_sdk" -eq "29" ]; then
+  ui_print "- Skipping the SDK check until more recoveries support SDK29"
+  ui_print " "
+elif [ ! "$rom_build_sdk" = "$req_android_sdk" ]; then
+  ui_print "*** Incompatible Android ROM detected ***";
+  ui_print " ";
+  ui_print "This GApps pkg is for Android $req_android_version.x ONLY";
+  ui_print "Please download the correct version for"
+  ui_print "your ROM: $(get_prop "ro.build.version.release") (SDK $rom_build_sdk)"
+  ui_print " ";
+  ui_print "******* GApps Installation failed *******";
+  ui_print " ";
+  install_note="${install_note}rom_android_version_msg"$'\n'; # make note that ROM Version is not compatible with these GApps
+  abort "$E_ROMVER";
+fi
 
 # Check to make certain that user device matches the architecture
 # This prop should be deprecated now, but for some reason 'abilist' sometimes doesn't have the right arch (like 'arm64')
 device_architecture="$(get_prop "ro.product.cpu.abi")"
 # If the first field is empty, fall back to the main one
-  device_architecture="$(get_prop "ro.product.cpu.abilist")"
 if [ -z "$device_architecture" ]; then
+  device_architecture="$(get_prop "ro.product.cpu.abilist")"
 fi
 
 case "$device_architecture" in
