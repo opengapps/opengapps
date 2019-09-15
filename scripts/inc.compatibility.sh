@@ -11,31 +11,31 @@
 #    GNU General Public License for more details.
 #
 
-cameracompatibilityhack() {
+cameracompatibilityhack(){
   if [ "$API" -le "19" ]; then
-    echo '    A0001|bacon|find7) cameragoogle_compat=false;; # bacon or A0001=OnePlus One | find7=Oppo Find7 and Find7a' >>"$1"
+    echo '    A0001|bacon|find7) cameragoogle_compat=false;; # bacon or A0001=OnePlus One | find7=Oppo Find7 and Find7a' >> "$1"
   fi
 }
 
-camerav3compatibilityhack() {
+camerav3compatibilityhack(){
   if [ "$API" -ge "23" ]; then
     echo '
 # Google Camera fallback to Legacy if incompatible with new Camera API
 case $newcamera_compat in
   false*) gapps_list=${gapps_list/cameragoogle/cameragooglelegacy}; log "Google Camera version" "Legacy";;
-esac' >>"$1"
+esac' >> "$1"
   fi
 }
 
-keyboardgooglenotremovehack() {
+keyboardgooglenotremovehack(){
   if [ "$API" -le "19" ]; then
-    echo '  sed -i "\:/system/app/LatinImeGoogle.apk:d" $gapps_removal_list;' >>"$1"
+    echo '  sed -i "\:/system/app/LatinImeGoogle.apk:d" $gapps_removal_list;'>> "$1"
   else
-    echo '  sed -i "\:/system/app/LatinImeGoogle:d" $gapps_removal_list;' >>"$1"
+    echo '  sed -i "\:/system/app/LatinImeGoogle:d" $gapps_removal_list;'>> "$1"
   fi
 }
 
-keyboardlibhack() {
+keyboardlibhack(){
   #if [ "$API" -ge "24" ]; then # on Nougat there are officially no swypelibs, but we can use the Marshmallow ones for now, they are still AOSP compatible
   #  REQDLIST=""
   #  KEYBDLIBS=""
@@ -114,24 +114,21 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     rm -f "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_google" # remove swypelibs and symlink if any
     ln -sfn "/system/$libfolder/$keybd_lib_aosp" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp" # restore non-swypelibs symlink
   fi
-fi'
-      ;;
-    *)
-      REQDLIST=""
-      KEYBDLIBS=""
-      KEYBDINSTALLCODE=""
-      ;;
+fi';;
+      *) REQDLIST=""
+         KEYBDLIBS=""
+         KEYBDINSTALLCODE="";;
     esac
   else # on KitKat we need to replace the aosp lib with a symlink, it has no 64bit libs
     case "$ARCH" in #only arm-based platforms have swypelibs on KitKat
-    arm*)
-      gappscore_optional="swypelibs $gappscore_optional"
-      REQDLIST="/system/lib/libjni_latinime.so
+      arm*)
+        gappscore_optional="swypelibs $gappscore_optional"
+        REQDLIST="/system/lib/libjni_latinime.so
 /system/lib/libjni_latinimegoogle.so"
-      KEYBDLIBS='keybd_lib_google="libjni_latinimegoogle.so"
+        KEYBDLIBS='keybd_lib_google="libjni_latinimegoogle.so"
 keybd_lib_aosp="libjni_latinime.so"'
-      # Only touch AOSP keyboard only if it is not removed
-      KEYBDINSTALLCODE='# Install/Remove SwypeLibs
+        # Only touch AOSP keyboard only if it is not removed
+        KEYBDINSTALLCODE='# Install/Remove SwypeLibs
 if ( ! contains "$gapps_list" "keyboardgoogle" ); then
   if [ "$skipswypelibs" = "false" ]; then
     ui_print "- Installing swypelibs"
@@ -144,18 +141,15 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     ui_print "- Removing swypelibs"
     rm -f "/system/$libfolder/$keybd_lib_google" # remove swypelibs
   fi
-fi'
-      ;;
-    *)
-      REQDLIST=""
-      KEYBDLIBS=""
-      KEYBDINSTALLCODE=""
-      ;;
+fi';;
+      *) REQDLIST=""
+         KEYBDLIBS=""
+         KEYBDINSTALLCODE="";;
     esac
   fi
 }
 
-kitkatdatahack() {
+kitkatdatahack(){
   if [ "$API" -le "19" ]; then
     DATASIZESCODE='    # Broken lib configuration on KitKat, so some apps do not count for the /system space because they are on /data
     if [ "$gapp_name" = "hangouts" ] || [ "$gapp_name" = "messenger" ] || [ "$gapp_name" = "photos" ] || [ "$gapp_name" = "street" ] || [ "$gapp_name" = "youtube" ]; then
@@ -236,7 +230,7 @@ fi'
   fi
 }
 
-kitkatpathshack() {
+kitkatpathshack(){
   if [ "$API" -le "19" ]; then
     REMOVALSUFFIX=".apk"
     REMOVALBYPASS="
@@ -253,74 +247,71 @@ kitkatpathshack() {
   fi
 }
 
-minapihack() {
+minapihack(){
   useminapi=""
   case "$package" in
-  com.google.android.dialer)
-    if [ "$API" -ge "24" ]; then
-      useminapi="24"
-    fi
-    ;;
-  com.google.android.gms)
-    if [ "$API" -ge "28" ]; then
-      useminapi="28"
-    elif [ "$API" -ge "26" ]; then
-      useminapi="26"
-    elif [ "$API" -ge "23" ]; then
-      useminapi="23"
-    elif [ "$API" -ge "21" ]; then
-      useminapi="21"
-    fi
-    ;;
-  com.android.chrome)
-    if [ "$API" -ge "24" ]; then
-      useminapi="24"
-    elif [ "$API" -ge "21" ]; then
-      useminapi="21"
-    fi
-    ;;
+    com.google.android.dialer)
+      if [ "$API" -ge "24" ]; then
+        useminapi="24"
+      fi;;
+    com.google.android.gms)
+      if [ "$API" -ge "28" ]; then
+        useminapi="28"
+      elif [ "$API" -ge "26" ]; then
+        useminapi="26"
+      elif [ "$API" -ge "23" ]; then
+        useminapi="23"
+      elif [ "$API" -ge "21" ]; then
+        useminapi="21"
+      fi;;
+    com.android.chrome)
+      if [ "$API" -ge "24" ]; then
+        useminapi="24"
+      elif [ "$API" -ge "21" ]; then
+        useminapi="21"
+      fi;;
   esac
 }
 
-systemlibhack() {
+systemlibhack(){
   case "$package" in
-  com.google.android.webview) if [ "$API" -lt "23" ]; then #webview libs are only on /system/lib/ on pre-Marshmallow
-    systemlib="true"
-  fi ;;
-    #    com.android.chrome)         systemlib="true";; #normally chrome would also be systemwide, but currently we don't do this because it is complicated with it .so versioning
-  *) systemlib="false" ;;
+    com.google.android.webview) if [ "$API" -lt "23" ]; then #webview libs are only on /system/lib/ on pre-Marshmallow
+                                  systemlib="true"
+                                fi;;
+#    com.android.chrome)         systemlib="true";; #normally chrome would also be systemwide, but currently we don't do this because it is complicated with it .so versioning
+    *) systemlib="false";;
   esac
 }
 
-universalremoverhack() {
+universalremoverhack(){
   if [ "$API" -le "19" ]; then
-    tee -a "$1" >/dev/null <<'EOFILE'
+    tee -a "$1" > /dev/null <<'EOFILE'
                     1)  user_remove_folder_list="${user_remove_folder_list}$(find "$folder" -type f -iname "$testapk")"$'\n'; # Add found file to list
                         user_remove_folder_list="${user_remove_folder_list}$(printf "$(find "$folder" -type f -iname "$testapk")" | rev | cut -c 4- | rev)odex"$'\n'; # Add odex to list
 EOFILE
   else
-    tee -a "$1" >/dev/null <<'EOFILE'
+    tee -a "$1" > /dev/null <<'EOFILE'
                     1)  user_remove_folder_list="${user_remove_folder_list}$(dirname "$(find "$folder" -type f -iname "$testapk")")"$'\n'; # Add found folder to list
 EOFILE
   fi
 }
 
-versionnamehack() {
+versionnamehack(){
   case "$package" in
-  #the Drive/Docs/Sheets/Slides variate after the last dot per arch and dpi, so we only take the first 4 fields
-  com.google.android.apps.docs*) versionname="$(echo "$versionname" | cut -d '.' -f 1-4)" ;;
-  #the Fitness variate after the dash per dpi, so we only take before it
-  com.google.android.apps.fitness) versionname="$(echo "$versionname" | cut -d '-' -f 1)" ;;
-  #the Project FI variate after the dash per dpi, so we only take before it
-  com.google.android.apps.tycho) versionname="$(echo "$versionname" | cut -d '-' -f 1)" ;;
-  #the Google Search app variates after the 3 dots per SDK and after the 4th dot per arch, so we only take the first 3 fields
-  com.google.android.googlequicksearchbox) versionname="$(echo "$versionname" | cut -d '.' -f 1-3)" ;;
+    #the Drive/Docs/Sheets/Slides variate after the last dot per arch and dpi, so we only take the first 4 fields
+    com.google.android.apps.docs*) versionname="$(echo "$versionname" | cut -d '.' -f 1-4)";;
+    #the Fitness variate after the dash per dpi, so we only take before it
+    com.google.android.apps.fitness) versionname="$(echo "$versionname" | cut -d '-' -f 1)";;
+    #the Project FI variate after the dash per dpi, so we only take before it
+    com.google.android.apps.tycho) versionname="$(echo "$versionname" | cut -d '-' -f 1)";;
+    #the Google Search app variates after the 3 dots per SDK and after the 4th dot per arch, so we only take the first 3 fields
+    com.google.android.googlequicksearchbox) versionname="$(echo "$versionname" | cut -d '.' -f 1-3)";;
   esac
 }
 
-webviewcheckhack() {
+webviewcheckhack(){
   if [ "$API" -ge "24" ]; then
-    tee -a "$1" >/dev/null <<'EOFILE'
+    tee -a "$1" > /dev/null <<'EOFILE'
 # If we're installing chrome and webviewgoogle, replace it with webviewstub unless override removal protection
 if ( contains "$gapps_list" "chrome" ) && ( contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
   gapps_list=${gapps_list/webviewgoogle/webviewstub}
@@ -350,7 +341,7 @@ if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$gapps_list" "w
 fi
 EOFILE
   else
-    tee -a "$1" >/dev/null <<'EOFILE'
+    tee -a "$1" > /dev/null <<'EOFILE'
 # If we're installing webviewgoogle we SHOULD ADD webviewstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$aosp_remove_list" "webviewstock" ); then
   aosp_remove_list="${aosp_remove_list}webviewstock"$'\n'
@@ -365,9 +356,9 @@ EOFILE
   fi
 }
 
-webviewignorehack() {
+webviewignorehack(){
   if [ "$API" -ge "24" ]; then
-    tee -a "$1" >/dev/null <<'EOFILE'
+    tee -a "$1" > /dev/null <<'EOFILE'
 if [ "$ignoregooglewebview" = "true" ]; then  # No AOSP WebView
   if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$gapps_list" "webviewstub" ) && ( ! contains "$gapps_list" "chrome" ) && ( ! grep -qiE '^override$' "$g_conf" ); then  # Don't remove components if no other WebViewProvider installed
     if [ -d "/system/app/Chrome" ]; then
@@ -391,7 +382,7 @@ if [ "$ignoregooglewebview" = "true" ]; then  # No AOSP WebView
 fi
 EOFILE
   else
-    tee -a "$1" >/dev/null <<'EOFILE'
+    tee -a "$1" > /dev/null <<'EOFILE'
 if [ "$ignoregooglewebview" = "true" ]; then  # No AOSP WebView
   if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then  # Don't remove Google WebView components if no other WebViewProvider installed
     sed -i "\:/system/lib/$WebView_lib_filename:d" $gapps_removal_list;
@@ -410,12 +401,12 @@ EOFILE
   fi
 }
 
-api19hack() {
+api19hack(){
   if [ "$API" -le "19" ]; then
     if [ "$API" -eq "19" ]; then
       gappscore="$gappscore
 gsflogin
-setupwizard" # On KitKat there is only 1 kind of setupwizard without a product type
+setupwizard"  # On KitKat there is only 1 kind of setupwizard without a product type
       gappsmicro="$gappsmicro
 googlenow"
     fi
@@ -426,7 +417,7 @@ setupwizardtablet"
   fi
 }
 
-api21hack() {
+api21hack(){
   if [ "$API" -ge "21" ]; then
     if [ "$API" -eq "21" ]; then
       gappscore="$gappscore
@@ -448,16 +439,16 @@ tagstock"
   fi
 }
 
-api22hack() {
+api22hack(){
   if [ "$API" -ge "22" ]; then
     if [ "$API" -eq "22" ]; then
       gappscore="$gappscore
 gsflogin"
-    fi
+      fi
     gappscore="$gappscore
-configupdater" # Starting from API 22 configupdater is part of the core apps
+configupdater"  # Starting from API 22 configupdater is part of the core apps
     gappsstock="$gappsstock
-webviewgoogle" # On AOSP we only support Webview on 5.1+, stock Google ROMs support it on 5.0 too, but we're merging stock and fornexus
+webviewgoogle"  # On AOSP we only support Webview on 5.1+, stock Google ROMs support it on 5.0 too, but we're merging stock and fornexus
     gappssuper="$gappssuper
 gcs"
     stockremove="$stockremove
@@ -465,7 +456,7 @@ webviewstock"
   fi
 }
 
-api23hack() {
+api23hack(){
   if [ "$API" -ge "23" ]; then
     if [ "$API" -eq "23" ]; then
       gappscore="$gappscore
@@ -476,7 +467,7 @@ dialerframework
 googletts"
     if [ "$API" -eq "23" ]; then
       gappspico="$gappspico
-packageinstallergoogle" # TODO: packageinstallergoogle temporary disabled because of issues on Nougat ROMs
+packageinstallergoogle"  # TODO: packageinstallergoogle temporary disabled because of issues on Nougat ROMs
     fi
     gappsmini="$gappsmini
 carrierservices"
@@ -486,22 +477,22 @@ dialergoogle"
 cameragooglelegacy"
     webviewstocklibs='lib/$WebView_lib_filename
 lib64/$WebView_lib_filename
-' # On Marshmallow the AOSP WebViewlibs must be removed, since they are embedded in the Google WebView APK; this assumes also any pre-bundled Google WebView with the ROM uses embedded libs; use single quote to not replace variable names
+'  # On Marshmallow the AOSP WebViewlibs must be removed, since they are embedded in the Google WebView APK; this assumes also any pre-bundled Google WebView with the ROM uses embedded libs; use single quote to not replace variable names
     webviewgappsremove=""
-    gappstvstock="$gappstvstock
-packageinstallergoogle" # On AndroidTV 6.0+ packageinstallergoogle is also installed (next to the tvpackageinstallergoogle)
+  gappstvstock="$gappstvstock
+packageinstallergoogle"  # On AndroidTV 6.0+ packageinstallergoogle is also installed (next to the tvpackageinstallergoogle)
   else
     gappsmicro="$gappsmicro
 googletts"
-    webviewstocklibs="" # On non-Marshmallow the WebViewlibs should not be considered part of the Stock/AOSP WebView, since they are shared with the Google WebView
+    webviewstocklibs=""  # On non-Marshmallow the WebViewlibs should not be considered part of the Stock/AOSP WebView, since they are shared with the Google WebView
     webviewgappsremove="lib/libwebviewchromium.so
-lib64/libwebviewchromium.so" # On non-Marshmallow the WebViewlibs are to be explictly included as a Google WebView file in gapps-remove.txt
-    gappstvstock="$gappstvstock
-tvvoiceinput" # On pre-Marshmallow TV Voiceinput exists
+lib64/libwebviewchromium.so"  # On non-Marshmallow the WebViewlibs are to be explictly included as a Google WebView file in gapps-remove.txt
+  gappstvstock="$gappstvstock
+tvvoiceinput"  # On pre-Marshmallow TV Voiceinput exists
   fi
 }
 
-api24hack() {
+api24hack(){
   if [ "$API" -ge "24" ]; then
     if [ "$API" -eq "24" ]; then
       gappscore="$gappscore
@@ -518,21 +509,21 @@ storagemanagergoogle"
 extservicesgoogle
 extsharedgoogle"
     gappstvstock="$gappstvstock
-leanbackrecommendations" # On Android 7.0+ the TV Recommendations exist
+leanbackrecommendations"  # On Android 7.0+ the TV Recommendations exist
     gappsstock_optional="$gappsstock_optional
-webviewstub" # On Nougat and higher we might want to install the WebViewStub instead of WebViewGoogle in some situations
-    if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then # for now only available on arm & arm64
-      gappsfull_optional="$gappsfull_optional
+webviewstub"  # On Nougat and higher we might want to install the WebViewStub instead of WebViewGoogle in some situations
+  if [ "$ARCH" = "arm" ] || [ "$ARCH" = "arm64" ]; then  # for now only available on arm & arm64
+    gappsfull_optional="$gappsfull_optional
 moviesvrmode"
-    fi
-    if [ "$ARCH" = "arm64" ]; then # for now only available on arm64
-      gappsmini_optional="$gappsmini_optional
+  fi
+  if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
+    gappsmini_optional="$gappsmini_optional
 photosvrmode"
-    fi
+  fi
   fi
 }
 
-api25hack() {
+api25hack(){
   if [ "$API" -ge "25" ]; then
     if [ "$API" -eq "25" ]; then
       gappscore="$gappscore
@@ -545,11 +536,11 @@ batteryusage"
   fi
 }
 
-api26hack() {
+api26hack(){
   if [ "$API" -ge "26" ]; then
     if [ "$ARCH" = "arm64" ] && [ "$API" -eq "26" ]; then
       gappscore="$gappscore
-platformservicesoreo" # Include Android 8.0 specific Platform Services with Android 8.0
+platformservicesoreo"  # Include Android 8.0 specific Platform Services with Android 8.0
     fi
     gappscore="$gappscore
 carriersetup
@@ -559,25 +550,25 @@ packageinstallergoogle"
     gappstvstock="$gappstvstock
 setupwraith
 tvlauncher
-tvrecommendations" # On Android 8.0+ a different launcher exists. SuW also works without needing platform signed
+tvrecommendations"  # On Android 8.0+ a different launcher exists. SuW also works without needing platform signed
   fi
 }
 
 # Does nothing now, here for completeness
-api27hack() {
+api27hack(){
   if [ "$API" -eq "27" ]; then
-    if [ "$ARCH" = "arm64" ]; then # for now only available on arm64
+    if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
       gappscore="$gappscore"
     fi
     gappscore="$gappscore"
   fi
 }
 
-api28hack() {
+api28hack(){
   if [ "$API" -ge "28" ]; then
-    if [ "$ARCH" = "arm64" ]; then
+    if [ "$ARCH" = "arm64" ] && [ "$API" -eq "28" ]; then
       gappsnano="$gappsnano
-platformservices" # Include Android Platform Services with Android 9.0+
+platformservicespie"  # Include Pie-specific Android Platform Services with Android 9.0
     fi
     gappscore="$gappscore
 backuprestore
@@ -591,27 +582,36 @@ bettertogether"
   fi
 }
 
-sdkversionhacks() {
+# Does nothing now, here for completeness
+api29hack(){
+  if [ "$API" -eq "27" ]; then
+    if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
+      gappscore="$gappscore"
+    fi
+    gappscore="$gappscore"
+  fi
+}
+
+sdkversionhacks(){
   case "$package" in
-  com.android.facelock | com.google.android.configupdater | com.google.android.feedback | com.google.android.gsf.login | com.google.android.partnersetup | com.google.android.setupwizard | com.google.android.syncadapters.contacts)
-    case "$versioncode" in
-    *23) sdkversion="23" ;;
-    *24) sdkversion="24" ;;
-    *25) sdkversion="25" ;;
-    *26) sdkversion="26" ;;
-    *27) sdkversion="27" ;;
-    *28) sdkversion="28" ;;
-    *29) sdkversion="29" ;;
-    *) ;;
-    esac
-    ;;
+    com.android.facelock|com.google.android.configupdater|com.google.android.feedback|com.google.android.gsf.login|com.google.android.partnersetup|com.google.android.setupwizard|com.google.android.syncadapters.contacts)
+      case "$versioncode" in
+        *23) sdkversion="23";;
+        *24) sdkversion="24";;
+        *25) sdkversion="25";;
+        *26) sdkversion="26";;
+        *27) sdkversion="27";;
+        *28) sdkversion="28";;
+        *29) sdkversion="29";;
+        *) ;;
+      esac;;
   esac
 }
 
-compressioncompathack() {
+compressioncompathack(){
   if [ "$API" -eq "23" ]; then
     case "$1" in
-    googlecontactssync*) compression="none" ;; # Googlecontactssync for Marshmallow extraction is broken with compression, so use a plain tar instead
+      googlecontactssync*) compression="none";;  # Googlecontactssync for Marshmallow extraction is broken with compression, so use a plain tar instead
     esac
   fi
 }
