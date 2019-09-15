@@ -116,7 +116,7 @@ api23hack #only on 6.0+ we also include Google Contacts, Dialer, Calculator, Pac
 api24hack #only on 7.0+ we also include Google ExtServices, ExtShared, PrintService, VR
 api25hack #only on 7.1+ we also include AndroidPlatform, GMSSetup, Pixel Launcher, StorageManager
 api26hack #only on 8.0+ we also include AndroidPlatformServices
-api27hack #only on 8.1+ we also include ??? (maybe here for completeness)
+api27hack #only here for completeness
 api28hack #only on 9.0+ we also include Actions Services, AndroidPlatformServices, Data Transfer Tool, Markup, Sounds
 buildtarget
 alignbuild
