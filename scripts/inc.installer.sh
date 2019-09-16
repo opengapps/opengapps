@@ -1220,8 +1220,8 @@ done
 grep -q "$SYSTEM_MOUNT.*\sro[\s,]" /proc/mounts && mount -o remount,rw $SYSTEM_MOUNT
 
 # Try to detect case with /system/system like LineageOS does
-if [ -d "/system/system/app" ]; then
-  ui_print "- /system/system detected - using it as base folder";
+if [ -d "$SYSTEM_MOUNT/system/app" ]; then
+  ui_print "- /system/system detected - using it as the base folder";
   ui_print " ";
   SYSTEM=$SYSTEM_MOUNT/system
 fi
