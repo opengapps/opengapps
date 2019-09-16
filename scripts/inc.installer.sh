@@ -710,24 +710,19 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 # _____________________________________________________________________________________________________________________
 #                      Detect A/B partition layout https://source.android.com/devices/tech/ota/ab_updates
 #                      and system-as-root https://source.android.com/devices/bootloader/system-as-root
+device_abpartition=false
+block=/dev/block/bootdevice/by-name/system
 system_as_root=`getprop ro.build.system_root_image`
 if [ "$system_as_root" == "true" ]; then
   active_slot=`getprop ro.boot.slot_suffix`
   if [ ! -z "$active_slot" ]; then
     device_abpartition=true
     block=/dev/block/bootdevice/by-name/system$active_slot
-  else
-    device_abpartition=false
-    block=/dev/block/bootdevice/by-name/system
   fi
   mkdir -p /system_root
   SYSTEM_MOUNT=/system_root
   SYSTEM=$SYSTEM_MOUNT/system
 else
-  # Try to get the block from /etc/recovery.fstab
-  block=`cat /etc/recovery.fstab | cut -d '#' -f 1 | grep /system | grep -o '/dev/[^ ]*' | head -1`
-
-  device_abpartition=false
   SYSTEM_MOUNT=/system
   SYSTEM=$SYSTEM_MOUNT
 fi
@@ -1220,7 +1215,7 @@ done
 grep -q "$SYSTEM_MOUNT.*\sro[\s,]" /proc/mounts && mount -o remount,rw $SYSTEM_MOUNT
 
 # Try to detect case with /system/system like LineageOS does
-if [ -d "$SYSTEM_MOUNT/system/app" ]; then
+if [ -d "/system/system/app" ]; then
   ui_print "- /system/system detected - using it as the base folder";
   ui_print " ";
   SYSTEM=$SYSTEM_MOUNT/system
