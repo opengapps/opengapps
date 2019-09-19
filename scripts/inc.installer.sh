@@ -711,46 +711,6 @@ nogoogletag_removal_msg="NOTE: The Stock/AOSP NFC Tag is not available on your\n
 nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on your\nROM (anymore), not all Google WebViewProviders will be removed."
 
 # _____________________________________________________________________________________________________________________
-#                                                  Gather Pre-Install Info
-# Are we on an Android device is or is a really stupid person running this script on their computer?
-if [ -e "/etc/lsb-release" ] || [ -n "$OSTYPE" ]; then
-  echo "Don't run this on your computer! You need to flash the Open GApps zip on an Android Recovery!"
-  exit 1
-fi
-# Get GApps Version and GApps Type from g.prop extracted at top of script
-gapps_version=$(get_file_prop "$TMP/g.prop" "ro.addon.open_version")
-gapps_type=$(get_file_prop "$TMP/g.prop" "ro.addon.open_type")
-
-# _____________________________________________________________________________________________________________________
-#                                                  Begin GApps Installation
-# Helper functions
-get_file_prop() {
-  grep -m1 "^$2=" "$1" | cut -d= -f2
-}
-
-grep_cmdline() {
-  local REGEX="s/^$1=//p"
-  cat /proc/cmdline | tr '[:space:]' '\n' | sed -n "$REGEX" 2>/dev/null
-}
-
-ui_print " ";
-ui_print '##############################';
-ui_print '  _____   _____   ___   ____  ';
-ui_print ' /  _  \ |  __ \ / _ \ |  _ \ ';
-ui_print '|  / \  || |__) | |_| || | \ \';
-ui_print '| |   | ||  ___/|  __/ | | | |';
-ui_print '|  \ /  || |    \ |__  | | | |';
-ui_print ' \_/ \_/ |_|     \___| |_| |_|';
-ui_print '       ___   _   ___ ___  ___ ';
-ui_print '      / __| /_\ | _ \ _ \/ __|';
-ui_print '     | (_ |/ _ \|  _/  _/\__ \';
-ui_print '      \___/_/ \_\_| |_|  |___/';
-ui_print '##############################';
-ui_print " ";
-ui_print "$installer_name$gapps_version";
-ui_print " ";
-
-# _____________________________________________________________________________________________________________________
 #                      Detect A/B partition layout https://source.android.com/devices/tech/ota/ab_updates
 #                      and system-as-root https://source.android.com/devices/bootloader/system-as-root
 device_abslot=`grep_cmdline androidboot.slot_suffix`
@@ -765,49 +725,6 @@ else
   device_abpartition=true
   ui_print "- Current boot slot: $device_abslot"
 fi
-
-# _____________________________________________________________________________________________________________________
-#                                                       Mount
-# Helper functions
-mount_part() {
-  local PART=$1
-  local POINT=/${PART}
-  [ -L $POINT ] && rm -f $POINT
-  mkdir $POINT 2>/dev/null
-  is_mounted $POINT && return
-  ui_print "- Mounting $PART"
-  mount -o ro $POINT 2>/dev/null
-  if ! is_mounted $POINT; then
-    local BLOCK=`find_block $PART$device_abslot`
-    mount -o ro $BLOCK $POINT
-  fi
-  is_mounted $POINT || abort "! Cannot mount $POINT"
-}
-
-ui_print "- Mounting $mounts";
-set_progress 0.01;
-mounts=""
-for m in "cache" "data" "persist" "system" "vendor"; do
-  p=/$m
-  if [ -d "$p" ] && grep -q "$p" "/etc/fstab" && ! mountpoint -q "$p"; then
-    mount_part "$m"
-    mounts="$mounts $p"
-  fi
-done
-
-# Remount /system to /system_root if we have system-as-root
-if [ -f /system/init.rc ]; then
-  system_as_root=true
-  [ -L /system_root ] && rm -f /system_root
-  mkdir /system_root 2>/dev/null
-  mount --move /system /system_root
-  mount -o bind /system_root/system /system
-else
-  grep ' / ' /proc/mounts | grep -qv 'rootfs' || grep -q ' /system_root ' /proc/mounts \
-  && system_as_root=true || system_as_root=false
-fi
-$system_as_root && ui_print "- Device is system-as-root"
-ui_print " ";
 
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
@@ -1006,6 +923,11 @@ get_appsize() {
   appsize="$(cat $TMP/app_sizes.txt | grep -E "$app_name.*[[:blank:]]($app_density|common$odexsize)[[:blank:]]" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')"
 }
 
+grep_cmdline() {
+  local REGEX="s/^$1=//p"
+  cat /proc/cmdline | tr '[:space:]' '\n' | sed -n "$REGEX" 2>/dev/null
+}
+
 get_fallback_arch() {
   case "$1" in
     arm)    fallback_arch="all";;
@@ -1014,6 +936,10 @@ get_fallback_arch() {
     x86_64) fallback_arch="x86";; #e.g. chain: x86_64->x86->arm->all
     *)      fallback_arch="$1";;  #return original arch if no fallback available
   esac
+}
+
+get_file_prop() {
+  grep -m1 "^$2=" "$1" | cut -d= -f2
 }
 
 grep_prop() {
@@ -1062,6 +988,21 @@ log_add() {
 
 log_sub() {
   printf "%7s | %26s | - %7d | %7d\n" "$1" "$2" "$3" "$4">> $calc_log;
+}
+
+mount_part() {
+  local PART=$1
+  local POINT=/${PART}
+  [ -L $POINT ] && rm -f $POINT
+  mkdir $POINT 2>/dev/null
+  is_mounted $POINT && return
+  ui_print "- Mounting $PART"
+  mount -o ro $POINT 2>/dev/null
+  if ! is_mounted $POINT; then
+    local BLOCK=`find_block $PART$device_abslot`
+    mount -o ro $BLOCK $POINT
+  fi
+  is_mounted $POINT || abort "! Cannot mount $POINT"
 }
 
 obsolete_gapps_list() {
@@ -1231,6 +1172,65 @@ which_dpi() {
     done;
   fi;
 }
+
+# _____________________________________________________________________________________________________________________
+#                                                  Gather Pre-Install Info
+# Are we on an Android device is or is a really stupid person running this script on their computer?
+if [ -e "/etc/lsb-release" ] || [ -n "$OSTYPE" ]; then
+  echo "Don't run this on your computer! You need to flash the Open GApps zip on an Android Recovery!"
+  exit 1
+fi
+# Get GApps Version and GApps Type from g.prop extracted at top of script
+gapps_version=$(get_file_prop "$TMP/g.prop" "ro.addon.open_version")
+gapps_type=$(get_file_prop "$TMP/g.prop" "ro.addon.open_type")
+
+# _____________________________________________________________________________________________________________________
+#                                                  Begin GApps Installation
+
+ui_print " ";
+ui_print '##############################';
+ui_print '  _____   _____   ___   ____  ';
+ui_print ' /  _  \ |  __ \ / _ \ |  _ \ ';
+ui_print '|  / \  || |__) | |_| || | \ \';
+ui_print '| |   | ||  ___/|  __/ | | | |';
+ui_print '|  \ /  || |    \ |__  | | | |';
+ui_print ' \_/ \_/ |_|     \___| |_| |_|';
+ui_print '       ___   _   ___ ___  ___ ';
+ui_print '      / __| /_\ | _ \ _ \/ __|';
+ui_print '     | (_ |/ _ \|  _/  _/\__ \';
+ui_print '      \___/_/ \_\_| |_|  |___/';
+ui_print '##############################';
+ui_print " ";
+ui_print "$installer_name$gapps_version";
+ui_print " ";
+
+# _____________________________________________________________________________________________________________________
+#                                                       Mount
+
+ui_print "- Mounting $mounts";
+set_progress 0.01;
+mounts=""
+for m in "cache" "data" "persist" "system" "vendor"; do
+  p=/$m
+  if [ -d "$p" ] && grep -q "$p" "/etc/fstab" && ! mountpoint -q "$p"; then
+    mount_part "$m"
+    mounts="$mounts $p"
+  fi
+done
+
+# Remount /system to /system_root if we have system-as-root
+if [ -f /system/init.rc ]; then
+  system_as_root=true
+  [ -L /system_root ] && rm -f /system_root
+  mkdir /system_root 2>/dev/null
+  mount --move /system /system_root
+  mount -o bind /system_root/system /system
+else
+  grep ' / ' /proc/mounts | grep -qv 'rootfs' || grep -q ' /system_root ' /proc/mounts \
+  && system_as_root=true || system_as_root=false
+fi
+$system_as_root && ui_print "- Device is system-as-root"
+ui_print " ";
 
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
