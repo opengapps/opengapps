@@ -718,13 +718,119 @@ if [ -z $device_abslot ]; then
   device_abslot=`grep_cmdline androidboot.slot`
   [ -z $device_abslot ] || device_abslot=_${device_abslot}
 fi
+device_abpartition=false
+[ -z $device_abslot ] || device_abpartition=true
 
-if [ -z $device_abslot ]; then
-  device_abpartition=false
-else
-  device_abpartition=true
-  ui_print "- Current boot slot: $device_abslot"
+# _____________________________________________________________________________________________________________________
+#                                      Gather Pre-Install Info and set some helper functions
+find_block() {
+  for BLOCK in "$@"; do
+    DEVICE=`find /dev/block -type l -iname $BLOCK | head -n 1` 2>/dev/null
+    if [ ! -z $DEVICE ]; then
+      readlink -f $DEVICE
+      return 0
+    fi
+  done
+  # Fallback by parsing sysfs uevents
+  for uevent in /sys/dev/block/*/uevent; do
+    local DEVNAME=`grep_prop DEVNAME $uevent`
+    local PARTNAME=`grep_prop PARTNAME $uevent`
+    for BLOCK in "$@"; do
+      if [ "`toupper $BLOCK`" = "`toupper $PARTNAME`" ]; then
+        echo /dev/block/$DEVNAME
+        return 0
+      fi
+    done
+  done
+  return 1
+}
+
+get_file_prop() {
+  grep -m1 "^$2=" "$1" | cut -d= -f2
+}
+
+is_mounted() {
+  grep -q " `readlink -f $1` " /proc/mounts 2>/dev/null
+  return $?
+}
+
+mount_part() {
+  local PART=$1
+  local POINT=/${PART}
+  [ -L $POINT ] && rm -f $POINT
+  mkdir $POINT 2>/dev/null
+  is_mounted $POINT && return
+  ui_print "- Mounting $PART"
+  mount -o ro $POINT 2>/dev/null
+  if ! is_mounted $POINT; then
+    local BLOCK=`find_block $PART$device_abslot`
+    mount -o ro $BLOCK $POINT
+  fi
+  is_mounted $POINT || abort "! Cannot mount $POINT"
+}
+
+set_progress() { echo "set_progress $1" > "$OUTFD"; }
+
+ui_print() {
+  echo "ui_print $1" > "$OUTFD";
+  echo "ui_print" > "$OUTFD";
+}
+
+# Are we on an Android device is or is a really stupid person running this script on their computer?
+if [ -e "/etc/lsb-release" ] || [ -n "$OSTYPE" ]; then
+  echo "Don't run this on your computer! You need to flash the Open GApps zip on an Android Recovery!"
+  exit 1
 fi
+# Get GApps Version and GApps Type from g.prop extracted at top of script
+gapps_version=$(get_file_prop "$TMP/g.prop" "ro.addon.open_version")
+gapps_type=$(get_file_prop "$TMP/g.prop" "ro.addon.open_type")
+
+# _____________________________________________________________________________________________________________________
+#                                                  Begin GApps Installation
+
+ui_print " ";
+ui_print '##############################';
+ui_print '  _____   _____   ___   ____  ';
+ui_print ' /  _  \ |  __ \ / _ \ |  _ \ ';
+ui_print '|  / \  || |__) | |_| || | \ \';
+ui_print '| |   | ||  ___/|  __/ | | | |';
+ui_print '|  \ /  || |    \ |__  | | | |';
+ui_print ' \_/ \_/ |_|     \___| |_| |_|';
+ui_print '       ___   _   ___ ___  ___ ';
+ui_print '      / __| /_\ | _ \ _ \/ __|';
+ui_print '     | (_ |/ _ \|  _/  _/\__ \';
+ui_print '      \___/_/ \_\_| |_|  |___/';
+ui_print '##############################';
+ui_print " ";
+ui_print "$installer_name$gapps_version";
+ui_print " ";
+
+# _____________________________________________________________________________________________________________________
+#                                                       Mount
+ui_print "- Mounting $mounts";
+set_progress 0.01;
+mounts=""
+for m in "cache" "data" "persist" "system" "vendor"; do
+  p=/$m
+  if [ -d "$p" ] && grep -q "$p" "/etc/fstab" && ! mountpoint -q "$p"; then
+    mount_part "$m"
+    mounts="$mounts $p"
+  fi
+done
+
+# Remount /system to /system_root if we have system-as-root
+if [ -f /system/init.rc ]; then
+  system_as_root=true
+  [ -L /system_root ] && rm -f /system_root
+  mkdir /system_root 2>/dev/null
+  mount --move /system /system_root
+  mount -o bind /system_root/system /system
+else
+  grep ' / ' /proc/mounts | grep -qv 'rootfs' || grep -q ' /system_root ' /proc/mounts \
+  && system_as_root=true || system_as_root=false
+fi
+$system_as_root && ui_print "- Device is system-as-root"
+ui_print " ";
 
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
@@ -938,10 +1044,6 @@ get_fallback_arch() {
   esac
 }
 
-get_file_prop() {
-  grep -m1 "^$2=" "$1" | cut -d= -f2
-}
-
 grep_prop() {
   local REGEX="s/^$1=//p"
   shift
@@ -988,21 +1090,6 @@ log_add() {
 
 log_sub() {
   printf "%7s | %26s | - %7d | %7d\n" "$1" "$2" "$3" "$4">> $calc_log;
-}
-
-mount_part() {
-  local PART=$1
-  local POINT=/${PART}
-  [ -L $POINT ] && rm -f $POINT
-  mkdir $POINT 2>/dev/null
-  is_mounted $POINT && return
-  ui_print "- Mounting $PART"
-  mount -o ro $POINT 2>/dev/null
-  if ! is_mounted $POINT; then
-    local BLOCK=`find_block $PART$device_abslot`
-    mount -o ro $BLOCK $POINT
-  fi
-  is_mounted $POINT || abort "! Cannot mount $POINT"
 }
 
 obsolete_gapps_list() {
@@ -1111,18 +1198,11 @@ set_perm() {
   chmod "$3" "$4";
 }
 
-set_progress() { echo "set_progress $1" > "$OUTFD"; }
-
 sys_app() {
   if ( grep -q "codePath=\"/system/app/$1" /data/system/packages.xml ); then
     return 0;
   fi;
   return 1;
-}
-
-ui_print() {
-  echo "ui_print $1" > "$OUTFD";
-  echo "ui_print" > "$OUTFD";
 }
 
 which_dpi() {
