@@ -2342,6 +2342,7 @@ for aosp_name in $aosp_remove_list; do
   list_name=$(echo "${list_name}" | sort -r); # reverse sort list for more readable output
   for file_name in $list_name; do
     rm -rf "/system/$file_name";
+    rm -rf "/system/product/$file_name"; # For new Android 10 scheme
     sed -i "\:# Remove Stock/AOSP apps (from GApps Installer):a \    rm -rf \$SYS/$file_name" $bkup_tail;
   done;
 done;
