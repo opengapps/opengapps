@@ -745,6 +745,11 @@ find_block() {
   return 1
 }
 
+grep_cmdline() {
+  local REGEX="s/^$1=//p"
+  cat /proc/cmdline | tr '[:space:]' '\n' | sed -n "$REGEX" 2>/dev/null
+}
+
 get_file_prop() {
   grep -m1 "^$2=" "$1" | cut -d= -f2
 }
@@ -1026,11 +1031,6 @@ get_appsize() {
     *) odexsize="";;
   esac
   appsize="$(cat $TMP/app_sizes.txt | grep -E "$app_name.*[[:blank:]]($app_density|common$odexsize)[[:blank:]]" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')"
-}
-
-grep_cmdline() {
-  local REGEX="s/^$1=//p"
-  cat /proc/cmdline | tr '[:space:]' '\n' | sed -n "$REGEX" 2>/dev/null
 }
 
 get_fallback_arch() {
