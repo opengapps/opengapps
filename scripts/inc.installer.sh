@@ -10,7 +10,10 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-makegprop(){
+#    Some of the helper scripts are taken from the https://github.com/topjohnwu/Magisk repo
+#    and are used in compliance with the GPLv3 license which the Magisk project adheres to.
+#
+makegprop() {
   echo "# begin addon properties
 ro.addon.type=gapps
 ro.addon.arch=$ARCH
@@ -18,16 +21,16 @@ ro.addon.sdk=$API
 ro.addon.platform=$PLATFORM
 ro.addon.open_type=$VARIANT
 ro.addon.open_version=$DATE
-# end addon properties" > "$build/$1"
+# end addon properties" >"$build/$1"
   EXTRACTFILES="$EXTRACTFILES $1"
 }
 
-makegappsremovetxt(){
+makegappsremovetxt() {
   gapps_remove=""
   if [ "$API" -le "21" ] && [ "$GAPPSREMOVEVARIANT" = "super" ]; then
-    get_supported_variants "stock"  # On 5.0 and lower the largest package is stock instead of super for the "regular" package-type
+    get_supported_variants "stock" # On 5.0 and lower the largest package is stock instead of super for the "regular" package-type
   else
-    get_supported_variants "$GAPPSREMOVEVARIANT"  # Retrieve the largest package of the package-type branch
+    get_supported_variants "$GAPPSREMOVEVARIANT" # Retrieve the largest package of the package-type branch
   fi
   get_gapps_list "$supported_variants"
   for gapp in $gapps_list; do
@@ -53,11 +56,11 @@ $gapps_remove"
 $gapps_remove"
     done
   done
-  printf "%s" "$gapps_remove" | sort -u > "$build/$1"  # make unique for the VRmode entries
+  printf "%s" "$gapps_remove" | sort -u >"$build/$1" # make unique for the VRmode entries
   EXTRACTFILES="$EXTRACTFILES $1"
 }
 
-makeupdatebinary(){
+makeupdatebinary() {
   echo '#!/sbin/sh
 #This file is part of The Open GApps script of @mfonville.
 #
@@ -110,10 +113,10 @@ else
   echo "ui_print ERROR 64: Wrong architecture to set-up Open GApps'"'"' pre-bundled '"$2"'" > "$OUTFD"
   echo "ui_print" > "$OUTFD"
   exit 1
-fi'> "$build/$1"
+fi' >"$build/$1"
 }
 
-makeinstallersh(){
+makeinstallersh() {
 EXTRACTFILES="$EXTRACTFILES $1"
 echo '#!/sbin/ash
 #This file is part of The Open GApps script of @mfonville.
@@ -667,7 +670,7 @@ priv-app/Wallet'"$REMOVALSUFFIX"'
 oldscript_list="
 etc/g.prop
 addon.d/70-gapps.sh
-";' >> "$build/$1"
+";' >>"$build/$1"
 tee -a "$build/$1" > /dev/null <<'EOFILE'
 
 remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript_list}";
@@ -712,9 +715,9 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 #                      and system-as-root https://source.android.com/devices/bootloader/system-as-root
 device_abpartition=false
 block=/dev/block/bootdevice/by-name/system
-system_as_root=`getprop ro.build.system_root_image`
+system_as_root=`grep_prop ro.build.system_root_image`
 if [ "$system_as_root" == "true" ]; then
-  active_slot=`getprop ro.boot.slot_suffix`
+  active_slot=`grep_prop ro.boot.slot_suffix`
   if [ ! -z "$active_slot" ]; then
     device_abpartition=true
     block=/dev/block/bootdevice/by-name/system$active_slot
@@ -931,13 +934,13 @@ get_appsize() {
   appsize="$(cat $TMP/app_sizes.txt | grep -E "$app_name.*[[:blank:]]($app_density|common$odexsize)[[:blank:]]" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')"
 }
 
-get_fallback_arch(){
+get_fallback_arch() {
   case "$1" in
     arm)    fallback_arch="all";;
     arm64)  fallback_arch="arm";;
     x86)    fallback_arch="arm";; #by using libhoudini
     x86_64) fallback_arch="x86";; #e.g. chain: x86_64->x86->arm->all
-    *)      fallback_arch="$1";; #return original arch if no fallback available
+    *)      fallback_arch="$1";;  #return original arch if no fallback available
   esac
 }
 
@@ -945,22 +948,12 @@ get_file_prop() {
   grep -m1 "^$2=" "$1" | cut -d= -f2
 }
 
-get_prop() {
-  #check known .prop files using get_file_prop
-  for f in $PROPFILES; do
-    if [ -e "$f" ]; then
-      prop="$(get_file_prop "$f" "$1")"
-      if [ -n "$prop" ]; then
-        break #if an entry has been found, break out of the loop
-      fi
-    fi
-  done
-  #if prop is still empty; try to use recovery's built-in getprop method; otherwise output current result
-  if [ -z "$prop" ]; then
-    getprop "$1" | cut -c1-
-  else
-    printf "$prop"
-  fi
+grep_prop() {
+  local REGEX="s/^$1=//p"
+  shift
+  local FILES=$@
+  [ -z "$FILES" ] && FILES='/system/build.prop'
+  sed -n "$REGEX" $FILES 2>/dev/null | head -n 1
 }
 
 install_extracted() {
@@ -1198,6 +1191,7 @@ ui_print '##############################';
 ui_print " ";
 ui_print "$installer_name$gapps_version";
 ui_print " ";
+
 mounts=""
 for p in "/cache" "/data" "/persist" "$SYSTEM_MOUNT" "/vendor"; do
   if [ -d "$p" ] && grep -q "$p" "/etc/fstab" && ! mountpoint -q "$p"; then
@@ -1206,6 +1200,7 @@ for p in "/cache" "/data" "/persist" "$SYSTEM_MOUNT" "/vendor"; do
 done
 ui_print "- Mounting $mounts";
 ui_print " ";
+
 set_progress 0.01;
 for m in $mounts; do
   mount "$m"
@@ -1214,16 +1209,9 @@ done
 # remount whatever $SYSTEM_MOUNT is, sometimes necessary if mounted read-only
 grep -q "$SYSTEM_MOUNT.*\sro[\s,]" /proc/mounts && mount -o remount,rw $SYSTEM_MOUNT
 
-# Try to detect case with /system/system like LineageOS does
-if [ -d "/system/system/app" ]; then
-  ui_print "- /system/system detected - using it as the base folder";
-  ui_print " ";
-  SYSTEM=$SYSTEM_MOUNT/system
-fi
-
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
-if [ -z "$(get_prop "ro.build.id")" ]; then
+if [ -z "$(grep_prop "ro.build.id")" ]; then
   ui_print "*** No ro.build.id ***"
   ui_print " "
   ui_print "Your ROM has no valid build.prop or equivalent"
@@ -1253,7 +1241,7 @@ fi
 
 # Get device name any which way we can
 for field in ro.product.device ro.build.product ro.product.name; do
-  device_name="$(get_prop "$field")"
+  device_name="$(grep_prop "$field")"
   if [ "${#device_name}" -ge "2" ]; then
     break
   fi
@@ -1346,12 +1334,12 @@ ui_print "- Gathering device & ROM information"
 ui_print " "
 
 # Get ROM SDK version
-rom_build_sdk="$(get_prop "ro.build.version.sdk")"
+rom_build_sdk="$(grep_prop "ro.build.version.sdk")"
 
 # Get Device Type
-if echo "$(get_prop "ro.build.characteristics")" | grep -qi "tablet"; then
+if echo "$(grep_prop "ro.build.characteristics")" | grep -qi "tablet"; then
   device_type=tablet
-elif echo "$(get_prop "ro.build.characteristics")" | grep -qi "tv"; then
+elif echo "$(grep_prop "ro.build.characteristics")" | grep -qi "tv"; then
   device_type=tv
   core_gapps_list="$tvcore_gapps_list"  # use the TV core apps instead of the regular core apps
 else
@@ -1362,28 +1350,24 @@ echo "# Begin Open GApps Install Log" > $g_log;
 echo ------------------------------------------------------------------ >> $g_log;
 
 # Check to make certain user has proper version ROM Installed
-if [ "$req_android_sdk" -eq "29" ]; then
-  ui_print "- Skipping the SDK check until more recoveries support SDK29"
-  ui_print " "
-elif [ ! "$rom_build_sdk" = "$req_android_sdk" ]; then
+if [ ! "$rom_build_sdk" = "$req_android_sdk" ]; then
   ui_print "*** Incompatible Android ROM detected ***";
   ui_print " ";
   ui_print "This GApps pkg is for Android $req_android_version.x ONLY";
   ui_print "Please download the correct version for"
-  ui_print "your ROM: $(get_prop "ro.build.version.release") (SDK $rom_build_sdk)"
+  ui_print "your ROM: $(grep_prop "ro.build.version.release") (SDK $rom_build_sdk)"
   ui_print " ";
   ui_print "******* GApps Installation failed *******";
   ui_print " ";
   install_note="${install_note}rom_android_version_msg"$'\n'; # make note that ROM Version is not compatible with these GApps
   abort "$E_ROMVER";
-fi
+fi;
 
 # Check to make certain that user device matches the architecture
-# This prop should be deprecated now, but for some reason 'abilist' sometimes doesn't have the right arch (like 'arm64')
-device_architecture="$(get_prop "ro.product.cpu.abi")"
-# If the first field is empty, fall back to the main one
+device_architecture="$(grep_prop "ro.product.cpu.abilist")"
+# If the recommended field is empty, fall back to the deprecated one
 if [ -z "$device_architecture" ]; then
-  device_architecture="$(get_prop "ro.product.cpu.abilist")"
+  device_architecture="$(grep_prop "ro.product.cpu.abi")"
 fi
 
 case "$device_architecture" in
@@ -1433,10 +1417,10 @@ for rec_log in $rec_tmp_log $rec_cache_log; do
 done;
 
 # Get device model
-device_model="$(get_prop "ro.product.model")"
+device_model="$(grep_prop "ro.product.model")"
 
 # Get display density
-density="$(get_prop "ro.sf.lcd_density")"
+density="$(grep_prop "ro.sf.lcd_density")"
 
 # Check for DPI Override in gapps-config
 if ( grep -qiE '^forcedpi(120|160|213|240|260|280|300|320|340|360|400|420|480|560|640|nodpi)$' "$g_conf" ); then # user wants to override the DPI selection
@@ -1448,8 +1432,8 @@ fi
 test -z "$density" && density="unknown"
 
 # Check for Camera API v2 availability
-cameraapi="$(get_prop "camera2.portability.force_api")"
-camerahal="$(get_prop "persist.camera.HAL3.enabled")"
+cameraapi="$(grep_prop "camera2.portability.force_api")"
+camerahal="$(grep_prop "persist.camera.HAL3.enabled")"
 if ( grep -qiE '^forcenewcamera$' "$g_conf" ); then  # takes precedence over any detection
   newcamera_compat="true[forcenewcamera]"
 else
@@ -1471,7 +1455,7 @@ else
 fi
 
 cmcompatibilityhacks="false"  # test for CM/Lineage since they do weird AOSP-breaking changes to their code, breaking some GApps
-case "$(get_prop "ro.build.flavor")" in
+case "$(grep_prop "ro.build.flavor")" in
   cm_*|lineage_*)
   if [ "$rom_build_sdk" -lt "27" ]; then
   	cmcompatibilityhacks="true";
@@ -1491,7 +1475,7 @@ fi
 # Check for Pre-Odex support or NoPreODEX Override in gapps-config
 if [ "$rom_build_sdk" -lt "23" ]; then
   preodex="false [Only 6.0+]"
-elif [ "$(get_prop "persist.sys.dalvik.vm.lib.2")" != "libart.so" ] && [ "$(get_prop "persist.sys.dalvik.vm.lib.2")" != "libart" ]; then
+elif [ "$(grep_prop "persist.sys.dalvik.vm.lib.2")" != "libart.so" ] && [ "$(grep_prop "persist.sys.dalvik.vm.lib.2")" != "libart" ]; then
   preodex="false [No ART]"
 elif ! command -v "$TMP/zip-$BINARCH" >/dev/null 2>&1; then
   preodex="false [No Info-Zip]"
@@ -1583,11 +1567,11 @@ case $device_name in
   *)                              googlepixel_compat="false";;
 esac
 
-log "ROM Android version" "$(get_prop "ro.build.version.release")"
-log "ROM Build ID" "$(get_prop "ro.build.display.id")"
-log "ROM Version increment" "$(get_prop "ro.build.version.incremental")"
+log "ROM Android version" "$(grep_prop "ro.build.version.release")"
+log "ROM Build ID" "$(grep_prop "ro.build.display.id")"
+log "ROM Version increment" "$(grep_prop "ro.build.version.incremental")"
 log "ROM SDK version" "$rom_build_sdk"
-log "ROM/Recovery modversion" "$(get_prop "ro.modversion")"
+log "ROM/Recovery modversion" "$(grep_prop "ro.modversion")"
 log "Device Recovery" "$recovery"
 log "Device Name" "$device_name"
 log "Device Model" "$device_model"
@@ -1609,10 +1593,10 @@ log "Google Pixel Features" "$googlepixel_compat"
 # Determine if a GApps package is installed and
 # the version, type, and whether it's an Open GApps package
 if [ -e "$SYSTEM/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ] || [ -e "$SYSTEM/priv-app/GoogleServicesFramework.apk" ]; then
-  openversion="$(get_prop "ro.addon.open_version")"
+  openversion="$(grep_prop "ro.addon.open_version")"
   if [ -n "$openversion" ]; then
     log "Current GApps Version" "$openversion"
-    opentype="$(get_prop "ro.addon.open_type")"
+    opentype="$(grep_prop "ro.addon.open_type")"
     if [ -z "$opentype" ]; then
       opentype="unknown"
     fi
