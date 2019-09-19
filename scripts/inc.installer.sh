@@ -713,6 +713,11 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 # _____________________________________________________________________________________________________________________
 #                      Detect A/B partition layout https://source.android.com/devices/tech/ota/ab_updates
 #                      and system-as-root https://source.android.com/devices/bootloader/system-as-root
+grep_cmdline() {
+  local REGEX="s/^$1=//p"
+  cat /proc/cmdline | tr '[:space:]' '\n' | sed -n "$REGEX" 2>/dev/null
+}
+
 device_abslot=`grep_cmdline androidboot.slot_suffix`
 if [ -z $device_abslot ]; then
   device_abslot=`grep_cmdline androidboot.slot`
@@ -743,11 +748,6 @@ find_block() {
     done
   done
   return 1
-}
-
-grep_cmdline() {
-  local REGEX="s/^$1=//p"
-  cat /proc/cmdline | tr '[:space:]' '\n' | sed -n "$REGEX" 2>/dev/null
 }
 
 get_file_prop() {
@@ -953,6 +953,7 @@ exxit() {
   ui_print "- Unmounting $mounts"
   ui_print " "
   umount /system_root 2>/dev/null
+  umount /system 2>/dev/null
   for m in $mounts; do
     umount "$m" 2>/dev/null
   done
