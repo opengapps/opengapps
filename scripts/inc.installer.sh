@@ -816,7 +816,6 @@ for m in "cache" "data" "persist" "system" "vendor"; do
     mounts="$mounts $p"
   fi
 done
-ui_print "- Mounted $mounts";
 
 # Remount /system to /system_root if we have system-as-root
 if [ -f /system/init.rc ]; then
