@@ -766,10 +766,12 @@ mount_part() {
   mkdir $POINT 2>/dev/null
   is_mounted $POINT && return
   ui_print "- Mounting $PART"
-  mount -o ro $POINT 2>/dev/null
+  local OPTS="-o ro"
+  [ "$POINT" = "/system" ] && OPTS=""
+  mount $OPTS $POINT 2>/dev/null
   if ! is_mounted $POINT; then
     local BLOCK=`find_block $PART$device_abslot`
-    mount -o ro $BLOCK $POINT
+    mount &OPTS $BLOCK $POINT
   fi
   is_mounted $POINT || abort "! Cannot mount $POINT"
 }
@@ -953,9 +955,13 @@ exxit() {
   ui_print "- Unmounting $mounts"
   ui_print " "
   umount /system_root 2>/dev/null
-  umount /system 2>/dev/null
+  if [ "$device_abpartition" = "true" ]; then
+    mount -o ro /system 2>/dev/null
+  else
+    umount /system 2>/dev/null
+  fi;;
   for m in $mounts; do
-    umount "$m" 2>/dev/null
+    [ "$m" = "/system" ] || umount "$m" 2>/dev/null
   done
   exit "$1"
 }
