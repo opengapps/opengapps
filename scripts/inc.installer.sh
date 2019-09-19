@@ -813,12 +813,10 @@ ui_print " ";
 # _____________________________________________________________________________________________________________________
 #                                                       Mount
 set_progress 0.01;
-mounts=""
 for m in "cache" "data" "persist" "system" "vendor"; do
   p=/$m
   if [ -d "$p" ] && grep -q "$p" "/etc/fstab" && ! mountpoint -q "$p"; then
     mount_part "$m"
-    mounts="$mounts $p"
   fi
 done
 
@@ -950,10 +948,9 @@ exxit() {
   fi
   find $TMP/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +
   set_progress 1.0
-  ui_print "- Unmounting $mounts"
+  ui_print "- Unmounting partitions"
   ui_print " "
-  umount /system_root 2>/dev/null
-  for m in $mounts; do
+  for m in "/system_root" "/cache" "/data" "/persist" "/system" "/vendor"; do
     umount "$m" 2>/dev/null
   done
   exit "$1"
