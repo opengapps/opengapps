@@ -790,9 +790,9 @@ done
 #                      and system-as-root https://source.android.com/devices/bootloader/system-as-root
 block=/dev/block/bootdevice/by-name/system
 device_abpartition=false
-system_as_root=`get_prop ro.build.system_root_image`
+system_as_root=`getprop ro.build.system_root_image`
 if [ "$system_as_root" == "true" ]; then
-  active_slot=`get_prop ro.boot.slot_suffix`
+  active_slot=`getprop ro.boot.slot_suffix`
   if [ ! -z "$active_slot" ]; then
     device_abpartition=true
     block=/dev/block/bootdevice/by-name/system$active_slot
@@ -810,23 +810,22 @@ if [ -z "$block" ]; then
   block=`cat /etc/recovery.fstab | cut -d '#' -f 1 | grep /system | grep -o '/dev/[^ ]*' | head -1`
 fi
 
-# Try to detect system-as-root through /system/init.rc like Magisk does
-# Mount /system if it's not mounted yet
+# Try to detect system-as-root through $SYSTEM_MOUNT/init.rc like Magisk does
+# Mount $SYSTEM_MOUNT if it's not mounted yet
 if [ ! mount "$SYSTEM_MOUNT" ]; then
   ui_print "- Mounting /system";
   mount -o rw "$block" "$SYSTEM_MOUNT"
 fi
 
-# Remount /system to /system_root if we have system-as-root
-# and bind /system to /system_root/system (like Magisk does)
+# Remount /system to /system_root if we have system-as-root and bind /system to /system_root/system (like Magisk does)
 # For reference, check https://github.com/topjohnwu/Magisk/blob/master/scripts/util_functions.sh
-if [ -f /system/init.rc ]; then
+if [ -f $SYSTEM_MOUNT/init.rc ]; then
   system_as_root=true
   mkdir -p /system_root
+  mount --move /system /system_root
+  mount -o bind /system_root/system /system
   SYSTEM_MOUNT=/system_root
-  SYSTEM=$SYSTEM_MOUNT/system
-  mount --move /system $SYSTEM_MOUNT
-  mount -o bind $SYSTEM /system
+  SYSTEM=/system
 fi
 $system_as_root && ui_print "- Device is system-as-root"
 ui_print " ";
