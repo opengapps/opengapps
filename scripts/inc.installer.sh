@@ -775,7 +775,11 @@ ui_print " ";
 mounts=""
 for p in "/cache" "/data" "/persist" "/vendor"; do
   if [ -d "$p" ] && grep -q "$p" "/etc/fstab" && ! mountpoint -q "$p"; then
-    mounts="$mounts $p"
+    if [ -z "$mounts" ]; then
+      mounts="$p"
+    else
+      mounts="$mounts $p"
+    fi
   fi
 done
 
@@ -821,6 +825,10 @@ if [ -f $SYSTEM_MOUNT/init.rc ]; then
   mount -o bind /system_root/system /system
   SYSTEM_MOUNT=/system_root
   SYSTEM=/system
+  mounts="$mounts /system $SYSTEM_MOUNT"
+else
+  # Just add $SYSTEM_MOUNT to the mount list
+  mounts="$mounts $SYSTEM_MOUNT"
 fi
 $system_as_root && ui_print "- Device is system-as-root"
 ui_print " ";
@@ -942,15 +950,7 @@ exxit() {
   ui_print "- Unmounting $mounts"
   ui_print " "
   for m in $mounts; do
-    case $m in
-      $SYSTEM_MOUNT)
-        if [ "$device_abpartition" = "true" ]; then
-          mount -o ro $SYSTEM_MOUNT
-        else
-          umount $SYSTEM_MOUNT
-        fi;;
-      *) umount "$m";;
-    esac
+    umount "$m";;
   done
   exit "$1"
 }
