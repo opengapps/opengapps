@@ -595,6 +595,17 @@ tvpackageinstallergoogle" # Several atv packages were removed in Android 9.0
   fi
 }
 
+# Does nothing now, here for completeness
+ api29hack(){
+   if [ "$API" -eq "27" ]; then
+     if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
+       gappscore="$gappscore"
+     fi
+     gappscore="$gappscore"
+   fi
+ }
+
+
 sdkversionhacks(){
   case "$package" in
     com.android.facelock|com.google.android.configupdater|com.google.android.feedback|com.google.android.gsf.login|com.google.android.partnersetup|com.google.android.setupwizard|com.google.android.syncadapters.contacts)
@@ -605,6 +616,7 @@ sdkversionhacks(){
         *26) sdkversion="26";;
         *27) sdkversion="27";;
         *28) sdkversion="28";;
+        *29) sdkversion="29";;
         *) ;;
       esac;;
   esac

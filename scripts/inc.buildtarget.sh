@@ -220,7 +220,9 @@ get_package_info(){
     backuprestore)            packagetype="Core"; packagename="com.google.android.apps.restore"; packagetarget="priv-app/GoogleRestore";;
     carriersetup)             packagetype="Core"; packagename="com.google.android.carriersetup"; packagetarget="priv-app/CarrierSetup";;
     defaultetc)               packagetype="Core";
-                              if [ "$API" -ge "28" ]; then # Specific permission files for Android 9.0
+                              if [ "$API" -ge "29" ]; then # Specific permission files for Android 10.0
+                                packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/permissions/split-permissions-google.xml etc/preferred-apps/google.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
+                              elif [ "$API" -ge "28" ]; then # Specific permission files for Android 9.0
                                 packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/preferred-apps/google.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
                               elif [ "$API" -ge "26" ]; then # Specific permission files for Android 8.0 to 8.1
                                 packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/preferred-apps/google.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
@@ -245,11 +247,11 @@ get_package_info(){
                                 packageframework="com.google.android.maps.jar com.google.android.media.effects.jar com.google.widevine.software.drm.jar"
                               fi;;
     gmscore)                  packagetype="Core"; packagename="com.google.android.gms";
-                              if [ "$API" -ge "28" ]; then  # Path on Android 9.0 is priv-app/PrebuiltGmsCorePi
+                              if [ "$API" -eq "28" ]; then  # Path on Android 9.0 is priv-app/PrebuiltGmsCorePi
                                 packagetarget="priv-app/PrebuiltGmsCorePi"
-                              elif [ "$API" -ge "27" ]; then  # Path on Android 8.0 is priv-app/PrebuiltGmsCorePix
+                              elif [ "$API" -eq "27" ]; then  # Path on Android 8.1 is priv-app/PrebuiltGmsCorePix
                                 packagetarget="priv-app/PrebuiltGmsCorePix"
-                              else  # Prior to Android 8.0 the path is PrebuiltGmsCore
+                              else  # The path on Android 10.0 and on versions <= 8.0 is priv-app/PrebuiltGmsCore
                                 packagetarget="priv-app/PrebuiltGmsCore"
                               fi;;
     gmssetup)                 packagetype="Core"; packagename="com.google.android.gms.setup"; packagetarget="priv-app/GmsCoreSetupPrebuilt";;
@@ -257,10 +259,10 @@ get_package_info(){
     googleonetimeinitializer) packagetype="Core"; packagename="com.google.android.onetimeinitializer"; packagetarget="priv-app/GoogleOneTimeInitializer";;
     googlepartnersetup)       packagetype="Core"; packagename="com.google.android.partnersetup"; packagetarget="priv-app/GooglePartnerSetup";;
     gsflogin)                 packagetype="Core"; packagename="com.google.android.gsf.login"; packagetarget="priv-app/GoogleLoginService";;  # Permanently removed in Android 7.1+
-    platformservicesoreo)     packagetype="Core"; packagename="com.google.android.gms.policy_sidecar_o"; packagetarget="priv-app/AndroidPlatformServices";;
-    platformservicespie)      packagetype="Core"; packagename="com.google.android.gms.policy_sidecar_aps"; packagetarget="priv-app/AndroidPlatformServices";; 
+    platformservicesoreo)     packagetype="Core"; packagename="com.google.android.gms.policy_sidecar_o"; packagetarget="priv-app/AndroidPlatformServices";;  # On Android < 9.0
+    platformservices)         packagetype="Core"; packagename="com.google.android.gms.policy_sidecar_aps"; packagetarget="priv-app/AndroidPlatformServices";; 
     setupwizard)              packagetype="Core"; packagename="com.google.android.setupwizard"; packagetarget="priv-app/SetupWizard";;  # Android 4.4 only (see api19hack in inc.buildtarget.sh)
-    setupwizarddefault)       packagetype="Core"; packagename="com.google.android.setupwizard.default"; packagetarget="priv-app/SetupWizard";;
+    setupwizarddefault)       packagetype="Core"; packagename="com.google.android.setupwizard.default"; packagetarget="priv-app/SetupWizard";;  # SetupWizardPrebuilt on Pixels
     setupwizardtablet)        packagetype="Core"; packagename="com.google.android.setupwizard.tablet"; packagetarget="priv-app/SetupWizard";;
     soundpicker)              packagetype="Core"; packagename="com.google.android.soundpicker"; packagetarget="app/SoundPickerPrebuilt";;
     vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
