@@ -773,7 +773,7 @@ ui_print " ";
 #                                                  Mount partitions
 
 mounts=""
-for p in "/cache" "/data" "/persist" "/vendor"; do
+for p in "/cache" "/data" "/persist" "/product" "/vendor"; do
   if [ -d "$p" ] && grep -q "$p" "/etc/fstab" && ! mountpoint -q "$p"; then
     if [ -z "$mounts" ]; then
       mounts="$p"
@@ -786,7 +786,11 @@ done
 ui_print "- Mounting $mounts";
 set_progress 0.01;
 for m in $mounts; do
-  mount "$m"
+  if [ "$m" -eq "/product" ]; then
+    mount -o rw "$m"
+  else
+    mount "$m"
+  fi
 done
 
 # _____________________________________________________________________________________________________________________
@@ -2217,6 +2221,10 @@ for aosp_name in $aosp_remove_list; do
       file_size_kb=$(du -ck "$SYSTEM/$file_name" | tail -n 1 | awk '{ print $1 }');
       aosp_size_kb=$((file_size_kb + aosp_size_kb));
       post_install_size_kb=$((post_install_size_kb + file_size_kb));
+    elif [ -e "/product/$file_name" ]; then
+      file_size_kb=$(du -ck "/product/$file_name" | tail -n 1 | awk '{ print $1 }');
+      aosp_size_kb=$((file_size_kb + aosp_size_kb));
+      post_install_size_kb=$((post_install_size_kb + file_size_kb));
     fi;
   done;
   log_add "Remove" "$aosp_name" $aosp_size_kb $post_install_size_kb;
@@ -2319,8 +2327,8 @@ for aosp_name in $aosp_remove_list; do
   eval "list_name=\$${aosp_name}_list";
   list_name=$(echo "${list_name}" | sort -r); # reverse sort list for more readable output
   for file_name in $list_name; do
-    rm -rf "$SYSTEM/$file_name";
-    sed -i "\:# Remove Stock/AOSP apps (from GApps Installer):a \    rm -rf \$SYS/$file_name" $bkup_tail;
+    rm -rf "$SYSTEM/$file_name" && rm -rf "/product/$file_name";
+    sed -i "\:# Remove Stock/AOSP apps (from GApps Installer):a \    rm -rf \$SYS/$file_name && rm -rf /product/$file_name" $bkup_tail;
   done;
 done;
 
