@@ -805,14 +805,9 @@ else
   SYSTEM=$SYSTEM_MOUNT
 fi
 
-# Try to get the block from /etc/recovery.fstab if it's empty
-if [ -z "$block" ]; then
-  block=`cat /etc/recovery.fstab | cut -d '#' -f 1 | grep /system | grep -o '/dev/[^ ]*' | head -1`
-fi
-
 # Try to detect system-as-root through $SYSTEM_MOUNT/init.rc like Magisk does
 # Mount $SYSTEM_MOUNT if it's not mounted yet
-if [ ! mount "$SYSTEM_MOUNT" ]; then
+if ! mount "$SYSTEM_MOUNT"; then
   ui_print "- Mounting /system";
   mount -o rw "$block" "$SYSTEM_MOUNT"
 fi
