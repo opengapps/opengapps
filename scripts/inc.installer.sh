@@ -811,6 +811,7 @@ fi
 
 # Try to detect system-as-root through $SYSTEM_MOUNT/init.rc like Magisk does
 # Remount whatever $SYSTEM_MOUNT is, sometimes necessary if mounted read-only
+ui_print "- Mounting /system RW";
 grep -q "$SYSTEM_MOUNT.*\sro[\s,]" /proc/mounts && mount -o remount,rw $SYSTEM_MOUNT
 
 # Remount /system to /system_root if we have system-as-root and bind /system to /system_root/system (like Magisk does)
