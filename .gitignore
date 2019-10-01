@@ -15,6 +15,7 @@ out/
 
 # Local configuration file (sdk path, etc)
 local.properties
+.vscode
 
 # Log Files
 *.log
