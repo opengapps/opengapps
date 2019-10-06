@@ -310,7 +310,31 @@ versionnamehack(){
 }
 
 webviewcheckhack(){
-  if [ "$API" -ge "24" ]; then
+  if [ "$API" -ge "29" ]; then
+    tee -a "$1" > /dev/null <<'EOFILE'
+# If we're installing webviewgoogle we MUST ADD webviewstub to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$aosp_remove_list" "webviewstub" ); then
+  aosp_remove_list="${aosp_remove_list}webviewstub"$'\n'
+fi;
+
+# If we're installing webviewstub we MUST ADD webviewgoogle to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "webviewstub" ) && ( ! contains "$aosp_remove_list" "webviewgoogle" ); then
+  aosp_remove_list="${aosp_remove_list}webviewgoogle"$'\n'
+fi;
+
+# If we're installing webviewgoogle OR webviewstub we PREFER TO ADD webviewstock to $aosp_remove_list (if it's not already there)
+if ( ( contains "$gapps_list" "webviewgoogle" ) || ( contains "$gapps_list" "webviewstub" ) ) && ( ! contains "$aosp_remove_list" "webviewstock" ); then
+  aosp_remove_list="${aosp_remove_list}webviewstock"$'\n'
+fi
+
+# If we're NOT installing webviewgoogle OR webviewstub and webviewstock is in $aosp_remove_list then user must override removal protection
+# Chrome is not there since on Android 10+ it's not a webview provider anymore
+if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$gapps_list" "webviewstub" ) && ( contains "$aosp_remove_list" "webviewstock" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+  aosp_remove_list=${aosp_remove_list/webviewstock} # we'll prevent webviewstock from being removed so user isn't left with no WebView
+  install_note="${install_note}nowebview_msg"$'\n' # make note that Stock Webview can't be removed unless user Overrides
+fi
+EOFILE
+  elif [ "$API" -ge "24" ]; then
     tee -a "$1" > /dev/null <<'EOFILE'
 # If we're installing chrome and webviewgoogle, replace it with webviewstub unless override removal protection
 if ( contains "$gapps_list" "chrome" ) && ( contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
@@ -329,7 +353,6 @@ if ( contains "$gapps_list" "webviewstub" ) && ( ! contains "$aosp_remove_list" 
 fi;
 
 # If we're installing webviewgoogle OR webviewstub we PREFER TO ADD webviewstock to $aosp_remove_list (if it's not already there)
-# TODO in the future we could consider this behaviour even if installing just Chrome
 if ( ( contains "$gapps_list" "webviewgoogle" ) || ( contains "$gapps_list" "webviewstub" ) ) && ( ! contains "$aosp_remove_list" "webviewstock" ); then
   aosp_remove_list="${aosp_remove_list}webviewstock"$'\n'
 fi
