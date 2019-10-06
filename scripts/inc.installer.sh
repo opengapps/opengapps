@@ -805,6 +805,11 @@ if [ "$system_as_root" == "true" ]; then
     device_abpartition=true
     block=/dev/block/bootdevice/by-name/system$active_slot
   fi
+  if [ -d "/system_root" ]; then
+    system_root_tmp=true
+    ui_print "- Moving original /system_root";
+    mv /system_root /system_root_tmp
+  fi
   mkdir -p /system_root
   SYSTEM_MOUNT=/system_root
   SYSTEM=$SYSTEM_MOUNT/system
@@ -821,7 +826,13 @@ grep -q "$SYSTEM_MOUNT.*\sro[\s,]" /proc/mounts && mount -o remount,rw $SYSTEM_M
 # Remount /system to /system_root if we have system-as-root and bind /system to /system_root/system (like Magisk does)
 # For reference, check https://github.com/topjohnwu/Magisk/blob/master/scripts/util_functions.sh
 if [ -f $SYSTEM_MOUNT/init.rc ]; then
+  ui_print "- Remounting /system as /system_root";
   system_as_root=true
+  if [ -d "/system_root" ]; then
+    system_root_tmp=true
+    ui_print "- Moving original /system_root";
+    mv /system_root /system_root_tmp
+  fi
   mkdir -p /system_root
   mount --move /system /system_root
   mount -o bind /system_root/system /system
@@ -949,11 +960,15 @@ exxit() {
   fi
   find $TMP/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +
   set_progress 1.0
-  ui_print "- Unmounting $mounts"
-  ui_print " "
+  ui_print "- Unmounting $mounts";
   for m in $mounts; do
     umount "$m"
   done
+  if [ ! -z "$system_root_tmp" ]; then
+    ui_print "- Restoring original /system_root";
+    mv /system_root_tmp /system_root
+  fi
+  ui_print " ";
   exit "$1"
 }
 
