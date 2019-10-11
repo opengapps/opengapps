@@ -734,13 +734,15 @@ get_prop() {
 }
 
 mk_system_root() {
-  if [ -d "/system_root" ] && [ -z "$system_root_tmp" ]; then
-    system_root_tmp=true
-    ui_print "- Moving original /system_root";
-    mkdir /system_root_$timestamp
-    mv /system_root/* /system_root_$timestamp/
-  else
-    mkdir /system_root
+  if [ -z "$system_root_tmp" ]; then
+    if [ -d "/system_root" ]; then
+      system_root_tmp=true
+      ui_print "- Moving original /system_root";
+      mkdir /system_root_$timestamp
+      mv /system_root/* /system_root_$timestamp/
+    else
+      mkdir -p /system_root
+    fi
   fi
 }
 
