@@ -824,11 +824,9 @@ if [ "$system_as_root" == "true" ]; then
   mk_system_root;
   SYSTEM_MOUNT=/system_root
   SYSTEM=$SYSTEM_MOUNT/system
-  VENDOR=/vendor
 else
   SYSTEM_MOUNT=/system
   SYSTEM=$SYSTEM_MOUNT
-  VENDOR=/vendor
 fi
 
 # Try to detect system-as-root through $SYSTEM_MOUNT/init.rc like Magisk does
@@ -857,7 +855,7 @@ ui_print " ";
 #                                                  Declare Variables
 zip_folder="$(dirname "$OPENGAZIP")";
 g_prop=$SYSTEM/etc/g.prop
-PROPFILES="$g_prop $SYSTEM/default.prop $SYSTEM/build.prop $VENDOR/build.prop /data/local.prop /default.prop /build.prop"
+PROPFILES="$g_prop $SYSTEM/default.prop $SYSTEM/build.prop /vendor/build.prop /data/local.prop /default.prop /build.prop"
 bkup_tail=$TMP/bkup_tail.sh;
 gapps_removal_list=$TMP/gapps-remove.txt;
 g_log=$TMP/g.log;
