@@ -710,33 +710,30 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 # _____________________________________________________________________________________________________________________
 #                      Detect A/B partition layout https://source.android.com/devices/tech/ota/ab_updates
 #                      and system-as-root https://source.android.com/devices/bootloader/system-as-root
-system_as_root=`getprop ro.build.system_root_image`
-if [ "$system_as_root" == "true" ]; then
-  active_slot=`getprop ro.boot.slot_suffix`
-  if [ ! -z "$active_slot" ]; then
-    device_abpartition=true
-    block=/dev/block/bootdevice/by-name/system$active_slot
-  else
-    device_abpartition=false
-    block=/dev/block/bootdevice/by-name/system
-  fi
-  mkdir -p /system_root
+if [ -n "$(cat /proc/cmdline | grep slot_suffix)" ];
+then
+  device_abpartition=true
+  SYSTEM_MOUNT=/system
+  SYSTEM=$SYSTEM_MOUNT/system
+  VENDOR=/vendor/vendor
+elif [ -n "$(cat /etc/fstab | grep /system_root)" ];
+then
+  device_abpartition=false
   SYSTEM_MOUNT=/system_root
   SYSTEM=$SYSTEM_MOUNT/system
+  VENDOR=/vendor
 else
-  # Try to get the block from /etc/recovery.fstab
-  block=`cat /etc/recovery.fstab | cut -d '#' -f 1 | grep /system | grep -o '/dev/[^ ]*' | head -1`
-
   device_abpartition=false
   SYSTEM_MOUNT=/system
   SYSTEM=$SYSTEM_MOUNT
+  VENDOR=/vendor
 fi
 
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
 zip_folder="$(dirname "$OPENGAZIP")";
 g_prop=$SYSTEM/etc/g.prop
-PROPFILES="$g_prop $SYSTEM/default.prop $SYSTEM/build.prop /vendor/build.prop /data/local.prop /default.prop /build.prop"
+PROPFILES="$g_prop $SYSTEM/default.prop $SYSTEM/build.prop $VENDOR/build.prop /data/local.prop /default.prop /build.prop"
 bkup_tail=$TMP/bkup_tail.sh;
 gapps_removal_list=$TMP/gapps-remove.txt;
 g_log=$TMP/g.log;
@@ -1204,7 +1201,7 @@ ui_print " ";
 ui_print "$installer_name$gapps_version";
 ui_print " ";
 mounts=""
-for p in "/cache" "/data" "/persist" "/vendor"; do
+for p in "/cache" "/data" "/persist" "$SYSTEM_MOUNT" "/vendor"; do
   if [ -d "$p" ] && grep -q "$p" "/etc/fstab" && ! mountpoint -q "$p"; then
     mounts="$mounts $p"
   fi
@@ -1215,10 +1212,7 @@ set_progress 0.01;
 for m in $mounts; do
   mount "$m"
 done
-
-if ! mount "$SYSTEM_MOUNT"; then
-    mount -o rw "$block" "$SYSTEM_MOUNT"
-fi
+grep -q "$SYSTEM_MOUNT.*\sro[\s,]" /proc/mounts && mount -o remount,rw $SYSTEM_MOUNT  # remount whatever $SYSTEM_MOUNT is, sometimes necessary if mounted read-only
 
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
