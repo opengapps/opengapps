@@ -733,9 +733,10 @@ get_prop() {
   fi
 }
 
+# Check if /system_root is present and move its files to a temp folder (if there are any)
 mk_system_root() {
   if [ -z "$system_root_tmp" ]; then
-    if [ -d "/system_root" ]; then
+    if [ -d "/system_root" ] && [ "$(ls -A /system_root)" ]; then
       system_root_tmp=true
       ui_print "- Moving original /system_root";
       mkdir /system_root_$timestamp
