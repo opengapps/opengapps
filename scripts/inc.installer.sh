@@ -741,6 +741,7 @@ mk_system_root() {
       mkdir /system_root_$timestamp
       mv /system_root/* /system_root_$timestamp/
     else
+      system_root_tmp=false
       mkdir -p /system_root
     fi
   fi
@@ -969,7 +970,7 @@ exxit() {
   for m in $mounts; do
     umount "$m"
   done
-  if [ ! -z "$system_root_tmp" ]; then
+  if [ "$system_root_tmp" == "true" ]; then
     ui_print "- Restoring original /system_root";
     mv /system_root_$timestamp/* /system_root/
     rm -rf /system_root_$timestamp
