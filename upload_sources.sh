@@ -108,25 +108,6 @@ createcommit(){
   esac
 }
 
-setprecommithook(){
-  tee "$(git rev-parse --git-dir)/hooks/pre-commit" > /dev/null <<'EOFILE'
-#!/bin/sh
-#
-for f in $(git diff --cached --name-only --diff-filter=ACMR | grep '.apk$'); do
-  size="$(wc -c "$f" | awk '{print $1}')"  # slow, but available with same syntax on both linux and mac
-  if [ "$size" -gt "95000000" ]; then # Limit set at 95MB
-    echo "Compressing $f with lzip for GitHub"
-    lzip -9 -k -f "$f"
-    echo "$(basename "$f")" >> "$(dirname "$f")/.gitignore"
-    git rm -q --cached "$f"
-    git add "$f.lz"
-    git add "$(dirname "$f")/.gitignore"
-  fi
-done
-EOFILE
-chmod +x "$(git rev-parse --git-dir)/hooks/pre-commit"
-}
-
 newapks=""
 modules=""
 
@@ -152,8 +133,6 @@ for arch in $modules; do
   else
     username="$(git config user.name)"
   fi
-
-  setprecommithook  # Make sure we are using lzip pre-commit hook
 
   echo "Resetting $arch to HEAD before staging new commits..."
   git reset -q HEAD #make sure we are not including any other files are already tracked, output is silenced, not to confuse the user with the next output
