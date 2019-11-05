@@ -29,7 +29,7 @@ SCRIPTS="$TOP/scripts"
 . "$SCRIPTS/inc.sourceshelper.sh"
 
 # Check tools
-checktools aapt coreutils git lzip
+checktools aapt coreutils git git-lfs
 
 createcommit(){
   getapkproperties "$1"
