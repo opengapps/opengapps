@@ -24,7 +24,7 @@ SCRIPTS="$TOP/scripts"
 . "$SCRIPTS/inc.tools.sh"
 
 # Check tools
-checktools git lzip
+checktools git git-lfs
 
 argument() {
   case $1 in

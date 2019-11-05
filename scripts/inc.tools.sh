@@ -43,6 +43,11 @@ checktools() {
             echo 'aapt is outdated. Install a more recent version from the Android SDK and findable in sh $PATH.' >&2
             missing="$missing $command"
           fi;;
+        git-lfs)
+          if ! git lfs env | grep -q -e "filter.lfs.clean" || ! git lfs env | grep -q -e "filter.lfs.smudge" || ! git lfs env | grep -q -e "filter.lfs.process"; then
+            echo 'Git LFS has not been set-up, please run "git lfs install".' >&2
+            missing="$missing $command"
+          fi;;
       #*)
           #echo "$command tool found and it is up to date." >&2;;
       esac
