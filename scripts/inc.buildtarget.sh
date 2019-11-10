@@ -381,7 +381,7 @@ get_package_info(){
     taggoogle)                packagetype="GApps"; packagename="com.google.android.tag"; packagetarget="priv-app/TagGoogle";;
     translate)                packagetype="GApps"; packagename="com.google.android.apps.translate"; packagetarget="app/TranslatePrebuilt";;
     vrservice)                packagetype="GApps"; packagename="com.google.vr.vrcore"; packagetarget="app/GoogleVrCore"
-                              if [ "$API" -ge "26" ]; then  # Specific sysconfig and permission files for VR on Android 8.0 to 9.0
+                              if [ "$API" -ge "27" ]; then  # Specific sysconfig and permission files for VR on Android 8.1+
                                 packagefiles="etc/sysconfig/google_vr_build.xml etc/permissions/com.google.vr.platform.xml"
                                 packageframework="com.google.vr.platform.jar";
                               elif [ "$API" -ge "24" ]; then  # Specific sysconfig file for VR on Android 7.0
