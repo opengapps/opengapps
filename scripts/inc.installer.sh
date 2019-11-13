@@ -2239,15 +2239,13 @@ for aosp_name in $aosp_remove_list; do
   eval "list_name=\$${aosp_name}_list";
   aosp_size_kb=0; # Reset counter
   for file_name in $list_name; do
-    if [ -e "$SYSTEM/$file_name" ]; then
-      file_size_kb=$(du -ck "$SYSTEM/$file_name" | tail -n 1 | awk '{ print $1 }');
-      aosp_size_kb=$((file_size_kb + aosp_size_kb));
-      post_install_size_kb=$((post_install_size_kb + file_size_kb));
-    elif [ -e "/product/$file_name" ]; then
-      file_size_kb=$(du -ck "/product/$file_name" | tail -n 1 | awk '{ print $1 }');
-      aosp_size_kb=$((file_size_kb + aosp_size_kb));
-      post_install_size_kb=$((post_install_size_kb + file_size_kb));
-    fi;
+    for file_folder in "$SYSTEM" "/product" "$SYSTEM/product"; do
+      if [ -d "$file_folder" ] && [ -e "$file_folder/$file_name" ]; then
+        file_size_kb=$(du -ck "$file_folder/$file_name" | tail -n 1 | awk '{ print $1 }');
+        aosp_size_kb=$((file_size_kb + aosp_size_kb));
+        post_install_size_kb=$((post_install_size_kb + file_size_kb));
+      fi;
+    done;
   done;
   log_add "Remove" "$aosp_name" $aosp_size_kb $post_install_size_kb;
 done;
