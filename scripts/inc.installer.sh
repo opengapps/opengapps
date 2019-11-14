@@ -150,7 +150,6 @@ req_android_version="'"$PLATFORM"'";
 timestamp=$(date +%s);
 
 '"$KEYBDLIBS"'
-faceLock_lib_filename="'"$FACELOCKLIB"'";
 atvremote_lib_filename="libatv_uinputbridge.so"
 WebView_lib_filename="libwebviewchromium.so"
 markup_lib_filename="libsketchology_native.so"
@@ -680,7 +679,6 @@ camera_sys_msg="WARNING: Google Camera has/will not be installed as requested. G
 camera_compat_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera\nis NOT compatible with your device if installed on the system partition. Try\ninstalling from the Play Store instead.\n";
 cmcompatibility_msg="WARNING: PackageInstallerGoogle is not installed. Cyanogenmod is NOT\ncompatible with some Google Applications and Open GApps\n will skip their installation.\n";
 dialergoogle_msg="WARNING: Google Dialer has/will not be installed as requested. Dialer Framework\nmust be added to the GApps installation if you want to install the\nGoogle Dialer.\n";
-faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";
 googlenow_msg="WARNING: Google Now Launcher has/will not be installed as requested. Google Search\nmust be added to the GApps installation if you want to install the\nGoogle Now Launcher.\n";
 messenger_msg="WARNING: Google Messages has/will not be installed as requested. Carrier Services\nmust be added to the GApps installation on Android 6.0+ if you want to install\nGoogle Messages.\n";
 pixellauncher_msg="WARNING: Pixel Launcher has/will not be installed as requested. Wallpapers and\nGoogle Search must be added to the GApps installation if you want to install\nthe Pixel Launcher.\n";
@@ -1586,19 +1584,6 @@ else
   fi
 fi
 
-# Is device FaceUnlock compatible
-if ( ! grep -qE "Victory|herring|sun4i" /proc/cpuinfo ); then
-  for xml in $SYSTEM/etc/permissions/android.hardware.camera.front.xml $SYSTEM/etc/permissions/android.hardware.camera.xml $SYSTEM/vendor/etc/permissions/android.hardware.camera.front.xml $SYSTEM/vendor/etc/permissions/android.hardware.camera.xml; do
-    if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -qr "feature name=\"android.hardware.camera.front" ); then
-      faceunlock_compat=true
-      break
-    fi
-    faceunlock_compat=false
-  done
-else
-  faceunlock_compat=false
-fi
-
 # Is device VRMode compatible
 vrmode_compat=false
 for xml in $(grep -rl '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/vendor/etc/); do
@@ -1639,7 +1624,6 @@ log "Display Density Used" "$density"
 log "Install Type" "$install_type"
 log "Smart ART Pre-ODEX" "$preodex"
 log "Google Camera already installed" "$cameragoogle_inst"
-log "FaceUnlock Compatible" "$faceunlock_compat"
 log "VRMode Compatible" "$vrmode_compat"
 log "Google Camera Compatible" "$cameragoogle_compat"
 log "New Camera API Compatible" "$newcamera_compat"
@@ -1795,12 +1779,6 @@ EOFILE
 if ( contains "$gapps_list" "packageinstallergoogle" ) && [ $cmcompatibilityhacks = "true" ]; then
   gapps_list=${gapps_list/packageinstallergoogle};
   install_note="${install_note}cmcompatibility_msg"$'\n'; # make note that CM compatibility hacks are applied
-fi;
-
-# Verify device is FaceUnlock compatible BEFORE we allow it in $gapps_list
-if ( contains "$gapps_list" "faceunlock" ) && [ $faceunlock_compat = "false" ]; then
-  gapps_list=${gapps_list/faceunlock};
-  install_note="${install_note}faceunlock_msg"$'\n'; # make note that FaceUnlock will NOT be installed as user requested
 fi;
 
 # Add Google Pixel config if this is a Pixel device (and remove if it is not)
@@ -2424,15 +2402,6 @@ if ( grep -qiE '^googleassistant$' "$g_conf" ); then  #TODO this is not enabled 
     echo "ro.opa.eligible_device=true" >> $SYSTEM/build.prop
   fi
   sed -i "\:# Apply build.prop changes (from GApps Installer):a \    if ! grep -q \"ro.opa.eligible_device=\" $SYSTEM/build.prop; then echo \"ro.opa.eligible_device=true\" >> \$SYS/build.prop; fi" $bkup_tail
-fi
-
-# Create FaceLock lib symlink if installed
-if ( contains "$gapps_list" "faceunlock" ); then
-  install -d "$SYSTEM/app/FaceLock/lib/$arch"
-  ln -sfn "$SYSTEM/$libfolder/$faceLock_lib_filename" "$SYSTEM/app/FaceLock/lib/$arch/$faceLock_lib_filename"
-  # Add same code to backup script to ensure symlinks are recreated on addon.d restore
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$faceLock_lib_filename\" \"\$SYS/app/FaceLock/lib/$arch/$faceLock_lib_filename\"" $bkup_tail
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/FaceLock/lib/$arch\"" $bkup_tail
 fi
 
 # Create Markup lib symlink if installed

@@ -76,9 +76,7 @@ gappsmicro="calendargoogle
 exchangegoogle
 gmail"
 
-gappsnano="facedetect
-faceunlock
-search
+gappsnano="search
 speech"
 
 gappspico="calsync"
@@ -303,29 +301,6 @@ get_package_info(){
     duo)                      packagetype="GApps"; packagename="com.google.android.apps.tachyon"; packagetarget="app/Duo";;
     earth)                    packagetype="GApps"; packagename="com.google.earth"; packagetarget="app/GoogleEarth";;
     exchangegoogle)           packagetype="GApps"; packagename="com.google.android.gm.exchange"; packagetarget="app/PrebuiltExchange3Google";;
-    facedetect)               packagetype="GApps";
-                              if [ "$LIBFOLDER" = "lib64" ]; then  # On ARM64 we also need the ARM library of libfilterpack_facedetect.so
-                                packagelibs="libfilterpack_facedetect.so+fallback";
-                              else
-                                packagelibs="libfilterpack_facedetect.so";
-                              fi;;
-    faceunlock)               case "$ARCH" in  # ARM based platforms only
-                                arm*) packagetype="GApps"; packagename="com.android.facelock"; packagetarget="app/FaceLock";
-                                      if [ "$API" -ge "24" ]; then  # On Android 7.0+ the facelock library is libfacenet.so
-                                        FACELOCKLIB="libfacenet.so"
-                                        if [ "$API" -ge "26" ]; then  # On Android 8.0+ libprotobuf-cpp-shit.so is needed as libfacenet.so is currently unavailable for 8.0+ ARM devices
-                                          FACELOCKLIB2="libprotobuf-cpp-shit.so"
-                                        fi
-                                      else  # Before Android 7.0 there is a pittpatt folder and libfacelock_jni.so
-                                        packagefiles="vendor/pittpatt/";
-                                        FACELOCKLIB="libfacelock_jni.so"
-                                      fi
-                                      if [ "$LIBFOLDER" = "lib64" ]; then  # With ARM64 we also need the ARM library of libfrsdk.so
-                                        packagelibs="$FACELOCKLIB libfrsdk.so+fallback";
-                                      else
-                                        packagelibs="$FACELOCKLIB $FACELOCKLIB2 libfrsdk.so";
-                                      fi;;
-                              esac;;
     fitness)                  packagetype="GApps"; packagename="com.google.android.apps.fitness"; packagetarget="app/FitnessPrebuilt";;
     gcs)                      packagetype="GApps"; packagename="com.google.android.apps.gcs"; packagetarget="priv-app/GCS";;
     gmail)                    packagetype="GApps"; packagename="com.google.android.gm"; packagetarget="app/PrebuiltGmail";;
