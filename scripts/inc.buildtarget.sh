@@ -344,8 +344,8 @@ get_package_info(){
                               if [ "$API" -ge "29" ]; then  # Add system overlay for Android 10.0
                                 packagefiles="product/overlay/PixelStuff.apk"
                               fi;;
-    photos)                   packagetype="GApps"; packagename="com.google.android.apps.photos"; packagetarget="priv-app/Photos";;
-    photosvrmode)             packagetype="GApps"; packagename="com.google.android.apps.photos.vrmode"; packagetarget="priv-app/Photos";;
+    photos)                   packagetype="GApps"; packagename="com.google.android.apps.photos"; packagetarget="app/Photos";;
+    photosvrmode)             packagetype="GApps"; packagename="com.google.android.apps.photos.vrmode"; packagetarget="app/Photos";;
     pinyin)                   packagetype="GApps"; packagename="com.google.android.inputmethod.pinyin"; packagetarget="app/GooglePinyinIME";;
     playgames)                packagetype="GApps"; packagename="com.google.android.play.games"; packagetarget="app/PlayGames";;
     printservicegoogle)       packagetype="GApps"; packagename="com.google.android.printservice.recommendation"; packagetarget="app/GooglePrintRecommendationService";;
