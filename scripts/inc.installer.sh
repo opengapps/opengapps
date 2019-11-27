@@ -2544,14 +2544,10 @@ fi;
 set_progress 0.13;
 ui_print "- Removing existing/obsolete Apps";
 ui_print " ";
-for gapp_name in $full_removal_list; do
-  rm -rf "$SYSTEM/$gapp_name" "$SYSTEM/product/$gapp_name";
-done;
+rm -rf $(complete_gapps_list);
 
 # Remove Obsolete and Conflicting Apps
-for gapp_name in $remove_list; do
-  rm -rf "$SYSTEM/$gapp_name" "$SYSTEM/product/$gapp_name";
-done;
+rm -rf $(obsolete_gapps_list);
 
 # Remove Stock/AOSP Apps and add Removals to addon.d script
 aosp_remove_list=$(echo "${aosp_remove_list}" | sort -r); # reverse sort list for more readable output
