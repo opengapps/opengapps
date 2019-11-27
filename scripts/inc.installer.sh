@@ -788,7 +788,7 @@ ui_print " ";
 #                                                  Mount partitions
 
 mounts=""
-for p in "/cache" "/data" "/persist" "/product" "/vendor"; do
+for p in "/cache" "/data" "/persist" "/vendor"; do
   if [ -d "$p" ] && grep -q "$p" "/etc/fstab" && ! mountpoint -q "$p"; then
     if [ -z "$mounts" ]; then
       mounts="$p"
@@ -801,11 +801,7 @@ done
 ui_print "- Mounting $mounts";
 set_progress 0.01;
 for m in $mounts; do
-  if [ "$m" -eq "/product" ]; then
-    mount -o rw "$m"
-  else
-    mount "$m"
-  fi
+  mount "$m"
 done
 
 # _____________________________________________________________________________________________________________________
@@ -854,7 +850,7 @@ ui_print " ";
 #                                                  Declare Variables
 zip_folder="$(dirname "$OPENGAZIP")";
 g_prop=$SYSTEM/etc/g.prop
-PROPFILES="$g_prop $SYSTEM/default.prop $SYSTEM/build.prop /vendor/build.prop /data/local.prop /default.prop /build.prop"
+PROPFILES="$g_prop $SYSTEM/default.prop $SYSTEM/build.prop $SYSTEM/product/build.prop /vendor/build.prop /data/local.prop /default.prop /build.prop"
 bkup_tail=$TMP/bkup_tail.sh;
 gapps_removal_list=$TMP/gapps-remove.txt;
 g_log=$TMP/g.log;
@@ -1208,9 +1204,11 @@ set_perm() {
 }
 
 sys_app() {
-  if ( grep -q "codePath=\"$SYSTEM/app/$1" /data/system/packages.xml ); then
-    return 0;
-  fi;
+  for folder in $SYSTEM/app $SYSTEM/product/app $SYSTEM/priv-app $SYSTEM/product/priv-app; do
+    if ( grep -q "codePath=\"$folder/$1" /data/system/packages.xml ); then
+      return 0;
+    fi;
+  done;
   return 1;
 }
 
@@ -1586,8 +1584,8 @@ fi
 
 # Is device VRMode compatible
 vrmode_compat=false
-for xml in $(grep -rl '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/vendor/etc/); do
-  if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -qr '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/vendor/etc/ ); then
+for xml in $(grep -rl '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/product/etc/ $SYSTEM/vendor/etc/); do
+  if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -qr '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/product/etc/ $SYSTEM/vendor/etc/ ); then
     vrmode_compat=true
     break
   fi
@@ -1631,7 +1629,7 @@ log "Google Pixel Features" "$googlepixel_compat"
 
 # Determine if a GApps package is installed and
 # the version, type, and whether it's an Open GApps package
-if [ -e "$SYSTEM/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ] || [ -e "$SYSTEM/priv-app/GoogleServicesFramework.apk" ]; then
+if [ -e "$SYSTEM/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ] || [ -e "$SYSTEM/product/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ] || [ -e "$SYSTEM/priv-app/GoogleServicesFramework.apk" ] || [ -e "$SYSTEM/product/priv-app/GoogleServicesFramework.apk" ]; then
   openversion="$(get_prop "ro.addon.open_version")"
   if [ -n "$openversion" ]; then
     log "Current GApps Version" "$openversion"
@@ -1993,7 +1991,7 @@ fi;
 # NOTICE: Only for Google Keyboard we need to take KitKat support into account, others are only Lollipop+
 ignoregooglecontacts="true"
 for f in $contactsstock_list; do
-  if [ -e "$SYSTEM/$f" ]; then
+  if [ -e "$SYSTEM/$f" ] || [ -e "$SYSTEM/product/$f" ]; then
     ignoregooglecontacts="false"
     break; #at least 1 aosp stock file is present
   fi
@@ -2001,6 +1999,7 @@ done;
 if [ "$ignoregooglecontacts" = "true" ]; then
   if ( ! contains "$gapps_list" "contactsgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
     sed -i "\:$SYSTEM/priv-app/GoogleContacts:d" $gapps_removal_list;
+    sed -i "\:$SYSTEM/product/priv-app/GoogleContacts:d" $gapps_removal_list;
     ignoregooglecontacts="true[NoRemove]"
     install_note="${install_note}nogooglecontacts_removal"$'\n'; # make note that Google Contacts will not be removed
   else
@@ -2010,7 +2009,7 @@ fi
 
 ignoregoogledialer="true"
 for f in $dialerstock_list; do
-  if [ -e "$SYSTEM/$f" ]; then
+  if [ -e "$SYSTEM/$f" ] || [ -e "$SYSTEM/product/$f" ]; then
     ignoregoogledialer="false"
     break; #at least 1 aosp stock file is present
   fi
@@ -2018,6 +2017,7 @@ done;
 if [ "$ignoregoogledialer" = "true" ]; then
   if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
     sed -i "\:$SYSTEM/priv-app/GoogleDialer:d" $gapps_removal_list;
+    sed -i "\:$SYSTEM/product/priv-app/GoogleDialer:d" $gapps_removal_list;
     ignoregoogledialer="true[NoRemove]"
     install_note="${install_note}nogoogledialer_removal"$'\n'; # make note that Google Dialer will not be removed
   else
@@ -2027,7 +2027,7 @@ fi
 
 ignoregooglekeyboard="true"
 for f in $keyboardstock_list; do
-  if [ -e "$SYSTEM/$f" ]; then
+  if [ -e "$SYSTEM/$f" ] || [ -e "$SYSTEM/product/$f" ]; then
     ignoregooglekeyboard="false"
     break; #at least 1 aosp stock file is present
   fi
@@ -2046,7 +2046,7 @@ fi
 
 ignoregooglepackageinstaller="true"
 for f in $packageinstallerstock_list; do
-  if [ -e "$SYSTEM/$f" ]; then
+  if [ -e "$SYSTEM/$f" ] || [ -e "$SYSTEM/product/$f" ]; then
     ignoregooglepackageinstaller="false"
     break; #at least 1 aosp stock file is present
   fi
@@ -2054,6 +2054,7 @@ done;
 if [ "$ignoregooglepackageinstaller" = "true" ]; then
   if ( ! contains "$gapps_list" "packageinstallergoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
     sed -i "\:$SYSTEM/priv-app/GooglePackageInstaller:d" $gapps_removal_list;
+    sed -i "\:$SYSTEM/product/priv-app/GooglePackageInstaller:d" $gapps_removal_list;
     ignoregooglepackageinstaller="true[NoRemove]"
     install_note="${install_note}nogooglepackageinstaller_removal"$'\n'; # make note that Google Package Installer will not be removed
   else
@@ -2063,7 +2064,7 @@ fi
 
 ignoregoogletag="true"
 for f in $tagstock_list; do
-  if [ -e "$SYSTEM/$f" ]; then
+  if [ -e "$SYSTEM/$f" ] || [ -e "$SYSTEM/product/$f" ]; then
     ignoregoogletag="false"
     break; #at least 1 aosp stock file is present
   fi
@@ -2071,6 +2072,7 @@ done;
 if [ "$ignoregoogletag" = "true" ]; then
   if ( ! contains "$gapps_list" "taggoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
     sed -i "\:$SYSTEM/priv-app/TagGoogle:d" $gapps_removal_list;
+    sed -i "\:$SYSTEM/product/priv-app/TagGoogle:d" $gapps_removal_list;
     ignoregoogletag="true[NoRemove]"
     install_note="${install_note}nogoogletag_removal"$'\n'; # make note that Google Tag will not be removed
   else
@@ -2080,7 +2082,7 @@ fi
 
 ignoregooglewebview="true"
 for f in $webviewstock_list; do
-  if [ -e "$SYSTEM/$f" ]; then
+  if [ -e "$SYSTEM/$f" ] || [ -e "$SYSTEM/product/$f" ]; then
     ignoregooglewebview="false"
     break; #at least 1 aosp stock file is present
   fi
@@ -2100,7 +2102,7 @@ if [ -n "$user_remove_list" ]; then
       * )       testapk="${testapk}.apk" ;;
     esac;
     # Create user_remove_folder_list if this is a system/ROM application
-    for folder in $SYSTEM/app $SYSTEM/priv-app; do # Check all subfolders in /system/app /system/priv-app for the apk
+    for folder in $SYSTEM/app $SYSTEM/product/app $SYSTEM/priv-app $SYSTEM/product/priv-app; do # Check all subfolders of system app/priv-app folders for the apks
       file_count=0; # Reset Counter
       file_count=$(find $folder -iname "$testapk" | wc -l);
       case $file_count in
@@ -2121,7 +2123,7 @@ fi;
 
 # Removing old Chrome libraries
 obsolete_libs_list="";
-for f in $(find $SYSTEM/lib $SYSTEM/lib64 -name 'libchrome.*.so' 2>/dev/null); do
+for f in $(find $SYSTEM/lib $SYSTEM/product/lib $SYSTEM/lib64 $SYSTEM/product/lib64 -name 'libchrome.*.so' 2>/dev/null); do
   obsolete_libs_list="${obsolete_libs_list}$f"$'\n';
 done;
 
@@ -2217,7 +2219,7 @@ for aosp_name in $aosp_remove_list; do
   eval "list_name=\$${aosp_name}_list";
   aosp_size_kb=0; # Reset counter
   for file_name in $list_name; do
-    for file_folder in "$SYSTEM" "/product" "$SYSTEM/product"; do
+    for file_folder in "$SYSTEM" "$SYSTEM/product"; do
       if [ -d "$file_folder" ] && [ -e "$file_folder/$file_name" ]; then
         file_size_kb=$(du -ck "$file_folder/$file_name" | tail -n 1 | awk '{ print $1 }');
         aosp_size_kb=$((file_size_kb + aosp_size_kb));
@@ -2325,8 +2327,8 @@ for aosp_name in $aosp_remove_list; do
   eval "list_name=\$${aosp_name}_list";
   list_name=$(echo "${list_name}" | sort -r); # reverse sort list for more readable output
   for file_name in $list_name; do
-    rm -rf "$SYSTEM/$file_name" && rm -rf "$SYSTEM/product/$file_name" && rm -rf "/product/$file_name";
-    sed -i "\:# Remove Stock/AOSP apps (from GApps Installer):a \    rm -rf \$SYS/$file_name && rm -rf \$SYS/product/$file_name && rm -rf /product/$file_name" $bkup_tail;
+    rm -rf "$SYSTEM/$file_name" "$SYSTEM/product/$file_name";
+    sed -i "\:# Remove Stock/AOSP apps (from GApps Installer):a \    rm -rf \$SYS/$file_name \$SYS/product/$file_name" $bkup_tail;
   done;
 done;
 
@@ -2341,7 +2343,7 @@ for user_app in $user_remove_folder_list; do
 done;
 
 # Remove any empty folders we may have created during the removal process
-for i in $SYSTEM/app $SYSTEM/priv-app $SYSTEM/vendor/pittpatt $SYSTEM/usr/srec $SYSTEM/etc/preferred-apps; do
+for i in $SYSTEM/app $SYSTEM/product/app $SYSTEM/priv-app $SYSTEM/product/priv-app $SYSTEM/vendor/pittpatt $SYSTEM/usr/srec $SYSTEM/etc/preferred-apps; do
   find "$i" -type d | xargs -r rmdir -p --ignore-fail-on-non-empty;
 done;
 # _____________________________________________________________________________________________________________________
