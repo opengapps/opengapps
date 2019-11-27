@@ -296,23 +296,47 @@ app/YuBrowser'"$REMOVALSUFFIX"'
 priv-app/BLUOpera'"$REMOVALSUFFIX"'
 priv-app/BLUOperaPreinstall'"$REMOVALSUFFIX"'
 priv-app/Browser'"$REMOVALSUFFIX"'
-priv-app/BrowserIntl'"$REMOVALSUFFIX"'"
+priv-app/BrowserIntl'"$REMOVALSUFFIX"'
+product/app/Bolt'"$REMOVALSUFFIX"'
+product/app/Browser'"$REMOVALSUFFIX"'
+product/app/Browser2'"$REMOVALSUFFIX"'
+product/app/BrowserIntl'"$REMOVALSUFFIX"'
+product/app/BrowserProviderProxy'"$REMOVALSUFFIX"'
+product/app/Chromium'"$REMOVALSUFFIX"'
+product/app/Fluxion'"$REMOVALSUFFIX"'
+product/app/Gello'"$REMOVALSUFFIX"'
+product/app/Jelly'"$REMOVALSUFFIX"'
+product/app/PA_Browser'"$REMOVALSUFFIX"'
+product/app/PABrowser'"$REMOVALSUFFIX"'
+product/app/YuBrowser'"$REMOVALSUFFIX"'
+product/priv-app/BLUOpera'"$REMOVALSUFFIX"'
+product/priv-app/BLUOperaPreinstall'"$REMOVALSUFFIX"'
+product/priv-app/Browser'"$REMOVALSUFFIX"'
+product/priv-app/BrowserIntl'"$REMOVALSUFFIX"'"
 
 basicdreams_list="
-app/BasicDreams'"$REMOVALSUFFIX"'"
+app/BasicDreams'"$REMOVALSUFFIX"'
+product/app/BasicDreams'"$REMOVALSUFFIX"'"
 
 # Must be used when GoogleCalculator is installed
 calculatorstock_list="
 app/Calculator'"$REMOVALSUFFIX"'
 app/ExactCalculator'"$REMOVALSUFFIX"'
-app/FineOSCalculator'"$REMOVALSUFFIX"'"
+app/FineOSCalculator'"$REMOVALSUFFIX"'
+product/app/Calculator'"$REMOVALSUFFIX"'
+product/app/ExactCalculator'"$REMOVALSUFFIX"'
+product/app/FineOSCalculator'"$REMOVALSUFFIX"'"
 
 # Must be used when GoogleCalendar is installed
 calendarstock_list="
 app/Calendar'"$REMOVALSUFFIX"'
 app/MonthCalendarWidget'"$REMOVALSUFFIX"'
 priv-app/Calendar'"$REMOVALSUFFIX"'
-app/FineOSCalendar'"$REMOVALSUFFIX"'"
+app/FineOSCalendar'"$REMOVALSUFFIX"'
+product/app/Calendar'"$REMOVALSUFFIX"'
+product/app/MonthCalendarWidget'"$REMOVALSUFFIX"'
+product/priv-app/Calendar'"$REMOVALSUFFIX"'
+product/app/FineOSCalendar'"$REMOVALSUFFIX"'"
 
 # Must be used when GoogleCamera is installed
 camerastock_list="
@@ -332,25 +356,50 @@ app/Snap'"$REMOVALSUFFIX"'
 priv-app/Snap'"$REMOVALSUFFIX"'
 app/SnapdragonCamera'"$REMOVALSUFFIX"'
 priv-app/SnapdragonCamera'"$REMOVALSUFFIX"'
-app/FineOSCamera'"$REMOVALSUFFIX"'"
+app/FineOSCamera'"$REMOVALSUFFIX"'
+product/app/Camera'"$REMOVALSUFFIX"'
+product/app/Camera2'"$REMOVALSUFFIX"'
+product/priv-app/Camera'"$REMOVALSUFFIX"'
+product/priv-app/Camera2'"$REMOVALSUFFIX"'
+product/priv-app/CameraX'"$REMOVALSUFFIX"'
+product/app/MotCamera'"$REMOVALSUFFIX"'
+product/app/MtkCamera'"$REMOVALSUFFIX"'
+product/app/MTKCamera'"$REMOVALSUFFIX"'
+product/priv-app/MotCamera'"$REMOVALSUFFIX"'
+product/priv-app/MiuiCamera'"$REMOVALSUFFIX"'
+product/priv-app/MtkCamera'"$REMOVALSUFFIX"'
+product/priv-app/MTKCamera'"$REMOVALSUFFIX"'
+product/app/Snap'"$REMOVALSUFFIX"'
+product/priv-app/Snap'"$REMOVALSUFFIX"'
+product/app/SnapdragonCamera'"$REMOVALSUFFIX"'
+product/priv-app/SnapdragonCamera'"$REMOVALSUFFIX"'
+product/app/FineOSCamera'"$REMOVALSUFFIX"'"
 
 clockstock_list="
 app/DeskClock'"$REMOVALSUFFIX"'
 app/DeskClock2'"$REMOVALSUFFIX"'
 app/FineOSDeskClock'"$REMOVALSUFFIX"'
-app/OmniClockOSS'"$REMOVALSUFFIX"'"
+app/OmniClockOSS'"$REMOVALSUFFIX"'
+product/app/DeskClock'"$REMOVALSUFFIX"'
+product/app/DeskClock2'"$REMOVALSUFFIX"'
+product/app/FineOSDeskClock'"$REMOVALSUFFIX"'
+product/app/OmniClockOSS'"$REMOVALSUFFIX"'"
 
 cmaccount_list="
-priv-app/CMAccount'"$REMOVALSUFFIX"'"
+priv-app/CMAccount'"$REMOVALSUFFIX"'
+product/priv-app/CMAccount'"$REMOVALSUFFIX"'"
 
 cmaudiofx_list="
-priv-app/AudioFX'"$REMOVALSUFFIX"'"
+priv-app/AudioFX'"$REMOVALSUFFIX"'
+product/priv-app/AudioFX'"$REMOVALSUFFIX"'"
 
 cmbugreport_list="
-priv-app/CMBugReport'"$REMOVALSUFFIX"'"
+priv-app/CMBugReport'"$REMOVALSUFFIX"'
+product/priv-app/CMBugReport'"$REMOVALSUFFIX"'"
 
 cmfilemanager_list="
-app/CMFileManager'"$REMOVALSUFFIX"'"
+app/CMFileManager'"$REMOVALSUFFIX"'
+product/app/CMFileManager'"$REMOVALSUFFIX"'"
 
 cmmusic_list="
 app/Apollo'"$REMOVALSUFFIX"'
@@ -359,62 +408,93 @@ priv-app/Eleven'"$REMOVALSUFFIX"'
 app/Music'"$REMOVALSUFFIX"'
 app/MusicX'"$REMOVALSUFFIX"'
 app/Phonograph'"$REMOVALSUFFIX"'
-app/SnapdragonMusic'"$REMOVALSUFFIX"'"
+app/SnapdragonMusic'"$REMOVALSUFFIX"'
+product/app/Apollo'"$REMOVALSUFFIX"'
+product/app/Eleven'"$REMOVALSUFFIX"'
+product/priv-app/Eleven'"$REMOVALSUFFIX"'
+product/app/Music'"$REMOVALSUFFIX"'
+product/app/MusicX'"$REMOVALSUFFIX"'
+product/app/Phonograph'"$REMOVALSUFFIX"'
+product/app/SnapdragonMusic'"$REMOVALSUFFIX"'"
 
 cmscreencast_list="
-priv-app/Screencast'"$REMOVALSUFFIX"'"
+priv-app/Screencast'"$REMOVALSUFFIX"'
+product/priv-app/Screencast'"$REMOVALSUFFIX"'"
 
 cmsetupwizard_list="
 app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
-priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'"
+priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
+product/app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
+product/priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'"
 
 cmupdater_list="
-priv-app/CMUpdater'"$REMOVALSUFFIX"'"
+priv-app/CMUpdater'"$REMOVALSUFFIX"'
+product/priv-app/CMUpdater'"$REMOVALSUFFIX"'"
 
 cmwallpapers_list="
-app/CMWallpapers'"$REMOVALSUFFIX"'"
+app/CMWallpapers'"$REMOVALSUFFIX"'
+product/app/CMWallpapers'"$REMOVALSUFFIX"'"
 
 cmweatherprovider_list="
-priv-app/WeatherProvider'"$REMOVALSUFFIX"'"
+priv-app/WeatherProvider'"$REMOVALSUFFIX"'
+product/priv-app/WeatherProvider'"$REMOVALSUFFIX"'"
 
 # Must be used when Google Contacts is installed
 contactsstock_list="
 priv-app/Contacts'"$REMOVALSUFFIX"'
-priv-app/FineOSContacts'"$REMOVALSUFFIX"'"
+priv-app/FineOSContacts'"$REMOVALSUFFIX"'
+product/priv-app/Contacts'"$REMOVALSUFFIX"'
+product/priv-app/FineOSContacts'"$REMOVALSUFFIX"'"
 
 dashclock_list="
-app/DashClock'"$REMOVALSUFFIX"'"
+app/DashClock'"$REMOVALSUFFIX"'
+product/app/DashClock'"$REMOVALSUFFIX"'"
 
 # Must be used when Google Dialer is installed
 # For now, prevent stock AOSP Dialer (priv-app/Dialer) from being removed, no matter the configuration, on all ROMs
 dialerstock_list="
 priv-app/FineOSDialer'"$REMOVALSUFFIX"'
-priv-app/OPInCallUI'"$REMOVALSUFFIX"'"
+priv-app/OPInCallUI'"$REMOVALSUFFIX"'
+product/priv-app/FineOSDialer'"$REMOVALSUFFIX"'
+product/priv-app/OPInCallUI'"$REMOVALSUFFIX"'"
 
 email_list="
 app/Email'"$REMOVALSUFFIX"'
 app/PrebuiltEmailGoogle'"$REMOVALSUFFIX"'
-priv-app/Email'"$REMOVALSUFFIX"'"
+priv-app/Email'"$REMOVALSUFFIX"'
+product/app/Email'"$REMOVALSUFFIX"'
+product/app/PrebuiltEmailGoogle'"$REMOVALSUFFIX"'
+product/priv-app/Email'"$REMOVALSUFFIX"'"
 
 exchangestock_list="
 app/Exchange2'"$REMOVALSUFFIX"'
-priv-app/Exchange2'"$REMOVALSUFFIX"'"
+priv-app/Exchange2'"$REMOVALSUFFIX"'
+product/app/Exchange2'"$REMOVALSUFFIX"'
+product/priv-app/Exchange2'"$REMOVALSUFFIX"'"
 
 extservicesstock_list="
-priv-app/ExtServices'"$REMOVALSUFFIX"'"
+priv-app/ExtServices'"$REMOVALSUFFIX"'
+product/priv-app/ExtServices'"$REMOVALSUFFIX"'"
 
 extsharedstock_list="
-app/ExtShared'"$REMOVALSUFFIX"'"
+app/ExtShared'"$REMOVALSUFFIX"'
+product/app/ExtShared'"$REMOVALSUFFIX"'"
 
 fmradio_list="
 app/FM'"$REMOVALSUFFIX"'
 app/FM2'"$REMOVALSUFFIX"'
 app/FMRecord'"$REMOVALSUFFIX"'
 priv-app/FMRadio'"$REMOVALSUFFIX"'
-priv-app/MiuiRadio'"$REMOVALSUFFIX"'"
+priv-app/MiuiRadio'"$REMOVALSUFFIX"'
+product/app/FM'"$REMOVALSUFFIX"'
+product/app/FM2'"$REMOVALSUFFIX"'
+product/app/FMRecord'"$REMOVALSUFFIX"'
+product/priv-app/FMRadio'"$REMOVALSUFFIX"'
+product/priv-app/MiuiRadio'"$REMOVALSUFFIX"'"
 
 galaxy_list="
-app/Galaxy4'"$REMOVALSUFFIX"'"
+app/Galaxy4'"$REMOVALSUFFIX"'
+product/app/Galaxy4'"$REMOVALSUFFIX"'"
 
 gallery_list="
 app/Gallery'"$REMOVALSUFFIX"'
@@ -428,13 +508,27 @@ app/MediaShortcuts'"$REMOVALSUFFIX"'
 priv-app/MediaShortcuts'"$REMOVALSUFFIX"'
 priv-app/MiuiGallery'"$REMOVALSUFFIX"'
 priv-app/FineOSGallery'"$REMOVALSUFFIX"'
-priv-app/SnapdragonGallery'"$REMOVALSUFFIX"'"
+priv-app/SnapdragonGallery'"$REMOVALSUFFIX"'
+product/app/Gallery'"$REMOVALSUFFIX"'
+product/priv-app/Gallery'"$REMOVALSUFFIX"'
+product/priv-app/GalleryX'"$REMOVALSUFFIX"'
+product/app/Gallery2'"$REMOVALSUFFIX"'
+product/priv-app/Gallery2'"$REMOVALSUFFIX"'
+product/app/MotGallery'"$REMOVALSUFFIX"'
+product/priv-app/MotGallery'"$REMOVALSUFFIX"'
+product/app/MediaShortcuts'"$REMOVALSUFFIX"'
+product/priv-app/MediaShortcuts'"$REMOVALSUFFIX"'
+product/priv-app/MiuiGallery'"$REMOVALSUFFIX"'
+product/priv-app/FineOSGallery'"$REMOVALSUFFIX"'
+product/priv-app/SnapdragonGallery'"$REMOVALSUFFIX"'"
 
 hexo_list="
-app/HexoLibre'"$REMOVALSUFFIX"'"
+app/HexoLibre'"$REMOVALSUFFIX"'
+product/app/HexoLibre'"$REMOVALSUFFIX"'"
 
 holospiral_list="
-app/HoloSpiralWallpaper'"$REMOVALSUFFIX"'"
+app/HoloSpiralWallpaper'"$REMOVALSUFFIX"'
+product/app/HoloSpiralWallpaper'"$REMOVALSUFFIX"'"
 
 # Must be used when GoogleKeyboard is installed
 keyboardstock_list="
@@ -444,7 +538,14 @@ app/OpenWnn'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPal'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalPortuguesebrPack'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalSpanishLatinPack'"$REMOVALSUFFIX"'
-priv-app/MzInput'"$REMOVALSUFFIX"'"
+priv-app/MzInput'"$REMOVALSUFFIX"'
+product/app/LatinIME'"$REMOVALSUFFIX"'
+product/app/MzInput'"$REMOVALSUFFIX"'
+product/app/OpenWnn'"$REMOVALSUFFIX"'
+product/priv-app/BLUTouchPal'"$REMOVALSUFFIX"'
+product/priv-app/BLUTouchPalPortuguesebrPack'"$REMOVALSUFFIX"'
+product/priv-app/BLUTouchPalSpanishLatinPack'"$REMOVALSUFFIX"'
+product/priv-app/MzInput'"$REMOVALSUFFIX"'"
 
 launcher_list="
 app/CMHome'"$REMOVALSUFFIX"'
@@ -473,128 +574,205 @@ priv-app/MiuiHome'"$REMOVALSUFFIX"'
 priv-app/Paclauncher'"$REMOVALSUFFIX"'
 priv-app/SlimLauncher'"$REMOVALSUFFIX"'
 priv-app/Trebuchet'"$REMOVALSUFFIX"'
-priv-app/Nox'"$REMOVALSUFFIX"'"
+priv-app/Nox'"$REMOVALSUFFIX"'
+product/app/CMHome'"$REMOVALSUFFIX"'
+product/app/CustomLauncher3'"$REMOVALSUFFIX"'
+product/app/EasyLauncher'"$REMOVALSUFFIX"'
+product/app/Fluctuation'"$REMOVALSUFFIX"'
+product/app/FlymeLauncher'"$REMOVALSUFFIX"'
+product/app/FlymeLauncherIntl'"$REMOVALSUFFIX"'
+product/app/Launcher2'"$REMOVALSUFFIX"'
+product/app/Launcher3'"$REMOVALSUFFIX"'
+product/app/LiquidLauncher'"$REMOVALSUFFIX"'
+product/app/Paclauncher'"$REMOVALSUFFIX"'
+product/app/SlimLauncher'"$REMOVALSUFFIX"'
+product/app/Trebuchet'"$REMOVALSUFFIX"'
+product/app/FineOSHome'"$REMOVALSUFFIX"'
+product/priv-app/CMHome'"$REMOVALSUFFIX"'
+product/priv-app/CustomLauncher3'"$REMOVALSUFFIX"'
+product/priv-app/EasyLauncher'"$REMOVALSUFFIX"'
+product/priv-app/Fluctuation'"$REMOVALSUFFIX"'
+product/priv-app/FlymeLauncher'"$REMOVALSUFFIX"'
+product/priv-app/FlymeLauncherIntl'"$REMOVALSUFFIX"'
+product/priv-app/Launcher2'"$REMOVALSUFFIX"'
+product/priv-app/Launcher3'"$REMOVALSUFFIX"'
+product/priv-app/LiquidLauncher'"$REMOVALSUFFIX"'
+product/priv-app/MiuiHome'"$REMOVALSUFFIX"'
+product/priv-app/Paclauncher'"$REMOVALSUFFIX"'
+product/priv-app/SlimLauncher'"$REMOVALSUFFIX"'
+product/priv-app/Trebuchet'"$REMOVALSUFFIX"'
+product/priv-app/Nox'"$REMOVALSUFFIX"'"
 
 lbr0zip_list="
-app/Br0Zip'"$REMOVALSUFFIX"'"
+app/Br0Zip'"$REMOVALSUFFIX"'
+product/app/Br0Zip'"$REMOVALSUFFIX"'"
 
 livewallpapers_list="
-app/LiveWallpapers'"$REMOVALSUFFIX"'"
+app/LiveWallpapers'"$REMOVALSUFFIX"'
+product/app/LiveWallpapers'"$REMOVALSUFFIX"'"
 
 lockclock_list="
-app/LockClock'"$REMOVALSUFFIX"'"
+app/LockClock'"$REMOVALSUFFIX"'
+product/app/LockClock'"$REMOVALSUFFIX"'"
 
 logcat_list="
-priv-app/MatLog'"$REMOVALSUFFIX"'"
+priv-app/MatLog'"$REMOVALSUFFIX"'
+product/priv-app/MatLog'"$REMOVALSUFFIX"'"
 
 lrecorder_list="
-priv-app/Recorder'"$REMOVALSUFFIX"'"
+priv-app/Recorder'"$REMOVALSUFFIX"'
+product/priv-app/Recorder'"$REMOVALSUFFIX"'"
 
 lsetupwizard_list="
 app/LineageSetupWizard'"$REMOVALSUFFIX"'
-priv-app/LineageSetupWizard'"$REMOVALSUFFIX"'"
+priv-app/LineageSetupWizard'"$REMOVALSUFFIX"'
+product/app/LineageSetupWizard'"$REMOVALSUFFIX"'
+product/priv-app/LineageSetupWizard'"$REMOVALSUFFIX"'"
 
 lupdater_list="
-priv-app/Updater'"$REMOVALSUFFIX"'"
+priv-app/Updater'"$REMOVALSUFFIX"'
+product/priv-app/Updater'"$REMOVALSUFFIX"'"
 
 mms_list="
 app/messaging'"$REMOVALSUFFIX"'
 priv-app/Mms'"$REMOVALSUFFIX"'
-priv-app/FineOSMms'"$REMOVALSUFFIX"'"
+priv-app/FineOSMms'"$REMOVALSUFFIX"'
+product/app/messaging'"$REMOVALSUFFIX"'
+product/priv-app/Mms'"$REMOVALSUFFIX"'
+product/priv-app/FineOSMms'"$REMOVALSUFFIX"'"
 
 mzfilemanager_list="
-app/FileManager'"$REMOVALSUFFIX"'"
+app/FileManager'"$REMOVALSUFFIX"'
+product/app/FileManager'"$REMOVALSUFFIX"'"
 
 mzpay_list="
 app/MzMPay'"$REMOVALSUFFIX"'
-app/MzPay'"$REMOVALSUFFIX"'"
+app/MzPay'"$REMOVALSUFFIX"'
+product/app/MzMPay'"$REMOVALSUFFIX"'
+product/app/MzPay'"$REMOVALSUFFIX"'"
 
 mzsetupwizard_list="
-app/MzSetupWizard'"$REMOVALSUFFIX"'"
+app/MzSetupWizard'"$REMOVALSUFFIX"'
+product/app/MzSetupWizard'"$REMOVALSUFFIX"'"
 
 mzupdater_list="
 app/MzUpdate'"$REMOVALSUFFIX"'
 app/SystemUpdate'"$REMOVALSUFFIX"'
-app/SystemUpdateAssistant'"$REMOVALSUFFIX"'"
+app/SystemUpdateAssistant'"$REMOVALSUFFIX"'
+product/app/MzUpdate'"$REMOVALSUFFIX"'
+product/app/SystemUpdate'"$REMOVALSUFFIX"'
+product/app/SystemUpdateAssistant'"$REMOVALSUFFIX"'"
 
 mzweather_list="
-app/Weather'"$REMOVALSUFFIX"'"
+app/Weather'"$REMOVALSUFFIX"'
+product/app/Weather'"$REMOVALSUFFIX"'"
 
 noisefield_list="
-app/NoiseField'"$REMOVALSUFFIX"'"
+app/NoiseField'"$REMOVALSUFFIX"'
+product/app/NoiseField'"$REMOVALSUFFIX"'"
 
 omniswitch_list="
-priv-app/OmniSwitch'"$REMOVALSUFFIX"'"
+priv-app/OmniSwitch'"$REMOVALSUFFIX"'
+product/priv-app/OmniSwitch'"$REMOVALSUFFIX"'"
 
 # Must be used when Google PackageInstaller is installed; non-capitalized spelling on Lenovo K3 Note
 packageinstallerstock_list="
 app/PackageInstaller'"$REMOVALSUFFIX"'
 priv-app/PackageInstaller'"$REMOVALSUFFIX"'
-priv-app/packageinstaller'"$REMOVALSUFFIX"'"
+priv-app/packageinstaller'"$REMOVALSUFFIX"'
+product/app/PackageInstaller'"$REMOVALSUFFIX"'
+product/priv-app/PackageInstaller'"$REMOVALSUFFIX"'
+product/priv-app/packageinstaller'"$REMOVALSUFFIX"'"
 
 phasebeam_list="
-app/PhaseBeam'"$REMOVALSUFFIX"'"
+app/PhaseBeam'"$REMOVALSUFFIX"'
+product/app/PhaseBeam'"$REMOVALSUFFIX"'"
 
 photophase_list="
-app/PhotoPhase'"$REMOVALSUFFIX"'"
+app/PhotoPhase'"$REMOVALSUFFIX"'
+product/app/PhotoPhase'"$REMOVALSUFFIX"'"
 
 phototable_list="
-app/PhotoTable'"$REMOVALSUFFIX"'"
+app/PhotoTable'"$REMOVALSUFFIX"'
+product/app/PhotoTable'"$REMOVALSUFFIX"'"
 
 picotts_list="
 app/PicoTts'"$REMOVALSUFFIX"'
 priv-app/PicoTts'"$REMOVALSUFFIX"'
 lib/libttscompat.so
 lib/libttspico.so
+product/app/PicoTts'"$REMOVALSUFFIX"'
+product/priv-app/PicoTts'"$REMOVALSUFFIX"'
+product/lib/libttscompat.so
+product/lib/libttspico.so
 tts"
 
 printservicestock_list="
 app/BuiltInPrintService'"$REMOVALSUFFIX"'
-app/PrintRecommendationService'"$REMOVALSUFFIX"'"
+app/PrintRecommendationService'"$REMOVALSUFFIX"'
+product/app/BuiltInPrintService'"$REMOVALSUFFIX"'
+product/app/PrintRecommendationService'"$REMOVALSUFFIX"'"
 
 provision_list="
 app/Provision'"$REMOVALSUFFIX"'
-priv-app/Provision'"$REMOVALSUFFIX"'"
+priv-app/Provision'"$REMOVALSUFFIX"'
+product/app/Provision'"$REMOVALSUFFIX"'
+product/priv-app/Provision'"$REMOVALSUFFIX"'"
 
 simtoolkit_list="
-app/Stk'"$REMOVALSUFFIX"'"
+app/Stk'"$REMOVALSUFFIX"'
+product/app/Stk'"$REMOVALSUFFIX"'"
 
 soundrecorder_list="
-app/SoundRecorder'"$REMOVALSUFFIX"'"
+app/SoundRecorder'"$REMOVALSUFFIX"'
+product/app/SoundRecorder'"$REMOVALSUFFIX"'"
 
 storagemanagerstock_list="
-priv-app/StorageManager'"$REMOVALSUFFIX"'"
+priv-app/StorageManager'"$REMOVALSUFFIX"'
+product/priv-app/StorageManager'"$REMOVALSUFFIX"'"
 
 studio_list="
-app/VideoEditor'"$REMOVALSUFFIX"'"
+app/VideoEditor'"$REMOVALSUFFIX"'
+product/app/VideoEditor'"$REMOVALSUFFIX"'"
 
 sykopath_list="
-app/Layers'"$REMOVALSUFFIX"'"
+app/Layers'"$REMOVALSUFFIX"'
+product/app/Layers'"$REMOVALSUFFIX"'"
 
 tagstock_list="
-priv-app/Tag'"$REMOVALSUFFIX"'"
+priv-app/Tag'"$REMOVALSUFFIX"'
+product/priv-app/Tag'"$REMOVALSUFFIX"'"
 
 terminal_list="
-app/Terminal'"$REMOVALSUFFIX"'"
+app/Terminal'"$REMOVALSUFFIX"'
+product/app/Terminal'"$REMOVALSUFFIX"'"
 
 themes_list="
 priv-app/CustomizeCenter'"$REMOVALSUFFIX"'
 priv-app/ThemeChooser'"$REMOVALSUFFIX"'
-priv-app/ThemesProvider'"$REMOVALSUFFIX"'"
+priv-app/ThemesProvider'"$REMOVALSUFFIX"'
+product/priv-app/CustomizeCenter'"$REMOVALSUFFIX"'
+product/priv-app/ThemeChooser'"$REMOVALSUFFIX"'
+product/priv-app/ThemesProvider'"$REMOVALSUFFIX"'"
 
 visualizationwallpapers_list="
-app/VisualizationWallpapers'"$REMOVALSUFFIX"'"
+app/VisualizationWallpapers'"$REMOVALSUFFIX"'
+product/app/VisualizationWallpapers'"$REMOVALSUFFIX"'"
 
 wallpapersstock_list="
-app/WallpaperPicker'"$REMOVALSUFFIX"'"
+app/WallpaperPicker'"$REMOVALSUFFIX"'
+product/app/WallpaperPicker'"$REMOVALSUFFIX"'"
 
 webviewstock_list="
 app/webview'"$REMOVALSUFFIX"'
 app/WebView'"$REMOVALSUFFIX"'
+product/app/webview'"$REMOVALSUFFIX"'
+product/app/WebView'"$REMOVALSUFFIX"'
 '"$webviewstocklibs"'"
 
 whisperpush_list="
-app/WhisperPush'"$REMOVALSUFFIX"'"
+app/WhisperPush'"$REMOVALSUFFIX"'
+product/app/WhisperPush'"$REMOVALSUFFIX"'"
 # _____________________________________________________________________________________________________________________
 #                                             Permanently Removed Folders
 # Pieces that may be left over from AIO ROMs that can/will interfere with these GApps
@@ -630,6 +808,37 @@ priv-app/QuickSearchBox'"$REMOVALSUFFIX"'
 priv-app/Vending'"$REMOVALSUFFIX"'
 priv-app/Velvet_update'"$REMOVALSUFFIX"'
 priv-app/GmsCore_update'"$REMOVALSUFFIX"'
+product/app/BooksStub'"$REMOVALSUFFIX"'
+product/app/BookmarkProvider'"$REMOVALSUFFIX"'
+product/app/CalendarGoogle'"$REMOVALSUFFIX"'
+product/app/CloudPrint'"$REMOVALSUFFIX"'
+product/app/DeskClockGoogle'"$REMOVALSUFFIX"'
+product/app/EditorsDocsStub'"$REMOVALSUFFIX"'
+product/app/EditorsSheetsStub'"$REMOVALSUFFIX"'
+product/app/EditorsSlidesStub'"$REMOVALSUFFIX"'
+product/app/Gmail'"$REMOVALSUFFIX"'
+product/app/Gmail2'"$REMOVALSUFFIX"'
+product/app/GoogleCalendar'"$REMOVALSUFFIX"'
+product/app/GoogleCloudPrint'"$REMOVALSUFFIX"'
+product/app/GoogleHangouts'"$REMOVALSUFFIX"'
+product/app/GoogleKeep'"$REMOVALSUFFIX"'
+product/app/GoogleLatinIme'"$REMOVALSUFFIX"'
+product/app/Keep'"$REMOVALSUFFIX"'
+product/app/NewsstandStub'"$REMOVALSUFFIX"'
+product/app/PartnerBookmarksProvider'"$REMOVALSUFFIX"'
+product/app/PrebuiltBugleStub'"$REMOVALSUFFIX"'
+product/app/PrebuiltKeepStub'"$REMOVALSUFFIX"'
+product/app/QuickSearchBox'"$REMOVALSUFFIX"'
+product/app/Vending'"$REMOVALSUFFIX"'
+product/priv-app/GmsCore'"$REMOVALSUFFIX"'
+product/priv-app/GoogleNow'"$REMOVALSUFFIX"'
+product/priv-app/GoogleSearch'"$REMOVALSUFFIX"'
+product/priv-app/GoogleHangouts'"$REMOVALSUFFIX"'
+product/priv-app/OneTimeInitializer'"$REMOVALSUFFIX"'
+product/priv-app/QuickSearchBox'"$REMOVALSUFFIX"'
+product/priv-app/Vending'"$REMOVALSUFFIX"'
+product/priv-app/Velvet_update'"$REMOVALSUFFIX"'
+product/priv-app/GmsCore_update'"$REMOVALSUFFIX"'
 ";
 
 # Apps from app that need to be installed in priv-app
@@ -647,6 +856,19 @@ app/Phonesky'"$REMOVALSUFFIX"'
 app/PrebuiltGmsCore'"$REMOVALSUFFIX"'
 app/SetupWizard'"$REMOVALSUFFIX"'
 app/Velvet'"$REMOVALSUFFIX"'
+product/app/CanvasPackageInstaller'"$REMOVALSUFFIX"'
+product/app/ConfigUpdater'"$REMOVALSUFFIX"'
+product/app/GoogleBackupTransport'"$REMOVALSUFFIX"'
+product/app/GoogleFeedback'"$REMOVALSUFFIX"'
+product/app/GoogleLoginService'"$REMOVALSUFFIX"'
+product/app/GoogleOneTimeInitializer'"$REMOVALSUFFIX"'
+product/app/GooglePartnerSetup'"$REMOVALSUFFIX"'
+product/app/GoogleServicesFramework'"$REMOVALSUFFIX"'
+product/app/OneTimeInitializer'"$REMOVALSUFFIX"'
+product/app/Phonesky'"$REMOVALSUFFIX"'
+product/app/PrebuiltGmsCore'"$REMOVALSUFFIX"'
+product/app/SetupWizard'"$REMOVALSUFFIX"'
+product/app/Velvet'"$REMOVALSUFFIX"'
 ";
 
 # Stock/AOSP Keyboard lib (and symlink) that are always removed since they are always replaced
@@ -662,6 +884,12 @@ priv-app/Hangouts'"$REMOVALSUFFIX"'
 priv-app/PrebuiltExchange3Google'"$REMOVALSUFFIX"'
 priv-app/talkback'"$REMOVALSUFFIX"'
 priv-app/Wallet'"$REMOVALSUFFIX"'
+product/app/CalculatorGoogle
+product/priv-app/GoogleHome'"$REMOVALSUFFIX"'
+product/priv-app/Hangouts'"$REMOVALSUFFIX"'
+product/priv-app/PrebuiltExchange3Google'"$REMOVALSUFFIX"'
+product/priv-app/talkback'"$REMOVALSUFFIX"'
+product/priv-app/Wallet'"$REMOVALSUFFIX"'
 ";
 
 # Old addon.d backup scripts as we will be replacing with updated version during install
@@ -2316,10 +2544,14 @@ fi;
 set_progress 0.13;
 ui_print "- Removing existing/obsolete Apps";
 ui_print " ";
-rm -rf $(complete_gapps_list);
+for gapp_name in $full_removal_list; do
+  rm -rf "$SYSTEM/$gapp_name" "$SYSTEM/product/$gapp_name";
+done;
 
 # Remove Obsolete and Conflicting Apps
-rm -rf $(obsolete_gapps_list);
+for gapp_name in $remove_list; do
+  rm -rf "$SYSTEM/$gapp_name" "$SYSTEM/product/$gapp_name";
+done;
 
 # Remove Stock/AOSP Apps and add Removals to addon.d script
 aosp_remove_list=$(echo "${aosp_remove_list}" | sort -r); # reverse sort list for more readable output
