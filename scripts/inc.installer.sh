@@ -2556,7 +2556,7 @@ for aosp_name in $aosp_remove_list; do
   list_name=$(echo "${list_name}" | sort -r); # reverse sort list for more readable output
   for file_name in $list_name; do
     rm -rf "$SYSTEM/$file_name" "$SYSTEM/product/$file_name";
-    sed -i "\:# Remove Stock/AOSP apps (from GApps Installer):a \    rm -rf \$SYS/$file_name \$SYS/product/$file_name" $bkup_tail;
+    sed -i "\:# Remove Stock/AOSP apps (from GApps Installer):a \    rm -rf \$SYS/$file_name" $bkup_tail;
   done;
 done;
 
