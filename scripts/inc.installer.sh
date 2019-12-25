@@ -1586,10 +1586,15 @@ for i in "$TMP/aroma/.gapps-config"\
 done;
 
 # We log in the same directory as the gapps-config file, unless it is aroma
+# or adb sideload
 if [ -n "$g_conf" ] && [ "$g_conf" != "$TMP/aroma/.gapps-config" ]; then
   log_folder="$(dirname "$g_conf")";
 else
+  if [ "$zip_folder" == "/sideload" ]; then
+  	log_folder=/sdcard;
+  else
   log_folder="$zip_folder";
+  fi
 fi
 
 if [ "$g_conf" ]; then
