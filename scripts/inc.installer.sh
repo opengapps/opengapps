@@ -10,7 +10,7 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
-makegprop() {
+makegprop(){
   echo "# begin addon properties
 ro.addon.type=gapps
 ro.addon.arch=$ARCH
@@ -18,16 +18,16 @@ ro.addon.sdk=$API
 ro.addon.platform=$PLATFORM
 ro.addon.open_type=$VARIANT
 ro.addon.open_version=$DATE
-# end addon properties" >"$build/$1"
+# end addon properties" > "$build/$1"
   EXTRACTFILES="$EXTRACTFILES $1"
 }
 
-makegappsremovetxt() {
+makegappsremovetxt(){
   gapps_remove=""
   if [ "$API" -le "21" ] && [ "$GAPPSREMOVEVARIANT" = "super" ]; then
-    get_supported_variants "stock" # On 5.0 and lower the largest package is stock instead of super for the "regular" package-type
+    get_supported_variants "stock"  # On 5.0 and lower the largest package is stock instead of super for the "regular" package-type
   else
-    get_supported_variants "$GAPPSREMOVEVARIANT" # Retrieve the largest package of the package-type branch
+    get_supported_variants "$GAPPSREMOVEVARIANT"  # Retrieve the largest package of the package-type branch
   fi
   get_gapps_list "$supported_variants"
   for gapp in $gapps_list; do
@@ -53,11 +53,11 @@ $gapps_remove"
 $gapps_remove"
     done
   done
-  printf "%s" "$gapps_remove" | sort -u >"$build/$1" # make unique for the VRmode entries
+  printf "%s" "$gapps_remove" | sort -u > "$build/$1"  # make unique for the VRmode entries
   EXTRACTFILES="$EXTRACTFILES $1"
 }
 
-makeupdatebinary() {
+makeupdatebinary(){
   echo '#!/sbin/sh
 #This file is part of The Open GApps script of @mfonville.
 #
@@ -110,12 +110,12 @@ else
   echo "ui_print ERROR 64: Wrong architecture to set-up Open GApps'"'"' pre-bundled '"$2"'" > "$OUTFD"
   echo "ui_print" > "$OUTFD"
   exit 1
-fi' >"$build/$1"
+fi'> "$build/$1"
 }
 
-makeinstallersh() {
-  EXTRACTFILES="$EXTRACTFILES $1"
-  echo '#!/sbin/ash
+makeinstallersh(){
+EXTRACTFILES="$EXTRACTFILES $1"
+echo '#!/sbin/ash
 #This file is part of The Open GApps script of @mfonville.
 #
 #    The Open GApps scripts are free software: you can redistribute it and/or modify
@@ -147,9 +147,8 @@ req_android_arch="'"$ARCH"'";
 req_android_sdk="'"$API"'";
 req_android_version="'"$PLATFORM"'";
 
-timestamp=$(date +%s);
-
 '"$KEYBDLIBS"'
+faceLock_lib_filename="'"$FACELOCKLIB"'";
 atvremote_lib_filename="libatv_uinputbridge.so"
 WebView_lib_filename="libwebviewchromium.so"
 markup_lib_filename="libsketchology_native.so"
@@ -296,47 +295,23 @@ app/YuBrowser'"$REMOVALSUFFIX"'
 priv-app/BLUOpera'"$REMOVALSUFFIX"'
 priv-app/BLUOperaPreinstall'"$REMOVALSUFFIX"'
 priv-app/Browser'"$REMOVALSUFFIX"'
-priv-app/BrowserIntl'"$REMOVALSUFFIX"'
-product/app/Bolt'"$REMOVALSUFFIX"'
-product/app/Browser'"$REMOVALSUFFIX"'
-product/app/Browser2'"$REMOVALSUFFIX"'
-product/app/BrowserIntl'"$REMOVALSUFFIX"'
-product/app/BrowserProviderProxy'"$REMOVALSUFFIX"'
-product/app/Chromium'"$REMOVALSUFFIX"'
-product/app/Fluxion'"$REMOVALSUFFIX"'
-product/app/Gello'"$REMOVALSUFFIX"'
-product/app/Jelly'"$REMOVALSUFFIX"'
-product/app/PA_Browser'"$REMOVALSUFFIX"'
-product/app/PABrowser'"$REMOVALSUFFIX"'
-product/app/YuBrowser'"$REMOVALSUFFIX"'
-product/priv-app/BLUOpera'"$REMOVALSUFFIX"'
-product/priv-app/BLUOperaPreinstall'"$REMOVALSUFFIX"'
-product/priv-app/Browser'"$REMOVALSUFFIX"'
-product/priv-app/BrowserIntl'"$REMOVALSUFFIX"'"
+priv-app/BrowserIntl'"$REMOVALSUFFIX"'"
 
 basicdreams_list="
-app/BasicDreams'"$REMOVALSUFFIX"'
-product/app/BasicDreams'"$REMOVALSUFFIX"'"
+app/BasicDreams'"$REMOVALSUFFIX"'"
 
 # Must be used when GoogleCalculator is installed
 calculatorstock_list="
 app/Calculator'"$REMOVALSUFFIX"'
 app/ExactCalculator'"$REMOVALSUFFIX"'
-app/FineOSCalculator'"$REMOVALSUFFIX"'
-product/app/Calculator'"$REMOVALSUFFIX"'
-product/app/ExactCalculator'"$REMOVALSUFFIX"'
-product/app/FineOSCalculator'"$REMOVALSUFFIX"'"
+app/FineOSCalculator'"$REMOVALSUFFIX"'"
 
 # Must be used when GoogleCalendar is installed
 calendarstock_list="
 app/Calendar'"$REMOVALSUFFIX"'
 app/MonthCalendarWidget'"$REMOVALSUFFIX"'
 priv-app/Calendar'"$REMOVALSUFFIX"'
-app/FineOSCalendar'"$REMOVALSUFFIX"'
-product/app/Calendar'"$REMOVALSUFFIX"'
-product/app/MonthCalendarWidget'"$REMOVALSUFFIX"'
-product/priv-app/Calendar'"$REMOVALSUFFIX"'
-product/app/FineOSCalendar'"$REMOVALSUFFIX"'"
+app/FineOSCalendar'"$REMOVALSUFFIX"'"
 
 # Must be used when GoogleCamera is installed
 camerastock_list="
@@ -356,50 +331,25 @@ app/Snap'"$REMOVALSUFFIX"'
 priv-app/Snap'"$REMOVALSUFFIX"'
 app/SnapdragonCamera'"$REMOVALSUFFIX"'
 priv-app/SnapdragonCamera'"$REMOVALSUFFIX"'
-app/FineOSCamera'"$REMOVALSUFFIX"'
-product/app/Camera'"$REMOVALSUFFIX"'
-product/app/Camera2'"$REMOVALSUFFIX"'
-product/priv-app/Camera'"$REMOVALSUFFIX"'
-product/priv-app/Camera2'"$REMOVALSUFFIX"'
-product/priv-app/CameraX'"$REMOVALSUFFIX"'
-product/app/MotCamera'"$REMOVALSUFFIX"'
-product/app/MtkCamera'"$REMOVALSUFFIX"'
-product/app/MTKCamera'"$REMOVALSUFFIX"'
-product/priv-app/MotCamera'"$REMOVALSUFFIX"'
-product/priv-app/MiuiCamera'"$REMOVALSUFFIX"'
-product/priv-app/MtkCamera'"$REMOVALSUFFIX"'
-product/priv-app/MTKCamera'"$REMOVALSUFFIX"'
-product/app/Snap'"$REMOVALSUFFIX"'
-product/priv-app/Snap'"$REMOVALSUFFIX"'
-product/app/SnapdragonCamera'"$REMOVALSUFFIX"'
-product/priv-app/SnapdragonCamera'"$REMOVALSUFFIX"'
-product/app/FineOSCamera'"$REMOVALSUFFIX"'"
+app/FineOSCamera'"$REMOVALSUFFIX"'"
 
 clockstock_list="
 app/DeskClock'"$REMOVALSUFFIX"'
 app/DeskClock2'"$REMOVALSUFFIX"'
 app/FineOSDeskClock'"$REMOVALSUFFIX"'
-app/OmniClockOSS'"$REMOVALSUFFIX"'
-product/app/DeskClock'"$REMOVALSUFFIX"'
-product/app/DeskClock2'"$REMOVALSUFFIX"'
-product/app/FineOSDeskClock'"$REMOVALSUFFIX"'
-product/app/OmniClockOSS'"$REMOVALSUFFIX"'"
+app/OmniClockOSS'"$REMOVALSUFFIX"'"
 
 cmaccount_list="
-priv-app/CMAccount'"$REMOVALSUFFIX"'
-product/priv-app/CMAccount'"$REMOVALSUFFIX"'"
+priv-app/CMAccount'"$REMOVALSUFFIX"'"
 
 cmaudiofx_list="
-priv-app/AudioFX'"$REMOVALSUFFIX"'
-product/priv-app/AudioFX'"$REMOVALSUFFIX"'"
+priv-app/AudioFX'"$REMOVALSUFFIX"'"
 
 cmbugreport_list="
-priv-app/CMBugReport'"$REMOVALSUFFIX"'
-product/priv-app/CMBugReport'"$REMOVALSUFFIX"'"
+priv-app/CMBugReport'"$REMOVALSUFFIX"'"
 
 cmfilemanager_list="
-app/CMFileManager'"$REMOVALSUFFIX"'
-product/app/CMFileManager'"$REMOVALSUFFIX"'"
+app/CMFileManager'"$REMOVALSUFFIX"'"
 
 cmmusic_list="
 app/Apollo'"$REMOVALSUFFIX"'
@@ -408,93 +358,62 @@ priv-app/Eleven'"$REMOVALSUFFIX"'
 app/Music'"$REMOVALSUFFIX"'
 app/MusicX'"$REMOVALSUFFIX"'
 app/Phonograph'"$REMOVALSUFFIX"'
-app/SnapdragonMusic'"$REMOVALSUFFIX"'
-product/app/Apollo'"$REMOVALSUFFIX"'
-product/app/Eleven'"$REMOVALSUFFIX"'
-product/priv-app/Eleven'"$REMOVALSUFFIX"'
-product/app/Music'"$REMOVALSUFFIX"'
-product/app/MusicX'"$REMOVALSUFFIX"'
-product/app/Phonograph'"$REMOVALSUFFIX"'
-product/app/SnapdragonMusic'"$REMOVALSUFFIX"'"
+app/SnapdragonMusic'"$REMOVALSUFFIX"'"
 
 cmscreencast_list="
-priv-app/Screencast'"$REMOVALSUFFIX"'
-product/priv-app/Screencast'"$REMOVALSUFFIX"'"
+priv-app/Screencast'"$REMOVALSUFFIX"'"
 
 cmsetupwizard_list="
 app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
-priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
-product/app/CyanogenSetupWizard'"$REMOVALSUFFIX"'
-product/priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'"
+priv-app/CyanogenSetupWizard'"$REMOVALSUFFIX"'"
 
 cmupdater_list="
-priv-app/CMUpdater'"$REMOVALSUFFIX"'
-product/priv-app/CMUpdater'"$REMOVALSUFFIX"'"
+priv-app/CMUpdater'"$REMOVALSUFFIX"'"
 
 cmwallpapers_list="
-app/CMWallpapers'"$REMOVALSUFFIX"'
-product/app/CMWallpapers'"$REMOVALSUFFIX"'"
+app/CMWallpapers'"$REMOVALSUFFIX"'"
 
 cmweatherprovider_list="
-priv-app/WeatherProvider'"$REMOVALSUFFIX"'
-product/priv-app/WeatherProvider'"$REMOVALSUFFIX"'"
+priv-app/WeatherProvider'"$REMOVALSUFFIX"'"
 
 # Must be used when Google Contacts is installed
 contactsstock_list="
 priv-app/Contacts'"$REMOVALSUFFIX"'
-priv-app/FineOSContacts'"$REMOVALSUFFIX"'
-product/priv-app/Contacts'"$REMOVALSUFFIX"'
-product/priv-app/FineOSContacts'"$REMOVALSUFFIX"'"
+priv-app/FineOSContacts'"$REMOVALSUFFIX"'"
 
 dashclock_list="
-app/DashClock'"$REMOVALSUFFIX"'
-product/app/DashClock'"$REMOVALSUFFIX"'"
+app/DashClock'"$REMOVALSUFFIX"'"
 
 # Must be used when Google Dialer is installed
 # For now, prevent stock AOSP Dialer (priv-app/Dialer) from being removed, no matter the configuration, on all ROMs
 dialerstock_list="
 priv-app/FineOSDialer'"$REMOVALSUFFIX"'
-priv-app/OPInCallUI'"$REMOVALSUFFIX"'
-product/priv-app/FineOSDialer'"$REMOVALSUFFIX"'
-product/priv-app/OPInCallUI'"$REMOVALSUFFIX"'"
+priv-app/OPInCallUI'"$REMOVALSUFFIX"'"
 
 email_list="
 app/Email'"$REMOVALSUFFIX"'
 app/PrebuiltEmailGoogle'"$REMOVALSUFFIX"'
-priv-app/Email'"$REMOVALSUFFIX"'
-product/app/Email'"$REMOVALSUFFIX"'
-product/app/PrebuiltEmailGoogle'"$REMOVALSUFFIX"'
-product/priv-app/Email'"$REMOVALSUFFIX"'"
+priv-app/Email'"$REMOVALSUFFIX"'"
 
 exchangestock_list="
 app/Exchange2'"$REMOVALSUFFIX"'
-priv-app/Exchange2'"$REMOVALSUFFIX"'
-product/app/Exchange2'"$REMOVALSUFFIX"'
-product/priv-app/Exchange2'"$REMOVALSUFFIX"'"
+priv-app/Exchange2'"$REMOVALSUFFIX"'"
 
 extservicesstock_list="
-priv-app/ExtServices'"$REMOVALSUFFIX"'
-product/priv-app/ExtServices'"$REMOVALSUFFIX"'"
+priv-app/ExtServices'"$REMOVALSUFFIX"'"
 
 extsharedstock_list="
-app/ExtShared'"$REMOVALSUFFIX"'
-product/app/ExtShared'"$REMOVALSUFFIX"'"
+app/ExtShared'"$REMOVALSUFFIX"'"
 
 fmradio_list="
 app/FM'"$REMOVALSUFFIX"'
 app/FM2'"$REMOVALSUFFIX"'
 app/FMRecord'"$REMOVALSUFFIX"'
 priv-app/FMRadio'"$REMOVALSUFFIX"'
-priv-app/MiuiRadio'"$REMOVALSUFFIX"'
-product/app/FM'"$REMOVALSUFFIX"'
-product/app/FM2'"$REMOVALSUFFIX"'
-product/app/FMRecord'"$REMOVALSUFFIX"'
-product/priv-app/FMRadio'"$REMOVALSUFFIX"'
-product/priv-app/MiuiRadio'"$REMOVALSUFFIX"'"
+priv-app/MiuiRadio'"$REMOVALSUFFIX"'"
 
 galaxy_list="
-app/Galaxy4'"$REMOVALSUFFIX"'
-product/app/Galaxy4'"$REMOVALSUFFIX"'"
+app/Galaxy4'"$REMOVALSUFFIX"'"
 
 gallery_list="
 app/Gallery'"$REMOVALSUFFIX"'
@@ -508,27 +427,13 @@ app/MediaShortcuts'"$REMOVALSUFFIX"'
 priv-app/MediaShortcuts'"$REMOVALSUFFIX"'
 priv-app/MiuiGallery'"$REMOVALSUFFIX"'
 priv-app/FineOSGallery'"$REMOVALSUFFIX"'
-priv-app/SnapdragonGallery'"$REMOVALSUFFIX"'
-product/app/Gallery'"$REMOVALSUFFIX"'
-product/priv-app/Gallery'"$REMOVALSUFFIX"'
-product/priv-app/GalleryX'"$REMOVALSUFFIX"'
-product/app/Gallery2'"$REMOVALSUFFIX"'
-product/priv-app/Gallery2'"$REMOVALSUFFIX"'
-product/app/MotGallery'"$REMOVALSUFFIX"'
-product/priv-app/MotGallery'"$REMOVALSUFFIX"'
-product/app/MediaShortcuts'"$REMOVALSUFFIX"'
-product/priv-app/MediaShortcuts'"$REMOVALSUFFIX"'
-product/priv-app/MiuiGallery'"$REMOVALSUFFIX"'
-product/priv-app/FineOSGallery'"$REMOVALSUFFIX"'
-product/priv-app/SnapdragonGallery'"$REMOVALSUFFIX"'"
+priv-app/SnapdragonGallery'"$REMOVALSUFFIX"'"
 
 hexo_list="
-app/HexoLibre'"$REMOVALSUFFIX"'
-product/app/HexoLibre'"$REMOVALSUFFIX"'"
+app/HexoLibre'"$REMOVALSUFFIX"'"
 
 holospiral_list="
-app/HoloSpiralWallpaper'"$REMOVALSUFFIX"'
-product/app/HoloSpiralWallpaper'"$REMOVALSUFFIX"'"
+app/HoloSpiralWallpaper'"$REMOVALSUFFIX"'"
 
 # Must be used when GoogleKeyboard is installed
 keyboardstock_list="
@@ -538,14 +443,7 @@ app/OpenWnn'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPal'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalPortuguesebrPack'"$REMOVALSUFFIX"'
 priv-app/BLUTouchPalSpanishLatinPack'"$REMOVALSUFFIX"'
-priv-app/MzInput'"$REMOVALSUFFIX"'
-product/app/LatinIME'"$REMOVALSUFFIX"'
-product/app/MzInput'"$REMOVALSUFFIX"'
-product/app/OpenWnn'"$REMOVALSUFFIX"'
-product/priv-app/BLUTouchPal'"$REMOVALSUFFIX"'
-product/priv-app/BLUTouchPalPortuguesebrPack'"$REMOVALSUFFIX"'
-product/priv-app/BLUTouchPalSpanishLatinPack'"$REMOVALSUFFIX"'
-product/priv-app/MzInput'"$REMOVALSUFFIX"'"
+priv-app/MzInput'"$REMOVALSUFFIX"'"
 
 launcher_list="
 app/CMHome'"$REMOVALSUFFIX"'
@@ -574,205 +472,128 @@ priv-app/MiuiHome'"$REMOVALSUFFIX"'
 priv-app/Paclauncher'"$REMOVALSUFFIX"'
 priv-app/SlimLauncher'"$REMOVALSUFFIX"'
 priv-app/Trebuchet'"$REMOVALSUFFIX"'
-priv-app/Nox'"$REMOVALSUFFIX"'
-product/app/CMHome'"$REMOVALSUFFIX"'
-product/app/CustomLauncher3'"$REMOVALSUFFIX"'
-product/app/EasyLauncher'"$REMOVALSUFFIX"'
-product/app/Fluctuation'"$REMOVALSUFFIX"'
-product/app/FlymeLauncher'"$REMOVALSUFFIX"'
-product/app/FlymeLauncherIntl'"$REMOVALSUFFIX"'
-product/app/Launcher2'"$REMOVALSUFFIX"'
-product/app/Launcher3'"$REMOVALSUFFIX"'
-product/app/LiquidLauncher'"$REMOVALSUFFIX"'
-product/app/Paclauncher'"$REMOVALSUFFIX"'
-product/app/SlimLauncher'"$REMOVALSUFFIX"'
-product/app/Trebuchet'"$REMOVALSUFFIX"'
-product/app/FineOSHome'"$REMOVALSUFFIX"'
-product/priv-app/CMHome'"$REMOVALSUFFIX"'
-product/priv-app/CustomLauncher3'"$REMOVALSUFFIX"'
-product/priv-app/EasyLauncher'"$REMOVALSUFFIX"'
-product/priv-app/Fluctuation'"$REMOVALSUFFIX"'
-product/priv-app/FlymeLauncher'"$REMOVALSUFFIX"'
-product/priv-app/FlymeLauncherIntl'"$REMOVALSUFFIX"'
-product/priv-app/Launcher2'"$REMOVALSUFFIX"'
-product/priv-app/Launcher3'"$REMOVALSUFFIX"'
-product/priv-app/LiquidLauncher'"$REMOVALSUFFIX"'
-product/priv-app/MiuiHome'"$REMOVALSUFFIX"'
-product/priv-app/Paclauncher'"$REMOVALSUFFIX"'
-product/priv-app/SlimLauncher'"$REMOVALSUFFIX"'
-product/priv-app/Trebuchet'"$REMOVALSUFFIX"'
-product/priv-app/Nox'"$REMOVALSUFFIX"'"
+priv-app/Nox'"$REMOVALSUFFIX"'"
 
 lbr0zip_list="
-app/Br0Zip'"$REMOVALSUFFIX"'
-product/app/Br0Zip'"$REMOVALSUFFIX"'"
+app/Br0Zip'"$REMOVALSUFFIX"'"
 
 livewallpapers_list="
-app/LiveWallpapers'"$REMOVALSUFFIX"'
-product/app/LiveWallpapers'"$REMOVALSUFFIX"'"
+app/LiveWallpapers'"$REMOVALSUFFIX"'"
 
 lockclock_list="
-app/LockClock'"$REMOVALSUFFIX"'
-product/app/LockClock'"$REMOVALSUFFIX"'"
+app/LockClock'"$REMOVALSUFFIX"'"
 
 logcat_list="
-priv-app/MatLog'"$REMOVALSUFFIX"'
-product/priv-app/MatLog'"$REMOVALSUFFIX"'"
+priv-app/MatLog'"$REMOVALSUFFIX"'"
 
 lrecorder_list="
-priv-app/Recorder'"$REMOVALSUFFIX"'
-product/priv-app/Recorder'"$REMOVALSUFFIX"'"
+priv-app/Recorder'"$REMOVALSUFFIX"'"
 
 lsetupwizard_list="
 app/LineageSetupWizard'"$REMOVALSUFFIX"'
-priv-app/LineageSetupWizard'"$REMOVALSUFFIX"'
-product/app/LineageSetupWizard'"$REMOVALSUFFIX"'
-product/priv-app/LineageSetupWizard'"$REMOVALSUFFIX"'"
+priv-app/LineageSetupWizard'"$REMOVALSUFFIX"'"
 
 lupdater_list="
-priv-app/Updater'"$REMOVALSUFFIX"'
-product/priv-app/Updater'"$REMOVALSUFFIX"'"
+priv-app/Updater'"$REMOVALSUFFIX"'"
 
 mms_list="
 app/messaging'"$REMOVALSUFFIX"'
 priv-app/Mms'"$REMOVALSUFFIX"'
-priv-app/FineOSMms'"$REMOVALSUFFIX"'
-product/app/messaging'"$REMOVALSUFFIX"'
-product/priv-app/Mms'"$REMOVALSUFFIX"'
-product/priv-app/FineOSMms'"$REMOVALSUFFIX"'"
+priv-app/FineOSMms'"$REMOVALSUFFIX"'"
 
 mzfilemanager_list="
-app/FileManager'"$REMOVALSUFFIX"'
-product/app/FileManager'"$REMOVALSUFFIX"'"
+app/FileManager'"$REMOVALSUFFIX"'"
 
 mzpay_list="
 app/MzMPay'"$REMOVALSUFFIX"'
-app/MzPay'"$REMOVALSUFFIX"'
-product/app/MzMPay'"$REMOVALSUFFIX"'
-product/app/MzPay'"$REMOVALSUFFIX"'"
+app/MzPay'"$REMOVALSUFFIX"'"
 
 mzsetupwizard_list="
-app/MzSetupWizard'"$REMOVALSUFFIX"'
-product/app/MzSetupWizard'"$REMOVALSUFFIX"'"
+app/MzSetupWizard'"$REMOVALSUFFIX"'"
 
 mzupdater_list="
 app/MzUpdate'"$REMOVALSUFFIX"'
 app/SystemUpdate'"$REMOVALSUFFIX"'
-app/SystemUpdateAssistant'"$REMOVALSUFFIX"'
-product/app/MzUpdate'"$REMOVALSUFFIX"'
-product/app/SystemUpdate'"$REMOVALSUFFIX"'
-product/app/SystemUpdateAssistant'"$REMOVALSUFFIX"'"
+app/SystemUpdateAssistant'"$REMOVALSUFFIX"'"
 
 mzweather_list="
-app/Weather'"$REMOVALSUFFIX"'
-product/app/Weather'"$REMOVALSUFFIX"'"
+app/Weather'"$REMOVALSUFFIX"'"
 
 noisefield_list="
-app/NoiseField'"$REMOVALSUFFIX"'
-product/app/NoiseField'"$REMOVALSUFFIX"'"
+app/NoiseField'"$REMOVALSUFFIX"'"
 
 omniswitch_list="
-priv-app/OmniSwitch'"$REMOVALSUFFIX"'
-product/priv-app/OmniSwitch'"$REMOVALSUFFIX"'"
+priv-app/OmniSwitch'"$REMOVALSUFFIX"'"
 
 # Must be used when Google PackageInstaller is installed; non-capitalized spelling on Lenovo K3 Note
 packageinstallerstock_list="
 app/PackageInstaller'"$REMOVALSUFFIX"'
 priv-app/PackageInstaller'"$REMOVALSUFFIX"'
-priv-app/packageinstaller'"$REMOVALSUFFIX"'
-product/app/PackageInstaller'"$REMOVALSUFFIX"'
-product/priv-app/PackageInstaller'"$REMOVALSUFFIX"'
-product/priv-app/packageinstaller'"$REMOVALSUFFIX"'"
+priv-app/packageinstaller'"$REMOVALSUFFIX"'"
 
 phasebeam_list="
-app/PhaseBeam'"$REMOVALSUFFIX"'
-product/app/PhaseBeam'"$REMOVALSUFFIX"'"
+app/PhaseBeam'"$REMOVALSUFFIX"'"
 
 photophase_list="
-app/PhotoPhase'"$REMOVALSUFFIX"'
-product/app/PhotoPhase'"$REMOVALSUFFIX"'"
+app/PhotoPhase'"$REMOVALSUFFIX"'"
 
 phototable_list="
-app/PhotoTable'"$REMOVALSUFFIX"'
-product/app/PhotoTable'"$REMOVALSUFFIX"'"
+app/PhotoTable'"$REMOVALSUFFIX"'"
 
 picotts_list="
 app/PicoTts'"$REMOVALSUFFIX"'
 priv-app/PicoTts'"$REMOVALSUFFIX"'
 lib/libttscompat.so
 lib/libttspico.so
-product/app/PicoTts'"$REMOVALSUFFIX"'
-product/priv-app/PicoTts'"$REMOVALSUFFIX"'
-product/lib/libttscompat.so
-product/lib/libttspico.so
 tts"
 
 printservicestock_list="
 app/BuiltInPrintService'"$REMOVALSUFFIX"'
-app/PrintRecommendationService'"$REMOVALSUFFIX"'
-product/app/BuiltInPrintService'"$REMOVALSUFFIX"'
-product/app/PrintRecommendationService'"$REMOVALSUFFIX"'"
+app/PrintRecommendationService'"$REMOVALSUFFIX"'"
 
 provision_list="
 app/Provision'"$REMOVALSUFFIX"'
-priv-app/Provision'"$REMOVALSUFFIX"'
-product/app/Provision'"$REMOVALSUFFIX"'
-product/priv-app/Provision'"$REMOVALSUFFIX"'"
+priv-app/Provision'"$REMOVALSUFFIX"'"
 
 simtoolkit_list="
-app/Stk'"$REMOVALSUFFIX"'
-product/app/Stk'"$REMOVALSUFFIX"'"
+app/Stk'"$REMOVALSUFFIX"'"
 
 soundrecorder_list="
-app/SoundRecorder'"$REMOVALSUFFIX"'
-product/app/SoundRecorder'"$REMOVALSUFFIX"'"
+app/SoundRecorder'"$REMOVALSUFFIX"'"
 
 storagemanagerstock_list="
-priv-app/StorageManager'"$REMOVALSUFFIX"'
-product/priv-app/StorageManager'"$REMOVALSUFFIX"'"
+priv-app/StorageManager'"$REMOVALSUFFIX"'"
 
 studio_list="
-app/VideoEditor'"$REMOVALSUFFIX"'
-product/app/VideoEditor'"$REMOVALSUFFIX"'"
+app/VideoEditor'"$REMOVALSUFFIX"'"
 
 sykopath_list="
-app/Layers'"$REMOVALSUFFIX"'
-product/app/Layers'"$REMOVALSUFFIX"'"
+app/Layers'"$REMOVALSUFFIX"'"
 
 tagstock_list="
-priv-app/Tag'"$REMOVALSUFFIX"'
-product/priv-app/Tag'"$REMOVALSUFFIX"'"
+priv-app/Tag'"$REMOVALSUFFIX"'"
 
 terminal_list="
-app/Terminal'"$REMOVALSUFFIX"'
-product/app/Terminal'"$REMOVALSUFFIX"'"
+app/Terminal'"$REMOVALSUFFIX"'"
 
 themes_list="
 priv-app/CustomizeCenter'"$REMOVALSUFFIX"'
 priv-app/ThemeChooser'"$REMOVALSUFFIX"'
-priv-app/ThemesProvider'"$REMOVALSUFFIX"'
-product/priv-app/CustomizeCenter'"$REMOVALSUFFIX"'
-product/priv-app/ThemeChooser'"$REMOVALSUFFIX"'
-product/priv-app/ThemesProvider'"$REMOVALSUFFIX"'"
+priv-app/ThemesProvider'"$REMOVALSUFFIX"'"
 
 visualizationwallpapers_list="
-app/VisualizationWallpapers'"$REMOVALSUFFIX"'
-product/app/VisualizationWallpapers'"$REMOVALSUFFIX"'"
+app/VisualizationWallpapers'"$REMOVALSUFFIX"'"
 
 wallpapersstock_list="
-app/WallpaperPicker'"$REMOVALSUFFIX"'
-product/app/WallpaperPicker'"$REMOVALSUFFIX"'"
+app/WallpaperPicker'"$REMOVALSUFFIX"'"
 
 webviewstock_list="
 app/webview'"$REMOVALSUFFIX"'
 app/WebView'"$REMOVALSUFFIX"'
-product/app/webview'"$REMOVALSUFFIX"'
-product/app/WebView'"$REMOVALSUFFIX"'
 '"$webviewstocklibs"'"
 
 whisperpush_list="
-app/WhisperPush'"$REMOVALSUFFIX"'
-product/app/WhisperPush'"$REMOVALSUFFIX"'"
+app/WhisperPush'"$REMOVALSUFFIX"'"
 # _____________________________________________________________________________________________________________________
 #                                             Permanently Removed Folders
 # Pieces that may be left over from AIO ROMs that can/will interfere with these GApps
@@ -808,37 +629,6 @@ priv-app/QuickSearchBox'"$REMOVALSUFFIX"'
 priv-app/Vending'"$REMOVALSUFFIX"'
 priv-app/Velvet_update'"$REMOVALSUFFIX"'
 priv-app/GmsCore_update'"$REMOVALSUFFIX"'
-product/app/BooksStub'"$REMOVALSUFFIX"'
-product/app/BookmarkProvider'"$REMOVALSUFFIX"'
-product/app/CalendarGoogle'"$REMOVALSUFFIX"'
-product/app/CloudPrint'"$REMOVALSUFFIX"'
-product/app/DeskClockGoogle'"$REMOVALSUFFIX"'
-product/app/EditorsDocsStub'"$REMOVALSUFFIX"'
-product/app/EditorsSheetsStub'"$REMOVALSUFFIX"'
-product/app/EditorsSlidesStub'"$REMOVALSUFFIX"'
-product/app/Gmail'"$REMOVALSUFFIX"'
-product/app/Gmail2'"$REMOVALSUFFIX"'
-product/app/GoogleCalendar'"$REMOVALSUFFIX"'
-product/app/GoogleCloudPrint'"$REMOVALSUFFIX"'
-product/app/GoogleHangouts'"$REMOVALSUFFIX"'
-product/app/GoogleKeep'"$REMOVALSUFFIX"'
-product/app/GoogleLatinIme'"$REMOVALSUFFIX"'
-product/app/Keep'"$REMOVALSUFFIX"'
-product/app/NewsstandStub'"$REMOVALSUFFIX"'
-product/app/PartnerBookmarksProvider'"$REMOVALSUFFIX"'
-product/app/PrebuiltBugleStub'"$REMOVALSUFFIX"'
-product/app/PrebuiltKeepStub'"$REMOVALSUFFIX"'
-product/app/QuickSearchBox'"$REMOVALSUFFIX"'
-product/app/Vending'"$REMOVALSUFFIX"'
-product/priv-app/GmsCore'"$REMOVALSUFFIX"'
-product/priv-app/GoogleNow'"$REMOVALSUFFIX"'
-product/priv-app/GoogleSearch'"$REMOVALSUFFIX"'
-product/priv-app/GoogleHangouts'"$REMOVALSUFFIX"'
-product/priv-app/OneTimeInitializer'"$REMOVALSUFFIX"'
-product/priv-app/QuickSearchBox'"$REMOVALSUFFIX"'
-product/priv-app/Vending'"$REMOVALSUFFIX"'
-product/priv-app/Velvet_update'"$REMOVALSUFFIX"'
-product/priv-app/GmsCore_update'"$REMOVALSUFFIX"'
 ";
 
 # Apps from app that need to be installed in priv-app
@@ -856,19 +646,6 @@ app/Phonesky'"$REMOVALSUFFIX"'
 app/PrebuiltGmsCore'"$REMOVALSUFFIX"'
 app/SetupWizard'"$REMOVALSUFFIX"'
 app/Velvet'"$REMOVALSUFFIX"'
-product/app/CanvasPackageInstaller'"$REMOVALSUFFIX"'
-product/app/ConfigUpdater'"$REMOVALSUFFIX"'
-product/app/GoogleBackupTransport'"$REMOVALSUFFIX"'
-product/app/GoogleFeedback'"$REMOVALSUFFIX"'
-product/app/GoogleLoginService'"$REMOVALSUFFIX"'
-product/app/GoogleOneTimeInitializer'"$REMOVALSUFFIX"'
-product/app/GooglePartnerSetup'"$REMOVALSUFFIX"'
-product/app/GoogleServicesFramework'"$REMOVALSUFFIX"'
-product/app/OneTimeInitializer'"$REMOVALSUFFIX"'
-product/app/Phonesky'"$REMOVALSUFFIX"'
-product/app/PrebuiltGmsCore'"$REMOVALSUFFIX"'
-product/app/SetupWizard'"$REMOVALSUFFIX"'
-product/app/Velvet'"$REMOVALSUFFIX"'
 ";
 
 # Stock/AOSP Keyboard lib (and symlink) that are always removed since they are always replaced
@@ -884,20 +661,14 @@ priv-app/Hangouts'"$REMOVALSUFFIX"'
 priv-app/PrebuiltExchange3Google'"$REMOVALSUFFIX"'
 priv-app/talkback'"$REMOVALSUFFIX"'
 priv-app/Wallet'"$REMOVALSUFFIX"'
-product/app/CalculatorGoogle
-product/priv-app/GoogleHome'"$REMOVALSUFFIX"'
-product/priv-app/Hangouts'"$REMOVALSUFFIX"'
-product/priv-app/PrebuiltExchange3Google'"$REMOVALSUFFIX"'
-product/priv-app/talkback'"$REMOVALSUFFIX"'
-product/priv-app/Wallet'"$REMOVALSUFFIX"'
 ";
 
 # Old addon.d backup scripts as we will be replacing with updated version during install
 oldscript_list="
 etc/g.prop
 addon.d/70-gapps.sh
-";' >>"$build/$1"
-  tee -a "$build/$1" >/dev/null <<'EOFILE'
+";' >> "$build/$1"
+tee -a "$build/$1" > /dev/null <<'EOFILE'
 
 remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript_list}";
 # _____________________________________________________________________________________________________________________
@@ -907,6 +678,7 @@ camera_sys_msg="WARNING: Google Camera has/will not be installed as requested. G
 camera_compat_msg="WARNING: Google Camera has/will not be installed as requested. Google Camera\nis NOT compatible with your device if installed on the system partition. Try\ninstalling from the Play Store instead.\n";
 cmcompatibility_msg="WARNING: PackageInstallerGoogle is not installed. Cyanogenmod is NOT\ncompatible with some Google Applications and Open GApps\n will skip their installation.\n";
 dialergoogle_msg="WARNING: Google Dialer has/will not be installed as requested. Dialer Framework\nmust be added to the GApps installation if you want to install the\nGoogle Dialer.\n";
+faceunlock_msg="NOTE: FaceUnlock can only be installed on devices with a front facing camera.\n";
 googlenow_msg="WARNING: Google Now Launcher has/will not be installed as requested. Google Search\nmust be added to the GApps installation if you want to install the\nGoogle Now Launcher.\n";
 messenger_msg="WARNING: Google Messages has/will not be installed as requested. Carrier Services\nmust be added to the GApps installation on Android 6.0+ if you want to install\nGoogle Messages.\n";
 pixellauncher_msg="WARNING: Pixel Launcher has/will not be installed as requested. Wallpapers and\nGoogle Search must be added to the GApps installation if you want to install\nthe Pixel Launcher.\n";
@@ -936,149 +708,32 @@ nogoogletag_removal_msg="NOTE: The Stock/AOSP NFC Tag is not available on your\n
 nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on your\nROM (anymore), not all Google WebViewProviders will be removed."
 
 # _____________________________________________________________________________________________________________________
-#                                                  Pre-define Helper Functions
-get_file_prop() {
-  grep -m1 "^$2=" "$1" | cut -d= -f2
-}
-
-get_prop() {
-  #check known .prop files using get_file_prop
-  for f in $PROPFILES; do
-    if [ -e "$f" ]; then
-      prop="$(get_file_prop "$f" "$1")"
-      if [ -n "$prop" ]; then
-        break #if an entry has been found, break out of the loop
-      fi
-    fi
-  done
-  #if prop is still empty; try to use recovery's built-in getprop method; otherwise output current result
-  if [ -z "$prop" ]; then
-    getprop "$1" | cut -c1-
-  else
-    printf "$prop"
-  fi
-}
-
-# Check if /system_root is present and move its files to a temp folder (if there are any)
-mk_system_root() {
-  if [ -z "$system_root_tmp" ]; then
-    if [ -d "/system_root" ] && [ "$(ls -A /system_root)" ]; then
-      system_root_tmp=true
-      ui_print "- Moving original /system_root";
-      mkdir /system_root_$timestamp
-      mv /system_root/* /system_root_$timestamp/
-    else
-      system_root_tmp=false
-      mkdir -p /system_root
-    fi
-  fi
-}
-
-set_progress() { echo "set_progress $1" > "$OUTFD"; }
-
-ui_print() {
-  echo "ui_print $1" > "$OUTFD";
-  echo "ui_print" > "$OUTFD";
-}
-
-# _____________________________________________________________________________________________________________________
-#                                                  Gather Pre-Install Info
-# Are we on an Android device is or is a really stupid person running this script on their computer?
-if [ -e "/etc/lsb-release" ] || [ -n "$OSTYPE" ]; then
-  echo "Don't run this on your computer! You need to flash the Open GApps zip on an Android Recovery!"
-  exit 1
-fi
-
-# Get GApps Version and GApps Type from g.prop extracted at top of script
-gapps_version=$(get_file_prop "$TMP/g.prop" "ro.addon.open_version")
-gapps_type=$(get_file_prop "$TMP/g.prop" "ro.addon.open_type")
-
-# _____________________________________________________________________________________________________________________
-#                                                  Begin GApps Installation
-ui_print " ";
-ui_print '##############################';
-ui_print '  _____   _____   ___   ____  ';
-ui_print ' /  _  \ |  __ \ / _ \ |  _ \ ';
-ui_print '|  / \  || |__) | |_| || | \ \';
-ui_print '| |   | ||  ___/|  __/ | | | |';
-ui_print '|  \ /  || |    \ |__  | | | |';
-ui_print ' \_/ \_/ |_|     \___| |_| |_|';
-ui_print '       ___   _   ___ ___  ___ ';
-ui_print '      / __| /_\ | _ \ _ \/ __|';
-ui_print '     | (_ |/ _ \|  _/  _/\__ \';
-ui_print '      \___/_/ \_\_| |_|  |___/';
-ui_print '##############################';
-ui_print " ";
-ui_print "$installer_name$gapps_version";
-ui_print " ";
-
-# _____________________________________________________________________________________________________________________
-#                                                  Mount partitions
-
-mounts=""
-for p in "/cache" "/data" "/persist" "/vendor"; do
-  if [ -d "$p" ] && grep -q "$p" "/etc/fstab" && ! mountpoint -q "$p"; then
-    if [ -z "$mounts" ]; then
-      mounts="$p"
-    else
-      mounts="$mounts $p"
-    fi
-  fi
-done
-
-ui_print "- Mounting $mounts";
-set_progress 0.01;
-for m in $mounts; do
-  mount "$m"
-done
-
-# _____________________________________________________________________________________________________________________
 #                      Detect A/B partition layout https://source.android.com/devices/tech/ota/ab_updates
 #                      and system-as-root https://source.android.com/devices/bootloader/system-as-root
-block=/dev/block/bootdevice/by-name/system
-device_abpartition=false
-system_as_root=`getprop ro.build.system_root_image`
-if [ "$system_as_root" == "true" ]; then
-  ui_print "- Device is system-as-root"
-  active_slot=`getprop ro.boot.slot_suffix`
-  if [ ! -z "$active_slot" ]; then
-    device_abpartition=true
-    block=/dev/block/bootdevice/by-name/system$active_slot
-  fi
-  mk_system_root;
+if [ -n "$(cat /proc/cmdline | grep slot_suffix)" ];
+then
+  device_abpartition=true
+  SYSTEM_MOUNT=/system
+  SYSTEM=$SYSTEM_MOUNT/system
+  VENDOR=/vendor/vendor
+elif [ -n "$(cat /etc/fstab | grep /system_root)" ];
+then
+  device_abpartition=false
   SYSTEM_MOUNT=/system_root
   SYSTEM=$SYSTEM_MOUNT/system
+  VENDOR=/vendor
 else
+  device_abpartition=false
   SYSTEM_MOUNT=/system
   SYSTEM=$SYSTEM_MOUNT
+  VENDOR=/vendor
 fi
-
-# Mount whatever $SYSTEM_MOUNT is, sometimes remount is necessary if mounted read-only
-ui_print "- Mounting /system RW";
-grep -q "/system.*ro[\s,]" /proc/mounts && mount -o remount,rw $SYSTEM_MOUNT || mount -o rw "$block" $SYSTEM_MOUNT
-
-# Remount /system to /system_root if we have system-as-root and bind /system to /system_root/system (like Magisk does)
-# For reference, check https://github.com/topjohnwu/Magisk/blob/master/scripts/util_functions.sh
-if [ -f $SYSTEM/init.rc ]; then
-  ui_print "- Device is system-as-root"
-  ui_print "- Remounting /system as /system_root";
-  mk_system_root;
-  mount --move /system /system_root
-  mount -o bind /system_root/system /system
-  SYSTEM_MOUNT=/system_root
-  SYSTEM=/system
-  mounts="$mounts /system $SYSTEM_MOUNT"
-else
-  # Just add $SYSTEM_MOUNT to the mount list
-  mounts="$mounts $SYSTEM_MOUNT"
-fi
-ui_print " ";
 
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
 zip_folder="$(dirname "$OPENGAZIP")";
 g_prop=$SYSTEM/etc/g.prop
-PROPFILES="$g_prop $SYSTEM/default.prop $SYSTEM/build.prop $SYSTEM/product/build.prop /vendor/build.prop /data/local.prop /default.prop /build.prop"
+PROPFILES="$g_prop $SYSTEM/default.prop $SYSTEM/build.prop $VENDOR/build.prop /data/local.prop /default.prop /build.prop"
 bkup_tail=$TMP/bkup_tail.sh;
 gapps_removal_list=$TMP/gapps-remove.txt;
 g_log=$TMP/g.log;
@@ -1188,16 +843,19 @@ exxit() {
   fi
   find $TMP/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +
   set_progress 1.0
-  ui_print "- Unmounting $mounts";
+  ui_print "- Unmounting $mounts"
+  ui_print " "
   for m in $mounts; do
-    umount "$m"
+    case $m in
+      $SYSTEM_MOUNT)
+        if [ "$device_abpartition" = "true" ]; then
+          mount -o ro $SYSTEM_MOUNT
+        else
+          umount $SYSTEM_MOUNT
+        fi;;
+      *) umount "$m";;
+    esac
   done
-  if [ "$system_root_tmp" == "true" ]; then
-    ui_print "- Restoring original /system_root";
-    mv /system_root_$timestamp/* /system_root/
-    rm -rf /system_root_$timestamp
-  fi
-  ui_print " ";
   exit "$1"
 }
 
@@ -1283,6 +941,28 @@ get_fallback_arch(){
     x86_64) fallback_arch="x86";; #e.g. chain: x86_64->x86->arm->all
     *)      fallback_arch="$1";; #return original arch if no fallback available
   esac
+}
+
+get_file_prop() {
+  grep -m1 "^$2=" "$1" | cut -d= -f2
+}
+
+get_prop() {
+  #check known .prop files using get_file_prop
+  for f in $PROPFILES; do
+    if [ -e "$f" ]; then
+      prop="$(get_file_prop "$f" "$1")"
+      if [ -n "$prop" ]; then
+        break #if an entry has been found, break out of the loop
+      fi
+    fi
+  done
+  #if prop is still empty; try to use recovery's built-in getprop method; otherwise output current result
+  if [ -z "$prop" ]; then
+    getprop "$1" | cut -c1-
+  else
+    printf "$prop"
+  fi
 }
 
 install_extracted() {
@@ -1431,13 +1111,18 @@ set_perm() {
   chmod "$3" "$4";
 }
 
+set_progress() { echo "set_progress $1" > "$OUTFD"; }
+
 sys_app() {
-  for folder in $SYSTEM/app $SYSTEM/product/app $SYSTEM/priv-app $SYSTEM/product/priv-app; do
-    if ( grep -q "codePath=\"$folder/$1" /data/system/packages.xml ); then
-      return 0;
-    fi;
-  done;
+  if ( grep -q "codePath=\"$SYSTEM/app/$1" /data/system/packages.xml ); then
+    return 0;
+  fi;
   return 1;
+}
+
+ui_print() {
+  echo "ui_print $1" > "$OUTFD";
+  echo "ui_print" > "$OUTFD";
 }
 
 which_dpi() {
@@ -1487,6 +1172,47 @@ which_dpi() {
     done;
   fi;
 }
+# _____________________________________________________________________________________________________________________
+#                                                  Gather Pre-Install Info
+# Are we on an Android device is or is a really stupid person running this script on their computer?
+if [ -e "/etc/lsb-release" ] || [ -n "$OSTYPE" ]; then
+  echo "Don't run this on your computer! You need to flash the Open GApps zip on an Android Recovery!"
+  exit 1
+fi
+# Get GApps Version and GApps Type from g.prop extracted at top of script
+gapps_version=$(get_file_prop "$TMP/g.prop" "ro.addon.open_version")
+gapps_type=$(get_file_prop "$TMP/g.prop" "ro.addon.open_type")
+# _____________________________________________________________________________________________________________________
+#                                                  Begin GApps Installation
+ui_print " ";
+ui_print '##############################';
+ui_print '  _____   _____   ___   ____  ';
+ui_print ' /  _  \ |  __ \ / _ \ |  _ \ ';
+ui_print '|  / \  || |__) | |_| || | \ \';
+ui_print '| |   | ||  ___/|  __/ | | | |';
+ui_print '|  \ /  || |    \ |__  | | | |';
+ui_print ' \_/ \_/ |_|     \___| |_| |_|';
+ui_print '       ___   _   ___ ___  ___ ';
+ui_print '      / __| /_\ | _ \ _ \/ __|';
+ui_print '     | (_ |/ _ \|  _/  _/\__ \';
+ui_print '      \___/_/ \_\_| |_|  |___/';
+ui_print '##############################';
+ui_print " ";
+ui_print "$installer_name$gapps_version";
+ui_print " ";
+mounts=""
+for p in "/cache" "/data" "/persist" "$SYSTEM_MOUNT" "/vendor"; do
+  if [ -d "$p" ] && grep -q "$p" "/etc/fstab" && ! mountpoint -q "$p"; then
+    mounts="$mounts $p"
+  fi
+done
+ui_print "- Mounting $mounts";
+ui_print " ";
+set_progress 0.01;
+for m in $mounts; do
+  mount "$m"
+done
+grep -q "$SYSTEM_MOUNT.*\sro[\s,]" /proc/mounts && mount -o remount,rw $SYSTEM_MOUNT  # remount whatever $SYSTEM_MOUNT is, sometimes necessary if mounted read-only
 
 # _____________________________________________________________________________________________________________________
 #                                                  Gather Device & GApps Package Information
@@ -1572,10 +1298,15 @@ for i in "$TMP/aroma/.gapps-config"\
 done;
 
 # We log in the same directory as the gapps-config file, unless it is aroma
+# or adb sideload
 if [ -n "$g_conf" ] && [ "$g_conf" != "$TMP/aroma/.gapps-config" ]; then
   log_folder="$(dirname "$g_conf")";
 else
+  if [ "$zip_folder" == "/sideload" ]; then
+  	log_folder=/sdcard;
+  else
   log_folder="$zip_folder";
+  fi
 fi
 
 if [ "$g_conf" ]; then
@@ -1658,8 +1389,8 @@ case "$device_architecture" in
 esac
 
 EOFILE
-  echo "for targetarch in $ARCH abort; do" >>"$build/$1" # we add abort as latest entry to detect if there is no match
-  tee -a "$build/$1" >/dev/null <<'EOFILE'
+echo "for targetarch in $ARCH abort; do" >> "$build/$1"  # we add abort as latest entry to detect if there is no match
+tee -a "$build/$1" > /dev/null <<'EOFILE'
   if [ "$arch" = "$targetarch" ]; then
     if [ "$libfolder" = "lib64" ]; then #on 64bit we also need to install 32 bit libs from the fbarch
       get_fallback_arch "$arch"
@@ -1810,10 +1541,23 @@ else
   fi
 fi
 
+# Is device FaceUnlock compatible
+if ( ! grep -qE "Victory|herring|sun4i" /proc/cpuinfo ); then
+  for xml in $SYSTEM/etc/permissions/android.hardware.camera.front.xml $SYSTEM/etc/permissions/android.hardware.camera.xml $SYSTEM/vendor/etc/permissions/android.hardware.camera.front.xml $SYSTEM/vendor/etc/permissions/android.hardware.camera.xml; do
+    if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -qr "feature name=\"android.hardware.camera.front" ); then
+      faceunlock_compat=true
+      break
+    fi
+    faceunlock_compat=false
+  done
+else
+  faceunlock_compat=false
+fi
+
 # Is device VRMode compatible
 vrmode_compat=false
-for xml in $(grep -rl '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/product/etc/ $SYSTEM/vendor/etc/); do
-  if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -qr '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/product/etc/ $SYSTEM/vendor/etc/ ); then
+for xml in $(grep -rl '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/vendor/etc/); do
+  if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -qr '<feature name="android.software.vr.mode" />' $SYSTEM/etc/ $SYSTEM/vendor/etc/ ); then
     vrmode_compat=true
     break
   fi
@@ -1822,8 +1566,8 @@ done
 # Check device name for devices that are incompatible with Google Camera
 case $device_name in
 EOFILE
-  cameracompatibilityhack "$build/$1" #in kitkat we don't have google camera compatibility with some phones
-  tee -a "$build/$1" >/dev/null <<'EOFILE'
+cameracompatibilityhack "$build/$1" #in kitkat we don't have google camera compatibility with some phones
+tee -a "$build/$1" > /dev/null <<'EOFILE'
   *) cameragoogle_compat=true;;
 esac;
 
@@ -1850,6 +1594,7 @@ log "Display Density Used" "$density"
 log "Install Type" "$install_type"
 log "Smart ART Pre-ODEX" "$preodex"
 log "Google Camera already installed" "$cameragoogle_inst"
+log "FaceUnlock Compatible" "$faceunlock_compat"
 log "VRMode Compatible" "$vrmode_compat"
 log "Google Camera Compatible" "$cameragoogle_compat"
 log "New Camera API Compatible" "$newcamera_compat"
@@ -1857,7 +1602,7 @@ log "Google Pixel Features" "$googlepixel_compat"
 
 # Determine if a GApps package is installed and
 # the version, type, and whether it's an Open GApps package
-if [ -e "$SYSTEM/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ] || [ -e "$SYSTEM/product/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ] || [ -e "$SYSTEM/priv-app/GoogleServicesFramework.apk" ] || [ -e "$SYSTEM/product/priv-app/GoogleServicesFramework.apk" ]; then
+if [ -e "$SYSTEM/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ] || [ -e "$SYSTEM/priv-app/GoogleServicesFramework.apk" ]; then
   openversion="$(get_prop "ro.addon.open_version")"
   if [ -n "$openversion" ]; then
     log "Current GApps Version" "$openversion"
@@ -1999,12 +1744,18 @@ aosp_remove_list="${aosp_remove_list}provision"$'\n';
 aosp_remove_list="${aosp_remove_list}extsharedstock"$'\n'"extservicesstock"$'\n';
 
 EOFILE
-  webviewcheckhack "$build/$1" # WebViewProvider rules differ Pre-Nougat and Nougat+
-  tee -a "$build/$1" >/dev/null <<'EOFILE'
+webviewcheckhack "$build/$1"  # WebViewProvider rules differ Pre-Nougat and Nougat+
+tee -a "$build/$1" > /dev/null <<'EOFILE'
 # Cyanogenmod breaks Google's PackageInstaller don't install it on CM
 if ( contains "$gapps_list" "packageinstallergoogle" ) && [ $cmcompatibilityhacks = "true" ]; then
   gapps_list=${gapps_list/packageinstallergoogle};
   install_note="${install_note}cmcompatibility_msg"$'\n'; # make note that CM compatibility hacks are applied
+fi;
+
+# Verify device is FaceUnlock compatible BEFORE we allow it in $gapps_list
+if ( contains "$gapps_list" "faceunlock" ) && [ $faceunlock_compat = "false" ]; then
+  gapps_list=${gapps_list/faceunlock};
+  install_note="${install_note}faceunlock_msg"$'\n'; # make note that FaceUnlock will NOT be installed as user requested
 fi;
 
 # Add Google Pixel config if this is a Pixel device (and remove if it is not)
@@ -2219,7 +1970,7 @@ fi;
 # NOTICE: Only for Google Keyboard we need to take KitKat support into account, others are only Lollipop+
 ignoregooglecontacts="true"
 for f in $contactsstock_list; do
-  if [ -e "$SYSTEM/$f" ] || [ -e "$SYSTEM/product/$f" ]; then
+  if [ -e "$SYSTEM/$f" ]; then
     ignoregooglecontacts="false"
     break; #at least 1 aosp stock file is present
   fi
@@ -2227,7 +1978,6 @@ done;
 if [ "$ignoregooglecontacts" = "true" ]; then
   if ( ! contains "$gapps_list" "contactsgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
     sed -i "\:$SYSTEM/priv-app/GoogleContacts:d" $gapps_removal_list;
-    sed -i "\:$SYSTEM/product/priv-app/GoogleContacts:d" $gapps_removal_list;
     ignoregooglecontacts="true[NoRemove]"
     install_note="${install_note}nogooglecontacts_removal"$'\n'; # make note that Google Contacts will not be removed
   else
@@ -2237,7 +1987,7 @@ fi
 
 ignoregoogledialer="true"
 for f in $dialerstock_list; do
-  if [ -e "$SYSTEM/$f" ] || [ -e "$SYSTEM/product/$f" ]; then
+  if [ -e "$SYSTEM/$f" ]; then
     ignoregoogledialer="false"
     break; #at least 1 aosp stock file is present
   fi
@@ -2245,7 +1995,6 @@ done;
 if [ "$ignoregoogledialer" = "true" ]; then
   if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
     sed -i "\:$SYSTEM/priv-app/GoogleDialer:d" $gapps_removal_list;
-    sed -i "\:$SYSTEM/product/priv-app/GoogleDialer:d" $gapps_removal_list;
     ignoregoogledialer="true[NoRemove]"
     install_note="${install_note}nogoogledialer_removal"$'\n'; # make note that Google Dialer will not be removed
   else
@@ -2255,7 +2004,7 @@ fi
 
 ignoregooglekeyboard="true"
 for f in $keyboardstock_list; do
-  if [ -e "$SYSTEM/$f" ] || [ -e "$SYSTEM/product/$f" ]; then
+  if [ -e "$SYSTEM/$f" ]; then
     ignoregooglekeyboard="false"
     break; #at least 1 aosp stock file is present
   fi
@@ -2263,8 +2012,8 @@ done;
 if [ "$ignoregooglekeyboard" = "true" ]; then
   if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
 EOFILE
-  keyboardgooglenotremovehack "$build/$1"
-  tee -a "$build/$1" >/dev/null <<'EOFILE'
+keyboardgooglenotremovehack "$build/$1"
+tee -a "$build/$1" > /dev/null <<'EOFILE'
     ignoregooglekeyboard="true[NoRemove]"
     install_note="${install_note}nogooglekeyboard_removal"$'\n'; # make note that Google Keyboard will not be removed
   else
@@ -2274,7 +2023,7 @@ fi
 
 ignoregooglepackageinstaller="true"
 for f in $packageinstallerstock_list; do
-  if [ -e "$SYSTEM/$f" ] || [ -e "$SYSTEM/product/$f" ]; then
+  if [ -e "$SYSTEM/$f" ]; then
     ignoregooglepackageinstaller="false"
     break; #at least 1 aosp stock file is present
   fi
@@ -2282,7 +2031,6 @@ done;
 if [ "$ignoregooglepackageinstaller" = "true" ]; then
   if ( ! contains "$gapps_list" "packageinstallergoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
     sed -i "\:$SYSTEM/priv-app/GooglePackageInstaller:d" $gapps_removal_list;
-    sed -i "\:$SYSTEM/product/priv-app/GooglePackageInstaller:d" $gapps_removal_list;
     ignoregooglepackageinstaller="true[NoRemove]"
     install_note="${install_note}nogooglepackageinstaller_removal"$'\n'; # make note that Google Package Installer will not be removed
   else
@@ -2292,7 +2040,7 @@ fi
 
 ignoregoogletag="true"
 for f in $tagstock_list; do
-  if [ -e "$SYSTEM/$f" ] || [ -e "$SYSTEM/product/$f" ]; then
+  if [ -e "$SYSTEM/$f" ]; then
     ignoregoogletag="false"
     break; #at least 1 aosp stock file is present
   fi
@@ -2300,7 +2048,6 @@ done;
 if [ "$ignoregoogletag" = "true" ]; then
   if ( ! contains "$gapps_list" "taggoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
     sed -i "\:$SYSTEM/priv-app/TagGoogle:d" $gapps_removal_list;
-    sed -i "\:$SYSTEM/product/priv-app/TagGoogle:d" $gapps_removal_list;
     ignoregoogletag="true[NoRemove]"
     install_note="${install_note}nogoogletag_removal"$'\n'; # make note that Google Tag will not be removed
   else
@@ -2310,15 +2057,15 @@ fi
 
 ignoregooglewebview="true"
 for f in $webviewstock_list; do
-  if [ -e "$SYSTEM/$f" ] || [ -e "$SYSTEM/product/$f" ]; then
+  if [ -e "$SYSTEM/$f" ]; then
     ignoregooglewebview="false"
     break; #at least 1 aosp stock file is present
   fi
 done;
 EOFILE
-  webviewignorehack "$build/$1"         # in Nougat Chrome and WebViewStub can also be used as WebViewProvider
-  camerav3compatibilityhack "$build/$1" # in Marshmallow we need to use the legacy camera that uses the older api
-  tee -a "$build/$1" >/dev/null <<'EOFILE'
+webviewignorehack "$build/$1"  # in Nougat Chrome and WebViewStub can also be used as WebViewProvider
+camerav3compatibilityhack "$build/$1"  # in Marshmallow we need to use the legacy camera that uses the older api
+tee -a "$build/$1" > /dev/null <<'EOFILE'
 
 # Process User Application Removals for calculations and subsequent removal
 if [ -n "$user_remove_list" ]; then
@@ -2330,14 +2077,14 @@ if [ -n "$user_remove_list" ]; then
       * )       testapk="${testapk}.apk" ;;
     esac;
     # Create user_remove_folder_list if this is a system/ROM application
-    for folder in $SYSTEM/app $SYSTEM/product/app $SYSTEM/priv-app $SYSTEM/product/priv-app; do # Check all subfolders of system app/priv-app folders for the apks
+    for folder in $SYSTEM/app $SYSTEM/priv-app; do # Check all subfolders in /system/app /system/priv-app for the apk
       file_count=0; # Reset Counter
       file_count=$(find $folder -iname "$testapk" | wc -l);
       case $file_count in
         0)  continue;;
 EOFILE
-  universalremoverhack "$build/$1" #on kitkat the paths for the universalremover are different
-  tee -a "$build/$1" >/dev/null <<'EOFILE'
+universalremoverhack "$build/$1" #on kitkat the paths for the universalremover are different
+tee -a "$build/$1" > /dev/null <<'EOFILE'
             break;;
         *)  echo "$remove_apk" >> $user_remove_multiplefound_log; # Add app to user_remove_multiplefound_log since we found more than 1 instance
             break;;
@@ -2351,7 +2098,7 @@ fi;
 
 # Removing old Chrome libraries
 obsolete_libs_list="";
-for f in $(find $SYSTEM/lib $SYSTEM/product/lib $SYSTEM/lib64 $SYSTEM/product/lib64 -name 'libchrome.*.so' 2>/dev/null); do
+for f in $(find $SYSTEM/lib $SYSTEM/lib64 -name 'libchrome.*.so' 2>/dev/null); do
   obsolete_libs_list="${obsolete_libs_list}$f"$'\n';
 done;
 
@@ -2447,13 +2194,11 @@ for aosp_name in $aosp_remove_list; do
   eval "list_name=\$${aosp_name}_list";
   aosp_size_kb=0; # Reset counter
   for file_name in $list_name; do
-    for file_folder in "$SYSTEM" "$SYSTEM/product"; do
-      if [ -d "$file_folder" ] && [ -e "$file_folder/$file_name" ]; then
-        file_size_kb=$(du -ck "$file_folder/$file_name" | tail -n 1 | awk '{ print $1 }');
-        aosp_size_kb=$((file_size_kb + aosp_size_kb));
-        post_install_size_kb=$((post_install_size_kb + file_size_kb));
-      fi;
-    done;
+    if [ -e "$SYSTEM/$file_name" ]; then
+      file_size_kb=$(du -ck "$SYSTEM/$file_name" | tail -n 1 | awk '{ print $1 }');
+      aosp_size_kb=$((file_size_kb + aosp_size_kb));
+      post_install_size_kb=$((post_install_size_kb + file_size_kb));
+    fi;
   done;
   log_add "Remove" "$aosp_name" $aosp_size_kb $post_install_size_kb;
 done;
@@ -2485,8 +2230,8 @@ for gapp_name in $gapps_list; do
     total_appsize=$((total_appsize + $appsize))
   done
 EOFILE
-  echo "$DATASIZESCODE" >>"$build/$1"
-  tee -a "$build/$1" >/dev/null <<'EOFILE'
+echo "$DATASIZESCODE" >> "$build/$1"
+tee -a "$build/$1" > /dev/null <<'EOFILE'
   post_install_size_kb=$((post_install_size_kb - total_appsize))
   log_sub "Install" "$gapp_name" "$total_appsize" "$post_install_size_kb"
 done;
@@ -2555,7 +2300,7 @@ for aosp_name in $aosp_remove_list; do
   eval "list_name=\$${aosp_name}_list";
   list_name=$(echo "${list_name}" | sort -r); # reverse sort list for more readable output
   for file_name in $list_name; do
-    rm -rf "$SYSTEM/$file_name" "$SYSTEM/product/$file_name";
+    rm -rf "$SYSTEM/$file_name";
     sed -i "\:# Remove Stock/AOSP apps (from GApps Installer):a \    rm -rf \$SYS/$file_name" $bkup_tail;
   done;
 done;
@@ -2571,7 +2316,7 @@ for user_app in $user_remove_folder_list; do
 done;
 
 # Remove any empty folders we may have created during the removal process
-for i in $SYSTEM/app $SYSTEM/product/app $SYSTEM/priv-app $SYSTEM/product/priv-app $SYSTEM/vendor/pittpatt $SYSTEM/usr/srec $SYSTEM/etc/preferred-apps; do
+for i in $SYSTEM/app $SYSTEM/priv-app $SYSTEM/vendor/pittpatt $SYSTEM/usr/srec $SYSTEM/etc/preferred-apps; do
   find "$i" -type d | xargs -r rmdir -p --ignore-fail-on-non-empty;
 done;
 # _____________________________________________________________________________________________________________________
@@ -2592,9 +2337,9 @@ ui_print " ";
 set_progress 0.25;
 
 EOFILE
-  echo "$KEYBDINSTALLCODE" >>"$build/$1"
-  echo "$DATAINSTALLCODE" >>"$build/$1"
-  tee -a "$build/$1" >/dev/null <<'EOFILE'
+echo "$KEYBDINSTALLCODE" >> "$build/$1"
+echo "$DATAINSTALLCODE" >> "$build/$1"
+tee -a "$build/$1" > /dev/null <<'EOFILE'
 # Progress Bar increment calculations for GApps Install process
 set_progress 0.30;
 gapps_count=$(echo "${gapps_list}" | wc -w); # Count number of GApps left to be installed
@@ -2634,6 +2379,15 @@ if ( grep -qiE '^googleassistant$' "$g_conf" ); then  #TODO this is not enabled 
   sed -i "\:# Apply build.prop changes (from GApps Installer):a \    if ! grep -q \"ro.opa.eligible_device=\" $SYSTEM/build.prop; then echo \"ro.opa.eligible_device=true\" >> \$SYS/build.prop; fi" $bkup_tail
 fi
 
+# Create FaceLock lib symlink if installed
+if ( contains "$gapps_list" "faceunlock" ); then
+  install -d "$SYSTEM/app/FaceLock/lib/$arch"
+  ln -sfn "$SYSTEM/$libfolder/$faceLock_lib_filename" "$SYSTEM/app/FaceLock/lib/$arch/$faceLock_lib_filename"
+  # Add same code to backup script to ensure symlinks are recreated on addon.d restore
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$faceLock_lib_filename\" \"\$SYS/app/FaceLock/lib/$arch/$faceLock_lib_filename\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/FaceLock/lib/$arch\"" $bkup_tail
+fi
+
 # Create Markup lib symlink if installed
 if ( contains "$gapps_list" "markup" ); then
   install -d "$SYSTEM/app/MarkupGoogle/lib/$arch"
@@ -2644,8 +2398,8 @@ if ( contains "$gapps_list" "markup" ); then
 fi
 
 EOFILE
-  if [ "$API" -lt "24" ]; then # Only 5.1 and 6.0
-    echo '# Create TVRemote lib symlink if installed
+if [ "$API" -lt "24" ]; then  # Only 5.1 and 6.0
+  echo '# Create TVRemote lib symlink if installed
 if ( contains "$gapps_list" "tvremote" ); then
   install -d "$SYSTEM/app/AtvRemoteService/lib/$arch"
   ln -sfn "$SYSTEM/$libfolder/$atvremote_lib_filename" "$SYSTEM/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename"
@@ -2653,11 +2407,11 @@ if ( contains "$gapps_list" "tvremote" ); then
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$atvremote_lib_filename\" \"\$SYS/app/AtvRemoteService/lib/$arch/$atvremote_lib_filename\"" $bkup_tail
   sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/AtvRemoteService/lib/$arch\"" $bkup_tail
 fi
-' >>"$build/$1"
-  fi
+' >> "$build/$1"
+fi
 
-  if [ "$API" -lt "23" ]; then
-    echo '# Create WebView lib symlink if WebView was installed
+if [ "$API" -lt "23" ]; then
+  echo '# Create WebView lib symlink if WebView was installed
 if ( contains "$gapps_list" "webviewgoogle" ); then
   install -d "$SYSTEM/app/WebViewGoogle/lib/$arch"
   ln -sfn "$SYSTEM/$libfolder/$WebView_lib_filename" "$SYSTEM/app/WebViewGoogle/lib/$arch/$WebView_lib_filename"
@@ -2672,9 +2426,9 @@ if ( contains "$gapps_list" "webviewgoogle" ); then
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/WebViewGoogle/lib/$fbarch\"" $bkup_tail
   fi
 fi
-' >>"$build/$1"
-  fi
-  tee -a "$build/$1" >/dev/null <<'EOFILE'
+' >> "$build/$1"
+fi
+tee -a "$build/$1" > /dev/null <<'EOFILE'
 
 # Copy g.prop over to /system/etc
 cp -f "$TMP/g.prop" "$g_prop"
