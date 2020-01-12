@@ -619,7 +619,11 @@ tvrecommendations"  # On Android 8.0+ a different launcher exists. SuW also work
 }
 
 # Does nothing now, here for completeness
-api27hack(){}
+api27hack(){
+  if [ "$API" -eq "27" ]; then
+    gappscore="$gappscore"
+  fi
+}
 
 api28hack(){
   if [ "$API" -ge "28" ]; then
