@@ -152,8 +152,6 @@ form(
       "Duo",     "<b>Google Duo</b>",       "",                      "check",
       "Earth",     "<b>Google Earth</b>",       "",                      "check",
       "ExchangeGoogle",     "<b>Google Exchange Services</b>",       "",                      "check",
-      "FaceDetect",     "<b>Face Detection Library</b>",       "",                      "check",
-      "FaceUnlock",     "<b>Trusted Face</b>",       "",                      "check",
       "Fitness",     "<b>Google Fit</b>",       "",                      "check",
       "GCS",     "<b>Google Connectivity Services</b>",       "Requires Android 5.1 or later, To Exclude BOTH Google Connectivity Services AND Project Fi by Google <#f00>OR</#> To Include Google Connectivity Services",                      "check",
       "Gmail",     "<b>Gmail</b>",       "",                      "check",
@@ -490,18 +488,6 @@ if
   prop("gapps.prop", "ExchangeGoogle")=="1"
 then
   appendvar("gapps", "ExchangeGoogle\n");
-endif;
-
-if
-  prop("gapps.prop", "FaceDetect")=="1"
-then
-  appendvar("gapps", "FaceDetect\n");
-endif;
-
-if
-  prop("gapps.prop", "FaceUnlock")=="1"
-then
-  appendvar("gapps", "FaceUnlock\n");
 endif;
 
 if

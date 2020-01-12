@@ -36,11 +36,6 @@ keyboardgooglenotremovehack(){
 }
 
 keyboardlibhack(){
-  #if [ "$API" -ge "24" ]; then # on Nougat there are officially no swypelibs, but we can use the Marshmallow ones for now, they are still AOSP compatible
-  #  REQDLIST=""
-  #  KEYBDLIBS=""
-  #  KEYBDINSTALLCODE=""
-  #el
   if [ "$API" -ge "23" ]; then # on Marshmallow it is like Lollipop but with extra libjni_keyboarddecoder.so; on Marshmallow we support all platforms
     gappscore_optional="swypelibs $gappscore_optional"
     REQDLIST='/system/lib/libjni_latinimegoogle.so
@@ -48,7 +43,13 @@ keyboardlibhack(){
 /system/app/LatinIME/lib/$arch/libjni_latinimegoogle.so
 /system/lib/libjni_keyboarddecoder.so
 /system/lib64/libjni_keyboarddecoder.so
-/system/app/LatinIME/lib/$arch/libjni_keyboarddecoder.so'
+/system/app/LatinIME/lib/$arch/libjni_keyboarddecoder.so
+/system/product/lib/libjni_latinimegoogle.so
+/system/product/lib64/libjni_latinimegoogle.so
+/system/product/app/LatinIME/lib/$arch/libjni_latinimegoogle.so
+/system/product/lib/libjni_keyboarddecoder.so
+/system/product/lib64/libjni_keyboarddecoder.so
+/system/product/app/LatinIME/lib/$arch/libjni_keyboarddecoder.so'
     KEYBDLIBS='keybd_lib_google="libjni_latinimegoogle.so"
 keybd_dec_google="libjni_keyboarddecoder.so"
 keybd_lib_aosp="libjni_latinime.so"'
@@ -58,27 +59,42 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
   if [ "$skipswypelibs" = "false" ]; then
     if [ "$substituteswypelibs" = "true" ]; then
       keybd_lib_target="$keybd_lib_aosp"
-      rm -f "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_google" # remove swypelibs and symlink if any
-      rm -f "/system/app/LatinIME/$libfolder/$arch/$keybd_dec_google" # remove swypelibs and symlink if any
+      # remove swypelibs and symlink if any
+      rm -f "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_google" 
+      rm -f "/system/app/LatinIME/$libfolder/$arch/$keybd_dec_google"
+      rm -f "/system/product/app/LatinIME/$libfolder/$arch/$keybd_lib_google" 
+      rm -f "/system/product/app/LatinIME/$libfolder/$arch/$keybd_dec_google"
     else
       keybd_lib_target="$keybd_lib_google"
-      ln -sfn "/system/$libfolder/$keybd_lib_aosp" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp" # relink aosp as the normal link
+      # relink aosp as the normal link
+      ln -sfn "/system/$libfolder/$keybd_lib_aosp" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp"
+      ln -sfn "/system/product/$libfolder/$keybd_lib_aosp" "/system/product/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp"
     fi
     ui_print "- Installing swypelibs"
     extract_app "Optional/swypelibs-lib-$arch"  # Keep it simple, swypelibs is only lib-$arch
     install -d "/system/app/LatinIME/$libfolder/$arch"
-    ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_target" # create required symlink
-    ln -sfn "/system/$libfolder/$keybd_dec_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_dec_google" # create required symlink
+    # create required symlinks
+    ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_target"
+    ln -sfn "/system/$libfolder/$keybd_dec_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_dec_google"
+    ln -sfn "/system/product/$libfolder/$keybd_lib_google" "/system/product/app/LatinIME/$libfolder/$arch/$keybd_lib_target"
+    ln -sfn "/system/product/$libfolder/$keybd_dec_google" "/system/product/app/LatinIME/$libfolder/$arch/$keybd_dec_google"
 
     # Add same code to backup script to ensure symlinks are recreated on addon.d restore
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$keybd_dec_google\" \"\$SYS/app/LatinIME/$libfolder/$arch/$keybd_dec_google\"" $bkup_tail
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$keybd_lib_google\" \"\$SYS/app/LatinIME/$libfolder/$arch/$keybd_lib_target\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/product/$libfolder/$keybd_dec_google\" \"\$SYS/product/app/LatinIME/$libfolder/$arch/$keybd_dec_google\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/product/$libfolder/$keybd_lib_google\" \"\$SYS/product/app/LatinIME/$libfolder/$arch/$keybd_lib_target\"" $bkup_tail
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/LatinIME/$libfolder/$arch\"" $bkup_tail
   else
     ui_print "- Removing swypelibs"
-    rm -f "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_google" # remove swypelibs and symlink if any
-    rm -f "/system/$libfolder/$keybd_dec_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_dec_google" # remove swypelibs and symlink if any
-    ln -sfn "/system/$libfolder/$keybd_lib_aosp" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp" # restore non-swypelibs symlink
+    # remove swypelibs and symlink if any
+    rm -f "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_google"
+    rm -f "/system/$libfolder/$keybd_dec_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_dec_google"
+    rm -f "/system/product/$libfolder/$keybd_lib_google" "/system/product/app/LatinIME/$libfolder/$arch/$keybd_lib_google"
+    rm -f "/system/product/$libfolder/$keybd_dec_google" "/system/product/app/LatinIME/$libfolder/$arch/$keybd_dec_google"
+    # restore non-swypelibs symlink
+    ln -sfn "/system/$libfolder/$keybd_lib_aosp" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp"
+    ln -sfn "/system/product/$libfolder/$keybd_lib_aosp" "/system/product/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp"
   fi
 fi'
   elif [ "$API" -gt "19" ]; then # on Lollipop there are symlinks in /LatinIME/lib/ and we don't need to remove the aosp lib
@@ -87,7 +103,10 @@ fi'
       gappscore_optional="swypelibs $gappscore_optional"
       REQDLIST='/system/lib/libjni_latinimegoogle.so
 /system/lib64/libjni_latinimegoogle.so
-/system/app/LatinIME/lib/$arch/libjni_latinimegoogle.so'
+/system/app/LatinIME/lib/$arch/libjni_latinimegoogle.so
+/system/product/lib/libjni_latinimegoogle.so
+/system/product/lib64/libjni_latinimegoogle.so
+/system/product/app/LatinIME/lib/$arch/libjni_latinimegoogle.so'
       KEYBDLIBS='keybd_lib_google="libjni_latinimegoogle.so"
 keybd_lib_aosp="libjni_latinime.so"'
       # Only touch AOSP keyboard only if it is not removed
@@ -96,23 +115,34 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
   if [ "$skipswypelibs" = "false" ]; then
     if [ "$substituteswypelibs" = "true" ]; then
       keybd_lib_target="$keybd_lib_aosp"
-      rm -f "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_google" # remove swypelibs and symlink if any
+      # remove swypelibs and symlink if any
+      rm -f "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_google"
+      rm -f "/system/product/app/LatinIME/$libfolder/$arch/$keybd_lib_google"
     else
       keybd_lib_target="$keybd_lib_google"
-      ln -sfn "/system/$libfolder/$keybd_lib_aosp" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp" # relink aosp as the normal link
+      # relink aosp as the normal link
+      ln -sfn "/system/$libfolder/$keybd_lib_aosp" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp"
+      ln -sfn "/system/product/$libfolder/$keybd_lib_aosp" "/system/product/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp"
     fi
     ui_print "- Installing swypelibs"
     extract_app "Optional/swypelibs-lib-$arch"  # Keep it simple, swypelibs is only lib-$arch
     install -d "/system/app/LatinIME/$libfolder/$arch"
-    ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_target" # create required symlink
+    # create required symlinks
+    ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_target"
+    ln -sfn "/system/product/$libfolder/$keybd_lib_google" "/system/product/app/LatinIME/$libfolder/$arch/$keybd_lib_target"
 
     # Add same code to backup script to ensure symlinks are recreated on addon.d restore
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$keybd_lib_google\" \"\$SYS/app/LatinIME/$libfolder/$arch/$keybd_lib_target\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/product/$libfolder/$keybd_lib_google\" \"\$SYS/product/app/LatinIME/$libfolder/$arch/$keybd_lib_target\"" $bkup_tail
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/LatinIME/$libfolder/$arch\"" $bkup_tail
   else
     ui_print "- Removing swypelibs"
-    rm -f "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_google" # remove swypelibs and symlink if any
-    ln -sfn "/system/$libfolder/$keybd_lib_aosp" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp" # restore non-swypelibs symlink
+    # remove swypelibs and symlink if any
+    rm -f "/system/$libfolder/$keybd_lib_google" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_google"
+    rm -f "/system/product/$libfolder/$keybd_lib_google" "/system/product/app/LatinIME/$libfolder/$arch/$keybd_lib_google"
+    # restore non-swypelibs symlink
+    ln -sfn "/system/$libfolder/$keybd_lib_aosp" "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp"
+    ln -sfn "/system/product/$libfolder/$keybd_lib_aosp" "/system/product/app/LatinIME/$libfolder/$arch/$keybd_lib_aosp"
   fi
 fi';;
       *) REQDLIST=""
@@ -124,7 +154,9 @@ fi';;
       arm*)
         gappscore_optional="swypelibs $gappscore_optional"
         REQDLIST="/system/lib/libjni_latinime.so
-/system/lib/libjni_latinimegoogle.so"
+/system/lib/libjni_latinimegoogle.so
+/system/product/lib/libjni_latinime.so
+/system/product/lib/libjni_latinimegoogle.so"
         KEYBDLIBS='keybd_lib_google="libjni_latinimegoogle.so"
 keybd_lib_aosp="libjni_latinime.so"'
         # Only touch AOSP keyboard only if it is not removed
@@ -133,13 +165,18 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
   if [ "$skipswypelibs" = "false" ]; then
     ui_print "- Installing swypelibs"
     extract_app "Optional/swypelibs-lib-$arch"  # Keep it simple, swypelibs is only lib-$arch
-    ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/$libfolder/$keybd_lib_aosp" # create required symlink
+    # create required symlinks
+    ln -sfn "/system/$libfolder/$keybd_lib_google" "/system/$libfolder/$keybd_lib_aosp"
+    ln -sfn "/system/product/$libfolder/$keybd_lib_google" "/system/product/$libfolder/$keybd_lib_aosp"
 
     # Add same code to backup script to ensure symlinks are recreated on addon.d restore
     sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$keybd_lib_google\" \"\$SYS/$libfolder/$keybd_lib_aosp\"" $bkup_tail
+    sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/product/$libfolder/$keybd_lib_google\" \"\$SYS/product/$libfolder/$keybd_lib_aosp\"" $bkup_tail
   else
     ui_print "- Removing swypelibs"
-    rm -f "/system/$libfolder/$keybd_lib_google" # remove swypelibs
+    # remove swypelibs
+    rm -f "/system/$libfolder/$keybd_lib_google"
+    rm -f "/system/product/$libfolder/$keybd_lib_google"
   fi
 fi';;
       *) REQDLIST=""
@@ -310,7 +347,31 @@ versionnamehack(){
 }
 
 webviewcheckhack(){
-  if [ "$API" -ge "24" ]; then
+  if [ "$API" -ge "29" ]; then
+    tee -a "$1" > /dev/null <<'EOFILE'
+# If we're installing webviewgoogle we MUST ADD webviewstub to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$aosp_remove_list" "webviewstub" ); then
+  aosp_remove_list="${aosp_remove_list}webviewstub"$'\n'
+fi;
+
+# If we're installing webviewstub we MUST ADD webviewgoogle to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "webviewstub" ) && ( ! contains "$aosp_remove_list" "webviewgoogle" ); then
+  aosp_remove_list="${aosp_remove_list}webviewgoogle"$'\n'
+fi;
+
+# If we're installing webviewgoogle OR webviewstub we PREFER TO ADD webviewstock to $aosp_remove_list (if it's not already there)
+if ( ( contains "$gapps_list" "webviewgoogle" ) || ( contains "$gapps_list" "webviewstub" ) ) && ( ! contains "$aosp_remove_list" "webviewstock" ); then
+  aosp_remove_list="${aosp_remove_list}webviewstock"$'\n'
+fi
+
+# If we're NOT installing webviewgoogle OR webviewstub and webviewstock is in $aosp_remove_list then user must override removal protection
+# Chrome is not there since on Android 10+ it's not a webview provider anymore
+if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$gapps_list" "webviewstub" ) && ( contains "$aosp_remove_list" "webviewstock" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+  aosp_remove_list=${aosp_remove_list/webviewstock} # we'll prevent webviewstock from being removed so user isn't left with no WebView
+  install_note="${install_note}nowebview_msg"$'\n' # make note that Stock Webview can't be removed unless user Overrides
+fi
+EOFILE
+  elif [ "$API" -ge "24" ]; then
     tee -a "$1" > /dev/null <<'EOFILE'
 # If we're installing chrome and webviewgoogle, replace it with webviewstub unless override removal protection
 if ( contains "$gapps_list" "chrome" ) && ( contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
@@ -329,7 +390,6 @@ if ( contains "$gapps_list" "webviewstub" ) && ( ! contains "$aosp_remove_list" 
 fi;
 
 # If we're installing webviewgoogle OR webviewstub we PREFER TO ADD webviewstock to $aosp_remove_list (if it's not already there)
-# TODO in the future we could consider this behaviour even if installing just Chrome
 if ( ( contains "$gapps_list" "webviewgoogle" ) || ( contains "$gapps_list" "webviewstub" ) ) && ( ! contains "$aosp_remove_list" "webviewstock" ); then
   aosp_remove_list="${aosp_remove_list}webviewstock"$'\n'
 fi
@@ -477,6 +537,8 @@ dialergoogle"
 cameragooglelegacy"
     webviewstocklibs='lib/$WebView_lib_filename
 lib64/$WebView_lib_filename
+product/lib/$WebView_lib_filename
+product/lib64/$WebView_lib_filename
 '  # On Marshmallow the AOSP WebViewlibs must be removed, since they are embedded in the Google WebView APK; this assumes also any pre-bundled Google WebView with the ROM uses embedded libs; use single quote to not replace variable names
     webviewgappsremove=""
   gappstvstock="$gappstvstock
@@ -486,7 +548,9 @@ packageinstallergoogle"  # On AndroidTV 6.0+ packageinstallergoogle is also inst
 googletts"
     webviewstocklibs=""  # On non-Marshmallow the WebViewlibs should not be considered part of the Stock/AOSP WebView, since they are shared with the Google WebView
     webviewgappsremove="lib/libwebviewchromium.so
-lib64/libwebviewchromium.so"  # On non-Marshmallow the WebViewlibs are to be explictly included as a Google WebView file in gapps-remove.txt
+lib64/libwebviewchromium.so
+product/lib/libwebviewchromium.so
+product/lib64/libwebviewchromium.so"  # On non-Marshmallow the WebViewlibs are to be explictly included as a Google WebView file in gapps-remove.txt
   gappstvstock="$gappstvstock
 tvvoiceinput"  # On pre-Marshmallow TV Voiceinput exists
   fi
@@ -557,9 +621,6 @@ tvrecommendations"  # On Android 8.0+ a different launcher exists. SuW also work
 # Does nothing now, here for completeness
 api27hack(){
   if [ "$API" -eq "27" ]; then
-    if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
-      gappscore="$gappscore"
-    fi
     gappscore="$gappscore"
   fi
 }
@@ -595,9 +656,20 @@ tvpackageinstallergoogle" # Several atv packages were removed in Android 9.0
   fi
 }
 
+api29hack(){
+  if [ "$API" -ge "29" ]; then
+    if [ "$ARCH" = "arm64" ]; then # for now only available on arm64
+      gappsfull="$gappsfull
+trichromelibrary"
+    fi
+    gappsmicro="$gappsmicro
+actionsservices" # Include Actions Services with Android 10.0 for Pixel Launcher to work
+  fi
+}
+
 sdkversionhacks(){
   case "$package" in
-    com.android.facelock|com.google.android.configupdater|com.google.android.feedback|com.google.android.gsf.login|com.google.android.partnersetup|com.google.android.setupwizard|com.google.android.syncadapters.contacts)
+    com.google.android.configupdater|com.google.android.feedback|com.google.android.gsf.login|com.google.android.partnersetup|com.google.android.setupwizard|com.google.android.syncadapters.contacts)
       case "$versioncode" in
         *23) sdkversion="23";;
         *24) sdkversion="24";;
@@ -605,6 +677,7 @@ sdkversionhacks(){
         *26) sdkversion="26";;
         *27) sdkversion="27";;
         *28) sdkversion="28";;
+        *29) sdkversion="29";;
         *) ;;
       esac;;
   esac
