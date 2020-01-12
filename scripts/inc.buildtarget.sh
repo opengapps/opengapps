@@ -341,8 +341,8 @@ get_package_info(){
     packageinstallergoogle)   packagetype="GApps"; packagename="com.google.android.packageinstaller"; packagetarget="priv-app/GooglePackageInstaller";;
     pixelicons)               packagetype="GApps"; packagename="com.google.android.nexusicons"; packagetarget="app/NexusLauncherIcons";;
     pixellauncher)            packagetype="GApps"; packagename="com.google.android.apps.nexuslauncher"; packagetarget="priv-app/NexusLauncherPrebuilt"
-                              if [ "$API" -ge "29" ]; then  # Add system overlay for Android 10.0
-                                packagefiles="product/overlay/PixelDefaultsOverlay.apk"
+                              if [ "$API" -ge "28" ]; then  # Add an overlay for Android 9.0+
+                                packagefiles="product/overlay/PixelLauncherOverlay.apk"
                               fi;;
     photos)                   packagetype="GApps"; packagename="com.google.android.apps.photos"; packagetarget="app/Photos";;
     photosvrmode)             packagetype="GApps"; packagename="com.google.android.apps.photos.vrmode"; packagetarget="app/Photos";;
@@ -367,8 +367,8 @@ get_package_info(){
                               fi;;
     wallpapers)               packagetype="GApps"; packagename="com.google.android.apps.wallpaper"; packagetarget="app/WallpaperPickerGooglePrebuilt";;
     wellbeing)                packagetype="GApps"; packagename="com.google.android.apps.wellbeing"; packagetarget="priv-app/WellbeingPrebuilt"
-                              if [ "$API" -ge "28" ]; then  # Add system overlay for Android 9.0+
-                                packagefiles="product/overlay/PixelDefaultsOverlay.apk"
+                              if [ "$API" -ge "28" ]; then  # Add an overlay for Android 9.0+
+                                packagefiles="product/overlay/WellbeingOverlay.apk"
                               fi;;
     youtube)                  packagetype="GApps"; packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
     zhuyin)                   packagetype="GApps"; packagename="com.google.android.apps.inputmethod.zhuyin"; packagetarget="app/GoogleZhuyinIME";;  # ZhuyinIME exists in some ROMs
