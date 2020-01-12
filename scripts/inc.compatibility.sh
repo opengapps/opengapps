@@ -621,10 +621,6 @@ tvrecommendations"  # On Android 8.0+ a different launcher exists. SuW also work
 # Does nothing now, here for completeness
 api27hack(){
   if [ "$API" -eq "27" ]; then
-    if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
-      gappscore="$gappscore"
-    fi
-    gappscore="$gappscore"
   fi
 }
 
@@ -659,16 +655,12 @@ tvpackageinstallergoogle" # Several atv packages were removed in Android 9.0
   fi
 }
 
-# Does nothing now, here for completeness
- api29hack(){
-   if [ "$API" -eq "27" ]; then
-     if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
-       gappscore="$gappscore"
-     fi
-     gappscore="$gappscore"
-   fi
- }
-
+api29hack(){
+  if [ "$API" -eq "29" ] && [ "$ARCH" = "arm64" ]; then # for now only available on arm64
+    gappsfull="$gappscore
+trichromelibrary"
+  fi
+}
 
 sdkversionhacks(){
   case "$package" in
