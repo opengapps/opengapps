@@ -1094,9 +1094,6 @@ if [ "$system_as_root" == "true" ]; then
   if [ ! -z "$active_slot" ]; then
     device_abpartition=true
   fi
-  SYSTEM_MOUNT=/system_root
-else
-  SYSTEM_MOUNT=/system
 fi
 
 # _____________________________________________________________________________________________________________________
