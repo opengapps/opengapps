@@ -1079,7 +1079,6 @@ if ! is_mounted /data; then
   umount_data=1;
 fi;
 
-ui_print "- Mounting /system RW";
 mount -o rw,remount -t auto /system;
 mount -o rw,remount -t auto /vendor 2>/dev/null;
 ui_print " ";
