@@ -657,9 +657,13 @@ tvpackageinstallergoogle" # Several atv packages were removed in Android 9.0
 }
 
 api29hack(){
-  if [ "$API" -ge "29" ] && [ "$ARCH" = "arm64" ]; then # for now only available on arm64
-    gappsfull="$gappscore
+  if [ "$API" -ge "29" ]; then
+    if [ "$ARCH" = "arm64" ]; then # for now only available on arm64
+      gappsfull="$gappsfull
 trichromelibrary"
+    fi
+    gappsmicro="$gappsmicro
+actionsservices" # Include Actions Services with Android 10.0 for Pixel Launcher to work
   fi
 }
 
