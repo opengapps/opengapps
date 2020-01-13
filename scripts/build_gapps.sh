@@ -18,7 +18,10 @@ if { [ "$1" != "arm" ] && [ "$1" != "arm64" ] && [ "$1" != "x86" ] && [ "$1" != 
   exit 1
 fi
 
-command -v realpath >/dev/null 2>&1 || { echo "realpath is required but it's not installed, aborting." >&2; exit 1; }
+command -v realpath >/dev/null 2>&1 || {
+  echo "realpath is required but it's not installed, aborting." >&2
+  exit 1
+}
 #OPENGAPPSDATE=""  # this can be set to override the date
 if [ -n "$OPENGAPPSDATE" ]; then
   DATE="$OPENGAPPSDATE"
@@ -44,7 +47,7 @@ LOGFOLDER="$TOP/log"
 COMPRESSION="lz" # xz # none # this sets the default compression method, override is possible in compressapp
 #TMPSIGNDIR=""  $ if set to a value, at this location the zip signing temporary file is created
 #ZIPALIGNRECOMPRESS=""  # if set to a non-zero value, APKs will be recompressed with zopfli during zipalign
-ZIPCOMPRESSIONLEVEL="0"  # Store only the files in the zip without compressing them (-0 switch): further compression will be useless and will slow down the building process
+ZIPCOMPRESSIONLEVEL="0" # Store only the files in the zip without compressing them (-0 switch): further compression will be useless and will slow down the building process
 # shellcheck source=scripts/inc.tools.sh
 . "$SCRIPTS/inc.tools.sh"
 # shellcheck source=scripts/inc.aromadata.sh
@@ -66,21 +69,25 @@ ZIPCOMPRESSIONLEVEL="0"  # Store only the files in the zip without compressing t
 checktools aapt coreutils java jarsigner unzip zip tar realpath zipalign
 
 case "$API" in
-  19) PLATFORM="4.4";;
-  21) PLATFORM="5.0";;
-  22) PLATFORM="5.1";;
-  23) PLATFORM="6.0";;
-  24) PLATFORM="7.0";;
-  25) PLATFORM="7.1";;
-  26) PLATFORM="8.0";;
-  27) PLATFORM="8.1";;
-  28) PLATFORM="9.0";;
-  29) PLATFORM="10.0";;
-  *)  echo "ERROR: Unknown API version! Aborting..."; exit 1;;
+19) PLATFORM="4.4" ;;
+21) PLATFORM="5.0" ;;
+22) PLATFORM="5.1" ;;
+23) PLATFORM="6.0" ;;
+24) PLATFORM="7.0" ;;
+25) PLATFORM="7.1" ;;
+26) PLATFORM="8.0" ;;
+27) PLATFORM="8.1" ;;
+28) PLATFORM="9.0" ;;
+29) PLATFORM="10.0" ;;
+*)
+  echo "ERROR: Unknown API version! Aborting..."
+  exit 1
+  ;;
 esac
 
 if [ "$API" -lt "21" ] && [ "$ARCH" != "arm" ] && [ "$ARCH" != "x86" ]; then
-  echo "ERROR! Platform $ARCH cannot be built on API level $API"; exit 1
+  echo "ERROR! Platform $ARCH cannot be built on API level $API"
+  exit 1
 fi
 
 get_supported_variants "$VARIANT"
@@ -88,37 +95,46 @@ SUPPORTEDVARIANTS="$supported_variants"
 GAPPSREMOVEVARIANT="$gappsremove_variant"
 
 if [ -z "$SUPPORTEDVARIANTS" ]; then
-  echo "ERROR: Unknown variant! aborting..."; exit 1
+  echo "ERROR: Unknown variant! aborting..."
+  exit 1
 fi
 if [ "$ARCH" != "arm" ] && [ "$ARCH" != "arm64" ]; then #For all non-arm(64) platforms
   case "$VARIANT" in
-    aroma)              echo "ERROR! Variant $VARIANT cannot be built on a non-arm platform"; exit 1;;
-    super|stock|full)   if [ "$API" -lt "21" ]; then
-                          echo "ERROR! Variant $VARIANT cannot be built on a non-arm < 5.0 platform";
-                          exit 1;
-                        fi;; #because system wide libs will probably not work with libhoudini
+  aroma)
+    echo "ERROR! Variant $VARIANT cannot be built on a non-arm platform"
+    exit 1
+    ;;
+  super | stock | full)
+    if [ "$API" -lt "21" ]; then
+      echo "ERROR! Variant $VARIANT cannot be built on a non-arm < 5.0 platform"
+      exit 1
+    fi
+    ;; #because system wide libs will probably not work with libhoudini
   esac
 fi
 if [ "$API" -lt "22" ]; then
   case "$VARIANT" in
-    super|tvstock)  echo "ERROR! Variant $VARIANT cannot be built on API level $API"; exit 1;;
+  super | tvstock)
+    echo "ERROR! Variant $VARIANT cannot be built on API level $API"
+    exit 1
+    ;;
   esac
-fi;
+fi
 echo "Generating Open GApps $VARIANT package for $ARCH with API level $API..."
 
-kitkatpathshack	#kitkat has different apk and lib paths which impact installer.data
-kitkatdatahack #kitkat installs some applications on /data/ instead of /system/
+kitkatpathshack #kitkat has different apk and lib paths which impact installer.data
+kitkatdatahack  #kitkat installs some applications on /data/ instead of /system/
 keyboardlibhack #only 5.0+ has gestures for the aosp keyboard possible, which impact installer.data and an extra file in the package
-api19hack #4.4- has a no setupwizard product type
-api21hack #only 5.0+ supports google tag
-api22hack #only 5.1+ supports google webview (Stock Google 5.0 ROMs too, but we merged stock and fornexus) and GCS
-api23hack #only on 6.0+ we also include Google Contacts, Dialer, Calculator, Packageinstaller and Configupdater
-api24hack #only on 7.0+ we also include Google ExtServices, ExtShared, PrintService, VR
-api25hack #only on 7.1+ we also include AndroidPlatform, GMSSetup, Pixel Launcher, StorageManager
-api26hack #only on 8.0+ we also include AndroidPlatformServices
-api27hack #only here for completeness
-api28hack #only on 9.0+ we also include Actions Services, AndroidPlatformServices, Data Transfer Tool, Markup, Sounds
-api29hack #only here for completeness for now
+api19hack       #4.4- has a no setupwizard product type
+api21hack       #only 5.0+ supports google tag
+api22hack       #only 5.1+ supports google webview (Stock Google 5.0 ROMs too, but we merged stock and fornexus) and GCS
+api23hack       #only on 6.0+ we also include Google Contacts, Dialer, Calculator, Packageinstaller and Configupdater
+api24hack       #only on 7.0+ we also include Google ExtServices, ExtShared, PrintService, VR
+api25hack       #only on 7.1+ we also include AndroidPlatform, GMSSetup, Pixel Launcher, StorageManager
+api26hack       #only on 8.0+ we also include AndroidPlatformServices
+api27hack       #only here for completeness
+api28hack       #only on 9.0+ we also include Actions Services, AndroidPlatformServices, Data Transfer Tool, Markup, Sounds
+api29hack       #only on 10.0+ we also include Actions Services with Pixel Launcher and TrichromeLibrary with Chrome and Webview
 buildtarget
 alignbuild
 commonscripts
