@@ -1045,15 +1045,15 @@ ui_print " ";
 
 ui_print "- Mounting partitions";
 set_progress 0.01;
-test "$SYSTEM_MOUNT" || SYSTEM_MOUNT=/system;
+test "$ANDROID_ROOT" || ANDROID_ROOT=/system;
 mount -o bind /dev/urandom /dev/random;
 umount_all;
 
-setup_mountpoint $SYSTEM_MOUNT;
-if ! is_mounted $SYSTEM_MOUNT; then
-  mount -o ro -t auto $SYSTEM_MOUNT;
+setup_mountpoint $ANDROID_ROOT;
+if ! is_mounted $ANDROID_ROOT; then
+  mount -o ro -t auto $ANDROID_ROOT;
 fi;
-case $SYSTEM_MOUNT in
+case $ANDROID_ROOT in
   /system_root) setup_mountpoint /system;;
   /system)
     if [ -f /system/system/build.prop ]; then
@@ -1182,7 +1182,7 @@ extract_app() {
 exxit() {
   set_progress 0.98
   if [ "$skipvendorlibs" = "true" ]; then
-    umount $SYSTEM_MOUNT/vendor  # unmount tmpfs
+    umount $ANDROID_ROOT/vendor  # unmount tmpfs
   fi
   if ( ! grep -qiE '^ *nodebug *($|#)+' "$g_conf" ); then
     if [ "$g_conf" ]; then # copy gapps-config files to debug logs folder
