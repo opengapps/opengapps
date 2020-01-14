@@ -938,26 +938,24 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 # _____________________________________________________________________________________________________________________
 #                                                  Pre-define Helper Functions
 get_file_prop() {
-  grep -m1 "^$2=" "$1" | cut -d= -f2
+  grep "^$2=" "$1" | cut -d= -f2
 }
 
-get_prop() {
-  #check known .prop files using get_file_prop
-  for f in $PROPFILES; do
-    if [ -e "$f" ]; then
-      prop="$(get_file_prop "$f" "$1")"
-      if [ -n "$prop" ]; then
-        break #if an entry has been found, break out of the loop
-      fi
-    fi
-  done
-  #if prop is still empty; try to use recovery's built-in getprop method; otherwise output current result
-  if [ -z "$prop" ]; then
-    getprop "$1" | cut -c1-
-  else
-    printf "$prop"
-  fi
-}
+if [ ! "$(getprop 2>/dev/null)" ]; then
+  get_prop() {
+    local propdir propfile propval;
+    for propdir in / /system_root /system /vendor /odm /product; do
+      for propfile in default.prop build.prop; do
+        test "$propval" && break 2 || propval="$(get_file_prop $propdir/$propfile $1 2>/dev/null)";
+      done;
+    done;
+    test "$propval" && echo "$propval" || echo "";
+  }
+elif [ ! "$(getprop ro.build.type 2>/dev/null)" ]; then
+  get_prop() {
+    ($(which getprop) | grep "$1" | cut -d[ -f3 | cut -d] -f1) 2>/dev/null;
+  }
+fi;
 
 is_mounted() { mount | grep -q " $1 "; }
 
@@ -1208,9 +1206,13 @@ exxit() {
     cd /
   fi
   find $TMP/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +
+  # Unmount and rollback script changes
   set_progress 1.0
   ui_print "- Unmounting partitions";
   umount_all;
+  (mv -f /system_link /system;
+  mv -f /system_root_link /system_root;
+  umount -l /dev/random) 2>/dev/null;
   ui_print " ";
   exit "$1"
 }
