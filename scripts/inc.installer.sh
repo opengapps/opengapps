@@ -147,8 +147,6 @@ req_android_arch="'"$ARCH"'";
 req_android_sdk="'"$API"'";
 req_android_version="'"$PLATFORM"'";
 
-timestamp=$(date +%s);
-
 '"$KEYBDLIBS"'
 atvremote_lib_filename="libatv_uinputbridge.so"
 WebView_lib_filename="libwebviewchromium.so"
@@ -938,25 +936,10 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 # _____________________________________________________________________________________________________________________
 #                                                  Pre-define Helper Functions
 get_file_prop() {
-  grep "^$2=" "$1" | cut -d= -f2
+  grep -m1 "^$2=" "$1" | cut -d= -f2
 }
 
 is_mounted() { mount | grep -q " $1 "; }
-
-# Check if /system_root is present and move its files to a temp folder (if there are any)
-mk_system_root() {
-  if [ -z "$system_root_tmp" ]; then
-    if [ -d "/system_root" ] && [ "$(ls -A /system_root)" ]; then
-      system_root_tmp=true
-      ui_print "- Moving original /system_root";
-      mkdir /system_root_$timestamp
-      mv /system_root/* /system_root_$timestamp/
-    else
-      system_root_tmp=false
-      mkdir -p /system_root
-    fi
-  fi
-}
 
 setup_mountpoint() {
   test -L $1 && mv -f $1 ${1}_link;
@@ -1284,23 +1267,19 @@ get_fallback_arch(){
   esac
 }
 
-if [ ! "$(getprop 2>/dev/null)" ]; then
-  get_prop() {
-    local propdir propfile propval;
-    for propfile in $PROPFILES; do
-      test "$propval" && break 2 || propval="$(get_file_prop $propdir/$propfile $1 2>/dev/null)";
-    done;
-    test "$propval" && echo "$propval" || echo "";
-  }
-elif [ ! "$(getprop ro.build.type 2>/dev/null)" ]; then
-  get_prop() {
-    ($(which getprop) | grep "$1" | cut -d[ -f3 | cut -d] -f1) 2>/dev/null;
-  }
-else
-  get_prop() {
-    getprop "$1"
-  }
-fi;
+get_prop() {
+  #check known .prop files using get_file_prop
+  local propfile propval;
+  for propfile in $PROPFILES; do
+    test "$propval" && break 2 || propval="$(get_file_prop $propfile $1 2>/dev/null)";
+  done;
+  #if propval is still empty, try to use recovery's built-in getprop method; otherwise output current result
+  if [ -z "$propval" ]; then
+    getprop "$1" | cut -c1-
+  else
+    printf "$propval"
+  fi
+}
 
 install_extracted() {
   file_list="$(find "$TMP/$1/" -mindepth 1 -type f | cut -d/ -f5-)"
