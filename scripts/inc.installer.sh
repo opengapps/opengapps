@@ -941,26 +941,6 @@ get_file_prop() {
   grep "^$2=" "$1" | cut -d= -f2
 }
 
-if [ ! "$(getprop 2>/dev/null)" ]; then
-  get_prop() {
-    local propdir propfile propval;
-    for propdir in / /system_root /system_root/etc /system_root/product /system /system/etc /system_root/product /vendor /system/vendor /odm /product; do
-      for propfile in g.prop default.prop build.prop local.prop; do
-        test "$propval" && break 2 || propval="$(get_file_prop $propdir/$propfile $1 2>/dev/null)";
-      done;
-    done;
-    test "$propval" && echo "$propval" || echo "";
-  }
-elif [ ! "$(getprop ro.build.type 2>/dev/null)" ]; then
-  get_prop() {
-    ($(which getprop) | grep "$1" | cut -d[ -f3 | cut -d] -f1) 2>/dev/null;
-  }
-else
-  get_prop() {
-    getprop "$1"
-  }
-fi;
-
 is_mounted() { mount | grep -q " $1 "; }
 
 # Check if /system_root is present and move its files to a temp folder (if there are any)
@@ -1044,7 +1024,6 @@ ui_print " ";
 # _____________________________________________________________________________________________________________________
 #                                                  Mount partitions
 # For reference, check https://github.com/osm0sis/AnyKernel3/blob/master/META-INF/com/google/android/update-binary
-
 ui_print "- Mounting partitions";
 set_progress 0.01;
 test "$ANDROID_ROOT" || ANDROID_ROOT=/system;
@@ -1101,7 +1080,7 @@ fi
 #                                                  Declare Variables
 zip_folder="$(dirname "$OPENGAZIP")";
 g_prop=/system/etc/g.prop
-PROPFILES="$g_prop /system/default.prop /system/build.prop /system/product/build.prop /vendor/build.prop /data/local.prop /default.prop /build.prop"
+PROPFILES="$g_prop /system/default.prop /system/build.prop /system/product/build.prop /vendor/build.prop /product/build.prop /system_root/default.prop /system_root/build.prop /system_root/product/build.prop /data/local.prop /default.prop /build.prop"
 bkup_tail=$TMP/bkup_tail.sh;
 gapps_removal_list=$TMP/gapps-remove.txt;
 g_log=$TMP/g.log;
@@ -1304,6 +1283,24 @@ get_fallback_arch(){
     *)      fallback_arch="$1";; #return original arch if no fallback available
   esac
 }
+
+if [ ! "$(getprop 2>/dev/null)" ]; then
+  get_prop() {
+    local propdir propfile propval;
+    for propfile in $PROPFILES; do
+      test "$propval" && break 2 || propval="$(get_file_prop $propdir/$propfile $1 2>/dev/null)";
+    done;
+    test "$propval" && echo "$propval" || echo "";
+  }
+elif [ ! "$(getprop ro.build.type 2>/dev/null)" ]; then
+  get_prop() {
+    ($(which getprop) | grep "$1" | cut -d[ -f3 | cut -d] -f1) 2>/dev/null;
+  }
+else
+  get_prop() {
+    getprop "$1"
+  }
+fi;
 
 install_extracted() {
   file_list="$(find "$TMP/$1/" -mindepth 1 -type f | cut -d/ -f5-)"
