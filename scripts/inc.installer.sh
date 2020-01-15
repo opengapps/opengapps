@@ -955,6 +955,10 @@ elif [ ! "$(getprop ro.build.type 2>/dev/null)" ]; then
   get_prop() {
     ($(which getprop) | grep "$1" | cut -d[ -f3 | cut -d] -f1) 2>/dev/null;
   }
+else
+  get_prop() {
+    getprop "$1"
+  }
 fi;
 
 is_mounted() { mount | grep -q " $1 "; }
