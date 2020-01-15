@@ -944,8 +944,8 @@ get_file_prop() {
 if [ ! "$(getprop 2>/dev/null)" ]; then
   get_prop() {
     local propdir propfile propval;
-    for propdir in / /system_root /system /vendor /odm /product; do
-      for propfile in default.prop build.prop; do
+    for propdir in / /system_root /system_root/etc /system_root/product /system /system/etc /system_root/product /vendor /system/vendor /odm /product; do
+      for propfile in g.prop default.prop build.prop local.prop; do
         test "$propval" && break 2 || propval="$(get_file_prop $propdir/$propfile $1 2>/dev/null)";
       done;
     done;
