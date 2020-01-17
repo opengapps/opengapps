@@ -1009,15 +1009,15 @@ ui_print " ";
 # For reference, check https://github.com/osm0sis/AnyKernel3/blob/master/META-INF/com/google/android/update-binary
 ui_print "- Mounting partitions";
 set_progress 0.01;
-test "$ANDROID_ROOT" || ANDROID_ROOT=/system;
+test "$SYSTEM_MOUNT" || SYSTEM_MOUNT=/system;
 mount -o bind /dev/urandom /dev/random;
 umount_all;
 
-setup_mountpoint $ANDROID_ROOT;
-if ! is_mounted $ANDROID_ROOT; then
-  mount -o ro -t auto $ANDROID_ROOT;
+setup_mountpoint $SYSTEM_MOUNT;
+if ! is_mounted $SYSTEM_MOUNT; then
+  mount -o ro -t auto $SYSTEM_MOUNT;
 fi;
-case $ANDROID_ROOT in
+case $SYSTEM_MOUNT in
   /system_root) setup_mountpoint /system;;
   /system)
     if [ -f /system/system/build.prop ]; then
@@ -1146,7 +1146,7 @@ extract_app() {
 exxit() {
   set_progress 0.98
   if [ "$skipvendorlibs" = "true" ]; then
-    umount $ANDROID_ROOT/vendor  # unmount tmpfs
+    umount $SYSTEM_MOUNT/vendor  # unmount tmpfs
   fi
   if ( ! grep -qiE '^ *nodebug *($|#)+' "$g_conf" ); then
     if [ "$g_conf" ]; then # copy gapps-config files to debug logs folder
