@@ -1180,9 +1180,14 @@ exxit() {
   set_progress 1.0
   ui_print "- Unmounting partitions";
   umount_all;
-  (mv -f /system_link /system;
-  mv -f /system_root_link /system_root;
-  umount -l /dev/random) 2>/dev/null;
+  if [ -h /system_link ]; then
+    rmdir /system
+    mv -f /system_link /system
+  elif [ -h /system_root_link ]; then
+    rmdir /system_root
+    mv -f /system_root_link /system_root
+  fi
+  umount -l /dev/random 2>/dev/null
   ui_print " ";
   exit "$1"
 }
