@@ -1009,7 +1009,12 @@ ui_print " ";
 # For reference, check https://github.com/osm0sis/AnyKernel3/blob/master/META-INF/com/google/android/update-binary
 ui_print "- Mounting partitions";
 set_progress 0.01;
-test "$SYSTEM_MOUNT" || SYSTEM_MOUNT=/system;
+system_as_root=`getprop ro.build.system_root_image`
+if [ "$system_as_root" == "true" ]; then
+  SYSTEM_MOUNT=/system_root
+else
+  SYSTEM_MOUNT=/system
+fi
 mount -o bind /dev/urandom /dev/random;
 umount_all;
 
@@ -1051,7 +1056,6 @@ ui_print " ";
 #                      Detect A/B partition layout https://source.android.com/devices/tech/ota/ab_updates
 #                      and system-as-root https://source.android.com/devices/bootloader/system-as-root
 device_abpartition=false
-system_as_root=`getprop ro.build.system_root_image`
 if [ "$system_as_root" == "true" ]; then
   active_slot=`getprop ro.boot.slot_suffix`
   if [ ! -z "$active_slot" ]; then
