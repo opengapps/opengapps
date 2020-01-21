@@ -629,7 +629,7 @@ api28hack(){
   if [ "$API" -ge "28" ]; then
     if [ "$ARCH" = "arm64" ] && [ "$API" -eq "28" ]; then
       gappsnano="$gappsnano
-platformservicespie"  # Include Pie-specific Android Platform Services with Android 9.0
+platformservices"  # Include Pie-specific Android Platform Services with Android 9.0
     fi
     gappscore="$gappscore
 backuprestore
