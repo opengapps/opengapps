@@ -1022,7 +1022,7 @@ case $ANDROID_ROOT in
   /system)
     if [ -f /system/system/build.prop ]; then
       setup_mountpoint /system_root;
-      mount --move /system /system_root;
+      mount /system /system_root && umount /system;
       if [ $? != 0 ]; then
         umount /system;
         umount -l /system 2>/dev/null;
