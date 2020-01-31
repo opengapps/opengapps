@@ -93,7 +93,7 @@ done
 if [ -e "$bb" ]; then
   install -d "$l"
   for i in $($bb --list); do
-    if ! ln -sf "$bb" "$l/$i" && ! $bb ln -sf "$bb" "$l/$i" && ! $bb ln -f "$bb" "$l/$i" ; then
+    if ! ln -sf "$bb" "$l/$i" && ! $bb ln -sf "$bb" "$l/$i" && ! $bb ln -f "$bb" "$l/$i"; then
       # create script wrapper if symlinking and hardlinking failed because of restrictive selinux policy
       if ! echo "#!$bb" > "$l/$i" || ! chmod +x "$l/$i" ; then
         echo "ui_print ERROR 10: Failed to set-up Open GApps'"'"' pre-bundled '"$2"'" > "$OUTFD"
@@ -215,6 +215,7 @@ tvstock_gapps_list="
 default_stock_remove_list="
 '"$stockremove"'
 "
+
 # _____________________________________________________________________________________________________________________
 #                                             Optional Stock/AOSP/ROM Removal List
 optional_aosp_remove_list="
@@ -274,6 +275,7 @@ visualizationwallpapers
 wallpapersstock
 whisperpush
 "
+
 # _____________________________________________________________________________________________________________________
 #                                             Stock/AOSP/ROM File Removal Lists
 boxer_list="
@@ -772,6 +774,7 @@ product/app/WebView'"$REMOVALSUFFIX"'
 whisperpush_list="
 app/WhisperPush'"$REMOVALSUFFIX"'
 product/app/WhisperPush'"$REMOVALSUFFIX"'"
+
 # _____________________________________________________________________________________________________________________
 #                                             Permanently Removed Folders
 # Pieces that may be left over from AIO ROMs that can/will interfere with these GApps
@@ -895,10 +898,11 @@ product/priv-app/Wallet'"$REMOVALSUFFIX"'
 oldscript_list="
 etc/g.prop
 addon.d/70-gapps.sh
-";' >>"$build/$1"
+"' >>"$build/$1"
   tee -a "$build/$1" >/dev/null <<'EOFILE'
 
 remove_list="${other_list}${privapp_list}${reqd_list}${obsolete_list}${oldscript_list}"
+
 # _____________________________________________________________________________________________________________________
 #                                             Installer Error Messages
 arch_compat_msg="INSTALLATION FAILURE: This Open GApps package cannot be installed on this\ndevice's architecture. Please download the correct version for your device.\n"
@@ -942,7 +946,10 @@ get_file_prop() {
 
 set_progress() { echo "set_progress $1" > "$OUTFD"; }
 
-ui_print() { echo -e "ui_print $1\nui_print" > "$OUTFD"; }
+ui_print() {
+  echo "ui_print $1
+    ui_print" > "$OUTFD";
+}
 
 setup_mountpoint() {
   test -L $1 && mv -f $1 ${1}_link
@@ -1036,7 +1043,11 @@ mount_all() {
     ;;
   esac
   if is_mounted /system_root; then
-    mount -o bind /system_root/system /system
+    if [ -f /system_root/build.prop ]; then
+      mount -o bind /system_root /system
+    else
+      mount -o bind /system_root/system /system
+    fi
   fi
   mount_apex
 }
@@ -1136,6 +1147,7 @@ reclaimed_gapps_space_kb=0
 reclaimed_removal_space_kb=0
 reclaimed_aosp_space_kb=0
 total_install_size_kb=0
+
 # _____________________________________________________________________________________________________________________
 #                                                  Define Functions
 abort() {
@@ -1331,7 +1343,7 @@ get_prop() {
   #check known .prop files using get_file_prop
   local propfile propval
   for propfile in $PROPFILES; do
-    test "$propval" && break 2 || propval="$(get_file_prop $propfile $1 2>/dev/null)"
+    test "$propval" && break || propval="$(get_file_prop $propfile $1 2>/dev/null)"
   done
   #if propval is still empty, try to use recovery's built-in getprop method; otherwise output current result
   if [ -z "$propval" ]; then
@@ -1873,7 +1885,7 @@ fi
 
 # Is device VRMode compatible
 vrmode_compat=false
-for xml in $(grep -rl '<feature name="android.software.vr.mode" />' /system/etc/ /system/product/etc/ /system/vendor/etc/); do
+for xml in $(grep -rl '<feature name="android.software.vr.mode" />' /system/etc/ /system/product/etc/ /system/vendor/etc/ 2>/dev/null); do
   if ( awk -vRS='-->' '{ gsub(/<!--.*/,"")}1' $xml | grep -qr '<feature name="android.software.vr.mode" />' /system/etc/ /system/product/etc/ /system/vendor/etc/ ); then
     vrmode_compat=true
     break
@@ -1891,7 +1903,7 @@ esac
 # Check if Google Pixel
 case $device_name in
   marlin|sailfish|walleye|taimen|crosshatch|blueline) googlepixel_compat="true";;
-  *)                              googlepixel_compat="false";;
+  *) googlepixel_compat="false";;
 esac
 
 log "ROM Android version" "$(get_prop "ro.build.version.release")"
@@ -1978,6 +1990,7 @@ else
     fi
   done < $gapps_removal_list
 fi
+
 # _____________________________________________________________________________________________________________________
 #                                                  Prepare the list of GApps being installed and AOSP/Stock apps being removed
 # Build list of available GApps that can be installed (and check for a user package preset)
@@ -2062,6 +2075,7 @@ aosp_remove_list="${aosp_remove_list}extsharedstock"$'\n'"extservicesstock"$'\n'
 EOFILE
   webviewcheckhack "$build/$1" # WebViewProvider rules differ Pre-Nougat and Nougat+
   tee -a "$build/$1" >/dev/null <<'EOFILE'
+
 # Cyanogenmod breaks Google's PackageInstaller don't install it on CM
 if ( contains "$gapps_list" "packageinstallergoogle" ) && [ $cmcompatibilityhacks = "true" ]; then
   gapps_list=${gapps_list/packageinstallergoogle}
@@ -2122,7 +2136,7 @@ if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qiE '^dialerstock$' 
 fi
 
 # If we're NOT installing carrier services then we MUST REMOVE messenger from $gapps_list (if it's currently there)
-if [ "$API" -ge "23" ] && ( ! contains "$gapps_list" "carrierservices" ) && ( contains "$gapps_list" "messenger" ); then
+if [ "$rom_build_sdk" -ge "23" ] && ( ! contains "$gapps_list" "carrierservices" ) && ( contains "$gapps_list" "messenger" ); then
   gapps_list=${gapps_list/messenger}
   install_note="${install_note}messenger_msg"$'\n' # make note that Google Messages will NOT be installed as user requested
 fi
@@ -2393,7 +2407,7 @@ if [ -n "$user_remove_list" ]; then
     # Create user_remove_folder_list if this is a system/ROM application
     for folder in /system/app /system/product/app /system/priv-app /system/product/priv-app; do # Check all subfolders of system app/priv-app folders for the apks
       file_count=0 # Reset Counter
-      file_count=$(find $folder -iname "$testapk" | wc -l)
+      file_count=$(find $folder -iname "$testapk" 2>/dev/null | wc -l)
       case $file_count in
         0)  continue;;
 EOFILE
@@ -2449,6 +2463,7 @@ log "Ignore Google Keyboard" "$ignoregooglekeyboard"
 log "Ignore Google Package Installer" "$ignoregooglepackageinstaller"
 log "Ignore Google NFC Tag" "$ignoregoogletag"
 log "Ignore Google WebView" "$ignoregooglewebview"
+
 # _____________________________________________________________________________________________________________________
 #                                                  Perform space calculations
 ui_print "- Performing system space calculations"
@@ -2599,6 +2614,7 @@ if ( grep -qiE '^test$' "$g_conf" ); then # user has selected a 'test' install O
   quit
   exxit 0
 fi
+
 # _____________________________________________________________________________________________________________________
 #                                                  Perform Removals
 # Remove ALL Existing GApps files
@@ -2635,6 +2651,7 @@ done
 for i in /system/app /system/product/app /system/priv-app /system/product/priv-app /system/vendor/pittpatt /system/usr/srec /system/etc/preferred-apps; do
   find "$i" -type d | xargs -r rmdir -p --ignore-fail-on-non-empty
 done
+
 # _____________________________________________________________________________________________________________________
 #                                                  Perform Installs
 ui_print "- Installing core GApps"
@@ -2739,6 +2756,7 @@ fi
 
 # Copy g.prop over to /system/etc
 cp -f "$TMP/g.prop" "$g_prop"
+
 # _____________________________________________________________________________________________________________________
 #                                                  Build and Install Addon.d Backup Script
 # Add 'other' Removals to addon.d script
@@ -2769,11 +2787,11 @@ install -d /system/addon.d
 echo -e "$bkup_header" > /system/addon.d/70-gapps.sh
 echo -e "$bkup_list" >> /system/addon.d/70-gapps.sh
 cat $bkup_tail >> /system/addon.d/70-gapps.sh
+
 # _____________________________________________________________________________________________________________________
 #                                                  Fix Permissions
-
 set_progress 0.85
-find /system/vendor/pittpatt -type d -exec chown 0:2000 '{}' \ # Change pittpatt folders to root:shell per Google Factory Settings
+find /system/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; 2>/dev/null # Change pittpatt folders to root:shell per Google Factory Settings
 
 set_perm 0 0 755 "/system/addon.d/70-gapps.sh"
 ch_con "/system/addon.d/70-gapps.sh"
