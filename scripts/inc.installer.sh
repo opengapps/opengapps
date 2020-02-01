@@ -948,7 +948,7 @@ set_progress() { echo "set_progress $1" > "$OUTFD"; }
 
 ui_print() {
   echo "ui_print $1
-    ui_print" > "$OUTFD";
+    ui_print" > "$OUTFD"
 }
 
 setup_mountpoint() {
@@ -2649,7 +2649,7 @@ done
 
 # Remove any empty folders we may have created during the removal process
 for i in /system/app /system/product/app /system/priv-app /system/product/priv-app /system/vendor/pittpatt /system/usr/srec /system/etc/preferred-apps; do
-  find "$i" -type d | xargs -r rmdir -p --ignore-fail-on-non-empty
+  find "$i" -type d 2>/dev/null | xargs -r rmdir -p --ignore-fail-on-non-empty
 done
 
 # _____________________________________________________________________________________________________________________
