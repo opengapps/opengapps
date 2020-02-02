@@ -20,6 +20,7 @@ googlecontactssync
 googlefeedback
 googleonetimeinitializer
 googlepartnersetup
+googlepixelconfig
 gmscore
 gsfcore
 vending"
@@ -257,6 +258,14 @@ get_package_info(){
     googlefeedback)           packagetype="Core"; packagename="com.google.android.feedback"; packagetarget="priv-app/GoogleFeedback";;
     googleonetimeinitializer) packagetype="Core"; packagename="com.google.android.onetimeinitializer"; packagetarget="priv-app/GoogleOneTimeInitializer";;
     googlepartnersetup)       packagetype="Core"; packagename="com.google.android.partnersetup"; packagetarget="priv-app/GooglePartnerSetup";;
+    googlepixelconfig)        packagetype="Core";
+                              if [ "$API" -ge "28" ]; then  # Specific permission files for Android 9.0
+                                packagefiles="etc/sysconfig/nexus.xml etc/sysconfig/pixel_2018_exclusive.xml etc/sysconfig/pixel_experience_2017.xml etc/sysconfig/pixel_experience_2018.xml"
+                              elif [ "$API" -ge "26" ]; then  # Specific permission files for Android 8.0 to 8.1
+                                packagefiles="etc/sysconfig/nexus.xml etc/sysconfig/pixel_2017.xml etc/sysconfig/pixel_2017_exclusive.xml"
+                              elif [ "$API" -ge "25" ]; then  # Specific permission files for Android 7.1
+                                packagefiles="etc/sysconfig/nexus.xml"
+                              fi;;
     gsflogin)                 packagetype="Core"; packagename="com.google.android.gsf.login"; packagetarget="priv-app/GoogleLoginService";;  # Permanently removed in Android 7.1+
     platformservicesoreo)     packagetype="Core"; packagename="com.google.android.gms.policy_sidecar_o"; packagetarget="priv-app/AndroidPlatformServices";;  # On Android < 9.0
     platformservices)         packagetype="Core"; packagename="com.google.android.gms.policy_sidecar_aps"; packagetarget="priv-app/AndroidPlatformServices";; 
@@ -313,14 +322,6 @@ get_package_info(){
     gmail)                    packagetype="GApps"; packagename="com.google.android.gm"; packagetarget="app/PrebuiltGmail";;
     googlenow)                packagetype="GApps"; packagename="com.google.android.launcher"; packagetarget="app/GoogleHome";;
     googlepay)                packagetype="GApps"; packagename="com.google.android.apps.walletnfcrel"; packagetarget="app/Wallet";;
-    googlepixelconfig)        packagetype="GApps";
-                              if [ "$API" -ge "28" ]; then  # Specific permission files for Android 9.0
-                                packagefiles="etc/sysconfig/nexus.xml etc/sysconfig/pixel_2018_exclusive.xml etc/sysconfig/pixel_experience_2017.xml etc/sysconfig/pixel_experience_2018.xml"
-                              elif [ "$API" -ge "26" ]; then  # Specific permission files for Android 8.0 to 8.1
-                                packagefiles="etc/sysconfig/nexus.xml etc/sysconfig/pixel_2017.xml etc/sysconfig/pixel_2017_exclusive.xml"
-                              elif [ "$API" -ge "25" ]; then  # Specific permission files for Android 7.1
-                                packagefiles="etc/sysconfig/nexus.xml"
-                              fi;;
     googletts)                packagetype="GApps"; packagename="com.google.android.tts"; packagetarget="app/GoogleTTS";;
     hangouts)                 packagetype="GApps"; packagename="com.google.android.talk"; packagetarget="app/Hangouts";;
     indic)                    packagetype="GApps"; packagename="com.google.android.apps.inputmethod.hindi"; packagetarget="app/GoogleHindiIME";;

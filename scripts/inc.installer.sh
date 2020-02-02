@@ -2662,6 +2662,7 @@ for gapp_name in $core_gapps_list; do
     case $gapp_name in
       setupwizarddefault) if [ "$device_type" != "tablet" ]; then extract_app "$archive"; fi;;
       setupwizardtablet)  if [ "$device_type"  = "tablet" ]; then extract_app "$archive"; fi;;
+      googlepixelconfig) if [ "$googlepixel_compat" = "true" ]; then extract_app "$archive"; fi;;
       *)  extract_app "$archive";;
     esac
   done
