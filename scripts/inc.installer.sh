@@ -2477,6 +2477,8 @@ for gapp_name in $core_gapps_list; do
     case $gapp_name in
       setupwizarddefault) if [ "$device_type" != "tablet" ]; then get_appsize "$archive"; fi;;
       setupwizardtablet)  if [ "$device_type"  = "tablet" ]; then get_appsize "$archive"; fi;;
+      backuprestore) if [ "$googlepixel_compat" = "false" ]; then get_appsize "$archive"; fi;;
+      datatransfertool) if [ "$googlepixel_compat" = "true" ]; then get_appsize "$archive"; fi;;
       *) get_appsize "$archive";;
     esac
     core_size=$((core_size + appsize))
@@ -2663,6 +2665,8 @@ for gapp_name in $core_gapps_list; do
       setupwizarddefault) if [ "$device_type" != "tablet" ]; then extract_app "$archive"; fi;;
       setupwizardtablet)  if [ "$device_type"  = "tablet" ]; then extract_app "$archive"; fi;;
       googlepixelconfig) if [ "$googlepixel_compat" = "true" ]; then extract_app "$archive"; fi;;
+      backuprestore) if [ "$googlepixel_compat" = "false" ]; then extract_app "$archive"; fi;;
+      datatransfertool) if [ "$googlepixel_compat" = "true" ]; then extract_app "$archive"; fi;;
       *)  extract_app "$archive";;
     esac
   done
