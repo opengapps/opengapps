@@ -132,7 +132,7 @@ compressapp() {
     xz) checktools xz
         csuf=".xz"
         compress() {
-          XZ_OPT='-9e -C crc32' tar --remove-files -cJf "$1.tar.xz" "$1"
+          XZ_OPT='-9e -C crc32 -T0' tar --remove-files -cJf "$1.tar.xz" "$1"
         }
     ;;
     lz) checktools lzip
