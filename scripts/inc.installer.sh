@@ -1108,10 +1108,16 @@ ui_print "- Mounting partitions"
 set_progress 0.01
 test "$ANDROID_ROOT" || ANDROID_ROOT=/system
 mount -o bind /dev/urandom /dev/random
-umount_all
-mount_all
-mount -o rw,remount -t auto /system
-mount -o rw,remount -t auto /vendor 2>/dev/null
+# Play with partitions only if we have an fstab file available
+if [ -e /etc/fstab ]; then
+  umount_all
+  mount_all
+  mount -o rw,remount -t auto /system
+  mount -o rw,remount -t auto /vendor 2>/dev/null
+else
+  # remount ANDROID_ROOT, sometimes necessary if mounted read-only
+  grep -q "$ANDROID_ROOT.*\sro[\s,]" /proc/mounts && mount -o remount,rw $ANDROID_ROOT
+fi
 ui_print " "
 
 # _____________________________________________________________________________________________________________________
@@ -1242,15 +1248,17 @@ exxit() {
   find $TMP/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +
   # Unmount and rollback script changes
   set_progress 1.0
-  ui_print "- Unmounting partitions"
-  umount_all
-  (for dir in /apex /system /system_root; do
-    if [ -L "${dir}_link" ]; then
-      rmdir $dir
-      mv -f ${dir}_link $dir
-    fi
-  done
-  umount -l /dev/random) 2>/dev/null
+  if [ -e /etc/fstab ]; then
+    ui_print "- Unmounting partitions"
+    umount_all
+    (for dir in /apex /system /system_root; do
+      if [ -L "${dir}_link" ]; then
+        rmdir $dir
+        mv -f ${dir}_link $dir
+      fi
+    done
+    umount -l /dev/random) 2>/dev/null
+  fi
   ui_print " "
   exit "$1"
 }
