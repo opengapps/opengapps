@@ -83,6 +83,10 @@ case "$(uname -m)" in
 esac
 bb="$TMP/'"$2"'-$BINARCH"
 l="$TMP/bin"
+ui_print() {
+  echo "ui_print $1
+    ui_print" >> $OUTFD
+}
 setenforce 0
 for f in '"$4"'; do
   unzip -o "$OPENGAZIP" "$f" -d "$TMP"
@@ -96,10 +100,8 @@ if [ -e "$bb" ]; then
     if ! ln -sf "$bb" "$l/$i" && ! $bb ln -sf "$bb" "$l/$i" && ! $bb ln -f "$bb" "$l/$i"; then
       # create script wrapper if symlinking and hardlinking failed because of restrictive selinux policy
       if ! echo "#!$bb" > "$l/$i" || ! chmod +x "$l/$i" ; then
-        echo "ui_print ERROR 10: Failed to set-up Open GApps'"'"' pre-bundled '"$2"'" > "$OUTFD"
-        echo "ui_print" > "$OUTFD"
-        echo "ui_print Please use TWRP as recovery instead" > "$OUTFD"
-        echo "ui_print" > "$OUTFD"
+        ui_print "ERROR 10: Failed to set-up Open GApps'"'"' pre-bundled '"$2"'"
+        ui_print "Please use TWRP as recovery instead"
         exit 1
       fi
     fi
@@ -107,8 +109,7 @@ if [ -e "$bb" ]; then
   PATH="$l:$PATH" $bb ash "$TMP/'"$3"'" "$@"
   exit "$?"
 else
-  echo "ui_print ERROR 64: Wrong architecture to set-up Open GApps'"'"' pre-bundled '"$2"'" > "$OUTFD"
-  echo "ui_print" > "$OUTFD"
+  ui_print "ERROR 64: Wrong architecture to set-up Open GApps'"'"' pre-bundled '"$2"'"
   exit 1
 fi' >"$build/$1"
 }
@@ -944,11 +945,11 @@ get_file_prop() {
   grep -m1 "^$2=" "$1" | cut -d= -f2
 }
 
-set_progress() { echo "set_progress $1" > "$OUTFD"; }
+set_progress() { echo "set_progress $1" >> $OUTFD; }
 
 ui_print() {
   echo "ui_print $1
-    ui_print" > "$OUTFD"
+    ui_print" >> $OUTFD
 }
 
 setup_mountpoint() {
