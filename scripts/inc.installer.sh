@@ -1107,12 +1107,21 @@ ui_print " "
 # For reference, check https://github.com/osm0sis/AnyKernel3/blob/master/META-INF/com/google/android/update-binary
 ui_print "- Mounting partitions"
 set_progress 0.01
+
+ps | grep zygote | grep -v grep >/dev/null && BOOTMODE=true || BOOTMODE=false
+$BOOTMODE || ps -A 2>/dev/null | grep zygote | grep -v grep >/dev/null && BOOTMODE=true
+
 test "$ANDROID_ROOT" || ANDROID_ROOT=/system
-mount -o bind /dev/urandom /dev/random
-umount_all
-mount_all
-mount -o rw,remount -t auto /system
+
+# emulators can only flash booted and may need /system (on legacy images), or / (on system-as-root images), remounted rw
+if ! $BOOTMODE; then
+  mount -o bind /dev/urandom /dev/random
+  umount_all
+  mount_all
+fi
+mount -o rw,remount -t auto /system || mount -o rw,remount -t auto /
 mount -o rw,remount -t auto /vendor 2>/dev/null
+
 ui_print " "
 
 # _____________________________________________________________________________________________________________________
@@ -1243,15 +1252,17 @@ exxit() {
   find $TMP/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +
   # Unmount and rollback script changes
   set_progress 1.0
-  ui_print "- Unmounting partitions"
-  umount_all
-  (for dir in /apex /system /system_root; do
-    if [ -L "${dir}_link" ]; then
-      rmdir $dir
-      mv -f ${dir}_link $dir
-    fi
-  done
-  umount -l /dev/random) 2>/dev/null
+  if ! $BOOTMODE; then
+    ui_print "- Unmounting partitions"
+    umount_all
+    (for dir in /apex /system /system_root; do
+      if [ -L "${dir}_link" ]; then
+        rmdir $dir
+        mv -f ${dir}_link $dir
+      fi
+    done
+    umount -l /dev/random) 2>/dev/null
+  fi
   ui_print " "
   exit "$1"
 }
