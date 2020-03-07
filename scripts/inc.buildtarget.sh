@@ -263,13 +263,13 @@ get_package_info(){
                               if [ "$API" -ge "28" ]; then  # Specific permission files for Android 9.0
                                 packagefiles="etc/sysconfig/nexus.xml etc/sysconfig/pixel_2018_exclusive.xml etc/sysconfig/pixel_experience_2017.xml etc/sysconfig/pixel_experience_2018.xml"
                               elif [ "$API" -ge "26" ]; then  # Specific permission files for Android 8.0 to 8.1
-                                packagefiles="etc/sysconfig/nexus.xml etc/sysconfig/pixel_2017.xml etc/sysconfig/pixel_2017_exclusive.xml"
+                                packagefiles="etc/sysconfig/nexus.xml etc/sysconfig/pixel_2017_exclusive.xml etc/sysconfig/pixel_experience_2017.xml"
                               elif [ "$API" -ge "25" ]; then  # Specific permission files for Android 7.1
                                 packagefiles="etc/sysconfig/nexus.xml"
                               fi;;
     gsflogin)                 packagetype="Core"; packagename="com.google.android.gsf.login"; packagetarget="priv-app/GoogleLoginService";;  # Permanently removed in Android 7.1+
     platformservicesoreo)     packagetype="Core"; packagename="com.google.android.gms.policy_sidecar_o"; packagetarget="priv-app/AndroidPlatformServices";;  # On Android < 9.0
-    platformservices)         packagetype="Core"; packagename="com.google.android.gms.policy_sidecar_aps"; packagetarget="priv-app/AndroidPlatformServices";; 
+    platformservices)         packagetype="Core"; packagename="com.google.android.gms.policy_sidecar_aps"; packagetarget="priv-app/AndroidPlatformServices";;
     setupwizard)              packagetype="Core"; packagename="com.google.android.setupwizard"; packagetarget="priv-app/SetupWizard";;  # Android 4.4 only (see api19hack in inc.buildtarget.sh)
     setupwizarddefault)       packagetype="Core"; packagename="com.google.android.setupwizard.default"; packagetarget="priv-app/SetupWizard";;  # SetupWizardPrebuilt on Pixels
     setupwizardtablet)        packagetype="Core"; packagename="com.google.android.setupwizard.tablet"; packagetarget="priv-app/SetupWizard";;
