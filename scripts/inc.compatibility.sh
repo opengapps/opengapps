@@ -633,7 +633,8 @@ platformservices"  # Include Android Platform Services for Android 9.0+
     fi
     gappscore="$gappscore
 backuprestore
-datatransfertool
+datatransfertool"
+    gappspico="$gappspico
 soundpicker"
     gappsnano="$gappsnano
 markup
