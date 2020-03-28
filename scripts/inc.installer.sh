@@ -1249,7 +1249,7 @@ exxit() {
     tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" logs/*
     cd /
   fi
-  find $TMP/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +
+
   # Unmount and rollback script changes
   set_progress 1.0
   if ! $BOOTMODE; then
@@ -1263,6 +1263,10 @@ exxit() {
     done
     umount -l /dev/random) 2>/dev/null
   fi
+
+  # Finally, clean up $TMP
+  find $TMP/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +
+
   ui_print " "
   exit "$1"
 }
