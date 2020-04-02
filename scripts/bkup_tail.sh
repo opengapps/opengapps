@@ -19,6 +19,13 @@ if [ $((installed_gapps_size_kb + buffer_size_kb)) -ge "$free_tmp_size_kb" ]; th
   C=/sdcard/tmp-gapps
 fi
 
+# Get ROM SDK from installed GApps
+rom_build_sdk=$(grep "^rom_build_sdk" $TMP/gapps.prop | cut -d '=' -f 2)
+if [ ! "$rom_build_sdk" ]; then
+  rom_build_sdk="$(cd $SYS; grep "^ro.addon.sdk" etc/g.prop | cut -d '=' -f 2)"
+  echo "rom_build_sdk=$rom_build_sdk" >> $TMP/gapps.prop
+fi
+
 case "$1" in
   backup)
     list_files | while read -r FILE DUMMY; do
@@ -60,19 +67,20 @@ case "$1" in
     # Remove any empty folders we may have created during the removal process
     for i in $SYS/app $SYS/priv-app $SYS/vendor/pittpatt $SYS/usr/srec; do
       if [ -d $i ]; then
-        find $i -type d -exec rmdir -p '{}' \+ 2>/dev/null;
+        find $i -type d -exec rmdir -p '{}' \+ 2>/dev/null
       fi
-    done;
+    done
+
     # Fix ownership/permissions and clean up after backup and restore from /sdcard
-    find $SYS/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; # Change pittpatt folders to root:shell per Google Factory Settings
+    find $SYS/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; 2>/dev/null # Change pittpatt folders to root:shell per Google Factory Settings
     for i in $(list_files); do
       chown root:root "$SYS/$i"
       chmod 644 "$SYS/$i"
       chmod 755 "$(dirname "$SYS/$i")"
-        if [ "$API" -ge "26" ]; then # Android 8.0+ uses 0600 for its permission on build.prop
-          chmod 600 "$SYS/build.prop"
-        fi
     done
+    if [ "$rom_build_sdk" -ge "26" ]; then # Android 8.0+ uses 0600 for its permission on build.prop
+      chmod 600 "$SYS/build.prop"
+    fi
     rm -rf /sdcard/tmp-gapps
   ;;
 esac
