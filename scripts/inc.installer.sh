@@ -637,6 +637,7 @@ product/priv-app/MatLog'"$REMOVALSUFFIX"'"
 
 lrecorder_list="
 priv-app/Recorder'"$REMOVALSUFFIX"'
+product/app/Recorder'"$REMOVALSUFFIX"'
 product/priv-app/Recorder'"$REMOVALSUFFIX"'"
 
 lsetupwizard_list="
