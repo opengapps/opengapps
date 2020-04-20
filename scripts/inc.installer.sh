@@ -1134,6 +1134,11 @@ if ! $BOOTMODE; then
   umount_all
   mount_all
 fi
+for block in system vendor; do
+  for slot in "" _a _b; do
+    blockdev --setrw /dev/block/mapper/$block$slot 2>/dev/null
+  done
+done
 mount -o rw,remount -t auto /system || mount -o rw,remount -t auto /
 mount -o rw,remount -t auto /vendor 2>/dev/null
 
