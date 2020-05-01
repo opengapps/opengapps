@@ -431,7 +431,7 @@ if [ "$ignoregooglewebview" = "true" ]; then  # No AOSP WebView
       sed -i "\:/system/app/WebViewStub:d" $gapps_removal_list;
       ignoregooglewebview="true[NoRemoveStub]"
     fi
-    install_note="${install_note}nogooglewebview_removal"$'\n'; # make note that Google WebView will not be removed
+    install_note="${install_note}nogooglewebview_removal_msg"$'\n'; # make note that Google WebView will not be removed
   elif ( contains "$gapps_list" "webviewgoogle" ); then  # No AOSP WebView, but Google WebView is being installed, no reason to protect the current components
     ignoregooglewebview="false[WebViewGoogle]"
   elif ( contains "$gapps_list" "webviewstub" ); then  # No AOSP WebView, but WebView Stub is being installed, no reason to protect the current components
@@ -449,7 +449,7 @@ if [ "$ignoregooglewebview" = "true" ]; then  # No AOSP WebView
     sed -i "\:/system/lib64/$WebView_lib_filename:d" $gapps_removal_list;
     sed -i "\:/system/app/WebViewGoogle:d" $gapps_removal_list;
     ignoregooglewebview="true[NoRemove]"
-    install_note="${install_note}nogooglewebview_removal"$'\n'; # make note that Google WebView will not be removed
+    install_note="${install_note}nogooglewebview_removal_msg"$'\n'; # make note that Google WebView will not be removed
   else  # No AOSP WebView, but Google WebView is being installed, no reason to protect the current components
     ignoregooglewebview="false[WebViewGoogle]"
   fi
