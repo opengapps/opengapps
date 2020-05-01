@@ -323,12 +323,12 @@ systemlibhack(){
 universalremoverhack(){
   if [ "$API" -le "19" ]; then
     cat <<'EOFILE'
-                    1)  user_remove_folder_list="${user_remove_folder_list}$(find "$folder" -type f -iname "$testapk")"$'\n'; # Add found file to list
-                        user_remove_folder_list="${user_remove_folder_list}$(printf "$(find "$folder" -type f -iname "$testapk")" | rev | cut -c 4- | rev)odex"$'\n'; # Add odex to list
+                    1)  user_remove_folder_list="${user_remove_folder_list}$(find "$folder" -type f -iname "$testapk")$newline"; # Add found file to list
+                        user_remove_folder_list="${user_remove_folder_list}$(printf "$(find "$folder" -type f -iname "$testapk")" | rev | cut -c 4- | rev)odex$newline"; # Add odex to list
 EOFILE
   else
     cat <<'EOFILE'
-                    1)  user_remove_folder_list="${user_remove_folder_list}$(dirname "$(find "$folder" -type f -iname "$testapk")")"$'\n'; # Add found folder to list
+                    1)  user_remove_folder_list="${user_remove_folder_list}$(dirname "$(find "$folder" -type f -iname "$testapk")")$newline"; # Add found folder to list
 EOFILE
   fi
 }
@@ -351,24 +351,24 @@ webviewcheckhack(){
     cat <<'EOFILE'
 # If we're installing webviewgoogle we MUST ADD webviewstub to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$aosp_remove_list" "webviewstub" ); then
-  aosp_remove_list="${aosp_remove_list}webviewstub"$'\n'
+  aosp_remove_list="${aosp_remove_list}webviewstub$newline"
 fi;
 
 # If we're installing webviewstub we MUST ADD webviewgoogle to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "webviewstub" ) && ( ! contains "$aosp_remove_list" "webviewgoogle" ); then
-  aosp_remove_list="${aosp_remove_list}webviewgoogle"$'\n'
+  aosp_remove_list="${aosp_remove_list}webviewgoogle$newline"
 fi;
 
 # If we're installing webviewgoogle OR webviewstub we PREFER TO ADD webviewstock to $aosp_remove_list (if it's not already there)
 if ( ( contains "$gapps_list" "webviewgoogle" ) || ( contains "$gapps_list" "webviewstub" ) ) && ( ! contains "$aosp_remove_list" "webviewstock" ); then
-  aosp_remove_list="${aosp_remove_list}webviewstock"$'\n'
+  aosp_remove_list="${aosp_remove_list}webviewstock$newline"
 fi
 
 # If we're NOT installing webviewgoogle OR webviewstub and webviewstock is in $aosp_remove_list then user must override removal protection
 # Chrome is not there since on Android 10+ it's not a webview provider anymore
 if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$gapps_list" "webviewstub" ) && ( contains "$aosp_remove_list" "webviewstock" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/webviewstock} # we'll prevent webviewstock from being removed so user isn't left with no WebView
-  install_note="${install_note}nowebview_msg"$'\n' # make note that Stock Webview can't be removed unless user Overrides
+  install_note="${install_note}nowebview_msg$newline" # make note that Stock Webview can't be removed unless user Overrides
 fi
 EOFILE
   elif [ "$API" -ge "24" ]; then
@@ -376,41 +376,41 @@ EOFILE
 # If we're installing chrome and webviewgoogle, replace it with webviewstub unless override removal protection
 if ( contains "$gapps_list" "chrome" ) && ( contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
   gapps_list=${gapps_list/webviewgoogle/webviewstub}
-  install_note="${install_note}stubwebview_msg"$'\n' # make note that Stub Webview unless user Overrides
+  install_note="${install_note}stubwebview_msg$newline" # make note that Stub Webview unless user Overrides
 fi
 
 # If we're installing webviewgoogle we MUST ADD webviewstub to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$aosp_remove_list" "webviewstub" ); then
-  aosp_remove_list="${aosp_remove_list}webviewstub"$'\n'
+  aosp_remove_list="${aosp_remove_list}webviewstub$newline"
 fi;
 
 # If we're installing webviewstub we MUST ADD webviewgoogle to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "webviewstub" ) && ( ! contains "$aosp_remove_list" "webviewgoogle" ); then
-  aosp_remove_list="${aosp_remove_list}webviewgoogle"$'\n'
+  aosp_remove_list="${aosp_remove_list}webviewgoogle$newline"
 fi;
 
 # If we're installing webviewgoogle OR webviewstub we PREFER TO ADD webviewstock to $aosp_remove_list (if it's not already there)
 if ( ( contains "$gapps_list" "webviewgoogle" ) || ( contains "$gapps_list" "webviewstub" ) ) && ( ! contains "$aosp_remove_list" "webviewstock" ); then
-  aosp_remove_list="${aosp_remove_list}webviewstock"$'\n'
+  aosp_remove_list="${aosp_remove_list}webviewstock$newline"
 fi
 
 # If we're NOT installing webviewgoogle OR webviewstub OR chrome and webviewstock is in $aosp_remove_list then user must override removal protection
 if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$gapps_list" "webviewstub" ) && ( ! contains "$gapps_list" "chrome" ) && ( contains "$aosp_remove_list" "webviewstock" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/webviewstock} # we'll prevent webviewstock from being removed so user isn't left with no WebView
-  install_note="${install_note}nowebview_msg"$'\n' # make note that Stock Webview can't be removed unless user Overrides
+  install_note="${install_note}nowebview_msg$newline" # make note that Stock Webview can't be removed unless user Overrides
 fi
 EOFILE
   else
     cat <<'EOFILE'
 # If we're installing webviewgoogle we SHOULD ADD webviewstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$aosp_remove_list" "webviewstock" ); then
-  aosp_remove_list="${aosp_remove_list}webviewstock"$'\n'
+  aosp_remove_list="${aosp_remove_list}webviewstock$newline"
 fi
 
 # If we're NOT installing webviewgoogle and webviewstock is in $aosp_remove_list then user must override removal protection
 if ( ! contains "$gapps_list" "webviewgoogle" ) && ( contains "$aosp_remove_list" "webviewstock" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/webviewstock}; # we'll prevent webviewstock from being removed so user isn't left with no WebView
-  install_note="${install_note}nowebview_msg"$'\n' # make note that Stock Webview can't be removed unless user Overrides
+  install_note="${install_note}nowebview_msg$newline" # make note that Stock Webview can't be removed unless user Overrides
 fi
 EOFILE
   fi
@@ -431,7 +431,7 @@ if [ "$ignoregooglewebview" = "true" ]; then  # No AOSP WebView
       sed -i "\:/system/app/WebViewStub:d" $gapps_removal_list;
       ignoregooglewebview="true[NoRemoveStub]"
     fi
-    install_note="${install_note}nogooglewebview_removal_msg"$'\n'; # make note that Google WebView will not be removed
+    install_note="${install_note}nogooglewebview_removal_msg$newline"; # make note that Google WebView will not be removed
   elif ( contains "$gapps_list" "webviewgoogle" ); then  # No AOSP WebView, but Google WebView is being installed, no reason to protect the current components
     ignoregooglewebview="false[WebViewGoogle]"
   elif ( contains "$gapps_list" "webviewstub" ); then  # No AOSP WebView, but WebView Stub is being installed, no reason to protect the current components
@@ -449,7 +449,7 @@ if [ "$ignoregooglewebview" = "true" ]; then  # No AOSP WebView
     sed -i "\:/system/lib64/$WebView_lib_filename:d" $gapps_removal_list;
     sed -i "\:/system/app/WebViewGoogle:d" $gapps_removal_list;
     ignoregooglewebview="true[NoRemove]"
-    install_note="${install_note}nogooglewebview_removal_msg"$'\n'; # make note that Google WebView will not be removed
+    install_note="${install_note}nogooglewebview_removal_msg$newline"; # make note that Google WebView will not be removed
   else  # No AOSP WebView, but Google WebView is being installed, no reason to protect the current components
     ignoregooglewebview="false[WebViewGoogle]"
   fi

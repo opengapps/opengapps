@@ -18,6 +18,10 @@
 #    PA GApps source is used with permission, under the license that it may be re-used to continue GApps packages.
 #
 # Last Updated: @DATE@
+
+newline='
+'
+
 # _____________________________________________________________________________________________________________________
 #                                             Define Current Package Variables
 # List of GApps packages that can be installed with this installer
@@ -1325,7 +1329,7 @@ install_extracted() {
       done
     ;;
   esac
-  bkup_list=$'\n'"${file_list}${bkup_list}"
+  bkup_list="$newline${file_list}${bkup_list}"
   rm -rf "$TMP/$1"
 }
 
@@ -1361,7 +1365,7 @@ odexapk() {
       dex="LD_LIBRARY_PATH='/system/lib:/system/lib64' /system/bin/dex2oat"
       for d in $dexfiles; do
         dex="$dex --dex-file=\"$d\""
-        bkup_list=$'\n'"${d#\/system\/}${bkup_list}"  # Backup the dex for re-generating oat in the future
+        bkup_list="$newline${d#\/system\/}${bkup_list}"  # Backup the dex for re-generating oat in the future
       done
       dex="install -d \"$apkdir/oat/$req_android_arch\" && $dex --instruction-set=\"$req_android_arch\" --oat-file=\"$apkdir/oat/$req_android_arch/$apkname.odex\""
       eval "$dex"
@@ -1513,7 +1517,7 @@ if [ -z "$(get_prop "ro.build.id")" ]; then
   ui_print " "
   ui_print "******* GApps Installation failed *******"
   ui_print " "
-  install_note="${install_note}nobuildprop"$'\n'
+  install_note="${install_note}nobuildprop$newline"
   abort "$E_NOBUILDPROP"
 fi
 
@@ -1530,7 +1534,7 @@ if [ -e "$testcomprfile" ] && [ "$(head -c 4 "$testcomprfile")" = "zzzz" ]; then
   ui_print " "
   ui_print "******* GApps Installation failed *******"
   ui_print " "
-  install_note="${install_note}recovery_compression_msg"$'\n'
+  install_note="${install_note}recovery_compression_msg$newline"
   abort "$E_RECCOMPR"
 fi
 
@@ -1659,7 +1663,7 @@ if [ ! "$rom_build_sdk" = "$req_android_sdk" ]; then
   ui_print " "
   ui_print "******* GApps Installation failed *******"
   ui_print " "
-  install_note="${install_note}rom_android_version_msg"$'\n' # make note that ROM Version is not compatible with these GApps
+  install_note="${install_note}rom_android_version_msg$newline" # make note that ROM Version is not compatible with these GApps
   abort "$E_ROMVER"
 fi
 
@@ -1697,7 +1701,7 @@ for targetarch in @ARCH@ abort; do # we add abort as latest entry to detect if t
     ui_print " "
     ui_print "******* GApps Installation failed *******"
     ui_print " "
-    install_note="${install_note}arch_compat_msg"$'\n' # make note that Open GApps are not compatible with architecture
+    install_note="${install_note}arch_compat_msg$newline" # make note that Open GApps are not compatible with architecture
     abort "$E_ARCH"
   fi
 done
@@ -1759,7 +1763,7 @@ case "$(get_prop "ro.build.flavor")" in
     cmcompatibilityhacks="true"
   fi
   if [ "$rom_build_sdk" -ge "24" ]; then # CMSetupWizard is broken in LineageOS 14+ and can be safely removed on CM14+ as well
-    aosp_remove_list="${aosp_remove_list}cmsetupwizard"$'\n'
+    aosp_remove_list="${aosp_remove_list}cmsetupwizard$newline"
   fi;;
 esac
 
@@ -1897,7 +1901,7 @@ if [ -e "/system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ]
     ui_print " "
     ui_print "******* GApps Installation failed *******"
     ui_print " "
-    install_note="${install_note}non_open_gapps_msg"$'\n'
+    install_note="${install_note}non_open_gapps_msg$newline"
     abort "$E_NONOPEN"
   else
     log "Current GApps Version" "Stock ROM GApps Currently Installed (NOTICE)"
@@ -1912,7 +1916,7 @@ if [ -e "/system/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk" ]
     ui_print "continue, but please be aware that any problems"
     ui_print "that may occur depend on your ROM."
     ui_print " "
-    install_note="${install_note}fornexus_open_gapps_msg"$'\n'
+    install_note="${install_note}fornexus_open_gapps_msg$newline"
   fi
 else
   # User does NOT have a GApps package installed on their device
@@ -1954,13 +1958,13 @@ if [ "$g_conf" ]; then
   if [ "$config_type" = "include" ]; then # User is indicating the apps they WANT installed
     for gapp_name in $all_gapps_list; do
       if ( grep -qiE "^$gapp_name\$" "$g_conf" ); then
-        gapps_list="$gapps_list$gapp_name"$'\n'
+        gapps_list="$gapps_list$gapp_name$newline"
       fi
     done
   else # User is indicating the apps they DO NOT WANT installed
     for gapp_name in $all_gapps_list; do
       if ( ! grep -qiE "^$gapp_name\$" "$g_conf" ); then
-        gapps_list="$gapps_list$gapp_name"$'\n'
+        gapps_list="$gapps_list$gapp_name$newline"
       fi
     done
   fi
@@ -1989,21 +1993,21 @@ if [ "$g_conf" ]; then
     if ( grep -qiE "^\+$default_name\$" "$g_conf" ); then
       eval "remove_${default_name}=false[gapps-config]"
     elif [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
-      aosp_remove_list="$aosp_remove_list$default_name"$'\n'
+      aosp_remove_list="$aosp_remove_list$default_name$newline"
       if ( grep -qiE "^$default_name\$" "$g_conf" ); then
         eval "remove_${default_name}=true[gapps-config]"
       fi
     else
       if ( grep -qiE "^$default_name\$" "$g_conf" ); then
         eval "remove_${default_name}=true[gapps-config]"
-        aosp_remove_list="$aosp_remove_list$default_name"$'\n'
+        aosp_remove_list="$aosp_remove_list$default_name$newline"
       fi
     fi
   done
   # Check gapps-config for other optional AOSP/ROM files that will be deleted
   for opt_name in $optional_aosp_remove_list; do
     if ( grep -qiE "^$opt_name\$" "$g_conf" ); then
-      aosp_remove_list="$aosp_remove_list$opt_name"$'\n'
+      aosp_remove_list="$aosp_remove_list$opt_name$newline"
     fi
   done
 else
@@ -2013,9 +2017,9 @@ else
 fi
 
 # Provision folder always has to be removed (it conflicts with SetupWizard)
-aosp_remove_list="${aosp_remove_list}provision"$'\n'
+aosp_remove_list="${aosp_remove_list}provision$newline"
 # Remove AOSP Android Shared Services in favour of our Google versions of it
-aosp_remove_list="${aosp_remove_list}extsharedstock"$'\n'"extservicesstock"$'\n'
+aosp_remove_list="${aosp_remove_list}extsharedstock${newline}extservicesstock$newline"
 
 # WebViewProvider rules differ Pre-Nougat and Nougat+
 @webviewcheckhack@
@@ -2023,12 +2027,12 @@ aosp_remove_list="${aosp_remove_list}extsharedstock"$'\n'"extservicesstock"$'\n'
 # Cyanogenmod breaks Google's PackageInstaller don't install it on CM
 if ( contains "$gapps_list" "packageinstallergoogle" ) && [ $cmcompatibilityhacks = "true" ]; then
   gapps_list=${gapps_list/packageinstallergoogle}
-  install_note="${install_note}cmcompatibility_msg"$'\n' # make note that CM compatibility hacks are applied
+  install_note="${install_note}cmcompatibility_msg$newline" # make note that CM compatibility hacks are applied
 fi
 
 # Add Google Pixel config if this is a Pixel device (and remove if it is not)
 if ( ! contains "$gapps_list" "googlepixelconfig" ) && [ $googlepixel_compat = "true" ]; then
-  gapps_list="${gapps_list}googlepixelconfig"$'\n'
+  gapps_list="${gapps_list}googlepixelconfig$newline"
 fi
 if ( contains "$gapps_list" "googlepixelconfig" ) && [ $googlepixel_compat = "false" ]; then
   gapps_list=${gapps_list/googlepixelconfig}
@@ -2070,7 +2074,7 @@ fi
 # If we're NOT installing dialerframework then we MUST REMOVE dialergoogle from  $gapps_list (if it's currently there)
 if ( ! contains "$gapps_list" "dialerframework" ) && ( contains "$gapps_list" "dialergoogle" ); then
   gapps_list=${gapps_list/dialergoogle}
-  install_note="${install_note}dialergoogle_msg"$'\n' # make note that Google Dialer will NOT be installed as user requested
+  install_note="${install_note}dialergoogle_msg$newline" # make note that Google Dialer will NOT be installed as user requested
 fi
 
 # If we're NOT installing dialergoogle make certain 'dialerstock' is NOT in $aosp_remove_list UNLESS 'dialerstock' is in $g_conf
@@ -2082,7 +2086,7 @@ fi
 # If we're NOT installing carrier services then we MUST REMOVE messenger from $gapps_list (if it's currently there)
 if [ "$rom_build_sdk" -ge "23" ] && ( ! contains "$gapps_list" "carrierservices" ) && ( contains "$gapps_list" "messenger" ); then
   gapps_list=${gapps_list/messenger}
-  install_note="${install_note}messenger_msg"$'\n' # make note that Google Messages will NOT be installed as user requested
+  install_note="${install_note}messenger_msg$newline" # make note that Google Messages will NOT be installed as user requested
 fi
 
 # If we're NOT installing messenger make certain 'mms' is NOT in $aosp_remove_list UNLESS 'mms' is in $g_conf
@@ -2095,7 +2099,7 @@ fi
 if ( ! contains "$gapps_list" "messenger" ) && ( contains "$aosp_remove_list" "mms" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/mms} # we'll prevent mms from being removed so user isn't left with no way to receive text messages
   remove_mms="false[NO_Override]"
-  install_note="${install_note}nomms_msg"$'\n' # make note that MMS can't be removed unless user Overrides
+  install_note="${install_note}nomms_msg$newline" # make note that MMS can't be removed unless user Overrides
 fi
 
 # If we're NOT installing googletts make certain 'picotts' is NOT in $aosp_remove_list UNLESS 'picotts' is in $g_conf
@@ -2107,24 +2111,24 @@ fi
 # If we're NOT installing wallpapers then we MUST REMOVE pixellauncher from  $gapps_list (if it's currently there)
 if ( ! contains "$gapps_list" "wallpapers" ) && ( contains "$gapps_list" "pixellauncher" ); then
   gapps_list=${gapps_list/pixellauncher}
-  install_note="${install_note}pixellauncher_msg"$'\n' # make note that Google Now Launcher will NOT be installed as user requested
+  install_note="${install_note}pixellauncher_msg$newline" # make note that Google Now Launcher will NOT be installed as user requested
 fi
 
 # If we're NOT installing search then we MUST REMOVE pixellauncher from  $gapps_list (if it's currently there)
 if ( ! contains "$gapps_list" "search" ) && ( contains "$gapps_list" "pixellauncher" ); then
   gapps_list=${gapps_list/pixellauncher}
-  install_note="${install_note}pixellauncher_msg"$'\n' # make note that Pixel Launcher will NOT be installed as user requested
+  install_note="${install_note}pixellauncher_msg$newline" # make note that Pixel Launcher will NOT be installed as user requested
 fi
 
 # If we're NOT installing search then we MUST REMOVE googlenow from  $gapps_list (if it's currently there)
 if ( ! contains "$gapps_list" "search" ) && ( contains "$gapps_list" "googlenow" ); then
   gapps_list=${gapps_list/googlenow}
-  install_note="${install_note}googlenow_msg"$'\n' # make note that Google Now Launcher will NOT be installed as user requested
+  install_note="${install_note}googlenow_msg$newline" # make note that Google Now Launcher will NOT be installed as user requested
 fi
 
 # If we're installing tvlauncher we MUST ADD tvlaunch to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "tvlauncher" ) && ( ! contains "$aosp_remove_list" "tvlaunch" ); then
-  aosp_remove_list="${aosp_remove_list}tvlaunch"$'\n'
+  aosp_remove_list="${aosp_remove_list}tvlaunch$newline"
 fi
 
 # If we're NOT installing googlenow or pixellauncher make certain 'launcher' is NOT in $aosp_remove_list UNLESS 'launcher' is in $g_conf
@@ -2137,12 +2141,12 @@ fi
 if ( ! contains "$gapps_list" "googlenow" ) && ( ! contains "$gapps_list" "pixellauncher" ) && ( contains "$aosp_remove_list" "launcher" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/launcher} # we'll prevent launcher from being removed so user isn't left with no Launcher
   remove_launcher="false[NO_Override]"
-  install_note="${install_note}nolauncher_msg"$'\n' # make note that Launcher can't be removed unless user Overrides
+  install_note="${install_note}nolauncher_msg$newline" # make note that Launcher can't be removed unless user Overrides
 fi
 
 # If we're installing calendargoogle we must ADD calendarstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "calendargoogle" ) && ( ! contains "$aosp_remove_list" "calendarstock" ); then
-  aosp_remove_list="${aosp_remove_list}calendarstock"$'\n'
+  aosp_remove_list="${aosp_remove_list}calendarstock$newline"
 fi
 
 # If we're installing calendargoogle we must NOT install calsync
@@ -2152,26 +2156,26 @@ fi
 
 # If we're installing keyboardgoogle we must ADD keyboardstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "keyboardgoogle" ) && ( ! contains "$aosp_remove_list" "keyboardstock" ); then
-  aosp_remove_list="${aosp_remove_list}keyboardstock"$'\n'
+  aosp_remove_list="${aosp_remove_list}keyboardstock$newline"
 fi
 
 # If we're NOT installing keyboardgoogle and keyboardstock is in $aosp_remove_list then user must override removal protection
 if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( contains "$aosp_remove_list" "keyboardstock" ) && ( ! grep -qi "override" "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/keyboardstock} # we'll prevent keyboardstock from being removed so user isn't left with no keyboard
-  install_note="${install_note}nokeyboard_msg"$'\n' # make note that Stock Keyboard can't be removed unless user Overrides
+  install_note="${install_note}nokeyboard_msg$newline" # make note that Stock Keyboard can't be removed unless user Overrides
 fi
 
 # Verify device is Google Camera compatible BEFORE we allow it in $gapps_list
 if ( contains "$gapps_list" "cameragoogle" ) && [ $cameragoogle_compat = "false" ]; then
   gapps_list=${gapps_list/cameragoogle} # we must DISALLOW cameragoogle from being installed
-  install_note="${install_note}camera_compat_msg"$'\n' # make note that Google Camera will NOT be installed as user requested
+  install_note="${install_note}camera_compat_msg$newline" # make note that Google Camera will NOT be installed as user requested
 fi
 
 # If user wants to install cameragoogle then it MUST be a Clean Install OR cameragoogle was previously installed in system partition
 if ( contains "$gapps_list" "cameragoogle" ) && ( ! clean_inst ) && [ $cameragoogle_inst = "false" ]; then
   gapps_list=${gapps_list/cameragoogle} # we must DISALLOW cameragoogle from being installed
   aosp_remove_list=${aosp_remove_list/camerastock} # and we'll prevent camerastock from being removed so user isn't left with no camera
-  install_note="${install_note}camera_sys_msg"$'\n' # make note that Google Camera will NOT be installed as user requested
+  install_note="${install_note}camera_sys_msg$newline" # make note that Google Camera will NOT be installed as user requested
 fi
 
 # If we're NOT installing cameragoogle make certain 'camerastock' is NOT in $aosp_remove_list UNLESS 'camerastock' is in $g_conf
@@ -2183,58 +2187,58 @@ fi
 # Verify device is VRMode compatible, BEFORE we allow vrservice in $gapps_list
 if ( contains "$gapps_list" "vrservice" ) && [ "$vrmode_compat" = "false" ]; then
   gapps_list=${gapps_list/vrservice} # we must DISALLOW vrservice from being installed
-  install_note="${install_note}vrservice_compat_msg"$'\n' # make note that VRService will NOT be installed as user requested
+  install_note="${install_note}vrservice_compat_msg$newline" # make note that VRService will NOT be installed as user requested
 fi
 
 # If we're installing clockgoogle we must ADD clockstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "clockgoogle" ) && ( ! contains "$aosp_remove_list" "clockstock" ); then
-  aosp_remove_list="${aosp_remove_list}clockstock"$'\n'
+  aosp_remove_list="${aosp_remove_list}clockstock$newline"
 fi
 
 # If we're installing exchangegoogle we must ADD exchangestock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "exchangegoogle" ) && ( ! contains "$aosp_remove_list" "exchangestock" ); then
-  aosp_remove_list="${aosp_remove_list}exchangestock"$'\n'
+  aosp_remove_list="${aosp_remove_list}exchangestock$newline"
 fi
 
 # If we're installing printservicegoogle we must ADD printservicestock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "printservicegoogle" ) && ( ! contains "$aosp_remove_list" "printservicestock" ); then
-  aosp_remove_list="${aosp_remove_list}printservicestock"$'\n'
+  aosp_remove_list="${aosp_remove_list}printservicestock$newline"
 fi
 
 # If we're installing storagemanagergoogle we must ADD storagemanagerstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "storagemanagergoogle" ) && ( ! contains "$aosp_remove_list" "storagemanagerstock" ); then
-  aosp_remove_list="${aosp_remove_list}storagemanagerstock"$'\n'
+  aosp_remove_list="${aosp_remove_list}storagemanagerstock$newline"
 fi
 
 # If we're installing taggoogle we must ADD tagstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "taggoogle" ) && ( ! contains "$aosp_remove_list" "tagstock" ); then
-  aosp_remove_list="${aosp_remove_list}tagstock"$'\n'
+  aosp_remove_list="${aosp_remove_list}tagstock$newline"
 fi
 
 # If we're installing calculatorgoogle we MUST ADD calculatorstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "calculatorgoogle" ) && ( ! contains "$aosp_remove_list" "calculatorstock" ); then
-  aosp_remove_list="${aosp_remove_list}calculatorstock"$'\n'
+  aosp_remove_list="${aosp_remove_list}calculatorstock$newline"
 fi
 
 # If we're installing contactsgoogle we MUST ADD contactsstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "contactsgoogle" ) && ( ! contains "$aosp_remove_list" "contactsstock" ); then
-  aosp_remove_list="${aosp_remove_list}contactsstock"$'\n'
+  aosp_remove_list="${aosp_remove_list}contactsstock$newline"
 fi
 
 # If we're installing packageinstallergoogle we MUST ADD packageinstallerstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "packageinstallergoogle" ) && ( ! contains "$aosp_remove_list" "packageinstallerstock" ); then
-  aosp_remove_list="${aosp_remove_list}packageinstallerstock"$'\n'
+  aosp_remove_list="${aosp_remove_list}packageinstallerstock$newline"
 fi
 
 # If we're NOT installing gcs then we MUST REMOVE projectfi from  $gapps_list (if it's currently there)
 if ( ! contains "$gapps_list" "gcs" ) && ( contains "$gapps_list" "projectfi" ); then
   gapps_list=${gapps_list/projectfi}
-  install_note="${install_note}projectfi_msg"$'\n' # make note that Project Fi will NOT be installed as user requested
+  install_note="${install_note}projectfi_msg$newline" # make note that Project Fi will NOT be installed as user requested
 fi
 
 # If we're installing wallpapers we must ADD wallpapersstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "wallpapers" ) && ( ! contains "$aosp_remove_list" "wallpapersstock" ); then
-  aosp_remove_list="${aosp_remove_list}wallpapersstock"$'\n'
+  aosp_remove_list="${aosp_remove_list}wallpapersstock$newline"
 fi
 
 # Some ROMs bundle Google Apps or the user might have installed a Google replacement app during an earlier install
@@ -2253,7 +2257,7 @@ if [ "$ignoregooglecontacts" = "true" ]; then
     sed -i "\:/system/priv-app/GoogleContacts:d" $gapps_removal_list
     sed -i "\:/system/product/priv-app/GoogleContacts:d" $gapps_removal_list
     ignoregooglecontacts="true[NoRemove]"
-    install_note="${install_note}nogooglecontacts_removal_msg"$'\n' # make note that Google Contacts will not be removed
+    install_note="${install_note}nogooglecontacts_removal_msg$newline" # make note that Google Contacts will not be removed
   else
     ignoregooglecontacts="false[ContactsGoogle]"
   fi
@@ -2271,7 +2275,7 @@ if [ "$ignoregoogledialer" = "true" ]; then
     sed -i "\:/system/priv-app/GoogleDialer:d" $gapps_removal_list
     sed -i "\:/system/product/priv-app/GoogleDialer:d" $gapps_removal_list
     ignoregoogledialer="true[NoRemove]"
-    install_note="${install_note}nogoogledialer_removal_msg"$'\n' # make note that Google Dialer will not be removed
+    install_note="${install_note}nogoogledialer_removal_msg$newline" # make note that Google Dialer will not be removed
   else
     ignoregoogledialer="false[DialerGoogle]"
   fi
@@ -2288,7 +2292,7 @@ if [ "$ignoregooglekeyboard" = "true" ]; then
   if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
 @keyboardgooglenotremovehack@
     ignoregooglekeyboard="true[NoRemove]"
-    install_note="${install_note}nogooglekeyboard_removal_msg"$'\n' # make note that Google Keyboard will not be removed
+    install_note="${install_note}nogooglekeyboard_removal_msg$newline" # make note that Google Keyboard will not be removed
   else
     ignoregooglekeyboard="false[KeyboardGoogle]"
   fi
@@ -2306,7 +2310,7 @@ if [ "$ignoregooglepackageinstaller" = "true" ]; then
     sed -i "\:/system/priv-app/GooglePackageInstaller:d" $gapps_removal_list
     sed -i "\:/system/product/priv-app/GooglePackageInstaller:d" $gapps_removal_list
     ignoregooglepackageinstaller="true[NoRemove]"
-    install_note="${install_note}nogooglepackageinstaller_removal_msg"$'\n' # make note that Google Package Installer will not be removed
+    install_note="${install_note}nogooglepackageinstaller_removal_msg$newline" # make note that Google Package Installer will not be removed
   else
     ignoregooglepackageinstaller="false[PackageInstallerGoogle]"
   fi
@@ -2324,7 +2328,7 @@ if [ "$ignoregoogletag" = "true" ]; then
     sed -i "\:/system/priv-app/TagGoogle:d" $gapps_removal_list
     sed -i "\:/system/product/priv-app/TagGoogle:d" $gapps_removal_list
     ignoregoogletag="true[NoRemove]"
-    install_note="${install_note}nogoogletag_removal_msg"$'\n' # make note that Google Tag will not be removed
+    install_note="${install_note}nogoogletag_removal_msg$newline" # make note that Google Tag will not be removed
   else
     ignoregoogletag="false[TagGoogle]"
   fi
@@ -2373,11 +2377,11 @@ fi
 # Removing old Chrome libraries
 obsolete_libs_list=""
 for f in $(find /system/lib /system/product/lib /system/lib64 /system/product/lib64 -name 'libchrome.*.so' 2>/dev/null); do
-  obsolete_libs_list="${obsolete_libs_list}$f"$'\n'
+  obsolete_libs_list="${obsolete_libs_list}$f$newline"
 done
 
 # Read in gapps removal list from file and append old Chrome libs
-full_removal_list="$(cat $gapps_removal_list)"$'\n'"${obsolete_libs_list}"
+full_removal_list="$(cat $gapps_removal_list)$newline${obsolete_libs_list}"
 
 # Read in old user removal list from addon.d to allow for persistence
 addond_remove_folder_list=$(sed -e "1,/# Remove 'user requested' apps (from gapps-config)/d" -e '/;;/,$d' -e 's/    rm -rf //' /system/addon.d/70-gapps.sh)
@@ -2548,7 +2552,7 @@ if [ "$post_install_size_kb" -lt 0 ]; then
   ui_print "See:'$log_folder/open_gapps_log.txt'"
   ui_print "for complete details and information."
   ui_print " "
-  install_note="${install_note}system_space_msg"$'\n' # make note that there is insufficient space in system to install
+  install_note="${install_note}system_space_msg$newline" # make note that there is insufficient space in system to install
   abort "$E_NOSPACE"
 fi
 
@@ -2556,7 +2560,7 @@ fi
 if ( grep -qiE '^test$' "$g_conf" ); then # user has selected a 'test' install ONLY
   ui_print "- Exiting Simulated Install"
   ui_print " "
-  install_note="${install_note}simulation_msg"$'\n' # make note that this is only a test installation
+  install_note="${install_note}simulation_msg$newline" # make note that this is only a test installation
   quit
   exxit 0
 fi
@@ -2715,7 +2719,7 @@ fi
 \n
 list_files() {
 cat <<EOF"
-bkup_list="$bkup_list"$'\n'"etc/g.prop" # add g.prop to backup list
+bkup_list="$bkup_list${newline}etc/g.prop" # add g.prop to backup list
 bkup_list=$(echo "${bkup_list}" | sort -u| sed '/^$/d') # sort list & remove duplicates and empty lines
 install -d /system/addon.d
 echo -e "$bkup_header" > /system/addon.d/70-gapps.sh
