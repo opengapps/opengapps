@@ -2217,7 +2217,7 @@ if [ "$ignoregooglecontacts" = "true" ]; then
     sed -i "\:/system/priv-app/GoogleContacts:d" $gapps_removal_list
     sed -i "\:/system/product/priv-app/GoogleContacts:d" $gapps_removal_list
     ignoregooglecontacts="true[NoRemove]"
-    install_note="${install_note}nogooglecontacts_removal"$'\n' # make note that Google Contacts will not be removed
+    install_note="${install_note}nogooglecontacts_removal_msg"$'\n' # make note that Google Contacts will not be removed
   else
     ignoregooglecontacts="false[ContactsGoogle]"
   fi
@@ -2235,7 +2235,7 @@ if [ "$ignoregoogledialer" = "true" ]; then
     sed -i "\:/system/priv-app/GoogleDialer:d" $gapps_removal_list
     sed -i "\:/system/product/priv-app/GoogleDialer:d" $gapps_removal_list
     ignoregoogledialer="true[NoRemove]"
-    install_note="${install_note}nogoogledialer_removal"$'\n' # make note that Google Dialer will not be removed
+    install_note="${install_note}nogoogledialer_removal_msg"$'\n' # make note that Google Dialer will not be removed
   else
     ignoregoogledialer="false[DialerGoogle]"
   fi
@@ -2252,7 +2252,7 @@ if [ "$ignoregooglekeyboard" = "true" ]; then
   if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
 @keyboardgooglenotremovehack@
     ignoregooglekeyboard="true[NoRemove]"
-    install_note="${install_note}nogooglekeyboard_removal"$'\n' # make note that Google Keyboard will not be removed
+    install_note="${install_note}nogooglekeyboard_removal_msg"$'\n' # make note that Google Keyboard will not be removed
   else
     ignoregooglekeyboard="false[KeyboardGoogle]"
   fi
@@ -2270,7 +2270,7 @@ if [ "$ignoregooglepackageinstaller" = "true" ]; then
     sed -i "\:/system/priv-app/GooglePackageInstaller:d" $gapps_removal_list
     sed -i "\:/system/product/priv-app/GooglePackageInstaller:d" $gapps_removal_list
     ignoregooglepackageinstaller="true[NoRemove]"
-    install_note="${install_note}nogooglepackageinstaller_removal"$'\n' # make note that Google Package Installer will not be removed
+    install_note="${install_note}nogooglepackageinstaller_removal_msg"$'\n' # make note that Google Package Installer will not be removed
   else
     ignoregooglepackageinstaller="false[PackageInstallerGoogle]"
   fi
@@ -2288,7 +2288,7 @@ if [ "$ignoregoogletag" = "true" ]; then
     sed -i "\:/system/priv-app/TagGoogle:d" $gapps_removal_list
     sed -i "\:/system/product/priv-app/TagGoogle:d" $gapps_removal_list
     ignoregoogletag="true[NoRemove]"
-    install_note="${install_note}nogoogletag_removal"$'\n' # make note that Google Tag will not be removed
+    install_note="${install_note}nogoogletag_removal_msg"$'\n' # make note that Google Tag will not be removed
   else
     ignoregoogletag="false[TagGoogle]"
   fi
