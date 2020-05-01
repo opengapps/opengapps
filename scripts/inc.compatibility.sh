@@ -13,7 +13,7 @@
 
 cameracompatibilityhack(){
   if [ "$API" -le "19" ]; then
-    echo '    A0001|bacon|find7) cameragoogle_compat=false;; # bacon or A0001=OnePlus One | find7=Oppo Find7 and Find7a' >> "$1"
+    echo '    A0001|bacon|find7) cameragoogle_compat=false;; # bacon or A0001=OnePlus One | find7=Oppo Find7 and Find7a'
   fi
 }
 
@@ -23,15 +23,15 @@ camerav3compatibilityhack(){
 # Google Camera fallback to Legacy if incompatible with new Camera API
 case $newcamera_compat in
   false*) gapps_list=${gapps_list/cameragoogle/cameragooglelegacy}; log "Google Camera version" "Legacy";;
-esac' >> "$1"
+esac'
   fi
 }
 
 keyboardgooglenotremovehack(){
   if [ "$API" -le "19" ]; then
-    echo '  sed -i "\:/system/app/LatinImeGoogle.apk:d" $gapps_removal_list;'>> "$1"
+    echo '  sed -i "\:/system/app/LatinImeGoogle.apk:d" $gapps_removal_list;'
   else
-    echo '  sed -i "\:/system/app/LatinImeGoogle:d" $gapps_removal_list;'>> "$1"
+    echo '  sed -i "\:/system/app/LatinImeGoogle:d" $gapps_removal_list;'
   fi
 }
 
@@ -322,12 +322,12 @@ systemlibhack(){
 
 universalremoverhack(){
   if [ "$API" -le "19" ]; then
-    tee -a "$1" > /dev/null <<'EOFILE'
+    cat <<'EOFILE'
                     1)  user_remove_folder_list="${user_remove_folder_list}$(find "$folder" -type f -iname "$testapk")"$'\n'; # Add found file to list
                         user_remove_folder_list="${user_remove_folder_list}$(printf "$(find "$folder" -type f -iname "$testapk")" | rev | cut -c 4- | rev)odex"$'\n'; # Add odex to list
 EOFILE
   else
-    tee -a "$1" > /dev/null <<'EOFILE'
+    cat <<'EOFILE'
                     1)  user_remove_folder_list="${user_remove_folder_list}$(dirname "$(find "$folder" -type f -iname "$testapk")")"$'\n'; # Add found folder to list
 EOFILE
   fi
@@ -348,7 +348,7 @@ versionnamehack(){
 
 webviewcheckhack(){
   if [ "$API" -ge "29" ]; then
-    tee -a "$1" > /dev/null <<'EOFILE'
+    cat <<'EOFILE'
 # If we're installing webviewgoogle we MUST ADD webviewstub to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$aosp_remove_list" "webviewstub" ); then
   aosp_remove_list="${aosp_remove_list}webviewstub"$'\n'
@@ -372,7 +372,7 @@ if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$gapps_list" "w
 fi
 EOFILE
   elif [ "$API" -ge "24" ]; then
-    tee -a "$1" > /dev/null <<'EOFILE'
+    cat <<'EOFILE'
 # If we're installing chrome and webviewgoogle, replace it with webviewstub unless override removal protection
 if ( contains "$gapps_list" "chrome" ) && ( contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
   gapps_list=${gapps_list/webviewgoogle/webviewstub}
@@ -401,7 +401,7 @@ if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$gapps_list" "w
 fi
 EOFILE
   else
-    tee -a "$1" > /dev/null <<'EOFILE'
+    cat <<'EOFILE'
 # If we're installing webviewgoogle we SHOULD ADD webviewstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$aosp_remove_list" "webviewstock" ); then
   aosp_remove_list="${aosp_remove_list}webviewstock"$'\n'
@@ -418,7 +418,7 @@ EOFILE
 
 webviewignorehack(){
   if [ "$API" -ge "24" ]; then
-    tee -a "$1" > /dev/null <<'EOFILE'
+    cat <<'EOFILE'
 if [ "$ignoregooglewebview" = "true" ]; then  # No AOSP WebView
   if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! contains "$gapps_list" "webviewstub" ) && ( ! contains "$gapps_list" "chrome" ) && ( ! grep -qiE '^override$' "$g_conf" ); then  # Don't remove components if no other WebViewProvider installed
     if [ -d "/system/app/Chrome" ]; then
@@ -442,7 +442,7 @@ if [ "$ignoregooglewebview" = "true" ]; then  # No AOSP WebView
 fi
 EOFILE
   else
-    tee -a "$1" > /dev/null <<'EOFILE'
+    cat <<'EOFILE'
 if [ "$ignoregooglewebview" = "true" ]; then  # No AOSP WebView
   if ( ! contains "$gapps_list" "webviewgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then  # Don't remove Google WebView components if no other WebViewProvider installed
     sed -i "\:/system/lib/$WebView_lib_filename:d" $gapps_removal_list;
