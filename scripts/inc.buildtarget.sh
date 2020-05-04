@@ -277,7 +277,7 @@ get_package_info(){
 
     actionsservices)          packagetype="GApps"; packagename="com.google.android.as"; packagetarget="priv-app/MatchmakerPrebuilt"
                               if [ "$API" -ge "28" ]; then  # Add an overlay for Android 9.0+
-                                packagefiles="vendor/overlay/ActionsServicesOverlay.apk"
+                                packagefiles="product/overlay/ActionsServicesOverlay.apk"
                               fi;;
     androidauto)              packagetype="GApps"; packagename="com.google.android.projection.gearhead"; packagetarget="app/AndroidAutoPrebuilt";;
     batteryusage)             packagetype="GApps"; packagename="com.google.android.apps.turbo"; packagetarget="priv-app/Turbo";;
@@ -308,7 +308,7 @@ get_package_info(){
     dialerframework)          packagetype="GApps"; packagefiles="etc/permissions/com.google.android.dialer.support.xml etc/sysconfig/dialer_experience.xml"; packageframework="com.google.android.dialer.support.jar";;
     dialergoogle)             packagetype="GApps"; packagename="com.google.android.dialer"; packagetarget="priv-app/GoogleDialer"
                               if [ "$API" -ge "28" ]; then  # Add an overlay for Android 9.0+
-                                packagefiles="vendor/overlay/TelecomOverlay.apk vendor/overlay/PhoneOverlay.apk"
+                                packagefiles="product/overlay/DefaultDialerOverlay.apk product/overlay/PhoneOverlay.apk product/overlay/TelecomOverlay.apk"
                               fi;;
     dmagent)                  packagetype="GApps"; packagename="com.google.android.apps.enterprise.dmagent"; packagetarget="app/DMAgent";;
     docs)                     packagetype="GApps"; packagename="com.google.android.apps.docs.editors.docs"; packagetarget="app/EditorsDocs";;
@@ -349,7 +349,7 @@ get_package_info(){
     pixelicons)               packagetype="GApps"; packagename="com.google.android.nexusicons"; packagetarget="app/NexusLauncherIcons";;
     pixellauncher)            packagetype="GApps"; packagename="com.google.android.apps.nexuslauncher"; packagetarget="priv-app/NexusLauncherPrebuilt"
                               if [ "$API" -ge "28" ]; then  # Add an overlay for Android 9.0+
-                                packagefiles="vendor/overlay/PixelLauncherOverlay.apk"
+                                packagefiles="product/overlay/PixelLauncherOverlay.apk"
                               fi;;
     photos)                   packagetype="GApps"; packagename="com.google.android.apps.photos"; packagetarget="app/Photos";;
     photosvrmode)             packagetype="GApps"; packagename="com.google.android.apps.photos.vrmode"; packagetarget="app/Photos";;
@@ -376,7 +376,7 @@ get_package_info(){
     wallpapers)               packagetype="GApps"; packagename="com.google.android.apps.wallpaper"; packagetarget="app/WallpaperPickerGooglePrebuilt";;
     wellbeing)                packagetype="GApps"; packagename="com.google.android.apps.wellbeing"; packagetarget="priv-app/WellbeingPrebuilt"
                               if [ "$API" -ge "28" ]; then  # Add an overlay for Android 9.0+
-                                packagefiles="vendor/overlay/WellbeingOverlay.apk"
+                                packagefiles="product/overlay/WellbeingOverlay.apk"
                               fi;;
     youtube)                  packagetype="GApps"; packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
     zhuyin)                   packagetype="GApps"; packagename="com.google.android.apps.inputmethod.zhuyin"; packagetarget="app/GoogleZhuyinIME";;  # ZhuyinIME exists in some ROMs
