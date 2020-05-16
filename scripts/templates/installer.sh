@@ -934,8 +934,13 @@ mount_all() {
       if [ $? != 0 ]; then
         umount /system
         umount -l /system 2>/dev/null
-        test -e /dev/block/bootdevice/by-name/system || local slot=$(getprop ro.boot.slot_suffix 2>/dev/null)
-        mount -o ro -t auto /dev/block/bootdevice/by-name/system$slot /system_root
+        if [ "$dynamic_partitions" == "true" ]; then
+          test -e /dev/block/mapper/system || local slot=$(getprop ro.boot.slot_suffix 2>/dev/null)
+          mount -o ro -t auto /dev/block/mapper/system$slot /system_root
+        else
+          test -e /dev/block/bootdevice/by-name/system || local slot=$(getprop ro.boot.slot_suffix 2>/dev/null)
+          mount -o ro -t auto /dev/block/bootdevice/by-name/system$slot /system_root
+        fi
       fi
     ;;
   esac
@@ -1009,17 +1014,21 @@ $BOOTMODE || ps -A 2>/dev/null | grep zygote | grep -v grep >/dev/null && BOOTMO
 
 test "$ANDROID_ROOT" || ANDROID_ROOT=/system
 
+dynamic_partitions=`getprop ro.boot.dynamic_partitions`
+
 # emulators can only flash booted and may need /system (on legacy images), or / (on system-as-root images), remounted rw
 if ! $BOOTMODE; then
   mount -o bind /dev/urandom /dev/random
   umount_all
   mount_all
 fi
-for block in system vendor; do
-  for slot in "" _a _b; do
-    blockdev --setrw /dev/block/mapper/$block$slot 2>/dev/null
+if [ "$dynamic_partitions" == "true" ]; then
+  for block in system vendor; do
+    for slot in "" _a _b; do
+      blockdev --setrw /dev/block/mapper/$block$slot 2>/dev/null
+    done
   done
-done
+fi
 mount -o rw,remount -t auto /system || mount -o rw,remount -t auto /
 mount -o rw,remount -t auto /vendor 2>/dev/null
 
