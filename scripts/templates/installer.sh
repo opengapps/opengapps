@@ -220,7 +220,8 @@ app/FineOSCalendar@REMOVALSUFFIX@
 product/app/Calendar@REMOVALSUFFIX@
 product/app/MonthCalendarWidget@REMOVALSUFFIX@
 product/priv-app/Calendar@REMOVALSUFFIX@
-product/app/FineOSCalendar@REMOVALSUFFIX@"
+product/app/FineOSCalendar@REMOVALSUFFIX@
+product/app/Etar@REMOVALSUFFIX@"
 
 # Must be used when GoogleCamera is installed
 camerastock_list="
@@ -257,7 +258,8 @@ product/app/Snap@REMOVALSUFFIX@
 product/priv-app/Snap@REMOVALSUFFIX@
 product/app/SnapdragonCamera@REMOVALSUFFIX@
 product/priv-app/SnapdragonCamera@REMOVALSUFFIX@
-product/app/FineOSCamera@REMOVALSUFFIX@"
+product/app/FineOSCamera@REMOVALSUFFIX@
+product/priv-app/Snap@REMOVALSUFFIX@"
 
 clockstock_list="
 app/DeskClock@REMOVALSUFFIX@
