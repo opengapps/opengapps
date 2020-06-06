@@ -214,51 +214,50 @@ product/app/FineOSCalculator@REMOVALSUFFIX@"
 # Must be used when GoogleCalendar is installed
 calendarstock_list="
 app/Calendar@REMOVALSUFFIX@
+app/FineOSCalendar@REMOVALSUFFIX@
 app/MonthCalendarWidget@REMOVALSUFFIX@
 priv-app/Calendar@REMOVALSUFFIX@
-app/FineOSCalendar@REMOVALSUFFIX@
 product/app/Calendar@REMOVALSUFFIX@
-product/app/MonthCalendarWidget@REMOVALSUFFIX@
-product/priv-app/Calendar@REMOVALSUFFIX@
+product/app/Etar@REMOVALSUFFIX@
 product/app/FineOSCalendar@REMOVALSUFFIX@
-product/app/Etar@REMOVALSUFFIX@"
+product/app/MonthCalendarWidget@REMOVALSUFFIX@
+product/priv-app/Calendar@REMOVALSUFFIX@"
 
 # Must be used when GoogleCamera is installed
 camerastock_list="
-app/Camera@REMOVALSUFFIX@
 app/Camera2@REMOVALSUFFIX@
-priv-app/Camera@REMOVALSUFFIX@
-priv-app/Camera2@REMOVALSUFFIX@
-priv-app/CameraX@REMOVALSUFFIX@
+app/Camera@REMOVALSUFFIX@
+app/FineOSCamera@REMOVALSUFFIX@
 app/MotCamera@REMOVALSUFFIX@
 app/MtkCamera@REMOVALSUFFIX@
 app/MTKCamera@REMOVALSUFFIX@
-priv-app/MotCamera@REMOVALSUFFIX@
+app/SnapdragonCamera@REMOVALSUFFIX@
+app/Snap@REMOVALSUFFIX@
+priv-app/Camera2@REMOVALSUFFIX@
+priv-app/Camera@REMOVALSUFFIX@
+priv-app/CameraX@REMOVALSUFFIX@
 priv-app/MiuiCamera@REMOVALSUFFIX@
+priv-app/MotCamera@REMOVALSUFFIX@
 priv-app/MtkCamera@REMOVALSUFFIX@
 priv-app/MTKCamera@REMOVALSUFFIX@
-app/Snap@REMOVALSUFFIX@
-priv-app/Snap@REMOVALSUFFIX@
-app/SnapdragonCamera@REMOVALSUFFIX@
 priv-app/SnapdragonCamera@REMOVALSUFFIX@
-app/FineOSCamera@REMOVALSUFFIX@
-product/app/Camera@REMOVALSUFFIX@
+priv-app/Snap@REMOVALSUFFIX@
 product/app/Camera2@REMOVALSUFFIX@
-product/priv-app/Camera@REMOVALSUFFIX@
-product/priv-app/Camera2@REMOVALSUFFIX@
-product/priv-app/CameraX@REMOVALSUFFIX@
+product/app/Camera@REMOVALSUFFIX@
+product/app/FineOSCamera@REMOVALSUFFIX@
 product/app/MotCamera@REMOVALSUFFIX@
 product/app/MtkCamera@REMOVALSUFFIX@
 product/app/MTKCamera@REMOVALSUFFIX@
-product/priv-app/MotCamera@REMOVALSUFFIX@
+product/app/SnapdragonCamera@REMOVALSUFFIX@
+product/app/Snap@REMOVALSUFFIX@
+product/priv-app/Camera2@REMOVALSUFFIX@
+product/priv-app/Camera@REMOVALSUFFIX@
+product/priv-app/CameraX@REMOVALSUFFIX@
 product/priv-app/MiuiCamera@REMOVALSUFFIX@
+product/priv-app/MotCamera@REMOVALSUFFIX@
 product/priv-app/MtkCamera@REMOVALSUFFIX@
 product/priv-app/MTKCamera@REMOVALSUFFIX@
-product/app/Snap@REMOVALSUFFIX@
-product/priv-app/Snap@REMOVALSUFFIX@
-product/app/SnapdragonCamera@REMOVALSUFFIX@
 product/priv-app/SnapdragonCamera@REMOVALSUFFIX@
-product/app/FineOSCamera@REMOVALSUFFIX@
 product/priv-app/Snap@REMOVALSUFFIX@"
 
 clockstock_list="
@@ -939,6 +938,8 @@ mount_all() {
         if [ "$dynamic_partitions" == "true" ]; then
           test -e /dev/block/mapper/system || local slot=$(getprop ro.boot.slot_suffix 2>/dev/null)
           mount -o ro -t auto /dev/block/mapper/system$slot /system_root
+          mount -o ro -t auto /dev/block/mapper/vendor$slot /vendor 2>/dev/null
+          mount -o ro -t auto /dev/block/mapper/product$slot /product 2>/dev/null
         else
           test -e /dev/block/bootdevice/by-name/system || local slot=$(getprop ro.boot.slot_suffix 2>/dev/null)
           mount -o ro -t auto /dev/block/bootdevice/by-name/system$slot /system_root
@@ -964,7 +965,7 @@ umount_all() {
     umount /system_root
     umount -l /system_root
   fi
-  for p in "/cache" "/persist" "/vendor"; do
+  for p in "/cache" "/persist" "/vendor" "/product"; do
     umount $p
     umount -l $p
   done
@@ -1025,7 +1026,7 @@ if ! $BOOTMODE; then
   mount_all
 fi
 if [ "$dynamic_partitions" == "true" ]; then
-  for block in system vendor; do
+  for block in system vendor product; do
     for slot in "" _a _b; do
       blockdev --setrw /dev/block/mapper/$block$slot 2>/dev/null
     done
@@ -1033,6 +1034,7 @@ if [ "$dynamic_partitions" == "true" ]; then
 fi
 mount -o rw,remount -t auto /system || mount -o rw,remount -t auto /
 mount -o rw,remount -t auto /vendor 2>/dev/null
+mount -o rw,remount -t auto /product 2>/dev/null
 
 ui_print " "
 
