@@ -502,6 +502,10 @@ product/priv-app/TrebuchetQuickStep@REMOVALSUFFIX@
 product/priv-app/TrebuchetQuickStepGo@REMOVALSUFFIX@
 product/priv-app/Nox@REMOVALSUFFIX@"
 
+tvlaunch_list="
+priv-app/TVLauncherNoGMS@REMOVALSUFFIX@
+priv-app/TVRecommendationsNoGMS@REMOVALSUFFIX@"
+
 lbr0zip_list="
 app/Br0Zip@REMOVALSUFFIX@
 product/app/Br0Zip@REMOVALSUFFIX@"
@@ -2102,6 +2106,11 @@ fi
 if ( ! contains "$gapps_list" "search" ) && ( contains "$gapps_list" "googlenow" ); then
   gapps_list=${gapps_list/googlenow}
   install_note="${install_note}googlenow_msg"$'\n' # make note that Google Now Launcher will NOT be installed as user requested
+fi
+
+# If we're installing tvlauncher we MUST ADD tvlaunch to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "tvlauncher" ) && ( ! contains "$aosp_remove_list" "tvlaunch" ); then
+  aosp_remove_list="${aosp_remove_list}tvlaunch"$'\n'
 fi
 
 # If we're NOT installing googlenow or pixellauncher make certain 'launcher' is NOT in $aosp_remove_list UNLESS 'launcher' is in $g_conf
