@@ -606,9 +606,12 @@ api26hack(){
       gappscore="$gappscore
 platformservicesoreo"  # Include Android 8.0 specific Platform Services with Android 8.0
     fi
-    gappscore="$gappscore
-carriersetup
+    if [ "$API" -eq "26" ]; then
+      gappscore="$gappscore
 gmssetup"
+    fi
+    gappscore="$gappscore
+carriersetup"
     gappspico="$gappspico
 packageinstallergoogle"
     gappstvstock="$gappstvstock
@@ -618,10 +621,10 @@ tvrecommendations"  # On Android 8.0+ a different launcher exists. SuW also work
   fi
 }
 
-# Does nothing now, here for completeness
 api27hack(){
   if [ "$API" -eq "27" ]; then
-    gappscore="$gappscore"
+    gappscore="$gappscore
+gmssetup"
   fi
 }
 
