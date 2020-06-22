@@ -630,6 +630,10 @@ gmssetup"
 
 api28hack(){
   if [ "$API" -ge "28" ]; then
+    if [ "$API" -eq "28" ]; then  # It is in micro starting from API 29
+      gappssuper="$gappssuper
+actionsservices"
+    fi
     if [ "$ARCH" = "arm64" ] && [ "$API" -eq "28" ]; then
       gappsnano="$gappsnano
 platformservices"  # Include Android Platform Services only for arm64 Android 9.0
@@ -642,7 +646,6 @@ markup
 soundpicker
 wellbeing"
     gappssuper="$gappssuper
-actionsservices
 bettertogether"
     gappstvcore="$gappstvcore
 calsync
