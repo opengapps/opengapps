@@ -137,6 +137,7 @@ makeinstallersh() {
   cameracompatibilityhack=$(cameracompatibilityhack)
   webviewcheckhack=$(webviewcheckhack)
   keyboardgooglenotremovehack=$(keyboardgooglenotremovehack)
+  launcherhack=$(launcherhack)
   webviewignorehack=$(webviewignorehack)
   camerav3compatibilityhack=$(camerav3compatibilityhack)
   universalremoverhack=$(universalremoverhack)
@@ -200,6 +201,7 @@ fi
       gappstvmini \
       gappstvstock \
       keyboardgooglenotremovehack \
+      launcherhack \
       stockremove \
       tvremotelibsymlink \
       universalremoverhack \
