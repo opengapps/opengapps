@@ -2091,6 +2091,8 @@ if ( ! contains "$gapps_list" "googlenow" ) && ( ! contains "$gapps_list" "pixel
   install_note="${install_note}nolauncher_msg$newline" # make note that Launcher can't be removed unless user Overrides
 fi
 
+@launcherhack@
+
 # If we're installing calendargoogle we must ADD calendarstock to $aosp_remove_list (if it's not already there)
 if ( contains "$gapps_list" "calendargoogle" ) && ( ! contains "$aosp_remove_list" "calendarstock" ); then
   aosp_remove_list="${aosp_remove_list}calendarstock$newline"

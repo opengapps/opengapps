@@ -284,6 +284,17 @@ kitkatpathshack(){
   fi
 }
 
+launcherhack(){
+  if [ "$API" -ge "28" ]; then
+    cat <<'EOFILE'
+# If we're installing the pixel launcher overlay apk we must ADD launcher to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "pixellauncher" ) && ( ! contains "$aosp_remove_list" "launcher" ); then
+  aosp_remove_list="${aosp_remove_list}launcher"$'\n'
+fi
+EOFILE
+  fi
+}
+
 minapihack(){
   useminapi=""
   case "$package" in
