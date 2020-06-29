@@ -1103,8 +1103,12 @@ abort() {
   exxit "$1"
 }
 
-ch_con() {
+ch_con_system() {
   chcon -h u:object_r:system_file:s0 "$1"
+}
+
+ch_con_overlay() {
+  chcon -h u:object_r:vendor_overlay_file:s0 "$1"
 }
 
 checkmanifest() {
@@ -1305,9 +1309,13 @@ install_extracted() {
   file_list="$(find "$TMP/$1/" -mindepth 1 -type f | cut -d/ -f5-)"
   dir_list="$(find "$TMP/$1/" -mindepth 1 -type d | cut -d/ -f5-)"
   for file in $file_list; do
-      install -D "$TMP/$1/${file}" "/system/${file}"
-      ch_con "/system/${file}"
-      set_perm 0 0 644 "/system/${file}"
+    install -D "$TMP/$1/${file}" "/system/${file}"
+    if echo "${file}" | grep -q "overlay"; then # overlays require different SELinux context
+      ch_con_overlay "/system/${file}"
+    else
+      ch_con_system "/system/${file}"
+    fi
+    set_perm 0 0 644 "/system/${file}"
   done
   for dir in $dir_list; do
     ch_con "/system/${dir}"
