@@ -645,6 +645,8 @@ datatransfertool"
 markup
 soundpicker
 wellbeing"
+    gappsfull="$gappsfull
+recorder"
     gappssuper="$gappssuper
 bettertogether"
     gappstvcore="$gappstvcore

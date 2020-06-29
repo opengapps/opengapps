@@ -178,6 +178,7 @@ form(
       "PlayGames",     "<b>Google Play Games</b>",       "",                      "check",
       "PrintServiceGoogle",     "<b>Print Service Recommendation Service</b>",       "Requires Android 7.0 or later",                      "check",
       "ProjectFi",     "<b>Project Fi</b>",       "Requires Android 5.1 or later",                      "check",
+      "Recorder",     "<b>Google Recorder</b>",       "Requires Android 9.0 or later",                      "check",
       "Sheets",     "<b>Google Sheets</b>",       "",                      "check",
       "Slides",     "<b>Google Slides</b>",       "",                      "check",
       "Search",     "<b>Google Search</b>",       "To Exclude Google Search AND Google Now Launcher/Pixel Launcher <#f00>OR</#> To Include Google Search",                      "check",
@@ -645,6 +646,12 @@ if
   prop("gapps.prop", "ProjectFi")=="1"
 then
   appendvar("gapps", "ProjectFi\n");
+endif;
+
+if
+  prop("gapps.prop", "Recorder")=="1"
+then
+  appendvar("gapps", "Recorder\n");
 endif;
 
 if
