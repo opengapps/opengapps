@@ -222,7 +222,7 @@ get_package_info(){
     carriersetup)             packagetype="Core"; packagename="com.google.android.carriersetup"; packagetarget="priv-app/CarrierSetup";;
     datatransfertool)         packagetype="Core"; packagename="com.google.android.apps.pixelmigrate"; packagetarget="priv-app/AndroidMigratePrebuilt";;
     defaultetc)               packagetype="Core";
-                              if [ "$API" -ge "29" ]; then # Specific permission files for Android 10.0
+                              if [ "$API" -ge "29" ]; then # Specific permission files for Android 10.0+
                                 packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions-q.xml etc/permissions/privapp-permissions-google.xml etc/permissions/split-permissions-google.xml etc/preferred-apps/google.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
                               elif [ "$API" -ge "28" ]; then # Specific permission files for Android 9.0
                                 packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/preferred-apps/google.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
@@ -238,7 +238,7 @@ get_package_info(){
                                 packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/preferred-apps/google.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
                               fi;;
     defaultframework)         packagetype="Core";
-                              if [ "$API" -ge "25" ]; then # Specific permission files and frameworks for Android 7.1 to 9.0
+                              if [ "$API" -ge "25" ]; then # Specific permission files and frameworks for Android 7.1+
                                 packagefiles="etc/permissions/com.google.android.maps.xml etc/permissions/com.google.android.media.effects.xml"
                                 packageframework="com.google.android.maps.jar com.google.android.media.effects.jar"
                               elif [ "$API" -ge "19" ]; then # Specific permission files and frameworks for Android 4.4 to 7.0
