@@ -169,30 +169,30 @@ get_gapps_list(){
 }
 
 buildtarget() {
-preparebuildarea
+  preparebuildarea
 
-# Compile the list of applications that will have to be build for this variant
-get_gapps_list "$SUPPORTEDVARIANTS"
-gapps="$gapps_list"
+  # Compile the list of applications that will have to be build for this variant
+  get_gapps_list "$SUPPORTEDVARIANTS"
+  gapps="$gapps_list"
 
-for app in $gapps; do
-  get_package_info "$app"
-  if [ -n "$packagename" ]; then
-    buildapp "$packagename" "$packagemaxapi" "$packagetype/$app" "$packagetarget"
-  fi
-  for file in $packagefiles; do
-    buildfile "$file" "$packagetype/$app" "common"
+  for app in $gapps; do
+    get_package_info "$app"
+    if [ -n "$packagename" ]; then
+      buildapp "$packagename" "$packagemaxapi" "$packagetype/$app" "$packagetarget"
+    fi
+    for file in $packagefiles; do
+      buildfile "$file" "$packagetype/$app" "common"
+    done
+    for framework in $packageframework; do
+      buildframework "$framework" "$packagetype/$app" "common"
+    done
+    for lib in $packagelibs; do
+      buildsystemlib "$lib" "$packagetype/$app" "common"
+    done
   done
-  for framework in $packageframework; do
-    buildframework "$framework" "$packagetype/$app" "common"
-  done
-  for lib in $packagelibs; do
-    buildsystemlib "$lib" "$packagetype/$app" "common"
-  done
-done
 
-EXTRACTFILES="app_densities.txt app_sizes.txt"  # Is executed as first
-CHMODXFILES=""
+  EXTRACTFILES="app_densities.txt app_sizes.txt"  # Is executed as first
+  CHMODXFILES=""
 }
 
 get_package_info(){

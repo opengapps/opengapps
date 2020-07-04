@@ -302,8 +302,16 @@ minapihack(){
         useminapi="21"
       fi;;
     com.android.chrome)
-      if [ "$API" -ge "24" ]; then
+      if [ "$API" -ge "29" ]; then
+        useminapi="29"
+      elif [ "$API" -ge "24" ]; then
         useminapi="24"
+      elif [ "$API" -ge "21" ]; then
+        useminapi="21"
+      fi;;
+    com.google.android.webview)
+      if [ "$API" -ge "29" ]; then
+        useminapi="29"
       elif [ "$API" -ge "21" ]; then
         useminapi="21"
       fi;;
