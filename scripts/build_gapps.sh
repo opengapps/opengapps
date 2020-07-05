@@ -66,7 +66,7 @@ ZIPCOMPRESSIONLEVEL="0" # Store only the files in the zip without compressing th
 . "$SCRIPTS/inc.sourceshelper.sh"
 
 # Check tools
-checktools aapt coreutils java jarsigner unzip zip tar realpath zipalign
+checktools aapt apksigner coreutils java jarsigner unzip zip tar realpath zipalign
 
 case "$API" in
 19) PLATFORM="4.4" ;;

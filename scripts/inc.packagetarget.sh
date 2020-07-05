@@ -11,7 +11,13 @@
 #	GNU General Public License for more details.
 #
 alignbuild() {
+  echo "Zipaligning APKs..."
   for f in $(find "$build" -name '*.apk'); do
+    # skip zipaligning for APKs signed with apksigner, because zipalign strips its signature
+    # see https://developer.android.com/studio/command-line/zipalign
+    if timeout 1m apksigner verify --verbose --print-certs "$f" 2>/dev/null | grep -q "(JAR signing): false"; then
+      continue
+    fi
     mv "$f" "$f.orig"
     zopfli=""
     if [ -n "$ZIPALIGNRECOMPRESS" ]; then
