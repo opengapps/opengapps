@@ -20,12 +20,13 @@ SCRIPTS="$TOP/scripts"
 
 # shellcheck source=scripts/inc.tools.sh
 . "$SCRIPTS/inc.tools.sh"
-checktools base64 coreutils unzip
+checktools apksigner base64 coreutils unzip
 
 for argument in "$@"; do
   file="$(readlink -f "$argument")"
   if [ -f "$file" ]; then
-    echo "signature of $file:"
+    apksigner verify --verbose --print-certs "$file"
+    echo "Signature of $file:"
     RSAFILE="META-INF/CERT"
     unzip -l "$file" | grep -q "$RSAFILE.RSA"
     if [ "$?" != "0" ]; then

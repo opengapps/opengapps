@@ -24,8 +24,8 @@ checktools() {
           echo 'Coreutils is required for install, basename, readlink, md5sum and other utilities, but is not installed or found in sh $PATH.';;
         jarsigner|keytool)
           echo 'JDK is required for jarsigner and keytools utilities, but is not installed or found in sh $PATH.';;
-        aapt|zipalign)
-          echo 'Android SDK is required for aapt and zipalign utilities, but is not installed or found in sh $PATH.';;
+        aapt|apksigner|zipalign)
+          echo 'Android SDK is required for aapt, apksigner and zipalign utilities, but is not installed or found in sh $PATH.';;
         *)
           echo "$command is required but is not installed.";;
       esac
