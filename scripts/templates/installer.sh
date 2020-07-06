@@ -1920,12 +1920,11 @@ else
 
   # Did this 6.0+ system already boot and generated runtime permissions
   if [ -e /data/system/users/0/runtime-permissions.xml ]; then
-    # Check if permissions were granted to Google Setupwizard, this permissions should always be set in the file if GApps were installed before
-    if ! grep -q "com.google.android.setupwizard" /data/system/users/*/runtime-permissions.xml; then
-      # Purge the runtime permissions to prevent issues if flashing GApps for the first time on a dirty install
-      rm -f /data/system/users/*/runtime-permissions.xml
-      log "Runtime Permissions" "Reset"
-    fi
+    # Purge the runtime permissions to prevent issues if flashing GApps for the first time on a dirty install
+    # We do this unconditionally, as this is the only way to force hard-restricted permissions to be granted
+    # on Android 10 (via /etc/default-permissions)
+    rm -f /data/system/users/*/runtime-permissions.xml
+    log "Runtime Permissions" "Force Reset"
   fi
 
   # Use the opportunity of No GApps installed to check for potential ROM conflicts when deleting existing GApps files
