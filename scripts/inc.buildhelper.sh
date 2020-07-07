@@ -333,10 +333,10 @@ buildapk() {
     else #Marshmallow and above needs libs to be stored without compression within the APK
       unzip -qqq -o "$targetapk" -d "$targetdir" "lib/*"
       zip -q -d "$targetapk" "lib/*" #delete all libs
-      CURRENTPWD="$(realpath .)" #if we ever switch to bash, make this a pushd-popd trick
-      cd "$targetdir"
-      zip -q -r -D -Z store -b "$targetdir" "$targetapk" "lib/" #no parameter for output and mode, we are in 'add and update existing' mode which is default. Lib files have to be stored without compression.
-      cd "$CURRENTPWD"
+      (
+        cd "$targetdir"
+        zip -q -r -D -Z store -b "$targetdir" "$targetapk" "lib/" #no parameter for output and mode, we are in 'add and update existing' mode which is default. Lib files have to be stored without compression.
+      )
       rm -rf "$targetdir/lib/"
     fi
   fi
