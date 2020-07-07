@@ -18,17 +18,13 @@ if { [ "$1" != "arm" ] && [ "$1" != "arm64" ] && [ "$1" != "x86" ] && [ "$1" != 
   exit 1
 fi
 
-command -v realpath >/dev/null 2>&1 || {
-  echo "realpath is required but it's not installed, aborting." >&2
-  exit 1
-}
 #OPENGAPPSDATE=""  # this can be set to override the date
 if [ -n "$OPENGAPPSDATE" ]; then
   DATE="$OPENGAPPSDATE"
 else
   DATE=$(date +"%Y%m%d")
 fi
-TOP="$(realpath .)"
+TOP=$(cd "${0%/*}"/.. && pwd -P) || exit 1
 ARCH="$1"
 API="$2"
 VARIANT="$3"
@@ -66,7 +62,7 @@ ZIPCOMPRESSIONLEVEL="0" # Store only the files in the zip without compressing th
 . "$SCRIPTS/inc.sourceshelper.sh"
 
 # Check tools
-checktools aapt apksigner coreutils java jarsigner unzip zip tar realpath zipalign
+checktools aapt apksigner coreutils java jarsigner unzip zip tar zipalign
 
 case "$API" in
 19) PLATFORM="4.4" ;;
