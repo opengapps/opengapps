@@ -889,7 +889,7 @@ mount_apex() {
   num=0
   for apex in /system/apex/*; do
     dest=/apex/$(basename $apex .apex)
-    test "$dest" = /apex/com.android.runtime.release && dest=/apex/com.android.runtime
+    test "$dest" == /apex/com.android.runtime.release && dest=/apex/com.android.runtime
     mkdir -p $dest
     case $apex in
       *.apex)
@@ -957,7 +957,7 @@ mount_all() {
       if [ $? != 0 ]; then
         umount /system
         umount -l /system 2>/dev/null
-        if [ "$dynamic_partitions" = "true" ]; then
+        if [ "$dynamic_partitions" == "true" ]; then
           test -e /dev/block/mapper/system || local slot=$(getprop ro.boot.slot_suffix 2>/dev/null)
           mount -o ro -t auto /dev/block/mapper/system$slot /system_root
           mount -o ro -t auto /dev/block/mapper/vendor$slot /vendor 2>/dev/null
@@ -1047,7 +1047,7 @@ if ! $BOOTMODE; then
   umount_all
   mount_all
 fi
-if [ "$dynamic_partitions" = "true" ]; then
+if [ "$dynamic_partitions" == "true" ]; then
   for block in system vendor product; do
     for slot in "" _a _b; do
       blockdev --setrw /dev/block/mapper/$block$slot 2>/dev/null
@@ -1065,7 +1065,7 @@ ui_print " "
 #                      and system-as-root https://source.android.com/devices/bootloader/system-as-root
 device_abpartition=false
 system_as_root=`getprop ro.build.system_root_image`
-if [ "$system_as_root" = "true" ]; then
+if [ "$system_as_root" == "true" ]; then
   active_slot=`getprop ro.boot.slot_suffix`
   if [ ! -z "$active_slot" ]; then
     device_abpartition=true
@@ -1596,7 +1596,7 @@ done
 if [ -n "$g_conf" ] && [ "$g_conf" != "$TMP/aroma/.gapps-config" ]; then
   log_folder="$(dirname "$g_conf")"
 else
-  if [ "$zip_folder" = "/sideload" ]; then
+  if [ "$zip_folder" == "/sideload" ]; then
     log_folder=/sdcard
   else
     log_folder="$zip_folder"
