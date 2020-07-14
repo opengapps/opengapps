@@ -1329,7 +1329,7 @@ install_extracted() {
     true*)
       installedapkpaths="$(find "$TMP/$1/" -name "*.apk" -type f | cut -d/ -f5-)"
       for installedapkpath in $installedapkpaths; do  # TODO fix spaces-handling
-        if ! checkmanifest "/system/$installedapkpath" "classes.dex"; then
+        if checkmanifest "/system/$installedapkpath" "classes.dex"; then
           ui_print "- pre-ODEX-ing $gapp_name"
           log "pre-ODEX-ing" "$gapp_name"
           odexapk "/system/$installedapkpath"
