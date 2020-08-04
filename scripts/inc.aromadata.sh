@@ -295,7 +295,6 @@ form(
       "extest",     "<b>Test</b>",       "To perform a simulation generating a detailed log, but <u>WILL NOT MAKE ANY CHANGES</u> to your device.",                      "check",
       "exswype",     "<b>SkipSwypelibs</b>",       "To skip/remove the installation of the Google Swype libraries for the AOSP Keyboard",                      "check",
       "exsubstitute","<b>SubstituteSwypelibs</b>", "To overwrite the AOSP Keyboard libraries with the Google Swype libraries instead of adding",                      "check",
-      "exnopreodex",   "<b>NoPreODEX</b>",           "To disable the smart Pre-ODEX-ing on Marshmallow+ ROMs",                      "check",
       "exclean",     "<b>ForceClean</b>",       "Ignores detection of dirty installations, force the installer to behave as if it is a clean install <#f00>DO NOT REPORT ANY BUGS IF USED</#>",                      "check",
       "GoogleAssistant",     "<b>GoogleAssistant</b>",       "To enable Google Assistant support in the build.prop",                      "check",
       "WebViewStub",     "<b>WebViewStub</b>",       "Placeholder for Google WebView, on 7.0+ automatically used instead of WebViewGoogle if Chrome is installed",                      "check"
@@ -326,11 +325,6 @@ if
   prop("extra.prop", "exsubstitute")=="1"
 then
   appendvar("gapps", "substituteswypelibs\n");
-endif;
-if
-  prop("extra.prop", "exnopreodex")=="1"
-then
-  appendvar("gapps", "nopreodex\n");
 endif;
 if
   prop("extra.prop", "exclean")=="1"
