@@ -1278,11 +1278,7 @@ get_appsize() {
   app_name="$(basename "$1")"
   which_dpi "$app_name"
   app_density="$(basename "$dpiapkpath")"
-  case $preodex in
-    true*) odexsize="|odex";;
-    *) odexsize="";;
-  esac
-  appsize="$(cat $TMP/app_sizes.txt | grep -E "$app_name.*[[:blank:]]($app_density|common$odexsize)[[:blank:]]" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')"
+  appsize="$(cat $TMP/app_sizes.txt | grep -E "$app_name.*[[:blank:]]($app_density|common)[[:blank:]]" | awk 'BEGIN { app_size=0; } { folder_size=$3; app_size=app_size+folder_size; } END { printf app_size; }')"
 }
 
 get_fallback_arch(){
@@ -1325,18 +1321,6 @@ install_extracted() {
     ch_con "/system/${dir}"
     set_perm 0 0 755 "/system/${dir}"
   done
-  case $preodex in
-    true*)
-      installedapkpaths="$(find "$TMP/$1/" -name "*.apk" -type f | cut -d/ -f5-)"
-      for installedapkpath in $installedapkpaths; do  # TODO fix spaces-handling
-        if checkmanifest "/system/$installedapkpath" "classes.dex"; then
-          ui_print "- pre-ODEX-ing $gapp_name"
-          log "pre-ODEX-ing" "$gapp_name"
-          odexapk "/system/$installedapkpath"
-        fi
-      done
-    ;;
-  esac
   bkup_list="$newline${file_list}${bkup_list}"
   rm -rf "$TMP/$1"
 }
@@ -1357,30 +1341,6 @@ obsolete_gapps_list() {
   cat <<EOF
 $remove_list
 EOF
-}
-
-odexapk() {
-  if [ -f "$1" ]; then  # strict, only files
-    apkdir="$(dirname "$1")"
-    apkname="$(basename "$1" ".apk")"  # Take note not to use -s, it is not supported in busybox
-    install -d "$TMP/classesdex"
-    "$TMP/unzip-$BINARCH" -q -o "$1" "classes*.dex" -d "$TMP/classesdex/"  # extract to temporary location first, to avoid potential disk space shortage
-    eval '$TMP/zip-$BINARCH -d "$1" "classes*.dex"'
-    cp "$TMP/classesdex/"* "$apkdir"
-    rm -rf "$TMP/classesdex/"
-    dexfiles="$(find "$apkdir" -name "classes*.dex")"
-    if [ -n "$dexfiles" ]; then
-      dex="LD_LIBRARY_PATH='/system/lib:/system/lib64' /system/bin/dex2oat"
-      for d in $dexfiles; do
-        dex="$dex --dex-file=\"$d\""
-        bkup_list="$newline${d#\/system\/}${bkup_list}"  # Backup the dex for re-generating oat in the future
-      done
-      dex="install -d \"$apkdir/oat/$req_android_arch\" && $dex --instruction-set=\"$req_android_arch\" --oat-file=\"$apkdir/oat/$req_android_arch/$apkname.odex\""
-      eval "$dex"
-      # Add the dex2oat command to addon.d for re-running during a restore
-      sed -i "\:# Re-pre-ODEX APKs (from GApps Installer):a \    $dex" $bkup_tail
-    fi
-  fi
 }
 
 quit() {
@@ -1782,23 +1742,6 @@ else
   forceclean="false"
 fi
 
-# Check for Pre-Odex support or NoPreODEX Override in gapps-config
-if [ "$rom_build_sdk" -lt "23" ]; then
-  preodex="false [Only 6.0+]"
-elif [ "$(get_prop "persist.sys.dalvik.vm.lib.2")" != "libart.so" ] && [ "$(get_prop "persist.sys.dalvik.vm.lib.2")" != "libart" ]; then
-  preodex="false [No ART]"
-elif ! command -v "$TMP/zip-$BINARCH" >/dev/null 2>&1; then
-  preodex="false [No Info-Zip]"
-elif ! command -v "dex2oat" >/dev/null 2>&1; then
-  preodex="false [No dex2oat]"
-elif ( grep -qiE '^nopreodex$' "$g_conf" ); then
-  preodex="false [nopreodex]"
-elif ( grep -qiE '^preodex$' "$g_conf" ); then
-  preodex="true [preodex]"
-else
-  preodex="false"  #temporarily changed to false by default until we sort the issues out
-fi
-
 # Check for skipswypelibs in gapps-config
 if ( grep -qiE '^skipswypelibs$' $g_conf ); then
   skipswypelibs="true"
@@ -1878,7 +1821,6 @@ log "Installer Platform" "$BINARCH"
 log "ROM Platform" "$arch"
 log "Display Density Used" "$density"
 log "Install Type" "$install_type"
-log "Smart ART Pre-ODEX" "$preodex"
 log "Google Camera already installed" "$cameragoogle_inst"
 log "VRMode Compatible" "$vrmode_compat"
 log "Google Camera Compatible" "$cameragoogle_compat"
