@@ -1318,7 +1318,7 @@ install_extracted() {
     set_perm 0 0 644 "/system/${file}"
   done
   for dir in $dir_list; do
-    ch_con "/system/${dir}"
+    ch_con_system "/system/${dir}"
     set_perm 0 0 755 "/system/${dir}"
   done
   bkup_list="$newline${file_list}${bkup_list}"
@@ -2681,10 +2681,10 @@ set_progress 0.85
 find /system/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; 2>/dev/null # Change pittpatt folders to root:shell per Google Factory Settings
 
 set_perm 0 0 755 "/system/addon.d/70-gapps.sh"
-ch_con "/system/addon.d/70-gapps.sh"
+ch_con_system "/system/addon.d/70-gapps.sh"
 
 set_perm 0 0 644 "$g_prop"
-ch_con "$g_prop"
+ch_con_system "$g_prop"
 
 set_progress 0.92
 quit
