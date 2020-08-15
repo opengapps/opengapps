@@ -939,6 +939,7 @@ mount_all() {
   fi
   (mount /cache
   mount -o ro -t auto /persist
+  mount -o ro -t auto /product
   mount -o ro -t auto /vendor) 2>/dev/null
   setup_mountpoint $ANDROID_ROOT
   if ! is_mounted $ANDROID_ROOT; then
