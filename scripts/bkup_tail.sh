@@ -76,7 +76,10 @@ case "$1" in
     for i in $(list_files); do
       chown root:root "$SYS/$i"
       chmod 644 "$SYS/$i"
-      chmod 755 "$(dirname "$SYS/$i")"
+      chmod 755 "$(dirname "$SYS/$i")" "$(dirname "$SYS/$i")/../"
+      case $i in
+        */overlay/*) chcon -h u:object_r:vendor_overlay_file:s0 "$SYS/$i";;
+      esac
     done
     if [ "$rom_build_sdk" -ge "26" ]; then # Android 8.0+ uses 0600 for its permission on build.prop
       chmod 600 "$SYS/build.prop"
