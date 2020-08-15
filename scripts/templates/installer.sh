@@ -2544,7 +2544,7 @@ user_remove_folder_list=$(echo -e "${user_remove_folder_list}\n${addond_remove_f
 user_remove_folder_list=$(echo "${user_remove_folder_list}" | sort -r) # reverse sort list for more readable output
 for user_app in $user_remove_folder_list; do
   rm -rf "$user_app"
-  sed -i "\:# Remove 'user requested' apps (from gapps-config):a \    rm -rf $user_app" $bkup_tail
+  sed -i "\:# Remove 'user requested' apps (from gapps-config):a \    rm -rf ${user_app/\/system/\$SYS}" $bkup_tail
 done
 
 # Remove any empty folders we may have created during the removal process
@@ -2618,8 +2618,8 @@ if ( contains "$gapps_list" "markup" ); then
   install -d "/system/app/MarkupGoogle/lib/$arch"
   ln -sfn "/system/$libfolder/$markup_lib_filename" "/system/app/MarkupGoogle/lib/$arch/$markup_lib_filename"
   # Add same code to backup script to ensure symlinks are recreated on addon.d restore
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"/system/$libfolder/$markup_lib_filename\" \"/system/app/MarkupGoogle/lib/$arch/$markup_lib_filename\"" $bkup_tail
-  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"/system/app/MarkupGoogle/lib/$arch\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    ln -sfn \"\$SYS/$libfolder/$markup_lib_filename\" \"\$SYS/app/MarkupGoogle/lib/$arch/$markup_lib_filename\"" $bkup_tail
+  sed -i "\:# Recreate required symlinks (from GApps Installer):a \    install -d \"\$SYS/app/MarkupGoogle/lib/$arch\"" $bkup_tail
 fi
 
 @tvremotelibsymlink@
@@ -2646,8 +2646,7 @@ done
 # Add 'required' Removals to addon.d script
 reqd_list=$(echo "${reqd_list}" | sort -r) # reverse sort list for more readable output
 for reqdapp_name in $reqd_list; do
-  reqdapp_name=$(echo ${reqdapp_name/\/system/\$SYS})
-  sed -i "\:# Remove 'required' apps (per installer.data):a \    rm -rf $reqdapp_name" $bkup_tail
+  sed -i "\:# Remove 'required' apps (per installer.data):a \    rm -rf ${reqdapp_name/\/system/\$SYS}" $bkup_tail
 done
 
 # Create final addon.d script in system
