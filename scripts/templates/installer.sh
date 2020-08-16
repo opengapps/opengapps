@@ -1107,12 +1107,8 @@ abort() {
   exxit "$1"
 }
 
-ch_con_system() {
-  chcon -h u:object_r:system_file:s0 "$1"
-}
-
-ch_con_overlay() {
-  chcon -h u:object_r:vendor_overlay_file:s0 "$1"
+ch_con() {
+  chcon -h u:object_r:${1}_file:s0 "$2"
 }
 
 checkmanifest() {
@@ -1310,15 +1306,15 @@ install_extracted() {
   dir_list="$(find "$TMP/$1/" -mindepth 1 -type d | cut -d/ -f5-)"
   for file in $file_list; do
     install -D "$TMP/$1/${file}" "/system/${file}"
-    if echo "${file}" | grep -q "overlay"; then # overlays require different SELinux context
-      ch_con_overlay "/system/${file}"
-    else
-      ch_con_system "/system/${file}"
-    fi
+    # overlays require different SELinux context
+    case $file in
+      */overlay/*) ch_con vendor_overlay "/system/${file}";;
+      *)           ch_con system "/system/${file}";;
+    esac
     set_perm 0 0 644 "/system/${file}"
   done
   for dir in $dir_list; do
-    ch_con_system "/system/${dir}"
+    ch_con system "/system/${dir}"
     set_perm 0 0 755 "/system/${dir}"
   done
   bkup_list="$newline${file_list}${bkup_list}"
@@ -2681,10 +2677,10 @@ set_progress 0.85
 find /system/vendor/pittpatt -type d -exec chown 0:2000 '{}' \; 2>/dev/null # Change pittpatt folders to root:shell per Google Factory Settings
 
 set_perm 0 0 755 "/system/addon.d/70-gapps.sh"
-ch_con_system "/system/addon.d/70-gapps.sh"
+ch_con system "/system/addon.d/70-gapps.sh"
 
 set_perm 0 0 644 "$g_prop"
-ch_con_system "$g_prop"
+ch_con system "$g_prop"
 
 set_progress 0.92
 quit
