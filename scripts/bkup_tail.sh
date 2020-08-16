@@ -1,6 +1,25 @@
 EOF
 }
 
+mount_generic() {
+  local active_slot=$(getprop ro.boot.slot_suffix)
+  local partitions="$*"
+  if [ -z "$active_slot" ]; then
+    # We're on an A only device
+    local partition
+    for partition in $partitions; do
+      if [ "$(getprop ro.boot.dynamic_partitions)" = "true" ]; then
+        mount -o ro -t auto /dev/block/mapper/"$partition" /"$partition" 2> /dev/null
+        blockdev --setrw /dev/block/mapper/"$partition" 2> /dev/null
+        mount -o rw,remount -t auto /dev/block/mapper/"$partition" /"$partition" 2> /dev/null
+      else
+        mount -o ro -t auto /"$partition" 2> /dev/null
+        mount -o rw,remount -t auto /"$partition" 2> /dev/null
+      fi
+    done
+  fi
+}
+
 # Backup/Restore using /sdcard if the installed GApps size plus a buffer for other addon.d backups (204800=200MB) is larger than /tmp
 installed_gapps_size_kb=$(grep "^installed_gapps_size_kb" $TMP/gapps.prop | cut -d '=' -f 2)
 if [ ! "$installed_gapps_size_kb" ]; then
@@ -31,6 +50,8 @@ case "$1" in
     list_files | while read -r FILE DUMMY; do
       backup_file "$S"/"$FILE"
     done
+
+    umount /product /vendor 2> /dev/null
   ;;
   restore)
     list_files | while read -r FILE REPLACEMENT; do
@@ -40,12 +61,14 @@ case "$1" in
     done
   ;;
   pre-backup)
-    # Stub
+    mount_generic product vendor
   ;;
   post-backup)
     # Stub
   ;;
   pre-restore)
+    mount_generic product vendor
+
     # Remove Stock/AOSP apps (from GApps Installer)
 
     # Remove 'other' apps (per installer.data)
@@ -81,6 +104,9 @@ case "$1" in
         */overlay/*) chcon -h u:object_r:vendor_overlay_file:s0 "$SYS/$i";;
       esac
     done
+
+    umount /product /vendor 2> /dev/null
+
     if [ "$rom_build_sdk" -ge "26" ]; then # Android 8.0+ uses 0600 for its permission on build.prop
       chmod 600 "$SYS/build.prop"
     fi
