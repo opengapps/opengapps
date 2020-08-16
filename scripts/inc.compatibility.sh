@@ -302,7 +302,7 @@ minapihack(){
         useminapi="21"
       fi;;
     com.android.chrome)
-      if [ "$API" -ge "29" ]; then
+      if [ "$ARCH" = "arm64" ] && [ "$API" -ge "29" ]; then # for now only available on arm64
         useminapi="29"
       elif [ "$API" -ge "24" ]; then
         useminapi="24"
@@ -310,7 +310,7 @@ minapihack(){
         useminapi="21"
       fi;;
     com.google.android.webview)
-      if [ "$API" -ge "29" ]; then
+      if [ "$ARCH" = "arm64" ] && [ "$API" -ge "29" ]; then # for now only available on arm64
         useminapi="29"
       elif [ "$API" -ge "21" ]; then
         useminapi="21"
@@ -588,7 +588,7 @@ webviewstub"  # On Nougat and higher we might want to install the WebViewStub in
     gappsfull_optional="$gappsfull_optional
 moviesvrmode"
   fi
-  if [ "$ARCH" = "arm64" ]; then  # for now only available on arm64
+  if [ "$ARCH" = "arm64" ]; then # for now only available on arm64
     gappsmini_optional="$gappsmini_optional
 photosvrmode"
   fi
