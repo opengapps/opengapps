@@ -65,7 +65,8 @@ createcommit(){
       com.google.android.keep* |\
       com.google.android.marvin.talkback* |\
       com.google.android.music* |\
-      com.google.android.talk*)
+      com.google.android.talk* |\
+      com.google.android.wearable.app)
             name="$name ($watch)" ;;  # special watch versions need a different packagename
       *)                          ;;  # Otherwise ignore the watch flag
     esac
