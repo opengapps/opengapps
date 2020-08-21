@@ -38,10 +38,13 @@ checktools() {
             missing="$missing $command"
           fi;;
         aapt)
-          av="0$(aapt v 2>&1 | sed -n 's/.*v0\.2-\([0-9]*\)/\1/p')"
-          if [ "$av" -lt "04000000" ] ; then
-            echo 'aapt is outdated. Install a more recent version from the Android SDK and findable in sh $PATH.' >&2
-            missing="$missing $command"
+          avdebian="0$(aapt v 2>&1 | sed -n 's/.*v0\.2-\([0-9][0-9]\)\(\.\).*/\1/p')"  # should be zero for regular SDK version numbers
+          if [ "$avdebian" -lt "026" ] ; then
+            av="0$(aapt v 2>&1 | sed -n 's/.*v0\.2-\([0-9]*\)/\1/p')"
+            if [ "$av" -lt "04000000" ] ; then
+              echo 'aapt is outdated. Install a more recent version from the Android SDK and findable in sh $PATH.' >&2
+              missing="$missing $command"
+            fi
           fi;;
         git-lfs)
           if ! git lfs env | grep -q -e "filter.lfs.clean" || ! git lfs env | grep -q -e "filter.lfs.smudge" || ! git lfs env | grep -q -e "filter.lfs.process"; then
