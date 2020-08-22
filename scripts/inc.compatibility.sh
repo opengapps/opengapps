@@ -315,6 +315,12 @@ minapihack(){
       elif [ "$API" -ge "21" ]; then
         useminapi="21"
       fi;;
+    com.google.android.googlequicksearchbox)
+      if [ "$ARCH" = "arm64" ] && [ "$API" -ge "29" ]; then # for now only available on arm64
+        useminapi="29"
+      elif [ "$API" -ge "21" ]; then
+        useminapi="21"
+      fi;;
   esac
 }
 
