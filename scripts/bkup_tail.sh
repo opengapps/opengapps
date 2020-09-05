@@ -2,9 +2,9 @@ EOF
 }
 
 mount_generic() {
-  local active_slot=$(getprop ro.boot.slot_suffix)
+  local device_abpartition=$(getprop ro.build.ab_update)
   local partitions="$*"
-  if [ -z "$active_slot" ]; then
+  if [ -z "$device_abpartition" ]; then
     # We're on an A only device
     local partition
     for partition in $partitions; do
