@@ -1063,15 +1063,8 @@ ui_print " "
 
 # _____________________________________________________________________________________________________________________
 #                      Detect A/B partition layout https://source.android.com/devices/tech/ota/ab_updates
-#                      and system-as-root https://source.android.com/devices/bootloader/system-as-root
-device_abpartition=false
-system_as_root=`getprop ro.build.system_root_image`
-if [ "$system_as_root" = "true" ]; then
-  active_slot=`getprop ro.boot.slot_suffix`
-  if [ ! -z "$active_slot" ]; then
-    device_abpartition=true
-  fi
-fi
+device_abpartition=$(getprop ro.build.ab_update)
+[ -n "$device_abpartition" ] || device_abpartition=false
 
 # _____________________________________________________________________________________________________________________
 #                                                  Declare Variables
