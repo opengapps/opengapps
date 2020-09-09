@@ -100,7 +100,6 @@ tvgmscore
 tvvending"
 
 gappstvmini="backdrop
-castreceiver
 leanbacklauncher
 livechannels
 tvkeyboardgoogle
