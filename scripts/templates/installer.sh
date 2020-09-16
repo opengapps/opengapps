@@ -1799,7 +1799,7 @@ esac
 
 # Check if Google Pixel
 case $device_name in
-  marlin|sailfish|walleye|taimen|crosshatch|blueline) googlepixel_compat="true";;
+  marlin|sailfish|walleye|taimen|crosshatch|blueline|bonito|sargo|coral|flame|sunfish) googlepixel_compat="true";;
   *) googlepixel_compat="false";;
 esac
 
