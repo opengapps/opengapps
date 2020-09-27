@@ -112,8 +112,7 @@ gappstvstock="talkback
 tvmovies
 tvmusic
 tvplaygames
-tvyoutube
-webviewgoogle"
+tvyoutube"
 
 miniremove=""
 
