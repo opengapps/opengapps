@@ -699,6 +699,11 @@ actionsservices" # Include Actions Services with Android 10.0 for Pixel Launcher
   fi
 }
 
+api30hack(){ 
+  # for now does nothing
+  true
+}
+
 sdkversionhacks(){
   case "$package" in
     com.google.android.configupdater|com.google.android.feedback|com.google.android.gsf.login|com.google.android.partnersetup|com.google.android.setupwizard|com.google.android.syncadapters.contacts)
@@ -710,6 +715,7 @@ sdkversionhacks(){
         *27) sdkversion="27";;
         *28) sdkversion="28";;
         *29) sdkversion="29";;
+        *30) sdkversion="30";;
         *) ;;
       esac;;
   esac
