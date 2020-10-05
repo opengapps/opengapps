@@ -96,16 +96,20 @@ createcommit(){
     done
   fi
   # We don't have to care about empty direcories with git (see http://stackoverflow.com/a/10075480/3315861 for more details.)
-  git add "$1"
-  git status -s -uno
-  echo "Commit changes as '$name $2-$sdkversion $versionname ($dpis)' by $username <$email>? [y/N]"
-  IFS= read -r REPLY
-  case "$REPLY" in
-    y*|Y*)  git commit -q -m "$name $2-$sdkversion $versionname ($dpis)" --author="$username <$email>"
-            echo "Committed $1";;
-        *)  git reset -q HEAD
-            echo "Did NOT commit $1";;
-  esac
+  if [ -z "$beta" ]; then
+    git add "$1"
+    git status -s -uno
+    git commit -q -m "$name $2-$sdkversion $versionname ($dpis)" --author="$username <$email>"
+    echo "Committed $1"
+  fi
+  #echo "Commit changes as '$name $2-$sdkversion $versionname ($dpis)' by $username <$email>? [y/N]"
+  #IFS= read -r REPLY
+  #case "$REPLY" in
+  #  y*|Y*)  git commit -q -m "$name $2-$sdkversion $versionname ($dpis)" --author="$username <$email>"
+  #          echo "Committed $1";;
+  #      *)  git reset -q HEAD
+  #          echo "Did NOT commit $1";;
+  #esac
 }
 
 newapks=""
