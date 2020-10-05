@@ -72,7 +72,7 @@ getapkproperties(){
     "com.google.android.apps.pixelmigrate" |\
     "com.google.android.apps.restore" |\
     "com.google.android.apps.wellbeing" |\
-    "com.google.android.apps.tv.launcherx" |\
+    "com.google.android.apps.tv.launcherx.leanback" |\
     "com.google.android.as" |\
     "com.google.android.backuptransport" |\
     "com.google.android.carriersetup" |\
