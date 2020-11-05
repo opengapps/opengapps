@@ -2417,7 +2417,7 @@ for aosp_name in $aosp_remove_list; do
   eval "list_name=\$${aosp_name}_list"
   aosp_size_kb=0 # Reset counter
   for file_name in $list_name; do
-    for file_folder in "/system" "/system/product"; do
+    for file_folder in "/system" "/system/product" "/system/system_ext"; do
       if [ -d "$file_folder" ] && [ -e "$file_folder/$file_name" ]; then
         file_size_kb=$(du -ck "$file_folder/$file_name" | tail -n 1 | awk '{ print $1 }')
         aosp_size_kb=$((file_size_kb + aosp_size_kb))
