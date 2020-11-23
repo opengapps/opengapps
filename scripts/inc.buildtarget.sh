@@ -111,7 +111,6 @@ tvwallpaper"
 gappstvstock="castreceiver
 talkback
 tvmovies
-tvmusic
 tvplaygames
 tvyoutube"
 
