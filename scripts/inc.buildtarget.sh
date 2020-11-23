@@ -108,7 +108,8 @@ tvsearch
 tvwidget
 tvwallpaper"
 
-gappstvstock="talkback
+gappstvstock="castreceiver
+talkback
 tvmovies
 tvmusic
 tvplaygames
