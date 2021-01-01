@@ -932,6 +932,38 @@ umount_apex() {
   unset ANDROID_RUNTIME_ROOT ANDROID_TZDATA_ROOT BOOTCLASSPATH
 }
 
+mount_system_source() {
+  local system_source
+  system_source=$(grep ' /system ' /etc/fstab | tail -n1 | cut -d' ' -f1)
+  if [ -z "${system_source}" ]; then
+    system_source=$(grep ' /system_root ' /etc/fstab | tail -n1 | cut -d' ' -f1)
+  fi
+  if [ -z "${system_source}" ]; then
+    system_source=$(grep ' / ' /etc/fstab | tail -n1 | cut -d' ' -f1)
+  fi
+  echo "${system_source}"
+}
+
+mount_android_root() {
+  local system_source
+  system_source=$(mount_system_source)
+  if [ ! -z "${system_source}" ]; then
+    setup_mountpoint /system_root
+    if ! is_mounted /system_root; then
+      mount -o ro -t auto "${system_source}" /system_root 2>/dev/null
+    fi
+    if is_mounted /system_root && [ ! -f /system_root/system/build.prop ] &&
+        ! is_mounted $ANDROID_ROOT && [ ! "$ANDROID_ROOT" = '/system_root' ]; then
+      mount --move /system_root "${ANDROID_ROOT}"
+    fi
+  else
+    setup_mountpoint $ANDROID_ROOT
+    if ! is_mounted $ANDROID_ROOT; then
+      mount -o ro -t auto $ANDROID_ROOT 2>/dev/null
+    fi
+  fi
+}
+
 mount_all() {
   if ! is_mounted /data; then
     mount /data
@@ -941,10 +973,7 @@ mount_all() {
   mount -o ro -t auto /persist
   mount -o ro -t auto /product
   mount -o ro -t auto /vendor) 2>/dev/null
-  setup_mountpoint $ANDROID_ROOT
-  if ! is_mounted $ANDROID_ROOT; then
-    mount -o ro -t auto $ANDROID_ROOT 2>/dev/null
-  fi
+  mount_android_root
   case $ANDROID_ROOT in
     /system_root) setup_mountpoint /system;;
     /system)
