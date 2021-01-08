@@ -278,6 +278,7 @@ get_package_info(){
                                 packagefiles="product/overlay/ActionsServicesOverlay.apk"
                                 packagegappsremove="product/overlay/ActionsServicesOverlay.apk vendor/overlay/ActionsServicesOverlay.apk"
                               fi;;
+    quickaccesswallet)        packagetype="GApps"; packagename="com.android.systemui.plugin.globalactions.wallet"; packagetarget="priv-app/QuickAccessWallet";;
     androidauto)              packagetype="GApps"; packagename="com.google.android.projection.gearhead"; packagetarget="app/AndroidAutoPrebuilt";;
     batteryusage)             packagetype="GApps"; packagename="com.google.android.apps.turbo"; packagetarget="priv-app/Turbo";;
     bettertogether)           packagetype="GApps"; packagename="com.google.android.apps.multidevice.client"; packagetarget="app/SMSConnectPrebuilt";;
