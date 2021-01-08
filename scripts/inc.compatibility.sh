@@ -501,7 +501,10 @@ setupwizardtablet"
 }
 
 api21hack(){
-  if [ "$API" -ge "21" ]; then
+  if [ "$API" -le "21" ]; then
+    gappsfull="$gappsfull
+music"
+  else
     if [ "$API" -eq "21" ]; then
       gappscore="$gappscore
 gmssetup
@@ -516,6 +519,8 @@ wallpapers"
     gappsstock="$gappsstock
 androidauto
 contactsgoogle"
+    gappsfull="$gappsfull
+ytmusic"
     miniremove="$miniremove
 clockstock
 tagstock"
