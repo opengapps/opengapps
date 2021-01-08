@@ -501,7 +501,7 @@ setupwizardtablet"
 }
 
 api21hack(){
-  if [ "$API" -le "21" ]; then
+  if [ "$API" -lt "21" ]; then
     gappsfull="$gappsfull
 music"
   else
@@ -705,8 +705,10 @@ actionsservices" # Include Actions Services with Android 10.0 for Pixel Launcher
 }
 
 api30hack(){ 
-  # for now does nothing
-  true
+  if [ "$API" -ge "30" ]; then
+    gappsmicro="$gappsmicro
+quickaccesswallet" # Include QuickAccessWallet with Android 11.0 for Pixel Launcher to work
+  fi
 }
 
 sdkversionhacks(){
