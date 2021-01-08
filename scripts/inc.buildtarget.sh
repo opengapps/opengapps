@@ -56,7 +56,6 @@ chrome
 drive
 keep
 movies
-music
 newsstand
 playgames
 talkback"
@@ -381,6 +380,7 @@ get_package_info(){
                                 packagegappsremove="product/overlay/WellbeingOverlay.apk vendor/overlay/WellbeingOverlay.apk"
                               fi;;
     youtube)                  packagetype="GApps"; packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
+    ytmusic)                  packagetype="GApps"; packagename="com.google.android.apps.youtube.music"; packagetarget="app/YouTubeMusicPrebuilt";;
     zhuyin)                   packagetype="GApps"; packagename="com.google.android.apps.inputmethod.zhuyin"; packagetarget="app/GoogleZhuyinIME";;  # ZhuyinIME exists in some ROMs
 
     # TV GApps

@@ -194,6 +194,7 @@ form(
       "WebViewGoogle",     "<b>Android System WebView</b>",       "Requires Android 5.1 or later, WebViewStub is installed on Android 7.0+ instead when Google Chrome is selected",                      "check",
       "Wellbeing",     "<b>Digital Wellbeing</b>",       "Requires Android 9.0 or later",                      "check",
       "YouTube",     "<b>YouTube</b>",       "",                      "check",
+      "YTMusic",     "<b>YouTube Music</b>",       "",                      "check",
       "Zhuyin",     "<b>Google Zhuyin Input</b>",       "",                      "check"
 );
 # Duplicate aromagapps.prop and rename it to gapps.prop - this is useful because the selections won't be erased by the complete installation (menu.prop selected ==2)
@@ -736,6 +737,12 @@ if
   prop("gapps.prop", "YouTube")=="1"
 then
   appendvar("gapps", "YouTube\n");
+endif;
+
+if
+  prop("gapps.prop", "YTMusic")=="1"
+then
+  appendvar("gapps", "YTMusic\n");
 endif;
 
 if
