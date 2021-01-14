@@ -860,9 +860,7 @@ nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on yo
 
 # _____________________________________________________________________________________________________________________
 #                                                  Pre-define Helper Functions
-get_file_prop() {
-  grep -m1 "^$2=" "$1" | cut -d= -f2
-}
+get_file_prop() { grep -m1 "^$2=" "$1" | cut -d= -f2-; }
 
 set_progress() { echo "set_progress $1" >> $OUTFD; }
 
@@ -871,25 +869,37 @@ ui_print() {
     ui_print" >> $OUTFD
 }
 
+find_slot() {
+  local slot=$(getprop ro.boot.slot_suffix 2>/dev/null)
+  [ "$slot" ] || slot=$(grep -o 'androidboot.slot_suffix=.*$' /proc/cmdline | cut -d\  -f1 | cut -d= -f2)
+  if [ ! "$slot" ]; then
+    slot=$(getprop ro.boot.slot 2>/dev/null)
+    [ "$slot" ] || slot=$(grep -o 'androidboot.slot=.*$' /proc/cmdline | cut -d\  -f1 | cut -d= -f2)
+    [ "$slot" ] && slot=_$slot
+  fi
+  [ "$slot" ] && echo "$slot"
+}
+
 setup_mountpoint() {
-  test -L $1 && mv -f $1 ${1}_link
+  [ -L $1 ] && mv -f $1 ${1}_link
   if [ ! -d $1 ]; then
     rm -f $1
-    mkdir $1
+    mkdir -p $1
   fi
 }
 
 is_mounted() { mount | grep -q " $1 "; }
 
 mount_apex() {
-  test -d /system/apex || return 1
+  [ -d /system_root/system/apex ] || return 1
   local apex dest loop minorx num
   setup_mountpoint /apex
-  test -e /dev/block/loop1 && minorx=$(ls -l /dev/block/loop1 | awk '{ print $6 }') || minorx=1
+  minorx=1
+  [ -e /dev/block/loop1 ] && minorx=$(ls -l /dev/block/loop1 | awk '{ print $6 }')
   num=0
-  for apex in /system/apex/*; do
+  for apex in /system_root/system/apex/*; do
     dest=/apex/$(basename $apex .apex)
-    test "$dest" = /apex/com.android.runtime.release && dest=/apex/com.android.runtime
+    [ "$dest" = /apex/com.android.runtime.release ] && dest=/apex/com.android.runtime
     mkdir -p $dest
     case $apex in
       *.apex)
@@ -915,11 +925,11 @@ mount_apex() {
   done
   export ANDROID_RUNTIME_ROOT=/apex/com.android.runtime
   export ANDROID_TZDATA_ROOT=/apex/com.android.tzdata
-  export BOOTCLASSPATH=/apex/com.android.runtime/javalib/core-oj.jar:/apex/com.android.runtime/javalib/core-libart.jar:/apex/com.android.runtime/javalib/okhttp.jar:/apex/com.android.runtime/javalib/bouncycastle.jar:/apex/com.android.runtime/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/android.test.base.jar:/apex/com.android.conscrypt/javalib/conscrypt.jar:/apex/com.android.media/javalib/updatable-media.jar
+  export BOOTCLASSPATH=/apex/com.android.runtime/javalib/core-oj.jar:/apex/com.android.runtime/javalib/core-libart.jar:/apex/com.android.runtime/javalib/okhttp.jar:/apex/com.android.runtime/javalib/bouncycastle.jar:/apex/com.android.runtime/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/android.test.base.jar:/system/framework/telephony-ext.jar:/apex/com.android.conscrypt/javalib/conscrypt.jar:/apex/com.android.media/javalib/updatable-media.jar
 }
 
 umount_apex() {
-  test -d /apex || return 1
+  [ -d /apex ] || return 1
   local dest loop
   for dest in $(find /apex -type d -mindepth 1 -maxdepth 1); do
     if [ -f $dest.img ]; then
@@ -933,14 +943,15 @@ umount_apex() {
 }
 
 mount_all() {
-  if ! is_mounted /data; then
-    mount /data
-    UMOUNT_DATA=1
+  if ! is_mounted /cache; then
+    mount /cache 2>/dev/null && UMOUNT_CACHE=1
   fi
-  (mount /cache
-  mount -o ro -t auto /persist
+  if ! is_mounted /data; then
+    mount /data && UMOUNT_DATA=1
+  fi
+  (mount -o ro -t auto /vendor
   mount -o ro -t auto /product
-  mount -o ro -t auto /vendor) 2>/dev/null
+  mount -o ro -t auto /persist) 2>/dev/null
   setup_mountpoint $ANDROID_ROOT
   if ! is_mounted $ANDROID_ROOT; then
     mount -o ro -t auto $ANDROID_ROOT 2>/dev/null
@@ -956,45 +967,53 @@ mount_all() {
         mount --move /system /system_root
       fi
       if [ $? != 0 ]; then
-        umount /system
-        umount -l /system 2>/dev/null
-        if [ "$dynamic_partitions" = "true" ]; then
-          test -e /dev/block/mapper/system || local slot=$(getprop ro.boot.slot_suffix 2>/dev/null)
-          mount -o ro -t auto /dev/block/mapper/system$slot /system_root
-          mount -o ro -t auto /dev/block/mapper/vendor$slot /vendor 2>/dev/null
+        (umount /system
+        umount -l /system) 2>/dev/null
+        if [ -d /dev/block/mapper ]; then
+          [ -e /dev/block/mapper/system ] || local slot=$(find_slot)
+          mount -o ro -t auto /dev/block/mapper/vendor$slot /vendor
           mount -o ro -t auto /dev/block/mapper/product$slot /product 2>/dev/null
+          mount -o ro -t auto /dev/block/mapper/system$slot /system_root
         else
-          test -e /dev/block/bootdevice/by-name/system || local slot=$(getprop ro.boot.slot_suffix 2>/dev/null)
+          [ -e /dev/block/bootdevice/by-name/system ] || local slot=$(find_slot)
+          (mount -o ro -t auto /dev/block/bootdevice/by-name/vendor$slot /vendor
+          mount -o ro -t auto /dev/block/bootdevice/by-name/product$slot /product
+          mount -o ro -t auto /dev/block/bootdevice/by-name/persist$slot /persist) 2>/dev/null
           mount -o ro -t auto /dev/block/bootdevice/by-name/system$slot /system_root
         fi
       fi
     ;;
   esac
   if is_mounted /system_root; then
+    mount_apex
     if [ -f /system_root/build.prop ]; then
       mount -o bind /system_root /system
     else
       mount -o bind /system_root/system /system
     fi
   fi
-  mount_apex
 }
 
 umount_all() {
-  (umount_apex
-  umount /system
+  local mount
+  (umount /system
   umount -l /system
   if [ -e /system_root ]; then
     umount /system_root
     umount -l /system_root
   fi
-  for p in "/cache" "/persist" "/vendor" "/product"; do
-    umount $p
-    umount -l $p
+  umount_apex
+  for mount in /mnt/system /vendor /mnt/vendor /product /mnt/product /persist; do
+    umount $mount
+    umount -l $mount
   done
   if [ "$UMOUNT_DATA" ]; then
     umount /data
     umount -l /data
+  fi
+  if [ "$UMOUNT_CACHE" ]; then
+    umount /cache
+    umount -l /cache
   fi) 2>/dev/null
 }
 
@@ -1035,20 +1054,24 @@ ui_print " "
 ui_print "- Mounting partitions"
 set_progress 0.01
 
-ps | grep zygote | grep -v grep >/dev/null && BOOTMODE=true || BOOTMODE=false
+BOOTMODE=false
+ps | grep zygote | grep -v grep >/dev/null && BOOTMODE=true
 $BOOTMODE || ps -A 2>/dev/null | grep zygote | grep -v grep >/dev/null && BOOTMODE=true
 
-test "$ANDROID_ROOT" || ANDROID_ROOT=/system
-
-dynamic_partitions=`getprop ro.boot.dynamic_partitions`
+[ "$ANDROID_ROOT" ] || ANDROID_ROOT=/system
 
 # emulators can only flash booted and may need /system (on legacy images), or / (on system-as-root images), remounted rw
 if ! $BOOTMODE; then
   mount -o bind /dev/urandom /dev/random
+  if [ -L /etc ]; then
+    setup_mountpoint /etc
+    cp -af /etc_link/* /etc
+    sed -i 's; / ; /system_root ;' /etc/fstab
+  fi
   umount_all
   mount_all
 fi
-if [ "$dynamic_partitions" = "true" ]; then
+if [ -d /dev/block/mapper ]; then
   for block in system vendor product; do
     for slot in "" _a _b; do
       blockdev --setrw /dev/block/mapper/$block$slot 2>/dev/null
@@ -1056,8 +1079,8 @@ if [ "$dynamic_partitions" = "true" ]; then
   done
 fi
 mount -o rw,remount -t auto /system || mount -o rw,remount -t auto /
-mount -o rw,remount -t auto /vendor 2>/dev/null
-mount -o rw,remount -t auto /product 2>/dev/null
+(mount -o rw,remount -t auto /vendor
+mount -o rw,remount -t auto /product) 2>/dev/null
 
 ui_print " "
 
@@ -1171,10 +1194,14 @@ exxit() {
     cp -f "$gapps_removal_list" "$TMP/logs/gapps-remove_revised.txt"
     cp -f "$rec_cache_log" "$TMP/logs/Recovery_cache.log"
     cp -f "$rec_tmp_log" "$TMP/logs/Recovery_tmp.log"
-    curLD="$LD_LIBRARY_PATH"
-    unset LD_LIBRARY_PATH
+    OLD_LD_PATH=$LD_LIBRARY_PATH
+    OLD_LD_PRE=$LD_PRELOAD
+    OLD_LD_CFG=$LD_CONFIG_FILE
+    unset LD_LIBRARY_PATH LD_PRELOAD LD_CONFIG_FILE
     logcat -d -f "$TMP/logs/logcat"
-    export LD_LIBRARY_PATH="$curLD"
+    [ "$OLD_LD_PATH" ] && export LD_LIBRARY_PATH=$OLD_LD_PATH
+    [ "$OLD_LD_PRE" ] && export LD_PRELOAD=$OLD_LD_PRE
+    [ "$OLD_LD_CFG" ] && export LD_CONFIG_FILE=$OLD_LD_CFG
     cd "$TMP"
     tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" logs/*
     cd /
@@ -1185,7 +1212,9 @@ exxit() {
   if ! $BOOTMODE; then
     ui_print "- Unmounting partitions"
     umount_all
-    (for dir in /apex /system /system_root; do
+    [ -L /etc_link ] && rm -rf /etc/*
+    local dir
+    (for dir in /apex /system /system_root /etc; do
       if [ -L "${dir}_link" ]; then
         rmdir $dir
         mv -f ${dir}_link $dir
@@ -1285,13 +1314,17 @@ get_prop() {
   #check known .prop files using get_file_prop
   local propfile propval
   for propfile in $PROPFILES; do
-    test "$propval" && break || propval="$(get_file_prop $propfile $1 2>/dev/null)"
+    if [ "$propval" ]; then
+      break
+    else
+      propval="$(get_file_prop $propfile $1 2>/dev/null)"
+    fi
   done
-  #if propval is still empty, try to use recovery's built-in getprop method; otherwise output current result
-  if [ -z "$propval" ]; then
-    getprop "$1" | cut -c1-
+  #if propval is no longer empty output current result; otherwise try to use recovery's built-in getprop method
+  if [ "$propval" ]; then
+    echo "$propval"
   else
-    printf "$propval"
+    getprop "$1"
   fi
 }
 
@@ -1689,7 +1722,7 @@ if ( grep -qiE '^forcedpi(120|160|213|240|260|280|300|320|340|360|400|420|480|56
 fi
 
 # Set density to unknown if it's still empty
-test -z "$density" && density="unknown"
+[ -z "$density" ] && density="unknown"
 
 # Check for Camera API v2 availability
 cameraapi="$(get_prop "camera2.portability.force_api")"
@@ -2704,7 +2737,7 @@ if ( contains "$gapps_list" "dialergoogle" ); then
     else
       max="0"
       for i in $(grep -o 'id=.*$' "$setsec" | cut -d '"' -f 2); do
-        test "$i" -gt "$max" && max="$i"
+        [ "$i" -gt "$max" ] && max="$i"
       done
       entry='<setting id="'"$((max + 1))"'" name="dialer_default_application" value="com.google.android.dialer" package="android" />\r'
       sed -i "/<settings version=\"/a\ \ ${entry}" "$setsec"
