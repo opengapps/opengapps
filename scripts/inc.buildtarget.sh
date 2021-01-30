@@ -271,8 +271,11 @@ get_package_info(){
     setupwizard)              packagetype="Core"; packagename="com.google.android.setupwizard"; packagetarget="priv-app/SetupWizard";;  # Android 4.4 only (see api19hack in inc.buildtarget.sh)
     setupwizarddefault)       packagetype="Core"; packagename="com.google.android.setupwizard.default"; packagetarget="priv-app/SetupWizard";;  # SetupWizardPrebuilt on Pixels
     setupwizardtablet)        packagetype="Core"; packagename="com.google.android.setupwizard.tablet"; packagetarget="priv-app/SetupWizard";;
-    vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky";;
-
+    vending)                  packagetype="Core"; packagename="com.android.vending"; packagetarget="priv-app/Phonesky"
+                              if [ "$API" -ge "30" ]; then  # Add an overlay for Android 11.0+
+                                packagefiles="product/overlay/PlayStoreOverlay.apk"
+                                packagegappsremove="product/overlay/PlayStoreOverlay.apk vendor/overlay/PlayStoreOverlay.apk"
+                              fi;;
     actionsservices)          packagetype="GApps"; packagename="com.google.android.as"; packagetarget="priv-app/MatchmakerPrebuilt"
                               if [ "$API" -ge "28" ]; then  # Add an overlay for Android 9.0+
                                 packagefiles="product/overlay/ActionsServicesOverlay.apk"
