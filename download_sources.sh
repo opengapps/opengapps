@@ -66,5 +66,5 @@ for module in $modules; do
     exit 1
   fi
 done
-git submodule foreach -q 'branch="$(git config -f "$toplevel/.gitmodules" "submodule.$name.branch")"; git checkout -q "$branch"; git pull -q $depth --rebase'
+git submodule foreach -q 'branch="$(git config -f "$toplevel/.gitmodules" "submodule.$name.branch")"; git checkout -q "$branch"; git pull -q $depth --rebase; git lfs pull'
 popd > /dev/null
