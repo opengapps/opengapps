@@ -141,6 +141,7 @@ makeinstallersh() {
   webviewignorehack=$(webviewignorehack)
   camerav3compatibilityhack=$(camerav3compatibilityhack)
   universalremoverhack=$(universalremoverhack)
+  androidautohack=$(androidautohack)
   tvremotelibsymlink=''
   if [ "$API" -lt "24" ]; then # Only 5.1 and 6.0
     tvremotelibsymlink='# Create TVRemote lib symlink if installed
@@ -209,5 +210,6 @@ fi
       webviewignorehack \
       webviewlibsymlink \
       webviewstocklibs \
+      androidautohack \
       <$SCRIPTS/templates/installer.sh >>"$build/$1"
 }
