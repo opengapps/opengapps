@@ -1997,6 +1997,9 @@ aosp_remove_list="${aosp_remove_list}extsharedstock${newline}extservicesstock$ne
 # WebViewProvider rules differ Pre-Nougat and Nougat+
 @webviewcheckhack@
 
+# Android Auto rules for including/excluding stub version
+@androidautohack@
+
 # Cyanogenmod breaks Google's PackageInstaller don't install it on CM
 if ( contains "$gapps_list" "packageinstallergoogle" ) && [ $cmcompatibilityhacks = "true" ]; then
   gapps_list=${gapps_list/packageinstallergoogle}
@@ -2316,6 +2319,7 @@ for f in $webviewstock_list; do
     break #at least 1 aosp stock file is present
   fi
 done
+
 # in Nougat Chrome and WebViewStub can also be used as WebViewProvider
 @webviewignorehack@
 # in Marshmallow we need to use the legacy camera that uses the older api
