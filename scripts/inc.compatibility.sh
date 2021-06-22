@@ -487,19 +487,19 @@ EOFILE
 androidautohack(){
   if [ "$API" -ge "30" ]; then
     cat <<'EOFILE'
-# If we're installing androidauto we MUST ADD androidautostub to $aosp_remove_list (if it's not already there)
-if ( contains "$gapps_list" "androidauto" ) && ( ! contains "$aosp_remove_list" "androidautostub" ); then
-  aosp_remove_list="${aosp_remove_list}androidautostub$newline"
+# If we're installing androidauto we MUST ADD gearheadstub to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "androidauto" ) && ( ! contains "$aosp_remove_list" "gearheadstub" ); then
+  aosp_remove_list="${aosp_remove_list}gearheadstub$newline"
 fi
 
-# If we're installing androidautostub we MUST ADD androidauto to $aosp_remove_list (if it's not already there)
-if ( contains "$gapps_list" "androidautostub" ) && ( ! contains "$aosp_remove_list" "androidauto" ); then
+# If we're installing gearheadstub we MUST ADD androidauto to $aosp_remove_list (if it's not already there)
+if ( contains "$gapps_list" "gearheadstub" ) && ( ! contains "$aosp_remove_list" "androidauto" ); then
   aosp_remove_list="${aosp_remove_list}androidauto$newline"
 fi
 
-# If we're installing androidauto AND androidautostub we MUST REMOVE androidautostub from $gapps_list (since it's not required)
-if ( contains "$gapps_list" "androidautostub" ) && ( contains "$gapps_list" "androidauto" ); then
-  gapps_list=${gapps_list/androidautostub}
+# If we're installing androidauto AND gearheadstub we MUST REMOVE gearheadstub from $gapps_list (since it's not required)
+if ( contains "$gapps_list" "gearheadstub" ) && ( contains "$gapps_list" "androidauto" ); then
+  gapps_list=${gapps_list/gearheadstub}
 fi
 EOFILE
   fi
@@ -728,7 +728,7 @@ actionsservices" # Include Actions Services with Android 10.0 for Pixel Launcher
 api30hack(){ 
   if [ "$API" -ge "30" ]; then
     gappsnano="$gappsnano
-androidautostub"  # Include Android Auto stub file with Android 11.0
+gearheadstub"  # Include Android Auto stub file with Android 11.0
     gappsmicro="$gappsmicro
 quickaccesswallet" # Include QuickAccessWallet with Android 11.0 for Pixel Launcher to work
   fi
