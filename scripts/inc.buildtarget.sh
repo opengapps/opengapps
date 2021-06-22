@@ -212,7 +212,7 @@ get_package_info(){
     webviewgoogle)            packagetype="GApps"; packagename="com.google.android.webview"; packagetarget="app/WebViewGoogle"; packagegappsremove="$webviewgappsremove";;
     trichromelibrary)         packagetype="GApps"; packagename="com.google.android.trichromelibrary"; packagetarget="app/TrichromeLibrary";;
     webviewstub)              packagetype="GApps"; packagename="com.google.android.webview.stub"; packagetarget="app/WebViewStub";;
-    androidautostub)          packagetype="GApps"; packagename="com.google.android.projection.gearhead.stub"; packagetarget="app/AndroidAutoPrebuiltStub";;
+    gearheadstub)             packagetype="GApps"; packagename="com.google.android.projection.gearhead.stub"; packagetarget="app/AndroidAutoPrebuiltStub";;
 
     # Regular GApps
     backuprestore)            packagetype="Core"; packagename="com.google.android.apps.restore"; packagetarget="priv-app/GoogleRestore";;
