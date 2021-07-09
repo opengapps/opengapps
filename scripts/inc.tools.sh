@@ -33,7 +33,7 @@ checktools() {
     else
       case $command in
         zipalign)
-          if ! zipalign 2>&1 | grep -q -e "page align stored shared object files" -e "page alignment for stored shared object files"; then
+          if ! zipalign 2>&1 | grep -q -e "page align stored shared object files" -e "page alignment for stored shared object files" -e "page-align uncompressed .so files"; then
             echo 'zipalign is outdated. Install a more recent version from the Android SDK and findable in sh $PATH.' >&2
             missing="$missing $command"
           fi;;
