@@ -716,6 +716,8 @@ tvpackageinstallergoogle" # Several atv packages were removed in Android 9.0
 
 api29hack(){
   if [ "$API" -ge "29" ]; then
+    gappspico="$gappspico
+gearheadstub"  # Include Android Auto stub file with Android 10.0+
     if [ "$ARCH" = "arm64" ]; then # for now only available on arm64
       gappsfull="$gappsfull
 trichromelibrary"
@@ -727,8 +729,6 @@ actionsservices" # Include Actions Services with Android 10.0 for Pixel Launcher
 
 api30hack(){ 
   if [ "$API" -ge "30" ]; then
-    gappspico="$gappspico
-gearheadstub"  # Include Android Auto stub file with Android 11.0
     gappsmicro="$gappsmicro
 quickaccesswallet" # Include QuickAccessWallet with Android 11.0 for Pixel Launcher to work
   fi
