@@ -727,7 +727,7 @@ actionsservices" # Include Actions Services with Android 10.0 for Pixel Launcher
 
 api30hack(){ 
   if [ "$API" -ge "30" ]; then
-    gappsnano="$gappsnano
+    gappspico="$gappspico
 gearheadstub"  # Include Android Auto stub file with Android 11.0
     gappsmicro="$gappsmicro
 quickaccesswallet" # Include QuickAccessWallet with Android 11.0 for Pixel Launcher to work
