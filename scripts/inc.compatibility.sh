@@ -60,9 +60,9 @@ if ( ! contains "$gapps_list" "keyboardgoogle" ); then
     if [ "$substituteswypelibs" = "true" ]; then
       keybd_lib_target="$keybd_lib_aosp"
       # remove swypelibs and symlink if any
-      rm -f "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_google" 
+      rm -f "/system/app/LatinIME/$libfolder/$arch/$keybd_lib_google"
       rm -f "/system/app/LatinIME/$libfolder/$arch/$keybd_dec_google"
-      rm -f "/system/product/app/LatinIME/$libfolder/$arch/$keybd_lib_google" 
+      rm -f "/system/product/app/LatinIME/$libfolder/$arch/$keybd_lib_google"
       rm -f "/system/product/app/LatinIME/$libfolder/$arch/$keybd_dec_google"
     else
       keybd_lib_target="$keybd_lib_google"
@@ -303,9 +303,7 @@ minapihack(){
         useminapi="24"
       fi;;
     com.google.android.gms)
-      if [ "$API" -ge "27" ]; then
-        useminapi="27"
-      elif [ "$API" -ge "23" ]; then
+      if [ "$API" -ge "23" ]; then
         useminapi="23"
       elif [ "$API" -ge "21" ]; then
         useminapi="21"
@@ -727,7 +725,7 @@ actionsservices" # Include Actions Services with Android 10.0 for Pixel Launcher
   fi
 }
 
-api30hack(){ 
+api30hack(){
   if [ "$API" -ge "30" ]; then
     gappsmicro="$gappsmicro
 quickaccesswallet" # Include QuickAccessWallet with Android 11.0 for Pixel Launcher to work
