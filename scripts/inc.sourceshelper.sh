@@ -96,7 +96,6 @@ getapkproperties(){
     "com.google.android.partnersetup" |\
     "com.google.android.setupwizard" |\
     "com.google.android.storagemanager" |\
-    "com.google.android.tungsten.setupwraith" |\
     "com.google.android.tag" |\
     "com.google.android.tungsten.overscan" |\
     "com.google.android.tungsten.setupwraith" |\
