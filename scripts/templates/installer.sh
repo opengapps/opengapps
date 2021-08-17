@@ -951,7 +951,8 @@ mount_all() {
   fi
   (mount -o ro -t auto /vendor
   mount -o ro -t auto /product
-  mount -o ro -t auto /persist) 2>/dev/null
+  mount -o ro -t auto /persist
+  mount -o ro -t auto /system_ext) 2>/dev/null
   setup_mountpoint $ANDROID_ROOT
   if ! is_mounted $ANDROID_ROOT; then
     mount -o ro -t auto $ANDROID_ROOT 2>/dev/null
@@ -973,12 +974,14 @@ mount_all() {
           [ -e /dev/block/mapper/system ] || local slot=$(find_slot)
           mount -o ro -t auto /dev/block/mapper/vendor$slot /vendor
           mount -o ro -t auto /dev/block/mapper/product$slot /product 2>/dev/null
+          mount -o ro -t auto /dev/block/mapper/system_ext$slot /system_ext 2>/dev/null
           mount -o ro -t auto /dev/block/mapper/system$slot /system_root
         else
           [ -e /dev/block/bootdevice/by-name/system ] || local slot=$(find_slot)
           (mount -o ro -t auto /dev/block/bootdevice/by-name/vendor$slot /vendor
           mount -o ro -t auto /dev/block/bootdevice/by-name/product$slot /product
-          mount -o ro -t auto /dev/block/bootdevice/by-name/persist$slot /persist) 2>/dev/null
+          mount -o ro -t auto /dev/block/bootdevice/by-name/persist$slot /persist
+          mount -o ro -t auto /dev/block/bootdevice/by-name/system_ext$slot /system_ext) 2>/dev/null
           mount -o ro -t auto /dev/block/bootdevice/by-name/system$slot /system_root
         fi
       fi
@@ -1003,7 +1006,7 @@ umount_all() {
     umount -l /system_root
   fi
   umount_apex
-  for mount in /mnt/system /vendor /mnt/vendor /product /mnt/product /persist; do
+  for mount in /mnt/system /vendor /mnt/vendor /product /mnt/product /persist /system_ext /mnt/system_ext; do
     umount $mount
     umount -l $mount
   done
@@ -1072,7 +1075,7 @@ if ! $BOOTMODE; then
   mount_all
 fi
 if [ -d /dev/block/mapper ]; then
-  for block in system vendor product; do
+  for block in system vendor product system_ext; do
     for slot in "" _a _b; do
       blockdev --setrw /dev/block/mapper/$block$slot 2>/dev/null
     done
@@ -1080,7 +1083,8 @@ if [ -d /dev/block/mapper ]; then
 fi
 mount -o rw,remount -t auto /system || mount -o rw,remount -t auto /
 (mount -o rw,remount -t auto /vendor
-mount -o rw,remount -t auto /product) 2>/dev/null
+mount -o rw,remount -t auto /product
+mount -o rw,remount -t auto /system_ext) 2>/dev/null
 
 ui_print " "
 
@@ -1093,7 +1097,7 @@ device_abpartition=$(getprop ro.build.ab_update)
 #                                                  Declare Variables
 zip_folder="$(dirname "$OPENGAZIP")"
 g_prop=/system/etc/g.prop
-PROPFILES="$g_prop /system/default.prop /system/build.prop /system/product/build.prop /vendor/build.prop /product/build.prop /system_root/default.prop /system_root/build.prop /system_root/product/build.prop /data/local.prop /default.prop /build.prop"
+PROPFILES="$g_prop /system/default.prop /system/build.prop /system/vendor/build.prop /system/product/build.prop /system/system_ext/build.prop /vendor/build.prop /product/build.prop /system_ext/build.prop /system_root/default.prop /system_root/build.prop /system_root/vendor/build.prop /system_root/product/build.prop /system_root/system_ext/build.prop /data/local.prop /default.prop /build.prop"
 bkup_tail=$TMP/bkup_tail.sh
 gapps_removal_list=$TMP/gapps-remove.txt
 g_log=$TMP/g.log
@@ -1443,7 +1447,7 @@ set_perm() {
 }
 
 sys_app() {
-  for folder in /system/app /system/product/app /system/priv-app /system/product/priv-app; do
+  for folder in /system/app /system/product/app /system/system_ext/app /system/priv-app /system/product/priv-app /system/system_ext/priv-app; do
     if ( grep -q "codePath=\"$folder/$1" /data/system/packages.xml ); then
       return 0
     fi
@@ -2335,7 +2339,7 @@ if [ -n "$user_remove_list" ]; then
       * )       testapk="${testapk}.apk" ;;
     esac
     # Create user_remove_folder_list if this is a system/ROM application
-    for folder in /system/app /system/product/app /system/priv-app /system/product/priv-app; do # Check all subfolders of system app/priv-app folders for the apks
+    for folder in /system/app /system/product/app /system/system_ext/app /system/priv-app /system/product/priv-app /system/system_ext/priv-app; do # Check all subfolders of system app/priv-app folders for the apks
       file_count=0 # Reset Counter
       file_count=$(find $folder -iname "$testapk" 2>/dev/null | wc -l)
       case $file_count in
@@ -2577,7 +2581,7 @@ for user_app in $user_remove_folder_list; do
 done
 
 # Remove any empty folders we may have created during the removal process
-for i in /system/app /system/product/app /system/priv-app /system/product/priv-app /system/vendor/pittpatt /system/usr/srec /system/etc/preferred-apps; do
+for i in /system/app /system/product/app /system/system_ext/app /system/priv-app /system/product/priv-app /system/system_ext/priv-app /system/vendor/pittpatt /system/usr/srec /system/etc/preferred-apps; do
   find "$i" -type d 2>/dev/null | xargs -r rmdir -p --ignore-fail-on-non-empty
 done
 

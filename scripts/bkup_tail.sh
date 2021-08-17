@@ -51,7 +51,7 @@ case "$1" in
       backup_file "$S"/"$FILE"
     done
 
-    umount /product /vendor 2> /dev/null
+    umount /system_ext /product /vendor 2> /dev/null
   ;;
   restore)
     list_files | while read -r FILE REPLACEMENT; do
@@ -61,13 +61,13 @@ case "$1" in
     done
   ;;
   pre-backup)
-    mount_generic product vendor
+    mount_generic system_ext product vendor
   ;;
   post-backup)
     # Stub
   ;;
   pre-restore)
-    mount_generic product vendor
+    mount_generic system_ext product vendor
 
     # Remove Stock/AOSP apps (from GApps Installer)
 
@@ -105,7 +105,7 @@ case "$1" in
       esac
     done
 
-    umount /product /vendor 2> /dev/null
+    umount /system_ext /product /vendor 2> /dev/null
 
     if [ "$rom_build_sdk" -ge "26" ]; then # Android 8.0+ uses 0600 for its permission on build.prop
       chmod 600 "$SYS/build.prop"
