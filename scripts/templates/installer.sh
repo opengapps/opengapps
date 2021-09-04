@@ -2010,14 +2010,6 @@ if ( contains "$gapps_list" "packageinstallergoogle" ) && [ $cmcompatibilityhack
   install_note="${install_note}cmcompatibility_msg$newline" # make note that CM compatibility hacks are applied
 fi
 
-# Add Google Pixel config if this is a Pixel device (and remove if it is not)
-if ( ! contains "$gapps_list" "googlepixelconfig" ) && [ $googlepixel_compat = "true" ]; then
-  gapps_list="${gapps_list}googlepixelconfig$newline"
-fi
-if ( contains "$gapps_list" "googlepixelconfig" ) && [ $googlepixel_compat = "false" ]; then
-  gapps_list=${gapps_list/googlepixelconfig}
-fi
-
 # If we're NOT installing chrome make certain 'browser' is NOT in $aosp_remove_list UNLESS 'browser' is in $g_conf
 if ( ! contains "$gapps_list" "chrome" ) && ( ! grep -qiE '^browser$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/browser}
@@ -2595,7 +2587,6 @@ for gapp_name in $core_gapps_list; do
     case $gapp_name in
       setupwizarddefault) if [ "$device_type" != "tablet" ]; then extract_app "$archive"; fi;;
       setupwizardtablet)  if [ "$device_type"  = "tablet" ]; then extract_app "$archive"; fi;;
-      googlepixelconfig) if [ "$googlepixel_compat" = "true" ]; then extract_app "$archive"; fi;;
       backuprestore) if [ "$googlepixel_compat" = "false" ]; then extract_app "$archive"; fi;;
       datatransfertool) if [ "$googlepixel_compat" = "true" ]; then extract_app "$archive"; fi;;
       *)  extract_app "$archive";;
