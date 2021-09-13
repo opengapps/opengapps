@@ -399,6 +399,9 @@ get_package_info(){
     tvframework)              packagetype="Core"; packagefiles="etc/permissions/com.google.android.pano.v1.xml etc/permissions/com.google.widevine.software.drm.xml"; packageframework="com.google.android.pano.v1.jar com.google.widevine.software.drm.jar";;
     tvgmscore)                packagetype="Core"; packagename="com.google.android.gms.leanback"; packagetarget="priv-app/PrebuiltGmsCorePano";;
     tvvending)                packagetype="Core"; packagename="com.android.vending.leanback";
+                              if [ "$API" -ge "30" ]; then  # Add an overlay for Android 11.0+
+                                packagefiles="product/overlay/ATVOverlay.apk"
+                              fi;
                               if [ "$API" -ge "24" ]; then
                                 packagetarget="priv-app/Tubesky"
                               else
