@@ -1663,10 +1663,10 @@ if [ ! "$rom_build_sdk" = "$req_android_sdk" ]; then
 fi
 
 # Check to make certain that user device matches the architecture
-device_architecture="$(get_prop "ro.product.cpu.abilist")"
+device_architecture="$(get_prop "ro.product.cpu.abi")"
 # If the recommended field is empty, fall back to the deprecated one
 if [ -z "$device_architecture" ]; then
-  device_architecture="$(get_prop "ro.product.cpu.abi")"
+  device_architecture="$(get_prop "ro.product.cpu.abilist")"
 fi
 
 case "$device_architecture" in
