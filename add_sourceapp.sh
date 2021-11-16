@@ -158,6 +158,8 @@ $notinzip";;
   if echo "$architectures" | grep -q "all"; then #no space (single entry)
     installapk "all"
   fi
+
+  checkpermissions "$apk"
 }
 
 addlib() {
@@ -181,6 +183,12 @@ addlib() {
     (*)           install -D "$lib" "$SOURCES/$architecture/$prefix$libfolder/$REPLY/$libname"
                   echo "SUCCESS: Added $libname to $architecture/$prefix$libfolder/$REPLY/";;
   esac
+}
+
+checkpermissions() {
+  apk="$1"
+  echo "Checking if any extra privapp-permissions are needed..."
+  python scripts/verify-permissions.py "$apk"
 }
 
 for argument in "$@"; do
