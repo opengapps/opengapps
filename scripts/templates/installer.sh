@@ -1663,10 +1663,19 @@ if [ ! "$rom_build_sdk" = "$req_android_sdk" ]; then
 fi
 
 # Check to make certain that user device matches the architecture
-device_architecture="$(get_prop "ro.product.cpu.abilist")"
-# If the recommended field is empty, fall back to the deprecated one
+[ "$(get_prop "ro.product.cpu.abilist")" = "$(get_prop "ro.system.product.cpu.abilist")" ] && device_architecture="$(get_prop "ro.product.cpu.abilist")"
 if [ -z "$device_architecture" ]; then
-  device_architecture="$(get_prop "ro.product.cpu.abi")"
+  if [ "$(get_prop "ro.system.product.cpu.abilist")" ]; then
+    device_architecture="$(get_prop "ro.system.product.cpu.abilist")"
+  elif [ "$(get_prop "ro.vendor.product.cpu.abilist")" ]; then
+    device_architecture="$(get_prop "ro.vendor.product.cpu.abilist")"
+  elif [ "$(get_prop "ro.odm.product.cpu.abilist")" ]; then
+    device_architecture="$(get_prop "ro.odm.product.cpu.abilist")"
+  elif [ "$(get_prop "ro.product.cpu.abi")" ]; then
+    device_architecture="$(get_prop "ro.product.cpu.abi")"
+  else
+    device_architecture="$(get_prop "ro.product.cpu.abilist")"
+  fi
 fi
 
 case "$device_architecture" in
