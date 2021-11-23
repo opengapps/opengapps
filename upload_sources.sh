@@ -166,33 +166,33 @@ $addnewlzapks"
     esac
   fi
 done
-if [ -n "$newapks" ]; then
-  if [ -n "$APKMIRROR_EMAIL" ]; then
-    email="$APKMIRROR_EMAIL"
-  else
-    email="$(git config user.email)"
-  fi
-  if [ -n "$APKMIRROR_NAME" ]; then
-    name="$APKMIRROR_NAME"
-  else
-    name="$(git config user.name)"
-  fi
-  echo "$newapks"
-  echo "Do you want to submit these APKs to APKmirror.com using $name (OpenGApps.org) <$email>? [y/N]"
-  IFS= read -r REPLY
-  case "$REPLY" in
-      y*|Y*)
-            for apk in $newapks; do
-              if $(curl -s -S -A "OpenGAppsUploader" "https://www.apkmirror.com/wp-json/apkm/v1/apk_uploadable/$(md5sum "$apk" | cut -f 1 -d ' ')" | grep -q "uploadable"); then
-                echo "Uploading $apk to APKmirror.com..."
-                filename="$(basename "$apk")"
-                curl -s -S -A "OpenGAppsUploader" -X POST -F "fullname=$name (OpenGApps.org)" -F "email=$email" -F "changes=" -F "file=@$apk;filename=$filename" "https://www.apkmirror.com/wp-content/plugins/UploadManager/inc/upload.php" > /dev/null
-              else
-                echo "Skipping $apk, already exists on APKmirror.com..."
-              fi
-            done
-            ;;
-      *)    echo "Did NOT submit to APKmirror.com";;
-  esac
-fi
+#if [ -n "$newapks" ]; then
+#  if [ -n "$APKMIRROR_EMAIL" ]; then
+#    email="$APKMIRROR_EMAIL"
+#  else
+#    email="$(git config user.email)"
+#  fi
+#  if [ -n "$APKMIRROR_NAME" ]; then
+#    name="$APKMIRROR_NAME"
+#  else
+#    name="$(git config user.name)"
+#  fi
+#  echo "$newapks"
+#  echo "Do you want to submit these APKs to APKmirror.com using $name (OpenGApps.org) <$email>? [y/N]"
+#  IFS= read -r REPLY
+#  case "$REPLY" in
+#      y*|Y*)
+#            for apk in $newapks; do
+#              if $(curl -s -S -A "OpenGAppsUploader" "https://www.apkmirror.com/wp-json/apkm/v1/apk_uploadable/$(md5sum "$apk" | cut -f 1 -d ' ')" | grep -q "uploadable"); then
+#                echo "Uploading $apk to APKmirror.com..."
+#                filename="$(basename "$apk")"
+#                curl -s -S -A "OpenGAppsUploader" -X POST -F "fullname=$name (OpenGApps.org)" -F "email=$email" -F "changes=" -F "file=@$apk;filename=$filename" "https://www.apkmirror.com/wp-content/plugins/UploadManager/inc/upload.php" > /dev/null
+#              else
+#                echo "Skipping $apk, already exists on APKmirror.com..."
+#              fi
+#            done
+#            ;;
+#      *)    echo "Did NOT submit to APKmirror.com";;
+#  esac
+#fi
 cd "$TOP"
