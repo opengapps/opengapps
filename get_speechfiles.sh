@@ -12,7 +12,7 @@
 #    GNU General Public License for more details.
 #
 
-TOP=$(cd "${0%/*}" && pwd -P) || exit 1
+a="/$0"; a=${a%/*}; a=${a#/}; a=${a:-.}; TOP=$(cd "$a"; pwd -P) || exit 1
 SOURCES="$TOP/sources"
 SCRIPTS="$TOP/scripts"
 SPEECHFOLDER="$SOURCES/all/usr/srec/en-US"

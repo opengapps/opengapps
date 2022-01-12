@@ -24,7 +24,7 @@ if [ -n "$OPENGAPPSDATE" ]; then
 else
   DATE=$(date +"%Y%m%d")
 fi
-TOP=$(cd "${0%/*}"/.. && pwd -P) || exit 1
+a="/$0"; a=${a%/*}; a=${a#/}; a=${a:-.}; TOP=$(cd "$a/.."; pwd -P) || exit 1
 ARCH="$1"
 API="$2"
 VARIANT="$3"
