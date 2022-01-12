@@ -48,6 +48,9 @@ getapkproperties(){
   leanback="$(echo "$apkproperties" | grep -a "android.software.leanback" | grep -v "\-not\-required" | awk -F [.\'] '{print $(NF-1)}')"  # 'leanback'
   vrmode="$(echo "$apkproperties" | grep -a "android.software.vr.mode" | grep -v "\-not\-required" | awk -F [.\'] '{print $(NF-2)$(NF-1)}')"  # 'vrmode'
   watch="$(echo "$apkproperties" | grep -a "android.hardware.type.watch" | awk -F [.\'] '{print $(NF-1)}')"  # 'watch'
+  ram="$(echo "$apkproperties" | grep -a "android.hardware.ram" | grep -v "\-not\-required" | awk -F [.\'] '{print $(NF-1)}')"  # 'low' => means Android Go (https://developer.android.com/docs/quality-guidelines/build-for-billions/device-capacity#androidgo)
+  dialer_go_experience="$(echo "$apkproperties" | grep -a "com.google.android.apps.dialer.GO_EXPERIENCE" | grep -v "\-not\-required" | awk -F [.\'] '{print $(NF-1)}')"  # 'GO_EXPERIENCE' => means Android Go
+
   case "$versionname" in
     *leanback*) leanback="leanback";;
   esac
@@ -105,6 +108,19 @@ getapkproperties(){
     "com.google.android.tv.remote.service.leanback") type="priv-app";;
     *) type="app";;
   esac
+
+  # Put the Go edition apps in a dir suffixed by "-go"
+  if [ "a$ram" == "alow" ] \
+    || [ "a$dialer_go_experience" == "aGO_EXPERIENCE" ] \
+    || [ "$package" == "com.google.android.apps.cameralite" ] \
+    || [ "$package" == "com.google.android.apps.mapslite" ] \
+    || [ "$package" == "com.google.android.apps.navlite" ] \
+    || [ "$package" == "com.google.android.apps.nbu.files" ] \
+    || [ "$package" == "com.google.android.apps.photosgo" ] \
+    || [ "$package" == "com.google.android.apps.searchlite" ] \
+    || [ "$package" == "com.google.android.apps.youtube.mango" ]; then
+    type="${type}${GO_DIR_SUFFIX}"
+  fi
 
   #we do this on purpose after the priv-app detection to emulate the priv-app of the normal app
   if [ -n "$watch" ]; then

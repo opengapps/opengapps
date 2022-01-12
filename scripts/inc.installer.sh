@@ -203,6 +203,13 @@ fi
       gappspico \
       gappsstock \
       gappssuper \
+      gappscore_go \
+      gappsfull_go \
+      gappsmicro_go \
+      gappsmini_go \
+      gappsnano_go \
+      gappspico_go \
+      gappsstock_go \
       gappstvcore \
       gappstvmini \
       gappstvstock \

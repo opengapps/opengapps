@@ -20,9 +20,9 @@ cameracompatibilityhack(){
 camerav3compatibilityhack(){
   if [ "$API" -ge "23" ]; then
     echo '
-# Google Camera fallback to Legacy if incompatible with new Camera API
+# Google Camera fallback to Legacy if incompatible with new Camera API (not for cameragooglego)
 case $newcamera_compat in
-  false*) gapps_list=${gapps_list/cameragoogle/cameragooglelegacy}; log "Google Camera version" "Legacy";;
+  false*) gapps_list=$(echo "$gapps_list" | sed -e "s/\bcameragoogle\b/cameragooglelegacy/"); log "Google Camera version" "Legacy";;
 esac'
   fi
 }
@@ -55,7 +55,7 @@ keybd_dec_google="libjni_keyboarddecoder.so"
 keybd_lib_aosp="libjni_latinime.so"'
     # Only touch AOSP keyboard only if it is not removed
     KEYBDINSTALLCODE='# Install/Remove SwypeLibs
-if ( ! contains "$gapps_list" "keyboardgoogle" ); then
+if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! contains "$gapps_list" "keyboardgooglego" ); then
   if [ "$skipswypelibs" = "false" ]; then
     if [ "$substituteswypelibs" = "true" ]; then
       keybd_lib_target="$keybd_lib_aosp"
@@ -111,7 +111,7 @@ fi'
 keybd_lib_aosp="libjni_latinime.so"'
       # Only touch AOSP keyboard only if it is not removed
       KEYBDINSTALLCODE='# Install/Remove SwypeLibs
-if ( ! contains "$gapps_list" "keyboardgoogle" ); then
+if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! contains "$gapps_list" "keyboardgooglego" ); then
   if [ "$skipswypelibs" = "false" ]; then
     if [ "$substituteswypelibs" = "true" ]; then
       keybd_lib_target="$keybd_lib_aosp"
@@ -161,7 +161,7 @@ fi';;
 keybd_lib_aosp="libjni_latinime.so"'
         # Only touch AOSP keyboard only if it is not removed
         KEYBDINSTALLCODE='# Install/Remove SwypeLibs
-if ( ! contains "$gapps_list" "keyboardgoogle" ); then
+if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! contains "$gapps_list" "keyboardgooglego" ); then
   if [ "$skipswypelibs" = "false" ]; then
     ui_print "- Installing swypelibs"
     extract_app "Optional/swypelibs-lib-$arch"  # Keep it simple, swypelibs is only lib-$arch
@@ -754,5 +754,83 @@ compressioncompathack(){
     case "$1" in
       googlecontactssync*) compression="none";;  # Googlecontactssync for Marshmallow extraction is broken with compression, so use a plain tar instead
     esac
+  fi
+}
+
+gohack(){
+  if [ "$API" -ge "27" ]; then
+    gappscore_go=$gappscore
+    gappscore_go_optional=$gappscore_optional
+    gappspico_go=$gappspico
+    gappsnano_go=$gappsnano
+    gappsmicro_go=$gappsmicro
+    gappsmini_go=$gappsmini
+    gappsmini_go_optional=$gappsmini_optional
+    gappsfull_go=$gappsfull
+    gappsfull_go_optional=$gappsfull_optional
+    gappsstock_go=$gappsstock
+    gappsstock_go_optional=$gappsstock_optional
+
+    gappscore_go=$(sed -e "s/\bdefaultetc\b/defaultetcgo/" <<< $gappscore_go)
+
+    # -= Google GMS mandatory core packages =-
+    #gappspico_go=$(sed -e "s/\bgearheadstub\b//" <<< $gappspico_go) # Remove AndroidAutoStub
+    gappscore_go=$(sed -e "s/\bgmscore\b/gmscorego/" <<< $gappscore_go)
+
+    # -= Google GMS mandatory application packages =-
+    #Remove Drive, Photos, Velvet, YTMusic, Videos
+    #Add AssistantGo, NavGo, GalleryGo, GoogleSearchGo
+    #Replace Duo, Gmail, Maps, LatinImeGoogle
+    #Keep YouTube
+
+    gappsstock_go=$(sed -e "s/\bduo\b/duogo/" <<< $gappsstock_go)
+    gappsmini_go=$(sed -e "s/\bphotos\b/gallerygo/" <<< $gappsmini_go) # Should also replace Gallery2
+    gappsmicro_go=$(sed -e "s/\bgmail\b/gmailgo/" <<< $gappsmicro_go)
+    gappsstock_go=$(sed -e "s/\bkeyboardgoogle\b/keyboardgooglego/" <<< $gappsstock_go)
+    gappsmini_go=$(sed -e "s/\bmaps\b/mapsgo/" <<< $gappsmini_go)
+    gappsmini_go="$gappsmini_go
+navgo"
+
+    # We replace Velvet (ie. search) by searchgo & google assistant go (as done in the GMS sources, which replaces Velvet (aka QuickSearchBox)
+    gappsnano_go=$(sed -e "s/\bsearch\b/searchgo assistantgo/" <<< $gappsnano_go)
+
+    # Personal addition: YouTubeGo (not listed in GMS packages in 12.0, but present)
+    gappsmini_go="$gappsmini_go
+youtubego"
+
+    # CameraGo: Remove cameragooglelegacy & cameragoogle
+    gappsstock_go_optional=$(sed -e "s/\bcameragooglelegacy\b//" <<< $gappsstock_go_optional)
+    gappsstock_go=$(sed -e "s/\bcameragoogle\b/cameragooglego/" <<< $gappsstock_go)
+
+    # -= Google Comms Suite =-
+    if [ "$VARIANT" = "stock_go" ]; then
+      #Remove : com.google.android.dialer.support.jar only if we replace dialergoogle by dialergooglego
+      gappspico_go=$(sed -e "s/\bdialerframework\b//" <<< $gappspico_go)
+    fi
+    gappsstock_go=$(sed -e "s/\bdialergoogle\b/dialergooglego/" <<< $gappsstock_go)
+    gappsmini_go=$(sed -e "s/\bmessenger\b/messengergo/" <<< $gappsmini_go)
+
+    # -= Google GMS optional application packages =-
+    # Add: FilesGoogle ; Remove: Keep
+    gappsfull_go="$gappsfull_go
+files"
+    gappsfull_go=$(sed -e "s/\bkeep\b//" <<< $gappsfull_go)
+
+    gappssuper="$gappssuper
+gmscorego
+assistantgo
+duogo
+gallerygo
+gmailgo
+keyboardgooglego
+mapsgo
+navgo
+searchgo
+youtubego
+cameragooglego
+dialergooglego
+messengergo
+files
+"
   fi
 }
