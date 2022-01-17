@@ -856,6 +856,7 @@ nogoogledialer_removal_msg="NOTE: The Stock/AOSP Dialer is not available on your
 nogooglekeyboard_removal_msg="NOTE: The Stock/AOSP Keyboard is not available on your\nROM (anymore), the Google equivalent will not be removed."
 nogooglepackageinstaller_removal_msg="NOTE: The Stock/AOSP Package Installer is not\navailable on your ROM (anymore), the Google equivalent will not be removed."
 nogoogletag_removal_msg="NOTE: The Stock/AOSP NFC Tag is not available on your\nROM (anymore), the Google equivalent will not be removed."
+nopixellauncher_removal_msg="NOTE: The Stock/AOSP Launcher is not available on your\nROM (anymore), the Google equivalent will not be removed."
 nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on your\nROM (anymore), not all Google WebViewProviders will be removed."
 
 # _____________________________________________________________________________________________________________________
@@ -2325,6 +2326,29 @@ for f in $webviewstock_list; do
   fi
 done
 
+ignorepixellauncher="true"
+for f in $launcher_list; do
+  if [ -e "/system/$f" ] || [ -e "/system/product/$f" ]; then
+    other_launcher_found=$f
+    ignorepixellauncher="false"
+    break #at least 1 aosp stock file is present
+  fi
+done
+if [ "$ignorepixellauncher" = "true" ]; then
+  if ( ! contains "$gapps_list" "pixellauncher" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+    sed -i "\:/system/priv-app/NexusLauncherPrebuilt:d" $gapps_removal_list
+    sed -i "\:/system/app/WallpaperPickerGooglePrebuilt:d" $gapps_removal_list
+    sed -i "\:/system/priv-app/Velvet:d" $gapps_removal_list
+    sed -i "\:/system/priv-app/MatchmakerPrebuilt:d" $gapps_removal_list
+    sed -i "\:/system/product/overlay/ActionsServicesOverlay.apk:d" $gapps_removal_list
+    sed -i "\:/system/vendor/overlay/ActionsServicesOverlay.apk:d" $gapps_removal_list
+    ignorepixellauncher="true[NoRemove]"
+    install_note="${install_note}nopixellauncher_removal_msg$newline" # make note that Pixel Launcher will not be removed
+  else
+    ignorepixellauncher="false[found $other_launcher_found]"
+  fi
+fi
+
 # in Nougat Chrome and WebViewStub can also be used as WebViewProvider
 @webviewignorehack@
 # in Marshmallow we need to use the legacy camera that uses the older api
@@ -2397,6 +2421,7 @@ log "Ignore Google Keyboard" "$ignoregooglekeyboard"
 log "Ignore Google Package Installer" "$ignoregooglepackageinstaller"
 log "Ignore Google NFC Tag" "$ignoregoogletag"
 log "Ignore Google WebView" "$ignoregooglewebview"
+log "Ignore Google Pixel Launcher" "$ignorepixellauncher"
 
 # _____________________________________________________________________________________________________________________
 #                                                  Perform space calculations
