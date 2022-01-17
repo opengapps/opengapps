@@ -35,6 +35,11 @@ makegappsremovetxt() {
     if [ -n "$packagetarget" ]; then
       gapps_remove="/system/$packagetarget$REMOVALSUFFIX
 $gapps_remove"
+      if [ $packagetarget = "priv-app/PrebuiltGmsCorePi" ]; then
+        # On Pie Emulator, the image has priv-app/PrebuiltGmsCore and not priv-app/PrebuiltGmsCorePi
+        gapps_remove="/system/priv-app/PrebuiltGmsCore$REMOVALSUFFIX
+$gapps_remove"
+      fi
     fi
     for lib in $packagelibs; do
       systemlibpath=""
