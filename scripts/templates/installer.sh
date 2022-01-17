@@ -858,6 +858,7 @@ nogooglepackageinstaller_removal_msg="NOTE: The Stock/AOSP Package Installer is 
 nogoogletag_removal_msg="NOTE: The Stock/AOSP NFC Tag is not available on your\nROM (anymore), the Google equivalent will not be removed."
 nopixellauncher_removal_msg="NOTE: The Stock/AOSP Launcher is not available on your\nROM (anymore), the Google equivalent will not be removed."
 nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on your\nROM (anymore), not all Google WebViewProviders will be removed."
+nogooglemms_removal_msg="NOTE: The Stock/AOSP MMS App is not available on your\nROM (anymore), the Google equivalent will not be removed."
 
 # _____________________________________________________________________________________________________________________
 #                                                  Pre-define Helper Functions
@@ -2349,6 +2350,24 @@ if [ "$ignorepixellauncher" = "true" ]; then
   fi
 fi
 
+ignoregooglemms="true"
+for f in $launcher_list; do
+  if [ -e "/system/$f" ] || [ -e "/system/product/$f" ]; then
+    other_launcher_found=$f
+    ignoregooglemms="false"
+    break #at least 1 aosp stock file is present
+  fi
+done
+if [ "$ignoregooglemms" = "true" ]; then
+  if ( ! contains "$gapps_list" "messenger" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+    sed -i "\:/system/app/PrebuiltBugle:d" $gapps_removal_list
+    ignoregooglemms="true[NoRemove]"
+    install_note="${install_note}nogooglemms_removal_msg$newline" # make note that Google Messages/MMS will not be removed
+  else
+    ignoregooglemms="false[Messenger]"
+  fi
+fi
+
 # in Nougat Chrome and WebViewStub can also be used as WebViewProvider
 @webviewignorehack@
 # in Marshmallow we need to use the legacy camera that uses the older api
@@ -2422,6 +2441,7 @@ log "Ignore Google Package Installer" "$ignoregooglepackageinstaller"
 log "Ignore Google NFC Tag" "$ignoregoogletag"
 log "Ignore Google WebView" "$ignoregooglewebview"
 log "Ignore Google Pixel Launcher" "$ignorepixellauncher"
+log "Ignore Google MMS App" "$ignoregooglemms"
 
 # _____________________________________________________________________________________________________________________
 #                                                  Perform space calculations
