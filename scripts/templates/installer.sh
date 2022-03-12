@@ -1680,11 +1680,21 @@ echo ------------------------------------------------------------------ >> $g_lo
 
 # Check to make certain user has proper version ROM Installed
 if [ ! "$rom_build_sdk" = "$req_android_sdk" ]; then
+  # Work around SDK31 and SDK32 sharing the 12 release tag.
+  if [ "$rom_build_sdk" = "32" ]; then
+    rom_build_release=12L
+  else
+    rom_build_release="$(get_prop "ro.build.version.release")"
+  fi
   ui_print "*** Incompatible Android ROM detected ***"
   ui_print " "
-  ui_print "This GApps pkg is for Android $req_android_version.x ONLY"
+  if [ "$rom_build_sdk" -ge "28" ]; then
+    ui_print "This GApps pkg is for Android $req_android_version ONLY"
+  else
+    ui_print "This GApps pkg is for Android $req_android_version.x ONLY"
+  fi
   ui_print "Please download the correct version for"
-  ui_print "your ROM: $(get_prop "ro.build.version.release") (SDK $rom_build_sdk)"
+  ui_print "your ROM: $rom_build_release (SDK $rom_build_sdk)"
   ui_print " "
   ui_print "******* GApps Installation failed *******"
   ui_print " "
