@@ -211,7 +211,11 @@ get_package_info(){
     webviewgoogle)            packagetype="GApps"; packagename="com.google.android.webview"; packagetarget="app/WebViewGoogle"; packagegappsremove="$webviewgappsremove";;
     trichromelibrary)         packagetype="GApps"; packagename="com.google.android.trichromelibrary"; packagetarget="app/TrichromeLibrary";;
     webviewstub)              packagetype="GApps"; packagename="com.google.android.webview.stub"; packagetarget="app/WebViewStub";;
-    gearheadstub)             packagetype="GApps"; packagename="com.google.android.projection.gearhead.stub"; packagetarget="priv-app/AndroidAutoPrebuiltStub";;
+    gearheadstub)             packagetype="GApps"; packagename="com.google.android.projection.gearhead.stub"; packagetarget="priv-app/AndroidAutoPrebuiltStub"
+                              if [ "$API" -ge "31" ]; then  # Add an overlay for Android 12.0 +
+                                packagefiles="product/overlay/AndroidAutoOverlay.apk"
+                                packagegappsremove="product/overlay/AndroidAutoOverlay.apk vendor/overlay/AndroidAutoOverlay.apk"
+                              fi;;
 
     # Regular GApps
     backuprestore)            packagetype="Core"; packagename="com.google.android.apps.restore"; packagetarget="priv-app/GoogleRestore";;
@@ -273,7 +277,11 @@ get_package_info(){
                                 packagegappsremove="product/overlay/ActionsServicesOverlay.apk vendor/overlay/ActionsServicesOverlay.apk"
                               fi;;
     quickaccesswallet)        packagetype="GApps"; packagename="com.android.systemui.plugin.globalactions.wallet"; packagetarget="priv-app/QuickAccessWallet";;
-    androidauto)              packagetype="GApps"; packagename="com.google.android.projection.gearhead"; packagetarget="app/AndroidAutoPrebuilt";;
+    androidauto)              packagetype="GApps"; packagename="com.google.android.projection.gearhead"; packagetarget="app/AndroidAutoPrebuilt"
+                              if [ "$API" -ge "31" ]; then  # Add an overlay for Android 12.0 +
+                                packagefiles="product/overlay/AndroidAutoOverlay.apk"
+                                packagegappsremove="product/overlay/AndroidAutoOverlay.apk vendor/overlay/AndroidAutoOverlay.apk"
+                              fi;;
     batteryusage)             packagetype="GApps"; packagename="com.google.android.apps.turbo"; packagetarget="priv-app/Turbo";;
     bettertogether)           packagetype="GApps"; packagename="com.google.android.apps.multidevice.client"; packagetarget="app/SMSConnectPrebuilt";;
     books)                    packagetype="GApps"; packagename="com.google.android.apps.books"; packagetarget="app/Books";;
