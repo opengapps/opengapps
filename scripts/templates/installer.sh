@@ -250,6 +250,7 @@ priv-app/Camera@REMOVALSUFFIX@
 priv-app/CameraX@REMOVALSUFFIX@
 priv-app/MiuiCamera@REMOVALSUFFIX@
 priv-app/MotCamera@REMOVALSUFFIX@
+priv-app/MotCamera2@REMOVALSUFFIX@
 priv-app/MtkCamera@REMOVALSUFFIX@
 priv-app/MTKCamera@REMOVALSUFFIX@
 priv-app/SnapdragonCamera@REMOVALSUFFIX@
