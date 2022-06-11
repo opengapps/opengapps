@@ -97,11 +97,17 @@ if [ -z "$SUPPORTEDVARIANTS" ]; then
   echo "ERROR: Unknown variant! aborting..."
   exit 1
 fi
-if [[ "$VARIANT" =~ _go$ ]] && [ "$API" -lt "27" ]; then
-    echo "ERROR! Go edition cannot be built on API level $API. Go edition appeared with API 27.
+
+case "$VARIANT" in
+*_go)
+    if [ "$API" -lt "27" ]; then
+        echo "ERROR! Go edition cannot be built on API level $API. Go edition appeared with API 27.
 More info here: https://developer.android.com/docs/quality-guidelines/build-for-billions/device-capacity#androidgo"
-    exit 1
-fi
+        exit 1
+    fi
+    ;;
+esac
+
 if [ "$ARCH" != "arm" ] && [ "$ARCH" != "arm64" ]; then #For all non-arm(64) platforms
   case "$VARIANT" in
   aroma)
