@@ -12,9 +12,10 @@
 #    GNU General Public License for more details.
 #
 
-TOP=$(cd "${0%/*}" && pwd -P) || exit 1
+a="/$0"; a=${a%/*}; a=${a#/}; a=${a:-.}; TOP=$(cd "$a"; pwd -P) || exit 1
 CACHE="$TOP/cache"
 SOURCES="$TOP/sources"
+GO_DIR_SUFFIX="-go"
 SCRIPTS="$TOP/scripts"
 CERTIFICATES="$SCRIPTS/certificates"
 APKTOOL="$SCRIPTS/apktool-resources/apktool_2.6.1.jar"

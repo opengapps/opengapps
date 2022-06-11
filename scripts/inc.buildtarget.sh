@@ -138,11 +138,17 @@ get_supported_variants(){
                     gappsremove_variant="super";;
     super)          supported_variants="pico nano micro mini full stock super"; gappsremove_variant="super";;
     stock)          supported_variants="pico nano micro mini full stock"; gappsremove_variant="super";;
+    stock_go)       supported_variants="pico_go nano_go micro_go mini_go full_go stock_go"; gappsremove_variant="super";;
     full)           supported_variants="pico nano micro mini full"; gappsremove_variant="super";;
+    full_go)        supported_variants="pico_go nano_go micro_go mini_go full_go"; gappsremove_variant="super";;
     mini)           supported_variants="pico nano micro mini"; gappsremove_variant="super";;
+    mini_go)        supported_variants="pico_go nano_go micro_go mini_go"; gappsremove_variant="super";;
     micro)          supported_variants="pico nano micro"; gappsremove_variant="super";;
+    micro_go)       supported_variants="pico_go nano_go micro_go"; gappsremove_variant="super";;
     nano)           supported_variants="pico nano"; gappsremove_variant="super";;
+    nano_go)        supported_variants="pico_go nano_go"; gappsremove_variant="super";;
     pico)           supported_variants="pico"; gappsremove_variant="super";;
+    pico_go)        supported_variants="pico_go"; gappsremove_variant="super";;
 
     tvstock)        supported_variants="tvmini tvstock"; gappsremove_variant="tvstock";;
     tvmini)         supported_variants="tvmini"; gappsremove_variant="tvstock";;
@@ -155,6 +161,7 @@ get_gapps_list(){
   # Compile the list of applications that will be build for this variant
   case "$1" in
     tv*) gapps_list="$gappstvcore $gappstvcore_optional";;
+    *_go)  gapps_list="$gappscore_go $gappscore_go_optional";;
     *)  gapps_list="$gappscore $gappscore_optional";;
   esac
   for variant in $1; do
@@ -173,7 +180,7 @@ buildtarget() {
   for app in $gapps; do
     get_package_info "$app"
     if [ -n "$packagename" ]; then
-      buildapp "$packagename" "$packagemaxapi" "$packagetype/$app" "$packagetarget"
+      buildapp "$packagename" "$packagemaxapi" "$packagetype/$app" "$packagetarget" "" "$packagedirsuffix"
     fi
     for file in $packagefiles; do
       buildfile "$file" "$packagetype/$app" "common"
@@ -199,6 +206,7 @@ get_package_info(){
   packagelibs=""
   packagemaxapi="$API"
   packagegappsremove=""
+  packagedirsuffix=""
   case "$1" in
     # Common GApps
     configupdater)            packagetype="Core"; packagename="com.google.android.configupdater"; packagetarget="priv-app/ConfigUpdater";;  # On Android TV 5.1 and 6.0 this is in /app
@@ -237,6 +245,14 @@ get_package_info(){
                               else # Add all sysconfig and permission files for undetected/newer Android version
                                 packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/preferred-apps/google.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
                               fi;;
+    defaultetcgo)             packagetype="Core";
+                              if [ "$API" -ge "29" ]; then # Specific permission files for Android 10.0+
+                                packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions-q.xml etc/permissions/privapp-permissions-google.xml etc/permissions/split-permissions-google.xml etc/preferred-apps/google_go.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google_go.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
+                              elif [ "$API" -ge "28" ]; then # Specific permission files for Android 9.0
+                                packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/preferred-apps/google_go.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google_go.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
+                              else # Add all sysconfig and permission files for undetected/newer Android version
+                                packagefiles="etc/default-permissions/default-permissions.xml etc/default-permissions/opengapps-permissions.xml etc/permissions/privapp-permissions-google.xml etc/preferred-apps/google_go.xml etc/sysconfig/google-hiddenapi-package-whitelist.xml etc/sysconfig/google_go.xml etc/sysconfig/google_build.xml etc/sysconfig/google_exclusives_enable.xml"
+                              fi;;
     defaultframework)         packagetype="Core";
                               if [ "$API" -ge "25" ]; then # Specific permission files and frameworks for Android 7.1+
                                 packagefiles="etc/permissions/com.google.android.maps.xml etc/permissions/com.google.android.media.effects.xml"
@@ -256,6 +272,7 @@ get_package_info(){
                               else  # The path on Android 10.0 and on versions <= 8.0 is priv-app/PrebuiltGmsCore
                                 packagetarget="priv-app/PrebuiltGmsCore"
                               fi;;
+    gmscorego)                packagetype="Core"; packagename="com.google.android.gms"; packagetarget="priv-app/GmsCoreGo"; packagedirsuffix="-go";;
     gmssetup)                 packagetype="Core"; packagename="com.google.android.gms.setup"; packagetarget="priv-app/GmsCoreSetupPrebuilt";;
     googlefeedback)           packagetype="Core"; packagename="com.google.android.feedback"; packagetarget="priv-app/GoogleFeedback";;
     googleonetimeinitializer) packagetype="Core"; packagename="com.google.android.onetimeinitializer"; packagetarget="priv-app/GoogleOneTimeInitializer";;
@@ -282,6 +299,7 @@ get_package_info(){
                                 packagefiles="product/overlay/AndroidAutoOverlay.apk"
                                 packagegappsremove="product/overlay/AndroidAutoOverlay.apk vendor/overlay/AndroidAutoOverlay.apk"
                               fi;;
+    assistantgo)              packagetype="GApps"; packagename="com.google.android.apps.assistant"; packagetarget="priv-app/AssistantGo"; packagedirsuffix="-go";;
     batteryusage)             packagetype="GApps"; packagename="com.google.android.apps.turbo"; packagetarget="priv-app/Turbo";;
     bettertogether)           packagetype="GApps"; packagename="com.google.android.apps.multidevice.client"; packagetarget="app/SMSConnectPrebuilt";;
     books)                    packagetype="GApps"; packagename="com.google.android.apps.books"; packagetarget="app/Books";;
@@ -301,6 +319,7 @@ get_package_info(){
                               else
                                 packagefiles="etc/permissions/com.google.android.camera2.xml"; packageframework="com.google.android.camera2.jar"
                               fi;;
+    cameragooglego)           packagetype="GApps"; packagename="com.google.android.apps.cameralite"; packagetarget="priv-app/GoogleCameraGo"; packagedirsuffix="-go" packagefiles="etc/permissions/privapp-permissions-com.google.android.apps.cameralite.xml";;
     cameragooglelegacy)       packagetype="GApps"; packagename="com.google.android.googlecamera"; packagetarget="app/GoogleCameraLegacy"; packagemaxapi="22"; packagefiles="etc/permissions/com.google.android.camera2.xml"; packageframework="com.google.android.camera2.jar";;
     chrome)                   packagetype="GApps"; packagename="com.android.chrome"; packagetarget="app/Chrome";;
     carrierservices)          packagetype="GApps"; packagename="com.google.android.ims"; packagetarget="priv-app/CarrierServices";;
@@ -312,15 +331,27 @@ get_package_info(){
                                 packagefiles="product/overlay/DefaultDialerOverlay.apk product/overlay/PhoneOverlay.apk product/overlay/TelecomOverlay.apk"
                                 packagegappsremove="product/overlay/DefaultDialerOverlay.apk product/overlay/PhoneOverlay.apk product/overlay/TelecomOverlay.apk vendor/overlay/DefaultDialerOverlay.apk vendor/overlay/PhoneOverlay.apk vendor/overlay/TelecomOverlay.apk"
                               fi;;
+    dialergooglego)           packagetype="GApps"; packagename="com.google.android.dialer"; packagetarget="priv-app/GoogleDialerGo"; packagedirsuffix="-go"
+                              packagefiles="etc/sysconfig/googledialergo-sysconfig.xml"
+                              if [ "$API" -ge "28" ]; then  # Add an overlay for Android 9.0+
+                                packagefiles="product/overlay/DefaultDialerOverlay.apk product/overlay/PhoneOverlay.apk product/overlay/TelecomOverlay.apk"
+                                packagegappsremove="product/overlay/DefaultDialerOverlay.apk product/overlay/PhoneOverlay.apk product/overlay/TelecomOverlay.apk vendor/overlay/DefaultDialerOverlay.apk vendor/overlay/PhoneOverlay.apk vendor/overlay/TelecomOverlay.apk"
+                              fi;;
     dmagent)                  packagetype="GApps"; packagename="com.google.android.apps.enterprise.dmagent"; packagetarget="app/DMAgent";;
     docs)                     packagetype="GApps"; packagename="com.google.android.apps.docs.editors.docs"; packagetarget="app/EditorsDocs";;
     drive)                    packagetype="GApps"; packagename="com.google.android.apps.docs"; packagetarget="app/Drive";;
     duo)                      packagetype="GApps"; packagename="com.google.android.apps.tachyon"; packagetarget="app/Duo";;
+    duogo)                    packagetype="GApps"; packagename="com.google.android.apps.tachyon"; packagetarget="app/DuoGo"; packagedirsuffix="-go";;
     earth)                    packagetype="GApps"; packagename="com.google.earth"; packagetarget="app/GoogleEarth";;
     exchangegoogle)           packagetype="GApps"; packagename="com.google.android.gm.exchange"; packagetarget="app/PrebuiltExchange3Google";;
+    files)                    packagetype="GApps"; packagename="com.google.android.apps.nbu.files"; packagetarget="priv-app/FilesGo";;
     fitness)                  packagetype="GApps"; packagename="com.google.android.apps.fitness"; packagetarget="app/FitnessPrebuilt";;
+    gallerygo)                packagetype="GApps"; packagename="com.google.android.apps.photosgo"; packagetarget="app/GalleryGo"; packagedirsuffix="-go"
+                              # TODO: Overlay
+                              ;;
     gcs)                      packagetype="GApps"; packagename="com.google.android.apps.gcs"; packagetarget="priv-app/GCS";;
     gmail)                    packagetype="GApps"; packagename="com.google.android.gm"; packagetarget="app/PrebuiltGmail";;
+    gmailgo)                  packagetype="GApps"; packagename="com.google.android.gm.lite"; packagetarget="app/GMailGo"; packagedirsuffix="-go";;
     googlenow)                packagetype="GApps"; packagename="com.google.android.launcher"; packagetarget="app/GoogleHome";;
     googlepay)                packagetype="GApps"; packagename="com.google.android.apps.walletnfcrel"; packagetarget="app/Wallet";;
     googletts)                packagetype="GApps"; packagename="com.google.android.tts"; packagetarget="app/GoogleTTS";;
@@ -335,7 +366,9 @@ get_package_info(){
                               else
                                 packagetarget="app/LatinImeGoogle"
                               fi;;
+    keyboardgooglego)         packagetype="GApps"; packagename="com.google.android.inputmethod.latin"; packagetarget="app/LatinImeGoogleGo"; packagedirsuffix="-go"; packagefiles="usr/share/ime/google/d3_lms/en_us_d3_20180105.dict";;
     maps)                     packagetype="GApps"; packagename="com.google.android.apps.maps"; packagetarget="app/Maps";;
+    mapsgo)                   packagetype="GApps"; packagename="com.google.android.apps.mapslite"; packagetarget="app/MapsGo"; packagedirsuffix="-go";;
     markup)                   packagetype="GApps"; packagename="com.google.android.markup"; packagetarget="app/MarkupGoogle";
                               if [ "$LIBFOLDER" = "lib64" ]; then
                                 packagelibs="libsketchology_native.so+fallback";
@@ -343,9 +376,11 @@ get_package_info(){
                                 packagelibs="libsketchology_native.so";
                               fi;;
     messenger)                packagetype="GApps"; packagename="com.google.android.apps.messaging"; packagetarget="app/PrebuiltBugle";;
+    messengergo)              packagetype="GApps"; packagename="com.google.android.apps.messaging"; packagetarget="app/MessagesGo"; packagedirsuffix="-go";;
     movies)                   packagetype="GApps"; packagename="com.google.android.videos"; packagetarget="app/Videos";;
     moviesvrmode)             packagetype="GApps"; packagename="com.google.android.videos.vrmode"; packagetarget="app/Videos";;
     music)                    packagetype="GApps"; packagename="com.google.android.music"; packagetarget="app/Music2";;
+    navgo)                    packagetype="GApps"; packagename="com.google.android.apps.navlite"; packagetarget="app/NavGo"; packagedirsuffix="-go";;
     newsstand)                packagetype="GApps"; packagename="com.google.android.apps.magazines"; packagetarget="app/Newsstand";;
     packageinstallergoogle)   packagetype="GApps"; packagename="com.google.android.packageinstaller"; packagetarget="priv-app/GooglePackageInstaller";;
     pixelicons)               packagetype="GApps"; packagename="com.google.android.nexusicons"; packagetarget="app/NexusLauncherIcons";;
@@ -362,6 +397,9 @@ get_package_info(){
     projectfi)                packagetype="GApps"; packagename="com.google.android.apps.tycho"; packagetarget="app/Tycho";;
     recorder)                 packagetype="GApps"; packagename="com.google.android.apps.recorder"; packagetarget="app/Recorder";;
     search)                   packagetype="GApps"; packagename="com.google.android.googlequicksearchbox"; packagetarget="priv-app/Velvet";;
+    searchgo)                 packagetype="GApps"; packagename="com.google.android.apps.searchlite"; packagetarget="priv-app/GoogleSearchGo"; packagedirsuffix="-go"
+                              # TODO: Overlay
+                              ;;
     sheets)                   packagetype="GApps"; packagename="com.google.android.apps.docs.editors.sheets"; packagetarget="app/EditorsSheets";;
     slides)                   packagetype="GApps"; packagename="com.google.android.apps.docs.editors.slides"; packagetarget="app/EditorsSlides";;
     soundpicker)              packagetype="GApps"; packagename="com.google.android.soundpicker"; packagetarget="app/SoundPickerPrebuilt";;
@@ -384,6 +422,7 @@ get_package_info(){
                                 packagegappsremove="product/overlay/WellbeingOverlay.apk vendor/overlay/WellbeingOverlay.apk"
                               fi;;
     youtube)                  packagetype="GApps"; packagename="com.google.android.youtube"; packagetarget="app/YouTube";;
+    youtubego)                packagetype="GApps"; packagename="com.google.android.apps.youtube.mango"; packagetarget="app/YouTubeGo"; packagedirsuffix="-go";;
     ytmusic)                  packagetype="GApps"; packagename="com.google.android.apps.youtube.music"; packagetarget="app/YouTubeMusicPrebuilt";;
     zhuyin)                   packagetype="GApps"; packagename="com.google.android.apps.inputmethod.zhuyin"; packagetarget="app/GoogleZhuyinIME";;  # ZhuyinIME exists in some ROMs
 

@@ -89,6 +89,34 @@ pico_gapps_list="
 @gappspico@
 "
 
+core_go_gapps_list="
+@gappscore_go@
+"
+
+stock_go_gapps_list="
+@gappsstock_go@
+"
+
+full_go_gapps_list="
+@gappsfull_go@
+"
+
+mini_go_gapps_list="
+@gappsmini_go@
+"
+
+micro_go_gapps_list="
+@gappsmicro_go@
+"
+
+nano_go_gapps_list="
+@gappsnano_go@
+"
+
+pico_go_gapps_list="
+@gappspico_go@
+"
+
 tvcore_gapps_list="
 @gappstvcore@
 "
@@ -857,7 +885,9 @@ nogoogledialer_removal_msg="NOTE: The Stock/AOSP Dialer is not available on your
 nogooglekeyboard_removal_msg="NOTE: The Stock/AOSP Keyboard is not available on your\nROM (anymore), the Google equivalent will not be removed."
 nogooglepackageinstaller_removal_msg="NOTE: The Stock/AOSP Package Installer is not\navailable on your ROM (anymore), the Google equivalent will not be removed."
 nogoogletag_removal_msg="NOTE: The Stock/AOSP NFC Tag is not available on your\nROM (anymore), the Google equivalent will not be removed."
+nopixellauncher_removal_msg="NOTE: The Stock/AOSP Launcher is not available on your\nROM (anymore), the Google equivalent will not be removed."
 nogooglewebview_removal_msg="NOTE: The Stock/AOSP WebView is not available on your\nROM (anymore), not all Google WebViewProviders will be removed."
+nogooglemms_removal_msg="NOTE: The Stock/AOSP MMS App is not available on your\nROM (anymore), the Google equivalent will not be removed."
 
 # _____________________________________________________________________________________________________________________
 #                                                  Pre-define Helper Functions
@@ -1149,10 +1179,9 @@ EOF
 }
 
 contains() {
-  case "$1" in
-    *"$2"*) return 0;;
-    *)      return 1;;
-  esac
+  # Check if "$1" contains word "$2"
+  echo "$1" | grep -q "\b$2\b"
+  return $?
 }
 
 clean_inst() {
@@ -1961,7 +1990,7 @@ else # User is not using a gapps-config and we're doing the 'full monty'
 fi
 
 # Configure default removal of Stock/AOSP apps - if we're installing Stock GApps or larger
-if [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
+if [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "stock_go" ] || [ "$gapps_type" = "aroma" ]; then
   for default_name in $default_stock_remove_list; do
     eval "remove_${default_name}=true[default]"
   done
@@ -1979,7 +2008,7 @@ if [ "$g_conf" ]; then
   for default_name in $default_stock_remove_list; do
     if ( grep -qiE "^\+$default_name\$" "$g_conf" ); then
       eval "remove_${default_name}=false[gapps-config]"
-    elif [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
+    elif [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "stock_go" ] || [ "$gapps_type" = "aroma" ]; then
       aosp_remove_list="$aosp_remove_list$default_name$newline"
       if ( grep -qiE "^$default_name\$" "$g_conf" ); then
         eval "remove_${default_name}=true[gapps-config]"
@@ -1998,7 +2027,7 @@ if [ "$g_conf" ]; then
     fi
   done
 else
-  if [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "aroma" ]; then
+  if [ "$gapps_type" = "super" ] || [ "$gapps_type" = "stock" ] || [ "$gapps_type" = "stock_go" ] || [ "$gapps_type" = "aroma" ]; then
       aosp_remove_list=$default_stock_remove_list
   fi
 fi
@@ -2027,19 +2056,19 @@ if ( ! contains "$gapps_list" "chrome" ) && ( ! grep -qiE '^browser$' "$g_conf" 
 fi
 
 # If we're NOT installing gmail make certain 'email' is NOT in $aosp_remove_list UNLESS 'email' is in $g_conf
-if ( ! contains "$gapps_list" "gmail" ) && ( ! grep -qiE '^email$' "$g_conf" ); then
+if ( ! contains "$gapps_list" "gmail" ) && ( ! contains "$gapps_list" "gmailgo" ) && ( ! grep -qiE '^email$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/email}
   remove_email="false[NO_Gmail]"
 fi
 
 # If we're NOT installing photos make certain 'gallery' is NOT in $aosp_remove_list UNLESS 'gallery' is in $g_conf
-if ( ! contains "$gapps_list" "photos" ) && ( ! grep -qiE '^gallery$' "$g_conf" ); then
+if ( ! contains "$gapps_list" "photos" ) && ( ! contains "$gapps_list" "gallerygo" ) && ( ! grep -qiE '^gallery$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/gallery}
   remove_gallery="false[NO_Photos]"
 fi
 
 # If $device_type is not a 'phone' make certain we're not installing messenger
-if ( contains "$gapps_list" "messenger" ) && [ $device_type != "phone" ]; then
+if ( ( contains "$gapps_list" "messenger" ) || ( contains "$gapps_list" "messengergo" ) ) && [ $device_type != "phone" ]; then
   gapps_list=${gapps_list/messenger} # we'll prevent messenger from being installed since this isn't a phone
 fi
 
@@ -2054,13 +2083,13 @@ if ( contains "$gapps_list" "dialerframework" ) && [ $device_type != "phone" ]; 
 fi
 
 # If we're NOT installing dialerframework then we MUST REMOVE dialergoogle from  $gapps_list (if it's currently there)
-if ( ! contains "$gapps_list" "dialerframework" ) && ( contains "$gapps_list" "dialergoogle" ); then
+if ( ! contains "$gapps_list" "dialerframework" ) && ( ( contains "$gapps_list" "dialergoogle" ) || ( contains "$gapps_list" "dialergoogle" ) ); then
   gapps_list=${gapps_list/dialergoogle}
   install_note="${install_note}dialergoogle_msg$newline" # make note that Google Dialer will NOT be installed as user requested
 fi
 
 # If we're NOT installing dialergoogle make certain 'dialerstock' is NOT in $aosp_remove_list UNLESS 'dialerstock' is in $g_conf
-if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qiE '^dialerstock$' "$g_conf" ); then
+if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! contains "$gapps_list" "dialergooglego" ) && ( ! grep -qiE '^dialerstock$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/dialerstock}
   remove_dialerstock="false[NO_DialerGoogle]"
 fi
@@ -2072,13 +2101,13 @@ if [ "$rom_build_sdk" -ge "23" ] && ( ! contains "$gapps_list" "carrierservices"
 fi
 
 # If we're NOT installing messenger make certain 'mms' is NOT in $aosp_remove_list UNLESS 'mms' is in $g_conf
-if ( ! contains "$gapps_list" "messenger" ) && ( ! grep -qiE '^mms$' "$g_conf" ); then
+if ( ! contains "$gapps_list" "messenger" ) && ( ! contains "$gapps_list" "messengergo" ) && ( ! grep -qiE '^mms$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/mms}
   remove_mms="false[NO_Messenger]"
 fi
 
 # If we're NOT installing messenger and mms is in $aosp_remove_list then user must override removal protection
-if ( ! contains "$gapps_list" "messenger" ) && ( contains "$aosp_remove_list" "mms" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+if ( ! contains "$gapps_list" "messenger" ) && ( ! contains "$gapps_list" "messengergo" ) && ( contains "$aosp_remove_list" "mms" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/mms} # we'll prevent mms from being removed so user isn't left with no way to receive text messages
   remove_mms="false[NO_Override]"
   install_note="${install_note}nomms_msg$newline" # make note that MMS can't be removed unless user Overrides
@@ -2139,12 +2168,12 @@ if ( contains "$gapps_list" "calendargoogle" ); then
 fi
 
 # If we're installing keyboardgoogle we must ADD keyboardstock to $aosp_remove_list (if it's not already there)
-if ( contains "$gapps_list" "keyboardgoogle" ) && ( ! contains "$aosp_remove_list" "keyboardstock" ); then
+if ( ( contains "$gapps_list" "keyboardgoogle" ) || ( contains "$gapps_list" "keyboardgooglego" ) ) && ( ! contains "$aosp_remove_list" "keyboardstock" ); then
   aosp_remove_list="${aosp_remove_list}keyboardstock$newline"
 fi
 
 # If we're NOT installing keyboardgoogle and keyboardstock is in $aosp_remove_list then user must override removal protection
-if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( contains "$aosp_remove_list" "keyboardstock" ) && ( ! grep -qi "override" "$g_conf" ); then
+if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! contains "$gapps_list" "keyboardgooglego" ) &&( contains "$aosp_remove_list" "keyboardstock" ) && ( ! grep -qi "override" "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/keyboardstock} # we'll prevent keyboardstock from being removed so user isn't left with no keyboard
   install_note="${install_note}nokeyboard_msg$newline" # make note that Stock Keyboard can't be removed unless user Overrides
 fi
@@ -2163,7 +2192,7 @@ if ( contains "$gapps_list" "cameragoogle" ) && ( ! clean_inst ) && [ $cameragoo
 fi
 
 # If we're NOT installing cameragoogle make certain 'camerastock' is NOT in $aosp_remove_list UNLESS 'camerastock' is in $g_conf
-if ( ! contains "$gapps_list" "cameragoogle" ) && ( ! grep -qiE '^camerastock$' "$g_conf" ); then
+if ( ! contains "$gapps_list" "cameragoogle" ) && ( ! contains "$gapps_list" "cameragooglego" ) && ( ! grep -qiE '^camerastock$' "$g_conf" ); then
   aosp_remove_list=${aosp_remove_list/camerastock}
   remove_camerastock="false[NO_CameraGoogle]"
 fi
@@ -2255,7 +2284,7 @@ for f in $dialerstock_list; do
   fi
 done
 if [ "$ignoregoogledialer" = "true" ]; then
-  if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+  if ( ! contains "$gapps_list" "dialergoogle" ) && ( ! contains "$gapps_list" "dialergooglego" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
     sed -i "\:/system/priv-app/GoogleDialer:d" $gapps_removal_list
     sed -i "\:/system/product/priv-app/GoogleDialer:d" $gapps_removal_list
     ignoregoogledialer="true[NoRemove]"
@@ -2273,7 +2302,7 @@ for f in $keyboardstock_list; do
   fi
 done
 if [ "$ignoregooglekeyboard" = "true" ]; then
-  if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+  if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! contains "$gapps_list" "keyboardgooglego" ) &&( ! grep -qiE '^override$' "$g_conf" ); then
 @keyboardgooglenotremovehack@
     ignoregooglekeyboard="true[NoRemove]"
     install_note="${install_note}nogooglekeyboard_removal_msg$newline" # make note that Google Keyboard will not be removed
@@ -2325,6 +2354,56 @@ for f in $webviewstock_list; do
     break #at least 1 aosp stock file is present
   fi
 done
+
+ignorepixellauncher="true"
+for f in $launcher_list; do
+  if [ -e "/system/$f" ] || [ -e "/system/product/$f" ]; then
+    other_launcher_found=$f
+    ignorepixellauncher="false"
+    break #at least 1 aosp stock file is present
+  fi
+done
+if [ "$ignorepixellauncher" = "true" ]; then
+  if ( ! contains "$gapps_list" "pixellauncher" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+    sed -i "\:/system/priv-app/NexusLauncherPrebuilt:d" $gapps_removal_list
+    sed -i "\:/system/app/WallpaperPickerGooglePrebuilt:d" $gapps_removal_list
+    sed -i "\:/system/priv-app/Velvet:d" $gapps_removal_list
+    sed -i "\:/system/priv-app/MatchmakerPrebuilt:d" $gapps_removal_list
+    sed -i "\:/system/product/overlay/ActionsServicesOverlay.apk:d" $gapps_removal_list
+    sed -i "\:/system/vendor/overlay/ActionsServicesOverlay.apk:d" $gapps_removal_list
+    ignorepixellauncher="true[NoRemove]"
+    install_note="${install_note}nopixellauncher_removal_msg$newline" # make note that Pixel Launcher will not be removed
+  else
+    if [ "$other_launcher_found" = "" ]; then
+      if ( ! contains "$gapps_list" "search" ); then
+        # the gohack() replaced search by searchgo, but we need to keep search because here we need if for pixellauncher
+        sed -i "\:/system/priv-app/Velvet:d" $gapps_removal_list
+      fi
+      cat $gapps_removal_list
+      ignorepixellauncher="false[PixelLauncher]"
+    else
+      ignorepixellauncher="false[found $other_launcher_found]"
+    fi
+  fi
+fi
+
+ignoregooglemms="true"
+for f in $launcher_list; do
+  if [ -e "/system/$f" ] || [ -e "/system/product/$f" ]; then
+    other_launcher_found=$f
+    ignoregooglemms="false"
+    break #at least 1 aosp stock file is present
+  fi
+done
+if [ "$ignoregooglemms" = "true" ]; then
+  if ( ! contains "$gapps_list" "messenger" ) && ( ! contains "$gapps_list" "messengergo" ) && ( ! grep -qiE '^override$' "$g_conf" ); then
+    sed -i "\:/system/app/PrebuiltBugle:d" $gapps_removal_list
+    ignoregooglemms="true[NoRemove]"
+    install_note="${install_note}nogooglemms_removal_msg$newline" # make note that Google Messages/MMS will not be removed
+  else
+    ignoregooglemms="false[Messenger]"
+  fi
+fi
 
 # in Nougat Chrome and WebViewStub can also be used as WebViewProvider
 @webviewignorehack@
@@ -2398,11 +2477,18 @@ log "Ignore Google Keyboard" "$ignoregooglekeyboard"
 log "Ignore Google Package Installer" "$ignoregooglepackageinstaller"
 log "Ignore Google NFC Tag" "$ignoregoogletag"
 log "Ignore Google WebView" "$ignoregooglewebview"
+log "Ignore Google Pixel Launcher" "$ignorepixellauncher"
+log "Ignore Google MMS App" "$ignoregooglemms"
 
 # _____________________________________________________________________________________________________________________
 #                                                  Perform space calculations
 ui_print "- Performing system space calculations"
 ui_print " "
+
+# Set core_gapps_list for go edition
+if [ $(printf "%s" "$gapps_type" | tail -c 3) = "_go" ]; then
+  core_gapps_list=$core_go_gapps_list
+fi
 
 # Perform calculations of core applications
 core_size=0
@@ -2421,7 +2507,7 @@ for gapp_name in $core_gapps_list; do
 done
 
 # Add swypelibs size to core, if it will be installed
-if ( ! contains "$gapps_list" "keyboardgoogle" ) || [ "$skipswypelibs" = "false" ]; then
+if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! contains "$gapps_list" "keyboardgooglego" ) || [ "$skipswypelibs" = "false" ]; then
   get_appsize "Optional/swypelibs-lib-$arch"  # Keep it simple, swypelibs is only lib-$arch
   core_size=$((core_size + keybd_lib_size))  # Add Keyboard Lib size to core, if it exists
 fi
@@ -2726,7 +2812,7 @@ quit
 ui_print "- Installation complete!"
 ui_print " "
 
-if ( contains "$gapps_list" "dialergoogle" ); then
+if ( contains "$gapps_list" "dialergoogle" ) || ( contains "$gapps_list" "dialergooglego" ) ; then
   ui_print "You installed Google Dialer."
   ui_print "Please set it as default Phone"
   ui_print "application to prevent calls"

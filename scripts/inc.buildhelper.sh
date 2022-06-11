@@ -57,6 +57,10 @@ buildfile() {
       printf "%6s   | %-s\n" "$usearch" "$1">> "$logfile"
     fi
     copy "$SOURCES/$usearch/$1" "$targetdir" #if we have a file specific to this architecture
+    # rename etc/sysconfig/google_go.xml to etc/sysconfig/google.xml
+    if [ "$1" = "etc/sysconfig/google_go.xml" ]; then
+      mv "$targetdir/google_go.xml" "$targetdir/google.xml"
+    fi
   else
     get_fallback_arch "$usearch"
     if [ "$usearch" != "$fallback_arch" ]; then
@@ -167,10 +171,11 @@ buildapp() {
   targetlocation="$4"
   if [ -z "$5" ]; then usearch="$ARCH"
   else usearch="$5"; fi #allows for an override
+  packagedirsuffix="$6"
 
   minapihack #Some packages need a minimal api level to maintain compatibility with the OS
 
-  if getapksforapi "$package" "$usearch" "$usemaxapi" "$useminapi"; then
+  if getapksforapi "$package" "$usearch" "$usemaxapi" "$useminapi" "$packagedirsuffix"; then
     baseversionname=""
     for dpivariant in $(echo "$sourceapks" | tr ' ' ''); do #we replace the spaces with a special char to survive the for-loop
       dpivariant="$(echo "$dpivariant" | tr '' ' ')" #and we place the spaces back again
@@ -209,7 +214,7 @@ buildapp() {
   else
     get_fallback_arch "$usearch"
     if [ "$usearch" != "$fallback_arch" ]; then
-      buildapp "$package" "$usemaxapi" "$ziplocation" "$targetlocation" "$fallback_arch"
+      buildapp "$package" "$usemaxapi" "$ziplocation" "$targetlocation" "$fallback_arch" "$packagedirsuffix"
     else
       echo "ERROR: No fallback available. Failed to build package $package"
       exit 1
@@ -219,11 +224,11 @@ buildapp() {
 
 getapksforapi() {
   #this functions finds the highest available acceptable apk for a given api and architecture
-  #$1 package, $2 arch, $3 api, $4 minapi
+  #$1 package, $2 arch, $3 api, $4 minapi, $5 packagedirsuffix
   if [ -z "$4" ]; then minapi="0"
   else minapi="$4"; fi #specify minimal api
 
-  if ! stat --printf='' "$SOURCES/$2/"*"app/$1" 2>/dev/null; then
+  if ! stat --printf='' "$SOURCES/$2/"*"app$5/$1" 2>/dev/null; then
     return 1 #appname is not there, error!?
   fi
 
@@ -233,7 +238,7 @@ getapksforapi() {
 "  #We set IFS to newline here so that spaces can survive the for loop
   #sed copies filename to the beginning, to compare version, and later we remove it with cut
   maxsdkerrorapi=""
-  for foundapk in $(find $SOURCES/$2/*app/$1 -iname '*.apk' 2>/dev/null| sed 's!.*/\(.*\)!\1/&!' | sort -r -n -t/ -k1,1 | cut -d/ -f2-); do
+  for foundapk in $(find $SOURCES/$2/*app$5/$1 -iname '*.apk' 2>/dev/null| sed 's!.*/\(.*\)!\1/&!' | sort -r -n -t/ -k1,1 | cut -d/ -f2-); do
     foundpath="$(dirname "$(dirname "$foundapk")")"
     api="$(basename "$foundpath")"
     if [ "$maxsdkerrorapi" = "$api" ]; then
