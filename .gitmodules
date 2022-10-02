@@ -1,7 +1,9 @@
 [submodule "sources/all"]
         path = sources/all
-        url = https://gitlab.opengapps.org/opengapps/all.git
-        branch = master
+        # url = https://gitlab.opengapps.org/opengapps/all.git
+        # branch = master
+        url = https://gitlab.opengapps.org/ip/all.git
+        branch = 12x
         update = rebase
         ignore = all
 [submodule "sources/arm"]
