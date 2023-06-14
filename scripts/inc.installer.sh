@@ -80,7 +80,7 @@ makeupdatebinary() {
 #    zip exception de-facto LGPLv3 licensed.
 #
 export OPENGAZIP="$3"
-export OUTFD="/proc/self/fd/$2"
+export OUTFD="$2"
 export TMP="/tmp"
 case "$(uname -m)" in
   *86*) export BINARCH="x86";;  # e.g. Zenfone is i686
@@ -89,8 +89,11 @@ esac
 bb="$TMP/'"$2"'-$BINARCH"
 l="$TMP/bin"
 ui_print() {
-  echo "ui_print $1
-    ui_print" >> $OUTFD
+  until [ ! "$1" ]; do
+    echo "ui_print $1
+      ui_print" >> /proc/self/fd/$OUTFD
+    shift
+  done
 }
 setenforce 0
 for f in '"$4"'; do
@@ -111,6 +114,7 @@ if [ -e "$bb" ]; then
       fi
     fi
   done
+  export OLD_PATH="$PATH"
   PATH="$l:$PATH" $bb ash "$TMP/'"$3"'" "$@"
   exit "$?"
 else
