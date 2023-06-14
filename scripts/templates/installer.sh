@@ -891,13 +891,16 @@ nogooglemms_removal_msg="NOTE: The Stock/AOSP MMS App is not available on your\n
 
 # _____________________________________________________________________________________________________________________
 #                                                  Pre-define Helper Functions
-get_file_prop() { grep -m1 "^$2=" "$1" | cut -d= -f2-; }
+file_getprop() { grep "^$2=" "$1" | tail -n1 | cut -d= -f2-; }
 
-set_progress() { echo "set_progress $1" >> $OUTFD; }
+set_progress() { echo "set_progress $1" >> /proc/self/fd/$OUTFD; }
 
 ui_print() {
-  echo "ui_print $1
-    ui_print" >> $OUTFD
+  until [ ! "$1" ]; do
+    echo "ui_print $1
+      ui_print" >> /proc/self/fd/$OUTFD
+    shift
+  done
 }
 
 find_slot() {
@@ -908,6 +911,7 @@ find_slot() {
     [ "$slot" ] || slot=$(grep -o 'androidboot.slot=.*$' /proc/cmdline | cut -d\  -f1 | cut -d= -f2)
     [ "$slot" ] && slot=_$slot
   fi
+  [ "$slot" == "normal" ] && unset slot
   [ "$slot" ] && echo "$slot"
 }
 
@@ -923,132 +927,200 @@ is_mounted() { mount | grep -q " $1 "; }
 
 mount_apex() {
   [ -d /system_root/system/apex ] || return 1
-  local apex dest loop minorx num
+  local apex dest loop minorx num shcon var
   setup_mountpoint /apex
+  mount -t tmpfs tmpfs /apex -o mode=755 && touch /apex/apextmp
+  shcon=$(cat /proc/self/attr/current)
+  echo "u:r:su:s0" > /proc/self/attr/current # work around LOS Recovery not allowing loop mounts in recovery context
   minorx=1
   [ -e /dev/block/loop1 ] && minorx=$(ls -l /dev/block/loop1 | awk '{ print $6 }')
   num=0
   for apex in /system_root/system/apex/*; do
-    dest=/apex/$(basename $apex .apex)
-    [ "$dest" = /apex/com.android.runtime.release ] && dest=/apex/com.android.runtime
+    dest=/apex/$(basename $apex | sed -E -e 's;\.apex$|\.capex$;;' -e 's;\.current$|\.release$;;')
     mkdir -p $dest
     case $apex in
-      *.apex)
+      *.apex|*.capex)
+        unzip -qo $apex original_apex -d /apex
+        [ -f /apex/original_apex ] && apex=/apex/original_apex
         unzip -qo $apex apex_payload.img -d /apex
+        mv -f /apex/original_apex $dest.apex 2>/dev/null
         mv -f /apex/apex_payload.img $dest.img
-        mount -t ext4 -o ro,noatime $dest.img $dest 2>/dev/null
+        mount -t ext4 -o ro,noatime $dest.img $dest 2>/dev/null && echo "$dest (direct)" >&2
         if [ $? != 0 ]; then
           while [ $num -lt 64 ]; do
             loop=/dev/block/loop$num
-            (mknod $loop b 7 $((num * minorx))
-            losetup $loop $dest.img) 2>/dev/null
+            [ -e $loop ] || mknod $loop b 7 $((num * minorx))
+            losetup $loop $dest.img 2>/dev/null
             num=$((num + 1))
             losetup $loop | grep -q $dest.img && break
           done
-          mount -t ext4 -o ro,loop,noatime $loop $dest
+          mount -t ext4 -o ro,loop,noatime $loop $dest && echo "$dest (loop)" >&2
           if [ $? != 0 ]; then
             losetup -d $loop 2>/dev/null
+            if [ $num -eq 64 -a $(losetup -f) == "/dev/block/loop0" ]; then
+              echo "Aborting apex mounts due to broken environment..." >&2
+              break
+            fi
           fi
         fi
       ;;
-      *) mount -o bind $apex $dest;;
+      *) mount -o bind $apex $dest && echo "$dest (bind)" >&2;;
     esac
   done
-  export ANDROID_RUNTIME_ROOT=/apex/com.android.runtime
-  export ANDROID_TZDATA_ROOT=/apex/com.android.tzdata
-  export BOOTCLASSPATH=/apex/com.android.runtime/javalib/core-oj.jar:/apex/com.android.runtime/javalib/core-libart.jar:/apex/com.android.runtime/javalib/okhttp.jar:/apex/com.android.runtime/javalib/bouncycastle.jar:/apex/com.android.runtime/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/android.test.base.jar:/system/framework/telephony-ext.jar:/apex/com.android.conscrypt/javalib/conscrypt.jar:/apex/com.android.media/javalib/updatable-media.jar
+  echo "$shcon" > /proc/self/attr/current
+  for var in $(grep -o 'export .* /.*' /system_root/init.environ.rc | awk '{ print $2 }'); do
+    eval OLD_${var}=\$$var
+  done
+  $(grep -o 'export .* /.*' /system_root/init.environ.rc | sed 's; /;=/;'); unset export
+  touch /apex/apexmnt
 }
 
 umount_apex() {
-  [ -d /apex ] || return 1
-  local dest loop
-  for dest in $(find /apex -type d -mindepth 1 -maxdepth 1); do
-    if [ -f $dest.img ]; then
-      loop=$(mount | grep $dest | cut -d" " -f1)
+  [ -f /apex/apexmnt ] || return 1
+  echo "Unmounting apex..." >&2
+  local dest loop var
+  for var in $(grep -o 'export .* /.*' /system_root/init.environ.rc 2>/dev/null | awk '{ print $2 }'); do
+    if [ "$(eval echo \$OLD_$var)" ]; then
+      eval $var=\$OLD_${var}
+    else
+      eval unset $var
     fi
-    (umount -l $dest
-    losetup -d $loop) 2>/dev/null
+    unset OLD_${var}
   done
-  rm -rf /apex 2>/dev/null
-  unset ANDROID_RUNTIME_ROOT ANDROID_TZDATA_ROOT BOOTCLASSPATH
+  for dest in $(find /apex -type d -mindepth 1 -maxdepth 1); do
+    loop=$(mount | grep $dest | grep loop | cut -d\  -f1)
+    umount -l $dest
+    losetup $loop >/dev/null 2>&1 && losetup -d $loop
+  done
+  [ -f /apex/apextmp ] && umount /apex
+  rm -rf /apex/apexmnt /apex 2>/dev/null
 }
 
 mount_all() {
-  if ! is_mounted /cache; then
-    mount /cache 2>/dev/null && UMOUNT_CACHE=1
-  fi
-  if ! is_mounted /data; then
-    mount /data && UMOUNT_DATA=1
-  fi
-  (mount -o ro -t auto /vendor
-  mount -o ro -t auto /product
-  mount -o ro -t auto /persist
-  mount -o ro -t auto /system_ext) 2>/dev/null
+  local byname mount slot system
+  echo "Mounting..." >&2
+  byname=bootdevice/by-name
+  [ -d /dev/block/$byname ] || byname=$(find /dev/block/platform -type d -name by-name 2>/dev/null | head -n1 | cut -d/ -f4-)
+  [ -e /dev/block/$byname/super -a -d /dev/block/mapper ] && byname=mapper
+  [ -e /dev/block/$byname/system ] || slot=$(find_slot)
+  for mount in /cache /data /metadata /persist; do
+    if ! is_mounted $mount; then
+      mount $mount 2>/dev/null && echo "$mount (fstab)" >&2 && UMOUNTLIST="$UMOUNTLIST $mount"
+      if [ $? != 0 -a -e /dev/block/$byname$mount ]; then
+        setup_mountpoint $mount
+        mount -o ro -t auto /dev/block/$byname$mount $mount && echo "$mount (direct)" >&2 && UMOUNTLIST="$UMOUNTLIST $mount"
+      fi
+    fi
+  done
   setup_mountpoint $ANDROID_ROOT
   if ! is_mounted $ANDROID_ROOT; then
-    mount -o ro -t auto $ANDROID_ROOT 2>/dev/null
+    mount -o ro -t auto $ANDROID_ROOT 2>/dev/null && echo "$ANDROID_ROOT (\$ANDROID_ROOT)" >&2
   fi
   case $ANDROID_ROOT in
     /system_root) setup_mountpoint /system;;
     /system)
       if ! is_mounted /system && ! is_mounted /system_root; then
         setup_mountpoint /system_root
-        mount -o ro -t auto /system_root
+        mount -o ro -t auto /system_root && echo "/system_root (fstab)" >&2
       elif [ -f /system/system/build.prop ]; then
         setup_mountpoint /system_root
-        mount --move /system /system_root
+        mount --move /system /system_root && echo "/system_root (moved)" >&2
       fi
       if [ $? != 0 ]; then
         (umount /system
         umount -l /system) 2>/dev/null
-        if [ -d /dev/block/mapper ]; then
-          [ -e /dev/block/mapper/system ] || local slot=$(find_slot)
-          mount -o ro -t auto /dev/block/mapper/vendor$slot /vendor
-          mount -o ro -t auto /dev/block/mapper/product$slot /product 2>/dev/null
-          mount -o ro -t auto /dev/block/mapper/system_ext$slot /system_ext 2>/dev/null
-          mount -o ro -t auto /dev/block/mapper/system$slot /system_root
-        else
-          [ -e /dev/block/bootdevice/by-name/system ] || local slot=$(find_slot)
-          (mount -o ro -t auto /dev/block/bootdevice/by-name/vendor$slot /vendor
-          mount -o ro -t auto /dev/block/bootdevice/by-name/product$slot /product
-          mount -o ro -t auto /dev/block/bootdevice/by-name/persist$slot /persist
-          mount -o ro -t auto /dev/block/bootdevice/by-name/system_ext$slot /system_ext) 2>/dev/null
-          mount -o ro -t auto /dev/block/bootdevice/by-name/system$slot /system_root
-        fi
+        mount -o ro -t auto /dev/block/$byname/system$slot /system_root && echo "/system_root (direct)" >&2
       fi
     ;;
   esac
+  [ -f /system_root/system/build.prop ] && system=/system
+  for mount in /vendor /product /system_ext; do
+    mount -o ro -t auto $mount 2>/dev/null && echo "$mount (fstab)" >&2
+    if [ $? != 0 ] && [ -L /system$mount -o -L /system_root$system$mount ]; then
+      setup_mountpoint $mount
+      mount -o ro -t auto /dev/block/$byname$mount$slot $mount && echo "$mount (direct)" >&2
+    fi
+  done
   if is_mounted /system_root; then
     mount_apex
-    if [ -f /system_root/build.prop ]; then
-      mount -o bind /system_root /system
-    else
-      mount -o bind /system_root/system /system
-    fi
+    mount -o bind /system_root$system /system && echo "/system (bind)" >&2
   fi
+  echo " " >&2
 }
 
 umount_all() {
   local mount
-  (umount /system
-  umount -l /system
-  if [ -e /system_root ]; then
+  echo "Unmounting..." >&2
+  (if [ ! -d /postinstall/tmp ]; then
+    umount /system
+    umount -l /system
+  fi) 2>/dev/null
+  umount_apex
+  (if [ ! -d /postinstall/tmp ]; then
     umount /system_root
     umount -l /system_root
   fi
-  umount_apex
-  for mount in /mnt/system /vendor /mnt/vendor /product /mnt/product /persist /system_ext /mnt/system_ext; do
+  PATH="$OLD_PATH" umount /vendor # busybox umount /vendor breaks recovery on some hacky devices
+  PATH="$OLD_PATH" umount -l /vendor
+  for mount in /mnt/system /mnt/vendor /product /mnt/product /system_ext /mnt/system_ext $UMOUNTLIST; do
     umount $mount
     umount -l $mount
-  done
-  if [ "$UMOUNT_DATA" ]; then
-    umount /data
-    umount -l /data
+  done) 2>/dev/null
+}
+
+setup_env() {
+  $BOOTMODE && return 1
+  mount -o bind /dev/urandom /dev/random
+  if [ -L /etc ]; then
+    setup_mountpoint /etc
+    cp -af /etc_link/* /etc
+    sed -i 's; / ; /system_root ;' /etc/fstab
   fi
-  if [ "$UMOUNT_CACHE" ]; then
-    umount /cache
-    umount -l /cache
-  fi) 2>/dev/null
+  umount_all
+  mount_all
+  OLD_LD_PATH=$LD_LIBRARY_PATH
+  OLD_LD_PRE=$LD_PRELOAD
+  OLD_LD_CFG=$LD_CONFIG_FILE
+  unset LD_LIBRARY_PATH LD_PRELOAD LD_CONFIG_FILE
+  if [ ! "$(getprop 2>/dev/null)" ]; then
+    getprop() {
+      local propdir propfile propval
+      for propdir in / /system_root /system /vendor /product /product/etc /system_ext/etc /odm/etc; do
+        for propfile in default.prop build.prop; do
+          if [ "$propval" ]; then
+            break 2
+          else
+            propval="$(file_getprop $propdir/$propfile $1 2>/dev/null)"
+          fi
+        done
+      done
+      echo "$propval"
+    }
+  elif [ ! "$(getprop ro.build.type 2>/dev/null)" ]; then
+    getprop() {
+      ($(which getprop) | grep "$1" | cut -d[ -f3 | cut -d] -f1) 2>/dev/null
+    }
+  fi
+}
+
+restore_env() {
+  $BOOTMODE && return 1
+  local dir
+  unset -f getprop
+  [ "$OLD_LD_PATH" ] && export LD_LIBRARY_PATH=$OLD_LD_PATH
+  [ "$OLD_LD_PRE" ] && export LD_PRELOAD=$OLD_LD_PRE
+  [ "$OLD_LD_CFG" ] && export LD_CONFIG_FILE=$OLD_LD_CFG
+  unset OLD_LD_PATH OLD_LD_PRE OLD_LD_CFG
+  sleep 1
+  umount_all
+  [ -L /etc_link ] && rm -rf /etc/*
+  (for dir in /etc /apex /system_root /system /vendor /product /system_ext /metadata /persist; do
+    if [ -L "${dir}_link" ]; then
+      rmdir $dir
+      mv -f ${dir}_link $dir
+    fi
+  done
+  umount -l /dev/random) 2>/dev/null
 }
 
 # _____________________________________________________________________________________________________________________
@@ -1060,8 +1132,8 @@ if [ -e "/etc/lsb-release" ] || [ -n "$OSTYPE" ]; then
 fi
 
 # Get GApps Version and GApps Type from g.prop extracted at top of script
-gapps_version=$(get_file_prop "$TMP/g.prop" "ro.addon.open_version")
-gapps_type=$(get_file_prop "$TMP/g.prop" "ro.addon.open_type")
+gapps_version=$(file_getprop "$TMP/g.prop" "ro.addon.open_version")
+gapps_type=$(file_getprop "$TMP/g.prop" "ro.addon.open_type")
 
 # _____________________________________________________________________________________________________________________
 #                                                  Begin GApps Installation
@@ -1094,17 +1166,8 @@ $BOOTMODE || ps -A 2>/dev/null | grep zygote | grep -v grep >/dev/null && BOOTMO
 
 [ "$ANDROID_ROOT" ] || ANDROID_ROOT=/system
 
-# emulators can only flash booted and may need /system (on legacy images), or / (on system-as-root images), remounted rw
-if ! $BOOTMODE; then
-  mount -o bind /dev/urandom /dev/random
-  if [ -L /etc ]; then
-    setup_mountpoint /etc
-    cp -af /etc_link/* /etc
-    sed -i 's; / ; /system_root ;' /etc/fstab
-  fi
-  umount_all
-  mount_all
-fi
+setup_env
+
 if [ -d /dev/block/mapper ]; then
   for block in system vendor product system_ext; do
     for slot in "" _a _b; do
@@ -1112,10 +1175,13 @@ if [ -d /dev/block/mapper ]; then
     done
   done
 fi
-mount -o rw,remount -t auto /system || mount -o rw,remount -t auto /
-(mount -o rw,remount -t auto /vendor
-mount -o rw,remount -t auto /product
-mount -o rw,remount -t auto /system_ext) 2>/dev/null
+
+# emulators can only flash booted and may need /system (on legacy images), or / (on system-as-root images), remounted rw
+mount -o rw,remount -t auto /system && echo "/system (remount rw)" >&2
+[ $? != 0 ] && $BOOTMODE && mount -o rw,remount -t auto / && echo "/ (remount rw)" >&2
+for mount in /vendor /product /system_ext; do
+  is_mounted $mount && mount -o rw,remount -t auto $mount && echo "$mount (remount rw)" >&2
+done
 
 ui_print " "
 
@@ -1128,7 +1194,7 @@ device_abpartition=$(getprop ro.build.ab_update)
 #                                                  Declare Variables
 zip_folder="$(dirname "$OPENGAZIP")"
 g_prop=/system/etc/g.prop
-PROPFILES="$g_prop /system/default.prop /system/build.prop /system/vendor/build.prop /system/product/build.prop /system/system_ext/build.prop /vendor/build.prop /product/build.prop /system_ext/build.prop /system_root/default.prop /system_root/build.prop /system_root/vendor/build.prop /system_root/product/build.prop /system_root/system_ext/build.prop /data/local.prop /default.prop /build.prop"
+prop_files="$g_prop /system_root/default.prop /system_root/build.prop /system/default.prop /system/build.prop /vendor/default.prop /vendor/build.prop /product/default.prop /product/build.prop /product/etc/default.prop /product/etc/build.prop /system_ext/etc/default.prop /system_ext/etc/build.prop /odm/etc/default.prop /odm/etc/build.prop /data/local.prop /default.prop /build.prop"
 bkup_tail=$TMP/bkup_tail.sh
 gapps_removal_list=$TMP/gapps-remove.txt
 g_log=$TMP/g.log
@@ -1164,7 +1230,7 @@ ch_con() {
 }
 
 checkmanifest() {
-  if [ -f "$1" ] && ("$TMP/unzip-$BINARCH" -ql "$1" | grep -q "META-INF/MANIFEST.MF"); then  # strict, only files
+  if [ -f "$1" ] && ("$TMP/unzip-$BINARCH" -ql "$1" | grep -q "META-INF/MANIFEST.MF"); then # strict, only files
     "$TMP/unzip-$BINARCH" -p "$1" "META-INF/MANIFEST.MF" | grep -q "$2"
     return "$?"
   else
@@ -1211,7 +1277,7 @@ extract_app() {
 exxit() {
   set_progress 0.98
   if [ "$skipvendorlibs" = "true" ]; then
-    umount $ANDROID_ROOT/vendor  # unmount tmpfs
+    umount $ANDROID_ROOT/vendor # unmount tmpfs
   fi
   if ( ! grep -qiE '^ *nodebug *($|#)+' "$g_conf" ); then
     if [ "$g_conf" ]; then # copy gapps-config files to debug logs folder
@@ -1221,21 +1287,14 @@ exxit() {
     ls -alZR /system > "$TMP/logs/System_Files_After.txt"
     df -k > "$TMP/logs/Device_Space_After.txt"
     cp -f "$log_folder/open_gapps_log.txt" "$TMP/logs"
-    for f in $PROPFILES; do
+    for f in $prop_files; do
       cp -f "$f" "$TMP/logs"
     done
     cp -f "/system/addon.d/70-gapps.sh" "$TMP/logs"
     cp -f "$gapps_removal_list" "$TMP/logs/gapps-remove_revised.txt"
     cp -f "$rec_cache_log" "$TMP/logs/Recovery_cache.log"
     cp -f "$rec_tmp_log" "$TMP/logs/Recovery_tmp.log"
-    OLD_LD_PATH=$LD_LIBRARY_PATH
-    OLD_LD_PRE=$LD_PRELOAD
-    OLD_LD_CFG=$LD_CONFIG_FILE
-    unset LD_LIBRARY_PATH LD_PRELOAD LD_CONFIG_FILE
     logcat -d -f "$TMP/logs/logcat"
-    [ "$OLD_LD_PATH" ] && export LD_LIBRARY_PATH=$OLD_LD_PATH
-    [ "$OLD_LD_PRE" ] && export LD_PRELOAD=$OLD_LD_PRE
-    [ "$OLD_LD_CFG" ] && export LD_CONFIG_FILE=$OLD_LD_CFG
     cd "$TMP"
     tar -cz -f "$log_folder/open_gapps_debug_logs.tar.gz" logs/*
     cd /
@@ -1243,19 +1302,9 @@ exxit() {
 
   # Unmount and rollback script changes
   set_progress 1.0
-  if ! $BOOTMODE; then
-    ui_print "- Unmounting partitions"
-    umount_all
-    [ -L /etc_link ] && rm -rf /etc/*
-    local dir
-    (for dir in /apex /system /system_root /etc; do
-      if [ -L "${dir}_link" ]; then
-        rmdir $dir
-        mv -f ${dir}_link $dir
-      fi
-    done
-    umount -l /dev/random) 2>/dev/null
-  fi
+  ui_print "- Unmounting partitions"
+
+  restore_env
 
   # Finally, clean up $TMP
   find $TMP/* -maxdepth 0 ! -path "$rec_tmp_log" -exec rm -rf {} +
@@ -1292,12 +1341,12 @@ folder_extract() {
 }
 
 get_apparch() {
-  if [ -z "$2" ]; then  # no arch given
+  if [ -z "$2" ]; then # no arch given
     apparch="$arch"
   else
     apparch="$2"
   fi
-  if exists_in_zip "$1-$apparch.*"; then  # add the . to make sure it is not a substring being matched
+  if exists_in_zip "$1-$apparch.*"; then # add the . to make sure it is not a substring being matched
     return 0
   else
     get_fallback_arch "$apparch"
@@ -1305,7 +1354,7 @@ get_apparch() {
       get_apparch "$1" "$fallback_arch"
       return $?
     else
-      apparch=""  # No arch-specific package
+      apparch="" # No arch-specific package
       return 1
     fi
   fi
@@ -1338,23 +1387,23 @@ get_fallback_arch(){
   case "$1" in
     arm)    fallback_arch="all";;
     arm64)  fallback_arch="arm";;
-    x86)    fallback_arch="arm";; #by using libhoudini
-    x86_64) fallback_arch="x86";; #e.g. chain: x86_64->x86->arm->all
-    *)      fallback_arch="$1";; #return original arch if no fallback available
+    x86)    fallback_arch="arm";; # by using libhoudini
+    x86_64) fallback_arch="x86";; # e.g. chain: x86_64->x86->arm->all
+    *)      fallback_arch="$1";; # return original arch if no fallback available
   esac
 }
 
 get_prop() {
-  #check known .prop files using get_file_prop
+  # check known .prop files using file_getprop
   local propfile propval
-  for propfile in $PROPFILES; do
+  for propfile in $prop_files; do
     if [ "$propval" ]; then
       break
     else
-      propval="$(get_file_prop $propfile $1 2>/dev/null)"
+      propval="$(file_getprop $propfile $1 2>/dev/null)"
     fi
   done
-  #if propval is no longer empty output current result; otherwise try to use recovery's built-in getprop method
+  # if propval is no longer empty output current result; otherwise try to use recovery's built-in getprop method
   if [ "$propval" ]; then
     echo "$propval"
   else
@@ -1670,7 +1719,7 @@ if echo "$(get_prop "ro.build.characteristics")" | grep -qi "tablet"; then
   device_type=tablet
 elif echo "$(get_prop "ro.build.characteristics")" | grep -qi "tv"; then
   device_type=tv
-  core_gapps_list="$tvcore_gapps_list"  # use the TV core apps instead of the regular core apps
+  core_gapps_list="$tvcore_gapps_list" # use the TV core apps instead of the regular core apps
 else
   device_type=phone
 fi
@@ -1728,7 +1777,7 @@ esac
 
 for targetarch in @ARCH@ abort; do # we add abort as latest entry to detect if there is no match
   if [ "$arch" = "$targetarch" ]; then
-    if [ "$libfolder" = "lib64" ]; then #on 64bit we also need to install 32 bit libs from the fbarch
+    if [ "$libfolder" = "lib64" ]; then # on 64bit we also need to install 32 bit libs from the fbarch
       get_fallback_arch "$arch"
       fbarch="$fallback_arch"
     else
@@ -1780,10 +1829,10 @@ fi
 # Check for Camera API v2 availability
 cameraapi="$(get_prop "camera2.portability.force_api")"
 camerahal="$(get_prop "persist.camera.HAL3.enabled")"
-if ( grep -qiE '^forcenewcamera$' "$g_conf" ); then  # takes precedence over any detection
+if ( grep -qiE '^forcenewcamera$' "$g_conf" ); then # takes precedence over any detection
   newcamera_compat="true[forcenewcamera]"
 else
-  if [ -n "$cameraapi" ]; then  # we check first for the existence of this key, it takes precedence if set to any value
+  if [ -n "$cameraapi" ]; then # we check first for the existence of this key, it takes precedence if set to any value
     if [ "$cameraapi" -ge "2" ]; then
       newcamera_compat="true[force_api]"
     else
@@ -1800,7 +1849,7 @@ else
   fi
 fi
 
-cmcompatibilityhacks="false"  # test for CM/Lineage since they do weird AOSP-breaking changes to their code, breaking some GApps
+cmcompatibilityhacks="false" # test for CM/Lineage since they do weird AOSP-breaking changes to their code, breaking some GApps
 case "$(get_prop "ro.build.flavor")" in
   cm_*|lineage_*)
   if [ "$rom_build_sdk" -lt "27" ]; then
@@ -1835,7 +1884,7 @@ fi
 # Check for skipvendorlibs in gapps-config
 if ( grep -qiE '^skipvendorlibs$' $g_conf ); then
   skipvendorlibs="true"
-  mount -t tmpfs tmpfs /system/vendor  # by mounting a tmpfs on this location, we hide the existing files from any operations
+  mount -t tmpfs tmpfs /system/vendor # by mounting a tmpfs on this location, we hide the existing files from any operations
 else
   skipvendorlibs="false"
 fi
@@ -1871,7 +1920,7 @@ done
 
 # Check device name for devices that are incompatible with Google Camera
 case $device_name in
-#in kitkat we don't have google camera compatibility with some phones
+# in KitKat we don't have google camera compatibility with some phones
 @cameracompatibilityhack@
   *) cameragoogle_compat=true;;
 esac
@@ -2272,7 +2321,7 @@ ignoregooglecontacts="true"
 for f in $contactsstock_list; do
   if [ -e "/system/$f" ] || [ -e "/system/product/$f" ]; then
     ignoregooglecontacts="false"
-    break #at least 1 aosp stock file is present
+    break # at least 1 aosp stock file is present
   fi
 done
 if [ "$ignoregooglecontacts" = "true" ]; then
@@ -2290,7 +2339,7 @@ ignoregoogledialer="true"
 for f in $dialerstock_list; do
   if [ -e "/system/$f" ] || [ -e "/system/product/$f" ]; then
     ignoregoogledialer="false"
-    break #at least 1 aosp stock file is present
+    break # at least 1 aosp stock file is present
   fi
 done
 if [ "$ignoregoogledialer" = "true" ]; then
@@ -2308,7 +2357,7 @@ ignoregooglekeyboard="true"
 for f in $keyboardstock_list; do
   if [ -e "/system/$f" ] || [ -e "/system/product/$f" ]; then
     ignoregooglekeyboard="false"
-    break #at least 1 aosp stock file is present
+    break # at least 1 aosp stock file is present
   fi
 done
 if [ "$ignoregooglekeyboard" = "true" ]; then
@@ -2325,7 +2374,7 @@ ignoregooglepackageinstaller="true"
 for f in $packageinstallerstock_list; do
   if [ -e "/system/$f" ] || [ -e "/system/product/$f" ]; then
     ignoregooglepackageinstaller="false"
-    break #at least 1 aosp stock file is present
+    break # at least 1 aosp stock file is present
   fi
 done
 if [ "$ignoregooglepackageinstaller" = "true" ]; then
@@ -2343,7 +2392,7 @@ ignoregoogletag="true"
 for f in $tagstock_list; do
   if [ -e "/system/$f" ] || [ -e "/system/product/$f" ]; then
     ignoregoogletag="false"
-    break #at least 1 aosp stock file is present
+    break # at least 1 aosp stock file is present
   fi
 done
 if [ "$ignoregoogletag" = "true" ]; then
@@ -2361,7 +2410,7 @@ ignoregooglewebview="true"
 for f in $webviewstock_list; do
   if [ -e "/system/$f" ] || [ -e "/system/product/$f" ]; then
     ignoregooglewebview="false"
-    break #at least 1 aosp stock file is present
+    break # at least 1 aosp stock file is present
   fi
 done
 
@@ -2370,7 +2419,7 @@ for f in $launcher_list; do
   if [ -e "/system/$f" ] || [ -e "/system/product/$f" ]; then
     other_launcher_found=$f
     ignorepixellauncher="false"
-    break #at least 1 aosp stock file is present
+    break # at least 1 aosp stock file is present
   fi
 done
 if [ "$ignorepixellauncher" = "true" ]; then
@@ -2402,7 +2451,7 @@ for f in $launcher_list; do
   if [ -e "/system/$f" ] || [ -e "/system/product/$f" ]; then
     other_launcher_found=$f
     ignoregooglemms="false"
-    break #at least 1 aosp stock file is present
+    break # at least 1 aosp stock file is present
   fi
 done
 if [ "$ignoregooglemms" = "true" ]; then
@@ -2435,7 +2484,7 @@ if [ -n "$user_remove_list" ]; then
       file_count=$(find $folder -iname "$testapk" 2>/dev/null | wc -l)
       case $file_count in
         0)  continue;;
-#on kitkat the paths for the universalremover are different
+# on KitKat the paths for the universalremover are different
 @universalremoverhack@
             break;;
         *)  echo "$remove_apk" >> $user_remove_multiplefound_log # Add app to user_remove_multiplefound_log since we found more than 1 instance
@@ -2518,8 +2567,8 @@ done
 
 # Add swypelibs size to core, if it will be installed
 if ( ! contains "$gapps_list" "keyboardgoogle" ) && ( ! contains "$gapps_list" "keyboardgooglego" ) || [ "$skipswypelibs" = "false" ]; then
-  get_appsize "Optional/swypelibs-lib-$arch"  # Keep it simple, swypelibs is only lib-$arch
-  core_size=$((core_size + keybd_lib_size))  # Add Keyboard Lib size to core, if it exists
+  get_appsize "Optional/swypelibs-lib-$arch" # Keep it simple, swypelibs is only lib-$arch
+  core_size=$((core_size + keybd_lib_size)) # Add Keyboard Lib size to core, if it exists
 fi
 
 # Read and save system partition size details
@@ -2583,8 +2632,8 @@ log_sub "Install" "Core" $core_size $post_install_size_kb
 
 for gapp_name in $gapps_list; do
   case $gapp_name in
-    photos)  if [ "$vrmode_compat" = "true" ] && [ "$arch" = "arm64" ] && [ "$rom_build_sdk" -ge "24" ]; then gapp_name="photosvrmode"; fi;;  # for now only available on Nougat arm64
-    movies)  if [ "$vrmode_compat" = "true" ] && ( [ "$arch" = "arm" ] || [ "$arch" = "arm64" ] ) && [ "$rom_build_sdk" -ge "24" ]; then gapp_name="moviesvrmode"; fi;;  # for now only available on Nougat arm & arm64
+    photos)  if [ "$vrmode_compat" = "true" ] && [ "$arch" = "arm64" ] && [ "$rom_build_sdk" -ge "24" ]; then gapp_name="photosvrmode"; fi;; # for now only available on Nougat arm64
+    movies)  if [ "$vrmode_compat" = "true" ] && ( [ "$arch" = "arm" ] || [ "$arch" = "arm64" ] ) && [ "$rom_build_sdk" -ge "24" ]; then gapp_name="moviesvrmode"; fi;; # for now only available on Nougat arm & arm64
     *)  ;;
   esac
   get_apparchives "GApps/$gapp_name"
@@ -2669,7 +2718,7 @@ for aosp_name in $aosp_remove_list; do
 done
 
 # Add saved addon.d User App Removals to make them persistent through repeat dirty GApps installs though the app may have already been removed
-user_remove_folder_list=$(echo -e "${user_remove_folder_list}\n${addond_remove_folder_list}" | sort -u | sed '/^$/d')  # remove duplicates and empty lines
+user_remove_folder_list=$(echo -e "${user_remove_folder_list}\n${addond_remove_folder_list}" | sort -u | sed '/^$/d') # remove duplicates and empty lines
 
 # Perform User App Removals and add Removals to addon.d script
 user_remove_folder_list=$(echo "${user_remove_folder_list}" | sort -r) # reverse sort list for more readable output
@@ -2714,8 +2763,8 @@ prog_bar=3000 # Set Progress Bar start point (0.3000) for below
 # Install the rest of GApps still in $gapps_list
 for gapp_name in $gapps_list; do
   case $gapp_name in
-    photos)  if [ "$vrmode_compat" = "true" ] && [ "$arch" = "arm64" ] && [ "$rom_build_sdk" -ge "24" ]; then gapp_name="photosvrmode"; fi;;  # for now only available on Nougat arm64
-    movies)  if [ "$vrmode_compat" = "true" ] && ( [ "$arch" = "arm" ] || [ "$arch" = "arm64" ] ) && [ "$rom_build_sdk" -ge "24" ]; then gapp_name="moviesvrmode"; fi;;  # for now only available on Nougat arm & arm64
+    photos)  if [ "$vrmode_compat" = "true" ] && [ "$arch" = "arm64" ] && [ "$rom_build_sdk" -ge "24" ]; then gapp_name="photosvrmode"; fi;; # for now only available on Nougat arm64
+    movies)  if [ "$vrmode_compat" = "true" ] && ( [ "$arch" = "arm" ] || [ "$arch" = "arm64" ] ) && [ "$rom_build_sdk" -ge "24" ]; then gapp_name="moviesvrmode"; fi;; # for now only available on Nougat arm & arm64
     *)  ;;
   esac
   ui_print "- Installing $gapp_name"
@@ -2736,7 +2785,7 @@ sed -i "s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.goo
 sed -i "\:# Apply build.prop changes (from GApps Installer):a \    sed -i \"s/ro.error.receiver.system.apps=.*/ro.error.receiver.system.apps=com.google.android.gms/g\" \$SYS/build.prop" $bkup_tail
 
 # Enable Google Assistant
-if ( grep -qiE '^googleassistant$' "$g_conf" ); then  #TODO this is not enabled by default atm; because Assistant still has various regressions compared to Google Now
+if ( grep -qiE '^googleassistant$' "$g_conf" ); then #TODO this is not enabled by default atm; because Assistant still has various regressions compared to Google Now
   if ! grep -q "ro.opa.eligible_device=" /system/build.prop; then
     echo "ro.opa.eligible_device=true" >> /system/build.prop
   fi
@@ -2830,7 +2879,7 @@ if ( contains "$gapps_list" "dialergoogle" ) || ( contains "$gapps_list" "dialer
   ui_print "See https://goo.gl/LTIJ0o"
 
   # set Google Dialer as default; based on the work of osm0sis @ xda-developers
-  setver="122"  # lowest version in MM, tagged at 6.0.0
+  setver="122" # lowest version in Marshmallow, tagged at 6.0.0
   setsec="/data/system/users/0/settings_secure.xml"
   if [ -f "$setsec" ]; then
     if grep -q 'dialer_default_application' "$setsec"; then
