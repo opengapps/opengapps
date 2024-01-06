@@ -18,7 +18,7 @@ SOURCES="$TOP/sources"
 GO_DIR_SUFFIX="-go"
 SCRIPTS="$TOP/scripts"
 CERTIFICATES="$SCRIPTS/certificates"
-APKTOOL="$SCRIPTS/apktool-resources/apktool_2.9.1.jar"
+APKTOOL="$SCRIPTS/apktool-resources/apktool_2.9.2.jar"
 # shellcheck source=scripts/inc.tools.sh
 . "$SCRIPTS/inc.tools.sh"
 # shellcheck source=scripts/inc.compatibility.sh
