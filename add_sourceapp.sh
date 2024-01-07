@@ -29,7 +29,7 @@ BETA=""
 STUB=""
 
 # Check tools
-checktools aapt file coreutils java jarsigner keytool openssl unzip
+checktools aapt file coreutils java jarsigner keytool openssl python3 unzip
 
 installapk() {
   architecture="$1"
@@ -140,6 +140,14 @@ $notinzip";;
   fi
   echo "APK is complete, certificate is valid and signed by Google"
 
+  checkpermissions "$apk"
+  checked="$?"
+  if [ "$checked" != 0 ]; then
+    echo "ERROR: $missingperms"
+    return 1
+  fi
+  echo "No additional privapp-permissions are needed"
+
   #We manually check for each of our set of supported architectures
   #We assume NO universal packages for 32vs64 bit, so start with the 'highest' architectures first, if it matches one of those, we will NOT add it to a lower architecture
   if { echo "$architectures" | grep -q "armeabi" && ! echo "$architectures" | grep -q "arm64"; } ||\
@@ -182,6 +190,15 @@ addlib() {
     (*)           install -D "$lib" "$SOURCES/$architecture/$prefix$libfolder/$REPLY/$libname"
                   echo "SUCCESS: Added $libname to $architecture/$prefix$libfolder/$REPLY/";;
   esac
+}
+
+checkpermissions() {
+  apk="$1"
+  echo "Checking if any extra privapp-permissions are needed..."
+  missingperms=$(python3 scripts/verify-permissions.py "$apk" 2>&1 >/dev/null)
+  if [ -n "$missingperms" ]; then
+    return 1
+  fi
 }
 
 for argument in "$@"; do
