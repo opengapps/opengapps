@@ -89,6 +89,9 @@ You can add extra arguments to report_sources to do your more advanced bidding t
 ./report_sources.sh ( ([sdk] [archs]*) || [arch-sdk] ) && [hash] || [max*mb] || [min*mb] || [nobeta] || [nohelp] || [noleanback] || [nosig]
 ```
 
+# Bad news... at least users think.
+We think this is moved to NikGApps | if your recovery does not work with NikGApps, then go around with this.
+
 ## License
 
 The Open GApps Project itself is licensed under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.txt) with an addendum called the
