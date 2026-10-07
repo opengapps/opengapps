@@ -1,0 +1,184 @@
+name: Build Open GApps Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      arch:
+        description: Device architecture
+        required: true
+        type: choice
+        default: arm
+        options:
+          - arm
+          - arm64
+          - x86
+          - x86_64
+      android_version:
+        description: Android version
+        required: true
+        type: choice
+        default: '6.0'
+        options:
+          - '4.4'
+          - '5.0'
+          - '5.1'
+          - '6.0'
+          - '7.0'
+          - '7.1'
+          - '8.0'
+          - '8.1'
+          - '9.0'
+          - '10.0'
+          - '11.0'
+          - '12'
+          - '12L'
+      variant:
+        description: Package variant
+        required: true
+        type: choice
+        default: pico
+        options:
+          - super
+          - stock
+          - full
+          - mini
+          - micro
+          - nano
+          - pico
+          - aroma
+          - tvstock
+          - tvmini
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - id: resolve_version
+        name: Resolve Android version
+        env:
+          ANDROID_VERSION: ${{ inputs.android_version }}
+        run: |
+          case "$ANDROID_VERSION" in
+            4.4) api=19 ;;
+            5.0) api=21 ;;
+            5.1) api=22 ;;
+            6.0) api=23 ;;
+            7.0) api=24 ;;
+            7.1) api=25 ;;
+            8.0) api=26 ;;
+            8.1) api=27 ;;
+            9.0) api=28 ;;
+            10.0) api=29 ;;
+            11.0) api=30 ;;
+            12) api=31 ;;
+            12L) api=32 ;;
+            *) echo "Unsupported Android version: $ANDROID_VERSION"; exit 1 ;;
+          esac
+          echo "api=$api" >> "$GITHUB_OUTPUT"
+
+      - name: Validate build options
+        env:
+          BUILD_ARCH: ${{ inputs.arch }}
+          BUILD_API: ${{ steps.resolve_version.outputs.api }}
+          BUILD_VARIANT: ${{ inputs.variant }}
+        run: |
+          if [[ "$BUILD_API" -lt 21 && "$BUILD_ARCH" != arm && "$BUILD_ARCH" != x86 ]]; then
+            echo "API $BUILD_API is not supported for $BUILD_ARCH."
+            exit 1
+          fi
+          if [[ "$BUILD_API" -lt 22 && "$BUILD_VARIANT" =~ ^(super|tvstock|tvmini)$ ]]; then
+            echo "Variant $BUILD_VARIANT requires API 22 or newer."
+            exit 1
+          fi
+          if [[ "$BUILD_ARCH" != arm && "$BUILD_ARCH" != arm64 && "$BUILD_VARIANT" == aroma ]]; then
+            echo "The aroma variant is only supported on ARM architectures."
+            exit 1
+          fi
+          if [[ "$BUILD_API" -lt 21 && "$BUILD_ARCH" != arm && "$BUILD_ARCH" != arm64 && "$BUILD_VARIANT" =~ ^(stock|full)$ ]]; then
+            echo "Variants stock and full require API 21 or newer for $BUILD_ARCH."
+            exit 1
+          fi
+
+      - name: Free runner disk space
+        env:
+          BUILD_ARCH: ${{ inputs.arch }}
+        run: |
+          sudo rm -rf /usr/local/lib/android/sdk /usr/share/dotnet /opt/ghc /usr/local/share/chromium
+          sudo docker system prune --all --force || true
+          df -h "$GITHUB_WORKSPACE"
+          available_kb="$(df -Pk "$GITHUB_WORKSPACE" | awk 'NR == 2 { print $4 }')"
+          case "$BUILD_ARCH" in
+            arm) required_kb=28000000 ;;
+            arm64|x86) required_kb=35000000 ;;
+            x86_64) required_kb=40000000 ;;
+          esac
+          if [[ "$available_kb" -lt "$required_kb" ]]; then
+            echo "At least $((required_kb / 1000000)) GB of free disk space is required for $BUILD_ARCH sources and the build."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes bc curl lzip unzip zip
+
+      - name: Configure Android SDK path
+        run: |
+          echo "ANDROID_HOME=$RUNNER_TEMP/android-sdk" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$RUNNER_TEMP/android-sdk" >> "$GITHUB_ENV"
+
+      - name: Install Android command-line tools
+        run: |
+          mkdir -p "$ANDROID_HOME/cmdline-tools" "$RUNNER_TEMP/android-cmdline-tools"
+          curl -fsSL https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip -o "$RUNNER_TEMP/android-commandlinetools.zip"
+          unzip -q "$RUNNER_TEMP/android-commandlinetools.zip" -d "$RUNNER_TEMP/android-cmdline-tools"
+          mv "$RUNNER_TEMP/android-cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" --licenses >/dev/null
+
+      - name: Install Android build tools
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" --install "build-tools;35.0.0"
+          echo "$ANDROID_HOME/build-tools/35.0.0" >> "$GITHUB_PATH"
+
+      - name: Fetch sources
+        env:
+          BUILD_ARCH: ${{ inputs.arch }}
+        run: |
+          git lfs install
+          case "$BUILD_ARCH" in
+            arm) modules=(all arm) ;;
+            arm64|x86) modules=(all arm "$BUILD_ARCH") ;;
+            x86_64) modules=(all arm x86 x86_64) ;;
+          esac
+          for module in "${modules[@]}"; do
+            git submodule update --init --remote --depth=1 --checkout -- "sources/$module"
+            git -C "sources/$module" lfs pull
+            lfs_objects="$(git -C "sources/$module" rev-parse --git-path lfs/objects)"
+            rm -rf -- "$lfs_objects"
+          done
+
+      - name: Build package
+        env:
+          BUILD_ARCH: ${{ inputs.arch }}
+          BUILD_API: ${{ steps.resolve_version.outputs.api }}
+          BUILD_VARIANT: ${{ inputs.variant }}
+        run: make "$BUILD_ARCH-$BUILD_API-$BUILD_VARIANT"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          path: out/open_gapps-${{ inputs.arch }}-${{ inputs.android_version }}-${{ inputs.variant }}-*-UNOFFICIAL.zip
+          archive: false
+          if-no-files-found: error
+          retention-days: 7
